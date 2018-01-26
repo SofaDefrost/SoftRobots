@@ -17,16 +17,3 @@ list(APPEND SOURCE_FILES
     component/forcefield/PipeForceField.cpp
 
     )
-
-if(SOFA_WITH_EXPERIMENTAL_FEATURES)
-
-    list(APPEND HEADER_FILES
-        component/forcefield/MappedMatrixForceField.h
-        component/forcefield/MappedMatrixForceField.inl
-        )
-
-    list(APPEND SOURCE_FILES
-        component/forcefield/MappedMatrixForceField.cpp
-        )
-
-endif()
