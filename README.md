@@ -1,16 +1,8 @@
 # SoftRobots
-This Sofa package contains components & method for soft robotics.
+This plugin for Sofa contains components for soft robotics.
 
-To get a list of examples & tutorials scene please load the sofa scene called softrobots.pyscn located
-at the root of this plugin.
-eg:
-'''console
-runSofa softrobots.pyscn
-'''
-
-## Usage:
-<RequiredPlugin name="SoftRobots">
-
+You can find a complete documentation is available at this address: [SoftRobots](https://project.inria.fr/softrobot/)
+You can also explore the *docs* and *examples* directory in this repository. 
 
 ## AUTHOR :
  - Team DEFROST (INRIA/CRISTAL), Lille
