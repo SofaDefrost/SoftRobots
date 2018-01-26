@@ -1,0 +1,31 @@
+<html>
+
+<head>
+<link href="../../../../../examples/Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body bgcolor="#F0F8FF">
+
+	<div id="contenu">
+
+		<h1>Step 3: Actuating the robot with cable. </h1>	
+		In the previous step, we showed how to model and simulate a soft robot with a finger shape and made 
+		of a deformable material (silicone rubber). In this step, we will explain how to actuate it using a 1d inelastic 
+		cable attached to the fingertip. The cable can be used to pull or release the fingertip by pressing ctrl+ and ctrl-. <br>
+		This scene adds the following functionalities:
+		<UL>
+                    <LI>Create a cable actuator based in constraints</LI>
+                    <LI>Include a mechanical mapping to link the cable motion to the object deformation</LI>
+                    <LI>Use a Python script to drive the cable</LI>
+                    <LI>Actuate it interactively.</LI>
+              	</UL>
+
+                </p>
+                <br>
+                <center><img src="../data/images/Finger_3.png"/></center>	
+                
+	</div>
+
+</body>
+
+</html>

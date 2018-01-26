@@ -1,0 +1,49 @@
+<h1 id="cable-actuation-using-softrobot-sr-plug-in-step-1">Cable Actuation using SoftRobot (SR) plug-in [step 1]</h1>
+<blockquote>
+<p>This page describes how to set-up an environment using Sofa and the SR plug-in to simulate a virtual soft gripper using cables. In order to simulate a mechanical object using Finite Element Modeling (FEM), a discrete version of its volume is required. This volume, referred as volumetric mesh will serve as a domain for FEM computation. The aim of this tutorial step is to explain how to create such a volumetric mesh from a closed surface description made of triangles.</p>
+</blockquote>
+<div class="figure">
+<img src="../data/images/meshTetraGeneration_1.png" alt="Volumetric mesh of a soft finger" />
+<p class="caption">Volumetric mesh of a soft finger</p>
+</div>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<p>We assume that you are familiar with the basic concepts of Sofa and you are able to set-up a simple scene that contains deformable objects. If not, we encourage you to train on the sofa tutorials that are located in the <code>examples/Tutorials/</code> of your Sofa repository.</p>
+<h2 id="common-components">Common components</h2>
+<p>The first part of the tutorial is to add and initialize components that are commonly used in soft robots simulation. The following three lines of code are not mandatory; they are only used to customize the rendering of the simulation:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">rootNode.createObject(<span class="st">&#39;VisualStyle&#39;</span>, displayFlags<span class="op">=</span><span class="st">&#39;showVisualModels showBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields hideInteractionForceFields hideWireframe&#39;</span>)</code></pre></div>
+<p>This line describes what data needs to be displayed using <code>show</code> / <code>hide</code> keywords. Each of the <code>displayFlags</code> is associated to a check-box in the Visualization Panel of Sofa. In this example, we only want to display the appearance of the robot (<code>VisualModel</code>) and the volumetric mesh that we will generate (<code>BehaviorModel</code>). The <code>BehaviorModel</code> is only used for debug purpose and will not be displayed in the final version of the simulation.</p>
+<pre><code>rootNode.createObject(&#39;BackgroundSetting&#39;, color=&#39;0 0.168627 0.211765&#39;)</code></pre>
+<p>This line describes the background color of the simulation viewport, an image may be added if needed.</p>
+<pre><code>rootNode.createObject(&#39;OglSceneFrame&#39;, style=&quot;Arrows&quot;, alignment=&quot;TopRight&quot;)</code></pre>
+<p>This line adds a rigid frame system in the viewport in order to help the developer understand how the different objects are located in space.</p>
+<h2 id="volumetric-mesh-generation">Volumetric Mesh Generation</h2>
+<p>Volumetric mesh generation is a complex topic and several tools exists to perform this task such as: <img src="http://www.gidhome.com/" alt="GID" />, <img src="http://www.cgal.org/" alt="CGAL" /> or <img src="http://geuz.org/gmsh/" alt="Gmsh" />. We choose to use the C++ library <code>CGAL</code> (<img src="http://www.cgal.org" alt="CGAL" />) as a dedicated plug-in for Sofa exists. Volumetric mesh can be computed either using a surface mesh or an image. Whatever the input, we need to add the <code>CGALPlugin</code> with the following line:</p>
+<pre><code>rootNode.createObject(&#39;RequiredPlugin&#39;, pluginName=&#39;CGALPlugin&#39;)</code></pre>
+<p>All the components that will help to build the volumetric mesh will be placed in a child node, this is performed with</p>
+<pre><code>node = rootNode.createChild(&#39;node&#39;)</code></pre>
+<p>Then, we need to load the surface mesh that will be used as input for CGAL. Many file formats are supported (<code>OBJ</code>, <code>VTK</code>, <code>STL</code>...). In our example, a STL file has been produced using some CAD software. This file is then loaded with:</p>
+<pre><code>node.createObject(&#39;MeshSTLLoader&#39;, name=&#39;mesh&#39;, filename=path+&#39;finger.stl&#39;)</code></pre>
+<p>And then the magic is performed with the <code>MeshGenerationFromPolyhedron</code> where four parameters are used to control the meshing:</p>
+<ul>
+<li><code>cellSize</code>: this parameter controls the size of mesh tetrahedra. It provides an upper bound on the circumradius of the mesh tetrahedra</li>
+<li><code>facetAngle</code>: This parameter controls the shape of surface facets. Actually, it is a lower bound for the angle (in degree) of surface facets. When boundary surfaces are smooth, the termination of the meshing process is guaranteed if the angular bound is at most 30 degrees</li>
+<li><code>facetAngle</code>: this parameter controls the shape of surface facets. Actually, it is a lower bound for the angle (in degree) of surface facets. When boundary surfaces are smooth, the termination of the meshing process is guaranteed if the angular bound is at most 30 degrees</li>
+<li><code>cellRatio</code>: this parameter controls the shape of mesh cells. Actually, it is an upper bound for the ratio between the circumradius of a mesh tetrahedron and its shortest edge. There is a theoretical bound for this parameter: the Delaunay refinement process is guaranteed to terminate for values larger than 2</li>
+<li><code>facetApproximation</code>: the approximation error between the boundary and the subdivision surface. It provides an upper bound for the distance between the circumcenter of a surface facet and the center of a surface Delaunay ball of this facet</li>
+</ul>
+<p>It may require some trials and errors to find a good set of parameters that capture well the details of the surface mesh without leading to a large number of tetrahedra. For our example, the set of parameters is:</p>
+<pre><code>node.createObject(&#39;MeshGenerationFromPolyhedron&#39;, name=&#39;gen&#39;, template=&#39;Vec3d&#39;, inputPoints=&#39;@mesh.position&#39;, inputTriangles=&#39;@mesh.triangles&#39;, drawTetras=&#39;1&#39;,
+    cellSize=&quot;10&quot;,
+    facetAngle=&quot;30&quot;,
+    facetSize=&quot;4&quot;,
+    cellRatio=&quot;2&quot;,   #Convergence problem if &lt; 2
+    facetApproximation=&quot;1&quot;
+    )</code></pre>
+<p>The computed tetrahedra are then stored in a mesh container for later usage with:</p>
+<pre><code>node.createObject(&#39;Mesh&#39;, position=&#39;@gen.outputPoints&#39;, tetrahedra=&#39;@gen.outputTetras&#39;)</code></pre>
+<p>After that you may export the resulting volumetric mesh with the following line:</p>
+<pre><code>node.createObject(&#39;VTKExporter&#39;, filename=path+&#39;finger&#39;, edges=&#39;0&#39;, tetras=&#39;1&#39;, exportAtBegin=&#39;1&#39;)</code></pre>
+<p>We want to export only the tetrahedra (no edges, no triangles) and we want a single export that is performed at the beginning of the simulation (a single export is needed since the mesh will not deform during this simulation).</p>
+<p>For an interactive feedback of what has been computed by <code>CGAL</code>, we can use this line:</p>
+<pre><code>node.createObject(&#39;OglModel&#39;, filename=path+&quot;finger.stl&quot;, color=&quot;0.0 0.7 0.7 0.5&quot;)</code></pre>
+<p>It will superimpose the surface mesh on the volumetric mesh.</p>

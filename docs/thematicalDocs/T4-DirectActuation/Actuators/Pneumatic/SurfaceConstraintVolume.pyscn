@@ -1,0 +1,57 @@
+import Sofa
+
+import os
+path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
+
+def createScene(rootNode):
+
+                rootNode.createObject('RequiredPlugin', name='SoftRobots')
+                rootNode.createObject('RequiredPlugin', name='SofaPython')
+                rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
+
+                rootNode.createObject('FreeMotionAnimationLoop')
+                rootNode.createObject('GenericConstraintSolver', maxIterations='100', tolerance = '0.0000001')
+
+		#bunny mechanical model
+                bunny = rootNode.createChild('bunny')
+                bunny.createObject('EulerImplicit', name='odesolver')
+                bunny.createObject('SparseLDLSolver', name='LDLsolver')
+                bunny.createObject('MeshVTKLoader', name='loader', filename=path+'Hollow_Stanford_Bunny.vtu')
+                bunny.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
+                bunny.createObject('TetrahedronSetTopologyModifier')
+                bunny.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
+                bunny.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+
+                bunny.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
+                bunny.createObject('UniformMass', totalmass='0.5')
+                bunny.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
+
+                bunny.createObject('BoxROI', name='boxROI', box='-5 -15 -5  5 -4.5 5', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
+                bunny.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
+                bunny.createObject('LinearSolverConstraintCorrection', solverName='LDLsolver')
+
+
+		#bunny/cavity
+                cavity = bunny.createChild('cavity')
+                cavity.createObject('MeshObjLoader', name='loader', filename=path+'Hollow_Bunny_Body_Cavity.obj')
+                cavity.createObject('Mesh', src='@loader', name='topo')
+                cavity.createObject('MechanicalObject', name='cavity')
+                cavity.createObject('SurfacePressureConstraint', name="surfaceConstraint", triangles='@topo.triangles', valueType="volumeGrowth")
+                cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+
+                bunny.createObject('PythonScriptController', filename="ControllerVolume.py", classname="controller")
+
+
+		#bunny/bunnyVisu
+                bunnyVisu = bunny.createChild('visu')
+                bunnyVisu.createObject('TriangleSetTopologyContainer', name='container')
+                bunnyVisu.createObject('TriangleSetTopologyModifier')
+                bunnyVisu.createObject('TriangleSetTopologyAlgorithms', template='Vec3d')
+                bunnyVisu.createObject('TriangleSetGeometryAlgorithms', template='Vec3d')
+                bunnyVisu.createObject('Tetra2TriangleTopologicalMapping', name='Mapping', input="@../container", output="@container")
+
+                bunnyVisu.createObject('OglModel', template='ExtVec3f', color='0.3 0.2 0.2 0.6')
+                bunnyVisu.createObject('IdentityMapping')
+
+
+                return rootNode

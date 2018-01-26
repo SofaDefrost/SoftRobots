@@ -1,0 +1,31 @@
+<html><head></head>
+<body>
+		<img src="docs/softrobots.png" width="50%"/>
+		<h1>SoftRobots</h1>
+	
+The SoftRobots plugin contains Sofa components to ease the modeling and simulation
+of soft robots. <br><br>
+
+This plugin is developped by the Defrost INRIA research team and is provided as-is under the LGPL Licence. <br>
+
+The project source website is <a href="https://project.inria.fr/softrobot">SoftRobots'project</a>
+
+<br>
+<br>
+
+You can try the following examples:
+<LI>Make a soft-gripper:
+	<UL>
+		<LI><A HREF='docs/tutorial/step1-VolumetricMeshGeneretion/MeshTetraGeneration.pyscn'>step 1: Meshing robots shapes</A></LI>
+		<LI><A HREF='docs/tutorial/step2-ModelingAndSimulatingDeformations/Finger.pyscn'>step 2:  Simulating materials</A></LI>
+		<LI><A HREF='docs/tutorial/step3-ActuatingTheRobotWithCable/Finger.pyscn'>step 3: Actuation with cable</A></LI>
+		<LI><A HREF='docs/tutorial/step4-SoftGripperGraspingSimulation/SoftGripper.pyscn'>step 4: Simulating grasping</A></LI>
+	</UL>
+</LI>
+
+<br>
+<br>
+
+<LI>Others examples:	
+	<LI>component<UL><LI>engine<UL><LI><A HREF='examples/component/engine/VolumeFromTriangles/Finger.pyscn'>Finger.pyscn</A></LI>
+	<LI><A HREF='examples/component/engine/VolumeFromTetrahedrons/Finger.pyscn'>Finger.pyscn</A></LI></UL></LI><LI>controller<UL><LI>AnimationEditor<UL><LI><A HREF='examples/component/controller/AnimationEditor/RigidAnimation.pyscn'>RigidAnimation.pyscn</A></LI><LI><A HREF='examples/component/controller/AnimationEditor/Accordion_AnimationEditor.pyscn'>Accordion_AnimationEditor.pyscn</A></LI></UL></LI><LI>CommunicationController<UL><LI><A HREF='examples/component/controller/CommunicationController/SimulationDirect_Receiver.pyscn'>SimulationDirect_Receiver.pyscn</A></LI><LI><A HREF='examples/component/controller/CommunicationController/SimulationInverse_Sender.pyscn'>SimulationInverse_Sender.pyscn</A></LI></UL></LI><LI><A HREF='examples/component/controller/DataVariationLimiter/DataVariationLimiter.pyscn'>DataVariationLimiter.pyscn</A></LI></UL></LI><LI>constraint<UL><LI>SurfacePressureConstraint<UL><LI><A HREF='examples/component/constraint/SurfacePressureConstraint/Springy.pyscn'>Springy.pyscn</A></LI><LI><A HREF='examples/component/constraint/SurfacePressureConstraint/PressureVsVolumeGrowthControl.pyscn'>PressureVsVolumeGrowthControl.pyscn</A></LI><LI><A HREF='examples/component/constraint/SurfacePressureConstraint/SurfacePressureConstraint.pyscn'>SurfacePressureConstraint.pyscn</A></LI></UL></LI><LI>CableConstraint<UL><LI><A HREF='examples/component/constraint/CableConstraint/Finger.pyscn'>Finger.pyscn</A></LI><LI><A HREF='examples/component/constraint/CableConstraint/DisplacementVsForceControl.pyscn'>DisplacementVsForceControl.pyscn</A></LI><LI><A HREF='examples/component/constraint/CableConstraint/SoftGripper.pyscn'>SoftGripper.pyscn</A></LI></UL></LI><LI><A HREF='examples/component/constraint/UnilateralPlaneConstraint/ArticulatedTentacle.pyscn'>ArticulatedTentacle.pyscn</A></LI></UL></LI></UL></LI></UL></LI><LI><A HREF='softrobots.pyscn'>softrobots.pyscn</A></LI></body></html>

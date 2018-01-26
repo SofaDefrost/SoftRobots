@@ -1,0 +1,121 @@
+# -*- coding: utf-8 -*-
+
+import Sofa
+
+import os
+path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
+
+
+def createScene(rootNode):
+
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('VisualStyle', displayFlags="showVisualModels hideBehaviorModels hideCollisionModels \
+                                        hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe")
+
+                rootNode.createObject('FreeMotionAnimationLoop')
+
+                rootNode.createObject('GenericConstraintSolver')
+
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.findData('gravity').value="0 0 -981.0"
+                rootNode.findData('dt').value=0.01
+
+
+                ##########################################
+                # FEM Model                              #
+                ##########################################
+                accordion = rootNode.createChild('accordion')
+                accordion.createObject('EulerImplicit', firstOrder='0', rayleighStiffness="0.1", rayleighMass="0.1")
+                accordion.createObject('SparseLDLSolver')
+
+                accordion.createObject('MeshVTKLoader', name='loader', filename=path+'Springy.vtk', rotation="0 0 0")
+                accordion.createObject('TetrahedronSetTopologyContainer', src='@loader')
+                accordion.createObject('TetrahedronSetTopologyModifier')
+                accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
+                accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+
+                accordion.createObject('MechanicalObject', name='tetras', template='Vec3d')
+                accordion.createObject('UniformMass', totalmass='0.030')
+                accordion.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
+
+                accordion.createObject('BoxROI', name='ROI1', box='-2 -2 0 2 2 0.5', drawBoxes='true')
+                accordion.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness='1e12')
+                # accordion.createObject('FixedConstraint', indices='@ROI1.indices')
+
+                accordion.createObject('LinearSolverConstraintCorrection')
+                #For local communication
+                accordion.createObject('CommunicationController', name="sub", listening='1', job="receiver", port="5558", nbDataField="4", pattern="0")
+                #Between two different computers, specify the ip adress of the sender
+                #accordion.createObject('CommunicationController', name="sub", listening='1', job="receiver", port="5558", nbDataField="4", ip="...")
+
+
+                ##########################################
+                # Pressure                               #
+                ##########################################
+                cavity = accordion.createChild('cavity')
+                cavity.createObject('MeshSTLLoader', name='loader', filename=path+'Springy_Cavity.stl')
+                cavity.createObject('Mesh', src='@loader', name='topo')
+                cavity.createObject('MechanicalObject', name='cavity')
+                cavity.createObject('SurfacePressureConstraint', template='Vec3d', name="pressure",
+                    triangles='@topo.triangles',
+                    valueType="1",
+                    value="@../sub.data1")
+
+                cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+
+
+                ##########################################
+                # Cables                                 #
+                ##########################################
+
+                cables = accordion.createChild('cables')
+                cables.createObject('MechanicalObject', name="cablesPoint",
+                        position=(
+                                        "1.5 0 0.5   "+
+                                        "1.5 0 1.5   "+
+                                        "1.5 0 2.5   "+
+                                        "1.5 0 3.5   "+
+                                        "1.5 0 4.5   "+
+
+                                        "0 -1.5 0.5   "+
+                                        "0 -1.5 1.5   "+
+                                        "0 -1.5 2.5   "+
+                                        "0 -1.5 3.5   "+
+                                        "0 -1.5 4.5   "+
+
+                                        "-1.5 0 0.5   "+
+                                        "-1.5 0 1.5   "+
+                                        "-1.5 0 2.5   "+
+                                        "-1.5 0 3.5   "+
+                                        "-1.5 0 4.5   "))
+                cables.createObject('CableConstraint', template='Vec3d',
+                        name="cable1",
+                        indices="0 1 2 3 4",
+                        pullPoint="1.5 0 0",
+                        value = "@../sub.data2"
+                        )
+                cables.createObject('CableConstraint', template='Vec3d',
+                        name="cable2",
+                        indices="5 6 7 8 9",
+                        pullPoint="0 -1.5 0",
+                        value = "@../sub.data3"
+                        )
+                cables.createObject('CableConstraint', template='Vec3d',
+                        name="cable3",
+                        indices="10 11 12 13 14",
+                        pullPoint="-1.5 0 0",
+                        value = "@../sub.data4"
+                        )
+                cables.createObject('BarycentricMapping', mapForces="false", mapMasses="false")
+
+
+                ##########################################
+                # Visualization                          #
+                ##########################################
+                accordionVisu = accordion.createChild('visu')
+                accordionVisu.createObject('OglModel', filename=path+"Springy.stl", color="0.4 0.4 0.4 0.5")
+                accordionVisu.createObject('BarycentricMapping')
+
+
+
+                return rootNode

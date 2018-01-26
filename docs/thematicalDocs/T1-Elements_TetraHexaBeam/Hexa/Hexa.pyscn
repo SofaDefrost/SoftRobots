@@ -1,0 +1,38 @@
+import Sofa
+
+import os
+path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
+
+
+#Units: cm and kg
+def createScene(rootNode):
+    rootNode.createObject('VisualStyle', displayFlags='showBehaviorModels showForceFields');
+
+    rootNode.findData('dt').value= 0.001;
+    rootNode.findData('gravity').value= '0. 0. -9810';
+
+    rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765');
+    rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
+
+    ###############################
+    ## MECHANICAL MODEL
+    ###############################
+
+    robot = rootNode.createChild('robot')
+    robot.createObject('EulerImplicit');
+    robot.createObject('SparseLDLSolver');
+    ### Here you set the Hexahedron topology
+    robot.createObject('RegularGridTopology', name="grid", filename=path+'branch.stl', n="5 5 5");
+    # robot.createObject('HexahedronSetTopologyContainer', hexahedra='@grid.hexahedra' , name='container', checkConnexity='1');
+    # robot.createObject('HexahedronSetTopologyModifier');
+    # robot.createObject('HexahedronSetTopologyAlgorithms');
+    # robot.createObject('HexahedronSetGeometryAlgorithms');
+
+    robot.createObject('MechanicalObject', name='hexas', src="@grid");
+    robot.createObject('UniformMass', totalmass='0.4');
+    robot.createObject('HexahedronFEMForceField', poissonRatio='0.45',  youngModulus='600');
+
+    robot.createObject('BoxROI', name='boxROI', box="-30 80 70 30 140 130   -130 -100 70  -60  -20 130  130 -100 70  60  -20 130", drawBoxes='true');
+    robot.createObject('FixedConstraint', indices="@boxROI.indices");
+
+    return rootNode

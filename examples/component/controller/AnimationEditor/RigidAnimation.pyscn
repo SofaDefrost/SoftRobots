@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*-
+
+import Sofa
+
+import os
+path = os.path.dirname(os.path.abspath(__file__))+'/'
+pathMesh = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
+
+
+def createScene(rootNode):
+
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+
+                point = rootNode.createChild('point')
+                point.createObject('EulerImplicit', firstOrder='1')
+                point.createObject('CGLinearSolver', iterations='100', tolerance="1e-5", threshold="1e-5")
+                point.createObject('MechanicalObject', template="Rigid3d",
+                        position='0 0 0 0 0 0 1',
+                        showObject="1",
+                        showObjectScale=".1",
+                        drawMode="1",
+                        showColor="255 255 255 255")
+                point.createObject('AnimationEditor', template="Rigid3d", listening="1", load="1", filename=path+"RigidAnimation.txt", drawTimeLine="1")
+
+                visu = point.createChild('visu')
+                visu.createObject('OglModel', filename="mesh/cube.obj")
+                visu.createObject('RigidMapping')
+
+                return rootNode

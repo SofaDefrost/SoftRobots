@@ -1,0 +1,43 @@
+
+<Node name="root" dt="0.01">
+
+        <VisualStyle displayFlags='showCollision showVisualModels showForceFields showInteractionForceFields hideCollisionModels hideBoundingCollisionModels hideWireframe'/>
+
+        <RequiredPlugin pluginName='SoftRobots'/>
+
+        <FreeMotionMasterSolver/>
+        <CollisionPipeline verbose='0'/>
+        <BruteForceDetection name='N2'/>
+        <CollisionResponse response='FrictionContact'/>
+        <LocalMinDistance name="Proximity" alarmDistance='3' contactDistance='0.5'/>
+        <GenericConstraintSolver name="GenericConstraintSolver" maxIterations='250' printLog='0' tolerance = '0.0000001'/>
+
+
+        <Node name='bunny'>
+                <EulerImplicitSolver firstOrder="0"/>
+                <SparseLDLSolver />
+                <MeshVTKLoader name="loader" filename="mesh/Hollow_Stanford_Bunny.vtu"/>
+                <TetrahedronSetTopologyContainer src="@loader"/>
+                <TetrahedronSetGeometryAlgorithms drawTetrahedra="false" template="Vec3d"/>
+                <MechanicalObject name="tetras" template="Vec3d"/>
+                <UniformMass totalmass="0.5"/>
+                <TetrahedronFEMForceField youngModulus="18000" poissonRatio='0.3' method='large'/>
+
+                <BoxROI name='ROI1' box='-5 -15 -5  5 -4.5 5' drawBoxes='true'/>                
+                <RestShapeSpringsForceField points='@ROI1.indices' stiffness='1e12'/>
+
+                <LinearSolverConstraintCorrection/>
+
+                <Node name="cavity">
+                        <MeshObjLoader name="loader" filename='mesh/Hollow_Bunny_Body_Cavity.obj'/>
+                        <Mesh name="topo" src='@loader'/>
+                        <MechanicalObject name="cavity" />
+
+                        <SurfacePressureConstraint  name="SurfacePressureConstraint" value='40' valueType="1"/>
+                        <VolumeFromTriangles name="VolumeFromTriangles"/>
+                        
+                        <BarycentricMapping mapForces="false" mapMasses="false"/>
+                </Node>
+        </Node>
+
+</Node>

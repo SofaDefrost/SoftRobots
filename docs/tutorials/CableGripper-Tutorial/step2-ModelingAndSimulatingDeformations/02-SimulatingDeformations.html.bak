@@ -1,0 +1,31 @@
+<html>
+
+<head>
+<link href="../../../../../examples/Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body bgcolor="#F0F8FF">
+
+	<div id="contenu">
+		<h1>Step 2: Modeling and simulating deformations</h1>
+		
+		The second step of this tutorial is to allow the finger to be mechanically simulated. This implies to:
+		<UL>
+                    <LI>Provide a solving method</LI>
+                    <LI>A volumetric mesh and mass properties to compute deformations and energy</LI>
+                    <LI>A mechanical model of the deformation</LI>
+                    <LI>An attach point.</LI>
+              	</UL>
+		
+		<p>Additionnaly, a visual model has been added, with a mapping to provide visualization of the deformations produced.</p>
+		
+		<center><img src="../data/images/Finger_0.png"/></center>
+
+		<h2>How to use the demo</h2>
+		<p>After clicking on "Animate" you can select the finger (shift + click left) and move it around.</p>
+	
+	</div>
+
+</body>
+
+</html>

@@ -1,0 +1,180 @@
+import Sofa
+
+import os
+path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
+
+def createScene(rootNode):
+
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
+
+                rootNode.createObject('FreeMotionAnimationLoop')
+                rootNode.createObject('GenericConstraintSolver', maxIterations="1000", tolerance="0.001")
+		rootNode.createObject('PythonScriptController', filename="controller/SoftGripperController.py", classname="controller")
+
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+
+
+                ################################ FINGER 1 ###################################
+
+		#finger1
+                finger1 = rootNode.createChild('finger1')
+                finger1.createObject('EulerImplicit', name='odesolver')
+                finger1.createObject('SparseLDLSolver', name='preconditioner')
+                
+                finger1.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk', rotation="0 0 25")
+                finger1.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
+                finger1.createObject('TetrahedronSetTopologyModifier')
+                finger1.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
+                finger1.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                
+                finger1.createObject('MechanicalObject', name='tetras', template='Vec3d')
+                finger1.createObject('UniformMass', totalmass='0.5')
+                finger1.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
+		  
+                finger1.createObject('BoxROI', name='boxROI', box='-15 0 0 5 10 15', drawBoxes='true')
+                finger1.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
+                
+                finger1.createObject('LinearSolverConstraintCorrection')
+
+                indices=""
+                for i in range(1,15):
+                        indices += " " + str(i)
+                        
+		#finger1/actuator1
+                actuator1 = finger1.createChild('actuator1')
+                actuator1.createObject('MechanicalObject', name="actuator1Point", rotation="0 0 25",
+                        position=("-103.071  7.36479  7.14143" + 
+                                " -17.5 12.5 2.5 " +
+                                " -32.5 12.5 2.5 " +
+                                " -47.5 12.5 2.5 " +
+                                " -62.5 12.5 2.5 " +
+                                " -77.5 12.5 2.5 " +
+
+                                " -83.5 12.5 4.5 " +
+                                " -85.5 12.5 6.5 " +
+                                " -85.5 12.5 8.5 " +
+                                " -83.5 12.5 10.5 " +
+                                
+                                " -77.5 12.5 12.5 " +
+                                " -62.5 12.5 12.5 " +
+                                " -47.5 12.5 12.5 " +
+                                " -32.5 12.5 12.5 " +
+                                " -17.5 12.5 12.5 " ))
+
+                actuator1.createObject('CableConstraint', template='Vec3d', name='CableConstraint', indices=indices, pullPoint="0 12.5 2.5")
+                actuator1.createObject('BarycentricMapping', mapForces="false", mapMasses="false")              
+                
+		#finger1/finger1Visu
+                finger1Visu = finger1.createChild('visu')                
+                finger1Visu.createObject('OglModel', filename=path+"finger.stl", template='ExtVec3f', color="0.0 0.7 0.7", rotation="0 0 25")
+                finger1Visu.createObject('BarycentricMapping')
+		
+
+                ################################ FINGER 2 ###################################
+                
+                
+		#finger2
+                finger2 = rootNode.createChild('finger2')
+                finger2.createObject('EulerImplicit', name='odesolver')
+                finger2.createObject('SparseLDLSolver', name='preconditioner')
+                
+                finger2.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk', rotation="180 0 -25", translation="0 20 0")
+                finger2.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
+                finger2.createObject('TetrahedronSetTopologyModifier')
+                finger2.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
+                finger2.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                
+                finger2.createObject('MechanicalObject', name='tetras', template='Vec3d')
+                finger2.createObject('UniformMass', totalmass='0.5')
+                finger2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
+		  
+                finger2.createObject('BoxROI', name='boxROI', box='-15 10 0 5 30 15', drawBoxes='true')
+                finger2.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
+                
+                finger2.createObject('LinearSolverConstraintCorrection')
+
+		#finger2/actuator2
+                actuator2 = finger2.createChild('actuator2')
+                actuator2.createObject('MechanicalObject', name="actuator2Point", rotation="180 0 -25", translation="0 20 0",
+                        position=("-103.071  7.36479  7.14143" + 
+                                " -17.5 12.5 2.5 " +
+                                " -32.5 12.5 2.5 " +
+                                " -47.5 12.5 2.5 " +
+                                " -62.5 12.5 2.5 " +
+                                " -77.5 12.5 2.5 " +
+
+                                " -83.5 12.5 4.5 " +
+                                " -85.5 12.5 6.5 " +
+                                " -85.5 12.5 8.5 " +
+                                " -83.5 12.5 10.5 " +
+                                
+                                " -77.5 12.5 12.5 " +
+                                " -62.5 12.5 12.5 " +
+                                " -47.5 12.5 12.5 " +
+                                " -32.5 12.5 12.5 " +
+                                " -17.5 12.5 12.5 " ))
+                                                                
+                actuator2.createObject('CableConstraint', template='Vec3d', name='CableConstraint', indices=indices, pullPoint="0 12.5 -2.5")
+                actuator2.createObject('BarycentricMapping', mapForces="false", mapMasses="false")              
+                
+		#finger2/finger2Visu
+                finger2Visu = finger2.createChild('visu')                
+                finger2Visu.createObject('OglModel', filename=path+"finger.stl", rotation="180 0 -25", translation="0 20 0", template='ExtVec3f', color="0.0 0.7 0.7")
+                finger2Visu.createObject('BarycentricMapping')
+
+
+                ################################ FINGER 3 ###################################
+
+                
+		#finger3
+                finger3 = rootNode.createChild('finger3')
+                finger3.createObject('EulerImplicit', name='odesolver')
+                finger3.createObject('SparseLDLSolver', name='preconditioner')
+                
+                finger3.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk', rotation="180 0 -25", translation="0 20 30")
+                finger3.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
+                finger3.createObject('TetrahedronSetTopologyModifier')
+                finger3.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
+                finger3.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                
+                finger3.createObject('MechanicalObject', name='tetras', template='Vec3d')
+                finger3.createObject('UniformMass', totalmass='0.5')
+                finger3.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
+		  
+                finger3.createObject('BoxROI', name='boxROI', box='-15 10 0 5 30 15', drawBoxes='true')
+                finger3.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
+                
+                finger3.createObject('LinearSolverConstraintCorrection')
+
+		#finger3/actuator3
+                actuator3 = finger3.createChild('actuator3')
+                actuator3.createObject('MechanicalObject', name="actuator3Point", rotation="180 0 -25", translation="0 20 30",
+                        position=("-103.071  7.36479  7.14143" + 
+                                " -17.5 12.5 2.5 " +
+                                " -32.5 12.5 2.5 " +
+                                " -47.5 12.5 2.5 " +
+                                " -62.5 12.5 2.5 " +
+                                " -77.5 12.5 2.5 " +
+
+                                " -83.5 12.5 4.5 " +
+                                " -85.5 12.5 6.5 " +
+                                " -85.5 12.5 8.5 " +
+                                " -83.5 12.5 10.5 " +
+                                
+                                " -77.5 12.5 12.5 " +
+                                " -62.5 12.5 12.5 " +
+                                " -47.5 12.5 12.5 " +
+                                " -32.5 12.5 12.5 " +
+                                " -17.5 12.5 12.5 " ))
+                                                                
+                actuator3.createObject('CableConstraint', template='Vec3d', name='CableConstraint', indices=indices, pullPoint="0 12.5 27.5")
+                actuator3.createObject('BarycentricMapping', mapForces="false", mapMasses="false")              
+                
+		#finger3/finger3Visu
+                finger3Visu = finger3.createChild('visu')                
+                finger3Visu.createObject('OglModel', filename=path+"finger.stl", rotation="180 0 -25", translation="0 20 30", template='ExtVec3f', color="0.0 0.7 0.7")
+                finger3Visu.createObject('BarycentricMapping')
+
+                return rootNode
