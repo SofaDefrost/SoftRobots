@@ -27,6 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+
 #define SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_CPP
 
 #include "DataVariationLimiter.inl"

@@ -1,27 +1,33 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture                          *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                            SOFA :: Applications                             *
+*                           Plugin SoftRobots    v1.0                         *
+*				                                              *
+* This plugin is also distributed under the GNU LGPL (Lesser General          *
+* Public License) license with the same conditions than SOFA.                 *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Contributors: Defrost team  (INRIA, University of Lille, CNRS,              *
+*               Ecole Centrale de Lille)                                      *
 *                                                                             *
-* Contact information: contact@sofa-framework.org                             *
+* Contact information: https://project.inria.fr/softrobot/contact/            *
+*                                                                             *
 ******************************************************************************/
+
 #ifndef SOFA_CONTROLLER_GameTrak_H
 #define SOFA_CONTROLLER_GameTrak_H
 

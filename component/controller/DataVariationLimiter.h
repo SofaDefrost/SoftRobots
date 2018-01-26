@@ -27,6 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+
 #ifndef SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_H
 #define SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_H
 
