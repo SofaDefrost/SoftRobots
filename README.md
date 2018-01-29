@@ -1,3 +1,5 @@
+<div style="text-align:center"><img src ="images/PluginImage.png" /></div>
+
 # SoftRobots
 This plugin for Sofa contains components for soft robotics.
 
