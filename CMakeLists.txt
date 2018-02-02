@@ -46,6 +46,9 @@ find_package(SofaFramework REQUIRED)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction)
 
+# Config files and install rules for pythons scripts
+sofa_set_python_directory(${PROJECT_NAME} "python")
+
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SoftRobots ${PROJECT_VERSION} ${PROJECT_NAME} SoftRobots)
 
