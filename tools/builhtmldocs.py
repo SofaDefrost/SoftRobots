@@ -52,15 +52,18 @@ if os.path.exists(hooks):
 	print(str(len(d))+" hooks loaded.")
 
 
-pathprefix = sys.argv[1]
+pathprefix = os.path.abspath(sys.argv[1]) + "/"
 for (dirpath, dirnames, aFilenames) in os.walk(pathprefix):
+        dirpath = os.path.abspath(dirpath) + "/"
         for aFilename in aFilenames:
                 aFile, ext = os.path.splitext(aFilename)
 		if ext in [".md"]:
                         print("Generating: " + dirpath + aFile + ".html from " +
-                         dirpath+aFile+ext )
-                        retcode = subprocess.call(["pandoc", dirpath + "/" +aFilename, "-s", "-c", "https://gist.githubusercontent.com/ryangray/1882525/raw/2a6e53f645b960f0bed16d686ba3df36505f839f/buttondown.css", "-o", dirpath + "/" + aFile + ".html.tmp"])
-                        if retcode == 0 :
-                        	print("Replacing token...")
-                                replaceStringInFile(dirpath + "/" + aFile + ".html.tmp", dirpath + "/" + aFile + ".html", dictionary)
-                                os.remove( dirpath + "/" + aFile + ".html.tmp" )
+                        dirpath+aFile+ext )
+                        os.chdir(dirpath)
+                        relpathstyle = os.path.relpath(pathprefix, dirpath)
+                        retcode = subprocess.call(["pandoc", dirpath + "/" +aFilename, "-s", "-c", relpathstyle+"/docs/style.css", "-o", dirpath + "/" + aFile + ".html"])
+                        #if retcode == 0 :
+                        #	print("Replacing token...")
+                        #        replaceStringInFile(dirpath + "/" + aFile + ".html.tmp", dirpath + "/" + aFile + ".html", dictionary)
+                        #        os.remove( dirpath + "/" + aFile + ".html.tmp" )

@@ -1,15 +1,17 @@
-import floor
-import cube
-import finger
+# -*- coding: utf-8 -*-
+
+import fingerstep5 as finger
 
 def createScene(rootNode):
+    rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels showForceFields showInteractionForceFields')
     rootNode.findData('gravity').value='-981.0 0 0';
     rootNode.findData('dt').value="0.01"
-
+    
     rootNode.createObject('RequiredPlugin', name='SofaMiscCollision')
     rootNode.createObject('RequiredPlugin', name='SofaPython')
     rootNode.createObject('RequiredPlugin', name='SoftRobots')
     rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+              
 
     ###################################################################
     # Direct simulation
@@ -18,12 +20,11 @@ def createScene(rootNode):
     rootNode.createObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
     rootNode.createObject('CollisionPipeline')
     rootNode.createObject('BruteForceDetection')
-    rootNode.createObject('RuleBasedContactManager', name="Response", response="FrictionContact", rules="0 * FrictionContact?mu=0.8" )
-    rootNode.createObject('LocalMinDistance', name="Proximity", alarmDistance="4", contactDistance="3", angleCone="0.01")
+    rootNode.createObject('RuleBasedContactManager', name="Response",
+                            response="FrictionContact", rules="0 * FrictionContact?mu=0.8" )
+    rootNode.createObject('LocalMinDistance', name="Proximity",
+                            alarmDistance="4", contactDistance="3", angleCone="0.01")
 
-    floor.createAndAddToNode(rootNode)
-    cube.createAndAddToNode(rootNode)
-				
     finger.createAndAddToNode(rootNode, "finger1",
                               rotation="0 0 25", translation="150 0 0",
                               fixingbox='135 0 0 155 10 15', pullpoint="150 12.5 2.5")
@@ -34,9 +35,3 @@ def createScene(rootNode):
                               rotation="180 0 -25", translation="150 20 30",
                               fixingbox='135 10 15 155 30 30', pullpoint="150 12.5 27.5")
 
-    ###################################################################
-    # Control of the robot with the keyboard
-    rootNode.createObject('PythonScriptController', filename="controller.py", classname="controller")
-    ###################################################################
-
-    return rootNode

@@ -7,12 +7,12 @@ def createScene(rootNode):
 
 				rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
 				rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
+                                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+				rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
 				rootNode.createObject('FreeMotionAnimationLoop')
 				rootNode.createObject('GenericConstraintSolver', maxIterations="1000", tolerance="0.001")
 
-				rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
-				rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
 
 				##########################################
