@@ -7,6 +7,12 @@ project(SoftRobots VERSION 1.0)
 
 option(USE_COMPRESSED_ROW_SPARSE "Use compressed row sparse format in the mappings" ON)
 
+if(STLIB_FOUND)
+    message("-- Found dependency : 'STLIB' plugin .")
+else()
+    message("-- The higly recommanded 'STLIB' plugin is missing. You can compile SoftRobots but most of the provided examples will not work. ")
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 
