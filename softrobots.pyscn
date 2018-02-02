@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import Sofa
+import softrobots
 
 # This scene is just there to autoload the softrobots.html.
 def createScene(rootNode):
