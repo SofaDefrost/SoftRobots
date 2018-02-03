@@ -49,7 +49,8 @@ using namespace sofa::core;
 
 //----------- Displacement constraint --------------
 CableDisplacementConstraintResolution::CableDisplacementConstraintResolution(double& imposedDisplacement, double* force)
-    : m_imposedDisplacement(imposedDisplacement)
+    : ConstraintResolution(1)
+    , m_imposedDisplacement(imposedDisplacement)
     , m_force(force)
 { }
 
@@ -87,7 +88,8 @@ void CableDisplacementConstraintResolution::storeForce(int line,  double* lambda
 
 //--------------- Force constraint -------------
 CableForceConstraintResolution::CableForceConstraintResolution(double& imposedForce, double *displacement)
-    : m_imposedForce(imposedForce)
+    : ConstraintResolution(1)
+    , m_imposedForce(imposedForce)
     , m_displacement(displacement)
 { }
 
@@ -126,9 +128,9 @@ void CableForceConstraintResolution::storeDisplacement(int line,  double* d)
     *m_displacement = d[line];
 }
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 // Registering the component

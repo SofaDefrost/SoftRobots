@@ -50,8 +50,8 @@ using namespace sofa::helper;
 using namespace sofa::core;
 
 SurfacePressureConstraintResolution::SurfacePressureConstraintResolution(const double& imposedPressure, double *volumeGrowth)
+    : ConstraintResolution(1)
 {
-    nbLines = 1;
     m_imposedPressure = imposedPressure;
     m_volumeGrowth = volumeGrowth;
 }
@@ -80,8 +80,8 @@ void SurfacePressureConstraintResolution::resolution(int line, double** w, doubl
 /////////////////////////////////// VolumeGrowthConstraintResolution ///////////////////////////////////////
 
 VolumeGrowthConstraintResolution::VolumeGrowthConstraintResolution(const double& imposedVolumeGrowth)
+    : ConstraintResolution(1)
 {
-    nbLines = 1;
     m_imposedVolumeGrowth = imposedVolumeGrowth;
 }
 
