@@ -13,7 +13,7 @@ Example:
 
 .. sourcecode:: python
 
-    from stlib.scene import STLIBHeader
+    from stlib.scene import MainHeader
     from stlib.physics.rigid import Cube, Floor
     from stlib.physics.deformable import ElasticMaterialObject
 
@@ -21,7 +21,7 @@ Example:
     #from softrobots.grippers.parts import FingerCable
 
     def createScene(rootNode):
-        STLIBHeader(rootNode)
+        MainHeader(rootNode)
         DefaultSolver(rootNode)
 
         Cube(rootNode, translation=[5.0,0.0,0.0])
