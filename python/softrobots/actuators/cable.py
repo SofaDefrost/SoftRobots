@@ -1,14 +1,24 @@
-def PullingCable(node, name="cable",
-    positions=[[1.0, 0.0, 0.0],[0.0, 0.0, 0.0]], pullPoint=[0.0,0.0,0.0]):
+def PullingCable(attachedTo=None,
+    withName="cable",
+    withCableGeometry=[[1.0, 0.0, 0.0],[0.0, 0.0, 0.0]],
+    withRotation=[0.0,0.0,0.0],
+    withTranslation=[0.0,0.0,0.0],
+    withAPullPointLocation=None,
+    withInitialValue=0.0,
+    withValueAs="displacement"):
     """Creates and adds a cable constraint.
 
     The constraint apply to a parent mesh.
 
     Args:
-        position (list vec3f): A sequence of points makin a sequential shape
+        withName (str): Name of the created cable.
 
-        pullPoint (vec3f): the location of the pulling point.
+        withCableGeometry: (list vec3f): Location of the degree of freedom of the cable.
 
+        withAPullPointLocation (vec3f): Position from where the cable is pulled. If not specified
+        the point will be considered in the structure.
+
+        withValueAs (str): either "force" or "displacement". Default is displacement.
 
     Structure:
 
@@ -23,27 +33,47 @@ def PullingCable(node, name="cable",
 
     """
     #  This create a new node in the scene. This node is appended to the finger's node.
-    cable = node.createChild(name)
+    cable = attachedTo.createChild(withName)
 
     # This create a MechanicalObject, a componant holding the degree of freedom of our
     # mechanical modelling. In the case of a cable it is a set of positions specifying
     # the points where the cable is passing by.
-    cable.createObject('MechanicalObject', position=positions)
+    cable.createObject('MechanicalObject', position=withCableGeometry,
+                        rotation=withRotation, translation=withTranslation)
 
     # Create a CableConstraint object with a name.
     # the indices are referring to the MechanicalObject's positions.
     # The last indice is where the pullPoint is connected.
-    cable.createObject('CableConstraint',
-                        indices=range(len(position)),
-                        pullPoint=pullPoint)
-                        
+    if withAPullPointLocation != None:
+        cable.createObject('CableConstraint',
+                            indices=range(len(withCableGeometry)),
+                            pullPoint=withAPullPointLocation,
+                            value=withInitialValue,
+                            valueType=withValueAs,
+                            hasPullPoint=True
+                            )
+    else:
+        cable.createObject('CableConstraint',
+                            indices=range(len(withCableGeometry)),
+                            value=withInitialValue,
+                            valueType=withValueAs,
+                            hasPullPoint=False
+                            )
+
     # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
     # between the cable's DoFs and the parents's ones so that movements of the cable's DoFs will be mapped
     # to the finger and vice-versa;
-    cable.createObject('BarycentricMapping', name="mapping")
+    cable.createObject('BarycentricMapping', name="Mapping", mapForces=False, mapMasses=False)
     
     return cable
     
 def createScene(node):
-    node.createObject('MechanicalObject')
-    Cable(node)
+    from stlib.scene import MainHeader
+    from stlib.physics.deformable import ElasticMaterialObject
+
+    MainHeader(node)
+    target = ElasticMaterialObject(fromVolumeMesh="mesh/liver.msh",
+                                   withTotalMass=0.5,
+                                   attachedTo=node)
+
+    PullingCable(target)
