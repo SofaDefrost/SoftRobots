@@ -1,6 +1,11 @@
 #COMMUNICATION CONTROLLER
 if(SOFTROBOTS_COMMUNICATIONCONTROLLER)
-    target_link_libraries(${PROJECT_NAME} "-lzmq")
+	find_package(ZMQ REQUIRED)
+	include_directories(${ZMQ_INCLUDE_DIR})
+    target_link_libraries(${PROJECT_NAME} ${ZMQ_LIBRARY})
+	IF(WIN32)
+		add_definitions(-D_WINSOCKAPI_)
+	ENDIF(WIN32)
 endif()
 
 

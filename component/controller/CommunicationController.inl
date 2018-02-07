@@ -281,31 +281,33 @@ void CommunicationController<DataTypes>::sendData()
 template<class DataTypes>
 void CommunicationController<DataTypes>::receiveData()
 {
-    if(d_pattern.getValue().getSelectedItem() == "request/reply")
-        sendRequest();
+	if (d_pattern.getValue().getSelectedItem() == "request/reply")
+		sendRequest();
 
     zmq::message_t message;
     bool status = m_socket->recv(&message);
+
     if(status)
     {
-        char messageChar[message.size()];
-        memcpy(&messageChar, message.data(), message.size());
-
-        stringstream stream;
+		char* messageChar = new char[message.size()];
+        memcpy(messageChar, message.data(), message.size());
+	    stringstream stream;
         unsigned int nbDataFieldReceived = 0;
+		
         for(unsigned int i=0; i<message.size(); i++)
         {
-            if(messageChar[i]==' ' || i==message.size()-1)
-                nbDataFieldReceived++;
+			if (messageChar[i] == ' ' || i == message.size() - 1) {
+				nbDataFieldReceived++;				
+			}
 
-            if(messageChar[i]==',')
-                messageChar[i]='.';
-
+			if (messageChar[i] == ',') {
+				messageChar[i] = '.';
+			}
             stream << messageChar[i];
         }
-
         convertStringStreamToData(&stream);
         checkDataSize(nbDataFieldReceived);
+		delete[] messageChar;
     }
     else
         msg_warning(this) << "Problem with communication";
