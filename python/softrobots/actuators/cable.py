@@ -40,20 +40,24 @@ def PullingCable(node, name="cable",
     if len(pullPoint) != 0:
         cable.createObject('CableConstraint',
                             indices=range(len(position)),
+                            value=value,
+                            value=valueType,
                             hasPullPoint=true,
                             pullPoint=pullPoint)
     else:
         cable.createObject('CableConstraint',
                             indices=range(len(position)),
+                            value=value,
+                            value=valueType,
                             hasPullPoint=false)
                         
     # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
     # between the cable's DoFs and the parents's ones so that movements of the cable's DoFs will be mapped
-    # to the finger and vice-versa;
+    # to the volume structure and vice-versa;
     cable.createObject('BarycentricMapping', name="mapping", mapForces="false", mapMasses="false")
     
     return cable
     
 def createScene(node):
     node.createObject('MechanicalObject')
-    Cable(node)
+    PullingCable(node)
