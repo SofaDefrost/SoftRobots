@@ -3,6 +3,7 @@ def PullingCable(attachedTo=None,
     withCableGeometry=[[1.0, 0.0, 0.0],[0.0, 0.0, 0.0]],
     withRotation=[0.0,0.0,0.0],
     withTranslation=[0.0,0.0,0.0],
+    withScale=1.0
     withAPullPointLocation=None,
     withInitialValue=0.0,
     withValueAs="displacement"):
@@ -20,16 +21,22 @@ def PullingCable(attachedTo=None,
 
         withValueAs (str): either "force" or "displacement". Default is displacement.
 
+        withTranslation (vec3f):   Apply a 3D translation to the object.
+
+        withRotation (vec3f):   Apply a 3D rotation to the object in Euler angles.
+
+        withScale (vec3f):   Apply an uniform scaling to the object.
+
+
     Structure:
+        .. sourcecode:: qml
 
-    .. sourcecode:: qml
-
-        Node : {
-                name : "cable"
-                MechanicalObject,
-                CableConstraint,
-                BarycentricMapping
-        }
+            Node : {
+                    name : "cable"
+                    MechanicalObject,
+                    CableConstraint,
+                    BarycentricMapping
+            }
 
     """
     #  This create a new node in the scene. This node is appended to the finger's node.
@@ -39,7 +46,7 @@ def PullingCable(attachedTo=None,
     # mechanical modelling. In the case of a cable it is a set of positions specifying
     # the points where the cable is passing by.
     cable.createObject('MechanicalObject', position=withCableGeometry,
-                        rotation=withRotation, translation=withTranslation)
+                        rotation=withRotation, translation=withTranslation, scale=withScale)
 
     # Create a CableConstraint object with a name.
     # the indices are referring to the MechanicalObject's positions.
