@@ -28,27 +28,10 @@ This file should contains the following lines:
 
 <div>
 ```python
+from stlib.scene import MainHeader
+
 def createScene(rootNode):
-    rootNode.findData('gravity').value='-981.0 0 0';
-    rootNode.findData('dt').value="0.01"
-
-    rootNode.createObject('RequiredPlugin', name='SofaMiscCollision')
-    rootNode.createObject('RequiredPlugin', name='SofaPython')
-    rootNode.createObject('RequiredPlugin', name='SoftRobots')
-    rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
-
-    ###################################################################
-    # Direct simulation
-    ###################################################################
-    rootNode.createObject('FreeMotionAnimationLoop')
-    rootNode.createObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
-    rootNode.createObject('CollisionPipeline')
-    rootNode.createObject('BruteForceDetection')
-    rootNode.createObject('RuleBasedContactManager', name="Response",
-                           response="FrictionContact", rules="0 * FrictionContact?mu=0.8" )
-    rootNode.createObject('LocalMinDistance', name="Proximity",
-                           alarmDistance="4", contactDistance="3", angleCone="0.01")
-
+    MainHeader(rootNode)
 ```
 
 <div>
@@ -58,84 +41,37 @@ def createScene(rootNode):
 </div>
 </div>
 
-
 The content of a *pyscn* file is standard python code that must define a function called *createScene*.
-This *createScene* function is mandatory as it is the one called automatically by Sofa when the file is loaded.
-This function is in charge of filling the simulation's content, in this case by adding three objects
-to the root node of the simulation.
+This *createScene* function is mandatory and is called automatically by Sofa when the file is loaded.
+This function is in charge of filling the simulation's content and this is where you type your scene's
+description.
 
-The first one, *RequiredPlugin* tells Sofa that this scene required the SoftRobots plugins to run properly.
+The *MainHeader* line is a scene templates from a library
+called STLIB. [View STLIB Doc](http://stlib.readthedocs.io/en/latest/)
 
-The second one adds a component that describes what data needs to be displayed using `show` / `hide` keywords. Each of the `displayFlags` is associated
-to a check-box in the Visualization Panel of Sofa. In this example, we only want to display the appearance of the robot (`VisualModel`)
-and the volumetric mesh that we will generate (`BehaviorModel`). The `BehaviorModel` is only used for debug purpose and will not be displayed
-in the final version of the simulation.
-
-The third one adds a component that describes specify the background color or image of the simulation of the 3D view.
-
-The fourth one adds a rigid frame system in the 3D view. This one is very useful to help the developer understand how the different
-objects are located in the 3D space.
+This template adds set of selected components that are needed for most of simulation. Once loaded you
+can explore the loaded scene graph in the sofa GUI and, by double clicking on components, get
+their internal properties and self documentations.
 
 ### Step 2: Modeling and simulating the gripper deformations
-The second step of this tutorial is to allow the finger to be mechanically simulated. This implies to:
-
- - Provide a solving method
- - volumetric mesh and mass properties to compute deformations and energy
- - mechanical model of the deformation
- - An attach point
-
-Additionnaly, a visual model has been added, with a mapping between the tetrahedron model and the stl-geometry to provide
-visualization of the deformations produced
+The second step of this tutorial is add a deformable object that will be mechanically simulated.
+As the real material we want to simulate is made of silicons it can be approximated with and elastic
+deformation law. The *ElasticMaterialObject* from *stlib.physics.deformable* provide a scene template
+for such an objet.
 
 <div>
 ```python
-import os
-path = os.path.dirname(os.path.abspath(__file__))+'/data/mesh/'
-
-def createAndAddToNode(rootNode, name="theFinger"):
-    finger = rootNode.createChild(name)
-    finger.createObject('EulerImplicit', name='odesolver', firstOrder='1')
-    finger.createObject('SparseLDLSolver', name='preconditioner')
-
-    finger.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk')
-    finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
-    finger.createObject('MechanicalObject', name='tetras', template='Vec3d')
-
-    ## To be properly simulated and to interact with gravity or inertia forces, an object
-    ## also needs a mass. You can add a given mass with a uniform distribution for an object
-    ## by adding a UniformMass component to the finger node
-    finger.createObject('UniformMass', totalmass=' 0.5')
-
-    ## The next component to add is a FEM forcefield which defines how the object reacts
-    ## to a loading (i.e. which deformations are created from forces applied onto it).
-    ## Here, because the finger is made of silicone, its mechanical behavior is assumed elastic.
-    ## This behavior is available via the TetrahedronFEMForceField component.
-    finger.createObject('TetrahedronFEMForceField', template='Vec3d',
-                        name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
-
-    ## Set the ROI of points of the model to fix.
-    ## You can either use "BoxROI"...
-    finger.createObject('BoxROI', name='ROI1', box='-15 0 0 5 10 15', drawBoxes='true')
-    finger.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness='1e12')
-
-    finger.createObject('LinearSolverConstraintCorrection')
-
-    #################################################################################
-    ## Visualization
-    fingerVisu = finger.createChild('visual')
-
-    ## Add to this empty node a rendering model made of triangles and loaded from an stl file.
-    fingerVisu.createObject('OglModel', filename=path+"finger.stl",
-                            template='ExtVec3f', color="0.0 0.7 0.7")
-
-    ## Add a BarycentricMapping to deform the rendering model to follow the ones of the
-    ## mechanical model.
-    fingerVisu.createObject('BarycentricMapping')
+from stlib.scene import MainHeader
+from stlib.physics.deformable ElasticMaterialObject
 
 def createScene(rootNode):
-    ### ... similar to step 1 ....
+    MainHeader(rootNode)
 
-    createAndAddToNode(rootNode)
+    ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
+                          withYoungModulus=18000,
+                          withPoissonRatio=0.5,
+                          withTotalMass=0.5,
+                          attachedTo=rootNode)
 ```
 
 <div>
@@ -145,97 +81,118 @@ def createScene(rootNode):
 </div>
 </div>
 
+Running the previously defined scene results in a infinitly falling finger object. This is because
+the scene is missing the definition of a constraint that will "attached" the object to a given
+position. This can be done easily by adding a box
+
+
+<div>
+```python
+from stlib.scene import MainHeader
+from stlib.physics.deformable import ElasticMaterialObject
+from stlib.physics.constraints import FixedBox as FixedBoxConstraint
+
+def createScene(rootNode):
+    MainHeader(rootNode)
+
+    finger = ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
+                                   withPoissonRatio=0.3,
+                                   withYoungModulus=18000,
+                                   withTotalMass=0.5,
+                                   attachedTo=rootNode)
+
+    FixedBoxConstraint(atPositions=[-15, 0, 0, 5, 10, 15], applyTo=finger,
+                       withVisualization=True)
+
+    return rootNode
+```
+
+<div>
+<pre>
+<a href="step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
+</pre>
+</div>
+</div>
+
+Finally, instead of displaying the tetrahedron mesh structure use for the deformation computation
+it is possible to wrap it into a kind of skin. This skin is called a visual model. This visual
+model being deformed according to the deformation of the tetrahedron mesh. In your scene
+you can add such visual model by adding the following *withSurfaceMesh="data/mesh/finger.stl"*
+to the ElasticMaterialObject template's arguments.
+
+
 ## Step 3: Actuating the finger with a cable
 
-In the previous step, we showed how to model and simulate a soft robot with a finger shape and made of a deformable material (silicone rubber). In this step, we will explain how to actuate it using a 1d inelastic cable attached to the fingertip. The cable can be used to pull or release the fingertip by pressing ctrl+ and ctrl-.
+In the previous step, we showed how to model and simulate a soft robot with a finger shape
+made of a deformable material (silicone rubber). In this step, we will explain how to actuate
+it using a 1d inelastic cable attached to the fingertip. The cable can be used to pull or
+release the fingertip by pressing ctrl+ and ctrl-.
 
-This scene adds the following functionalities:
- - Create a cable actuator based in constraints
- - Include a mechanical mapping to link the cable motion to the object deformation
+This means adding the following functionalities:
+ - Create and add a pulling cable with a given geometry
  - Use a Python script to drive the cable
  - Actuate it interactively
 
 <div>
 ```python
-def createAndAddToNode(rootNode, name="theFinger"):
-    ### ... similar to step 2 ....
+def createScene(rootNode, name="theFinger"):
+    ### ... similar to previous step ....
 
-    #################################################################################
-    ## Cable
-    cable = finger.createChild('cable')
-    cable.createObject('MechanicalObject',
-    position=(
-        " -17.5 12.5 2.5 " +
-        " -32.5 12.5 2.5 " +
-        " -47.5 12.5 2.5 " +
-        " -62.5 12.5 2.5 " +
-        " -77.5 12.5 2.5 " +
-        " -83.5 12.5 4.5 " +
-        " -85.5 12.5 6.5 " +
-        " -85.5 12.5 8.5 " +
-        " -83.5 12.5 10.5 " +
-        " -77.5 12.5 12.5 " +
-        " -62.5 12.5 12.5 " +
-        " -47.5 12.5 12.5 " +
-        " -32.5 12.5 12.5 " +
-        " -17.5 12.5 12.5 " ))
-
-    # Create a CableConstraint object with a name.
-    # the indices are referring to the MechanicalObject's positions.
-    # The last indice is where the pullPoint is connected.
-    cable.createObject('CableConstraint', name="aCable",
-                        indices='0 1 2 3 4 5 6 7 8 9 10 11 12 13',
-                        pullPoint="0.0 12.5 2.5")
-
-    # This create a BarycentricMapping. A BarycentricMapping is a key element as it will
-    # create a bi-directional link between the cable's DoFs and the finger's ones so that movements
-    # of the cable's DoFs will be mapped
-    # to the finger and vice-versa;
-    cable.createObject('BarycentricMapping')
+    PullingCable(attachedTo=finger,
+             withAPullPointLocation=[0.0, 12.5, 2.5],
+             withCableGeometry=[[-17.5, 12.5, 2.5],
+                                [-32.5, 12.5, 2.5],
+                                [-47.5, 12.5, 2.5],
+                                [-62.5, 12.5, 2.5],
+                                [-77.5, 12.5, 2.5],
+                                [-83.5, 12.5, 4.5],
+                                [-85.5, 12.5, 6.5],
+                                [-85.5, 12.5, 8.5],
+                                [-83.5, 12.5, 10.5],
+                                [-77.5, 12.5, 12.5],
+                                [-62.5, 12.5, 12.5],
+                                [-47.5, 12.5, 12.5],
+                                [-32.5, 12.5, 12.5],
+                                [-17.5, 12.5, 12.5]]);
 ```
 </div>
 
 
 Changing the cable lenght at run-time is possible by adding a *PythonScriptController*. To do that
-you first need to add a new file called *fingercontroller.py* with the following content:
+you first need to create a python object in-heriting from *Sofa.PythonScriptController*. The
+controller will be in charge of redefine the *onKeyPressed* to implement the desired behavior.
+This can be done by adding the following at the beginning of your scene.
 <div>
 ```python
-# -*- coding: utf-8 -*-
 import Sofa
-
-class FingerCableController(Sofa.PythonScriptController):
-    def initGraph(self, node):
-        self.node = node
+class FingerController(Sofa.PythonScriptController):
+    def __init__(self, cable):
+        self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
 
     def onKeyPressed(self,c):
-        inputvalue = self.node.getObject('aCable').findData('value')
-
         if (c == "+"):
-            inputvalue.value =  inputvalue.value[0][0] + 1.
+            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + 1.
 
         elif (c == "-"):
-            displacement = inputvalue.value[0][0] - 1.
+            displacement = self.cableconstraintvalue.value[0][0] - 1.
             if(displacement < 0):
                 displacement = 0
-            inputvalue.value = displacement
+            self.cableconstraintvalue.value = displacement
 ```
 </div>
 
-Each controller must inherit from the Sofa.PythonScriptController and redefines some method.
-In our case we will redefine the *onKeyPressed* to implement the desired behavior.
+The created controller can then be attached the objet it is supposed to control in the following
+way:
 
 <div>
 ```python
-def createAndAddToNode(rootNode, name="theFinger"):
-    ## ...
+def createScene(rootNode, name="theFinger"):
+    ### ... similar to previous step ....
 
     ## This create a PythonScriptController that permits to programatically implement new behavior
     ## or interactions using the Python programming langage. The controller is referring to a
     ## file named "controller.py".
-    cable.createObject('PythonScriptController',
-                        filename="fingercontroller.py", classname="FingerCableController",
-                        autoreload="true")
-
+    finger.addObject( FingerController(cable) )
 ```
 <div>
 <pre>
@@ -260,37 +217,18 @@ checked and handled. In the following figure, the collision regions are shown in
 
 <div>
 ```python
-def createAndAddToNode(rootNode, name="theFinger"):
+from stlib.physics.collision import CollisionMesh
+from stlib.physics.collision import FrictionalContact
+
+def createScene(rootNode):
     ## ... Content of step 3 ...
 
-    #################################################################################
-    ## Contact
-    ## Add a collision model
-    contactPart1 = finger.createChild('contactPart1')
+    CollisionMesh(attachedTo=finger,
+             fromSurfaceMesh="data/mesh/fingerCollision_part1.stl", withName="part1", withACollisionGroup=1)
+    CollisionMesh(attachedTo=finger,
+              fromSurfaceMesh="data/mesh/fingerCollision_part2.stl", withName="part2", withACollisionGroup=2)
 
-    ## 1- Load the surface mesh for the collision
-    contactPart1.createObject('MeshSTLLoader', name="loader", filename=path+"fingerCollision_part1.stl")
-    contactPart1.createObject('Mesh', src="@loader")
-    contactPart1.createObject('MechanicalObject')
-
-    # 2- Add a collision model. These three components (Point, Line, Triangle) have to be used together.
-    #    Other collision model exist (for example SphereModel)
-    #    Collision model of the same group won't collide.
-    contactPart1.createObject('PointModel', group="1")
-    contactPart1.createObject('LineModel', group="1")
-    contactPart1.createObject('TriangleModel', group="1")
-
-    # 3- Add a mapping to link the collision model to the mechanics
-    contactPart1.createObject('BarycentricMapping', mapForces="false", mapMasses="false")
-
-    contactPart2 = finger.createChild('contactPart2')
-    contactPart2.createObject('MeshSTLLoader', name="loader", filename=path+"fingerCollision_part2.stl")
-    contactPart2.createObject('Mesh', src="@loader")
-    contactPart2.createObject('MechanicalObject')
-    contactPart2.createObject('Point', group="2")
-    contactPart2.createObject('Line', group="2")
-    contactPart2.createObject('Triangle', group="2")
-    contactPart2.createObject('BarycentricMapping', mapForces="false", mapMasses="false")
+    FrictionalContact(applyTo=finger)
 ```
 <div>
 <pre>
@@ -307,20 +245,23 @@ In the design of Taimoor Hassan et al., a single cable is used for the three fin
 ![The soft gripper with three fingers](data/images/gripper.png){with=300}
 
 Our pyscn file is getting bigger and bigger and is not really modular. Let's improve the situation
-by moving the finger creation into a separated file to favor reusability. You can do that by cutting & pasting
-the function *createAndAddToNode* as well as the two first lines into a new file called *finger.py*.
+by moving the finger creation into a separated file to favor modularity and reusability. You can do
+that by moving the current code into a separated file called *finger.py*.
 
 Once this is done it is now possible to use & re-use the finger in any scene in the following way:
 <div>
 ```python
-import finger
+from stlib.scene import MainHeader
+from stlib.physics.collision import FrictionalContact
+from finger import Finger
 
 def createScene(rootNode):
-    ### ... similar to previously but with the following at the end...
+    MainHeader(rootNode, plugins=["SoftRobots"])
+    FrictionalContact(applyTo=rootNode)
 
-    finger.createAndAddToNode(rootNode, "finger1")
-    finger.createAndAddToNode(rootNode, "finger2")
-    finger.createAndAddToNode(rootNode, "finger3")
+    Finger(attachedTo=rootNode, withName="Finger1")
+    Finger(attachedTo=rootNode, withName="Finger2")
+    Finger(attachedTo=rootNode, withName="Finger3")
 
     return rootNode
 ```
@@ -331,46 +272,58 @@ def createScene(rootNode):
 </div>
 
 By default the three fingers are at the same location and orientation, to change that you need
-to make the orientation, translation, scale, and other location specific properties parameters of the
-*createAndAddToNode* function. Here is how should look like the parameterized version of the finger.py.
+to make the orientation, translation and other location specific properties as template parameters
+for the *Finger* function. Here is how should look like the parameterized version of the finger.py.
 
 <div>
 ```python
-def createAndAddToNode(rootNode, name="theFinger",
-                       rotation="0 0 0", translation="0 0 0",
-                       fixingbox='0 0 0 0 0 0', pullpoint="0 0 0"):
-    #....
-    finger.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk'
-                        ,rotation=rotation, translation=translation)
+def Finger(attachedTo=None, withName="Finger",
+           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
+           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
 
-    #...
-    finger.createObject('BoxROI', name='ROI1', box=fixingbox, drawBoxes='true')
+    finger = ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
+                                   withName=withName,
+                                   withPoissonRatio=0.3,
+                                   withYoungModulus=18000,
+                                   withTotalMass=0.5,
+                                   withSurfaceMesh="data/mesh/finger.stl",
+                                   withRotation=withRotation,
+                                   withTranslation=withTranslation,
+                                   attachedTo=attachedTo)
 
-    #...
-    fingerVisu.createObject('OglModel', filename=path+"finger.stl",
-                            template='ExtVec3f', color="0.0 0.7 0.7",
-                            rotation=rotation, translation=translation
-                            )
+    FixedBoxConstraint(atPositions=withFixingBox, applyTo=finger,
+                       withVisualization=True)
 
-    #...
-    cable.createObject('MechanicalObject', rotation=rotation, translation=translation,
-    # position=(
+    cable=PullingCable(attachedTo=finger,
+                 withName="cable",
+                 withAPullPointLocation=withPullPointLocation,
+                 withCableGeometry=[[-17.5, 12.5, 2.5],
+                                    [-32.5, 12.5, 2.5],
+                                    [-47.5, 12.5, 2.5],
+                                    [-62.5, 12.5, 2.5],
+                                    [-77.5, 12.5, 2.5],
+                                    [-83.5, 12.5, 4.5],
+                                    [-85.5, 12.5, 6.5],
+                                    [-85.5, 12.5, 8.5],
+                                    [-83.5, 12.5, 10.5],
+                                    [-77.5, 12.5, 12.5],
+                                    [-62.5, 12.5, 12.5],
+                                    [-47.5, 12.5, 12.5],
+                                    [-32.5, 12.5, 12.5],
+                                    [-17.5, 12.5, 12.5]]);
 
-    #...
-    cable.createObject('CableConstraint', name="aCable",
-                       indices='0 1 2 3 4 5 6 7 8 9 10 11 12 13',
-                       pullPoint=pullpoints)
+    finger.addObject( FingerController(cable) )
 
-    #...
-    contactPart1.createObject('MeshSTLLoader', name="loader",
-                              filename=path+"fingerCollision_part1.stl",
-                              rotation=rotation, translation=translation)
+    CollisionMesh(attachedTo=finger,
+                 fromSurfaceMesh="data/mesh/fingerCollision_part1.stl",
+                 withRotation=withRotation, withTranslation=withTranslation,
+                 withName="part1", withACollisionGroup=1)
+    CollisionMesh(attachedTo=finger,
+                  fromSurfaceMesh="data/mesh/fingerCollision_part2.stl",
+                  withRotation=withRotation, withTranslation=withTranslation,
+                  withName="part2", withACollisionGroup=2)
 
-    #...
-    contactPart2.createObject('MeshSTLLoader', name="loader",
-                              filename=path+"fingerCollision_part2.stl",
-                              rotation=rotation, translation=translation)
-
+    return finger
 ```
 </div>
 
@@ -383,16 +336,15 @@ import finger
 def createScene(rootNode):
     ### ... similar to previously but with the following at the end...
 
-    finger.createAndAddToNode(rootNode, "finger1",
-                           rotation="0 0 25", translation="150 0 0",
-                           fixingbox='135 0 0 155 10 15', pullpoint="150 12.5 2.5")
-    finger.createAndAddToNode(rootNode, "finger2",
-                           rotation="180 0 -25", translation="150 20 0",
-                           fixingbox='135 10 -15 155 30 0', pullpoint="150 12.5 -2.5")
-    finger.createAndAddToNode(rootNode, "finger3",
-                           rotation="180 0 -25", translation="150 20 30",
-                           fixingbox='135 10 15 155 30 30', pullpoint="150 12.5 27.5")
-
+    Finger(rootNode, "Finger1",
+           withRotation=[0, 0, 25], withTranslation=[150, 0, 0],
+           withFixingBox=[135, 0, 0, 155, 10, 15], withPullPointLocation=[150, 12.5, 2.5])
+    Finger(rootNode, "Finger2",
+           withRotation=[180, 0, -25], withTranslation=[150, 20, 0],
+           withFixingBox=[135, 10, -15, 155, 30, 0], withPullPointLocation=[150, 12.5, -2.5])
+    Finger(rootNode, "Finger3",
+           withRotation=[180, 0, -25], withTranslation=[150, 20, 30],
+           withFixingBox=[135, 10, 15, 155, 30, 30], withPullPointLocation=[150, 12.5, 27.5])
 
     return rootNode
 ```
@@ -402,95 +354,11 @@ def createScene(rootNode):
 </div>
 </div>
 
-There is still some work to do in order to correctly provide the orientation, and location
-We simulate that by applying the same control input to three cable actuators placed on the three fingers.
+That's all for the gripper.
 
-In the file scene, we put 3 finger models (instead of 1) by copy/paste of the previous simulations.
-A 'PythonScriptController' is placed at the root node of the graph to interactively change the inputs of
-3 the 'CableConstraint'  components. Here, we use a control of the actuator, i.e. direct or fowrward simulation.
+## Step 6: Adding rigid objects to your scene
 
-
-
-## Step 6: Adding the ground plane
-
-In the same directory, create a new file named *floor.py* with the following content:
-<div>
-```python
-def createAndAddToNode(rootNode, name="thePlane",
-                       rotation="0 0 270", translation="38 0 0", scale=10):
-
-    planeNode = rootNode.createChild(name)
-    planeNode.createObject('MeshObjLoader', name='loader',
-                            filename="mesh/floorFlat.obj", triangulate="true",
-                            rotation=rotation, scale=scale, translation=translation)
-
-    planeNode.createObject('Mesh', src="@loader")
-    planeNode.createObject('MechanicalObject', src="@loader")
-    planeNode.createObject('Triangle',simulated="0", moving="0")
-    planeNode.createObject('Line',simulated="0", moving="0")
-    planeNode.createObject('Point',simulated="0", moving="0")
-    planeNode.createObject('OglModel',name="Visual", fileMesh="mesh/floorFlat.obj",
-                            color="1 0 0 1",
-                            rotation=rotation, scale=scale, translation=translation)
-
-    return planeNode
-```
-</div>
-
-You can then add the floor by changing to the *mycablegripper.pyscn* file with the following content:
-<div>
-```python
-import floor
-
-def createScene(rootNode):
-   ## .... The content of the previous step ...
-
-   floor.createAndAddToNode(rootNode)
-```
-
-<div>
-<pre>
-<a href="step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
-</pre>
-</div>
-</div>
-
-
-
-## Step 7: Adding the manipulated object
-In the same directory, create a new file named *cube.py* with the following content:
-<div>
-```python
-def createAndAddToNode(rootNode, name="theCube"):
-	################################ Grasped Object ###################################
-	# mechanics
-	cube =rootNode.createChild(name)
-	cube.createObject('EulerImplicit', name='odesolver')
-	cube.createObject('CGLinearSolver', name='linearSolver')
-	cube.createObject('MechanicalObject', template="Rigid", scale="6", dx="67.0", dy="10", dz="8", rx="10" ,ry="10")
-	cube.createObject('UniformMass', mass='0.03 10 1000 0 0 0 1000 0 0 0 1000')
-	cube.createObject('UncoupledConstraintCorrection')
-
-	#collision
-	cubeCollis = cube.createChild('cubeCollis')
-	cubeCollis.createObject('MeshObjLoader', name="loader", filename="mesh/smCube27.obj", triangulate="true",  scale="6")
-	cubeCollis.createObject('Mesh', src="@loader")
-	cubeCollis.createObject('MechanicalObject')
-	cubeCollis.createObject('Triangle')
-	cubeCollis.createObject('Line')
-	cubeCollis.createObject('Point')
-	cubeCollis.createObject('RigidMapping')
-
-	#visualization
-	cubeVisu = cube.createChild('cubeVisu')
-	cubeVisu.createObject('OglModel', name="Visual", fileMesh="mesh/smCube27.obj", color="0.0 0.1 0.5", scale="6.2")
-	cubeVisu.createObject('RigidMapping')
-
-        return cube
-```
-</div>
-
-You can then add the floor by changing to the *mycablegripper.pyscn* file with the following content:
+Adding the floor & cube is as easy as importing the scene templates from *stlib.physics.rigid* :
 <div>
 ```python
 

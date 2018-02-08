@@ -1,42 +1,29 @@
-import floor
-import cube
-import finger
+from stlib.scene import MainHeader, ContactHeader
+from stlib.physics.collision import FrictionalContact
+from stlib.physics.rigid import Floor, Cube
+from gripper import Gripper
 
 def createScene(rootNode):
-    rootNode.findData('gravity').value='-981.0 0 0';
-    rootNode.findData('dt').value="0.01"
+    """
+    We shouldn't have external files to document our code base.
 
-    rootNode.createObject('RequiredPlugin', name='SofaMiscCollision')
-    rootNode.createObject('RequiredPlugin', name='SofaPython')
-    rootNode.createObject('RequiredPlugin', name='SoftRobots')
-    rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+    """
+    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
-    ###################################################################
-    # Direct simulation
-    ###################################################################
-    rootNode.createObject('FreeMotionAnimationLoop')
-    rootNode.createObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
-    rootNode.createObject('CollisionPipeline')
-    rootNode.createObject('BruteForceDetection')
-    rootNode.createObject('RuleBasedContactManager', name="Response", response="FrictionContact", rules="0 * FrictionContact?mu=0.8" )
-    rootNode.createObject('LocalMinDistance', name="Proximity", alarmDistance="4", contactDistance="3", angleCone="0.01")
+    Gripper(attachedTo=rootNode)
 
-    floor.createAndAddToNode(rootNode)
-    cube.createAndAddToNode(rootNode)
-				
-    finger.createAndAddToNode(rootNode, "finger1",
-                              rotation="0 0 25", translation="150 0 0",
-                              fixingbox='135 0 0 155 10 15', pullpoint="150 12.5 2.5")
-    finger.createAndAddToNode(rootNode, "finger2",
-                              rotation="180 0 -25", translation="150 20 0",
-                              fixingbox='135 10 -15 155 30 0', pullpoint="150 12.5 -2.5")
-    finger.createAndAddToNode(rootNode, "finger3",
-                              rotation="180 0 -25", translation="150 20 30",
-                              fixingbox='135 10 15 155 30 30', pullpoint="150 12.5 27.5")
+    Floor(rootNode, name="Floor",
+          withColor=[1.0,0.0,0.0],
+          withTranslation=[0.0,-160.0,0.0],
+          isAStaticObject=True)
 
-    ###################################################################
-    # Control of the robot with the keyboard
-    rootNode.createObject('PythonScriptController', filename="controller.py", classname="controller")
-    ###################################################################
+    Cube(rootNode, name="Cube",
+          withScale=20.0,
+          withColor=[1.0,1.0,0.0],
+          withTotalMass=0.03,
+          withVolume=20,
+          withInertiaMatrix=[1000.0,0.0,0.0,0.0,1000.0,0.0,0.0,0.0,1000.0],
+          withTranslation=[0.0,-130.0,10.0])
 
     return rootNode
