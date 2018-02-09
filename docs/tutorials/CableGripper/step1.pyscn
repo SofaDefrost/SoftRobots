@@ -1,0 +1,4 @@
+from stlib.scene import MainHeader
+
+def createScene(rootNode):
+    MainHeader(rootNode)

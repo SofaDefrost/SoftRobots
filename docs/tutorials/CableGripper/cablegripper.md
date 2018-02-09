@@ -6,6 +6,10 @@ plug-in to model a virtual soft gripper driven by cables. Once modeled the robot
 control our simulated robot dedicated controller can be writen using the Python langage. In this tutorial
 we implements keyboard base control.
 
+This tutorials assumes that you have sucessfully installed the SoftRobots plugins and
+the [STLIB](http://stlib.readthedocs.io/en/latest/) plugin.
+
+
 ### Step 0: Try the simulation in Sofa
 Before continuing this tutorial it may be a good idea to try the resulting simulation you need to achieved.
 You can do that by clicking on the [Animate](sofa?action=animate) button in Sofa. When the simulation is
@@ -20,18 +24,17 @@ running you can manipulate the gripper by pressing the following keys:
 
 Note that with MacOS, you may have to use *cmd* instead of *ctrl*.
 
-### Step 1: Setting up an empyt scene
+### Step 1: Setting up an empty scene
 In this step we will explain how to setup a basic scene in Sofa.
 
-You first need to create a file named *mycablegripper.pyscn*.
+Create a file named *mycablegripper.pyscn*.
 This file should contains the following lines:
-
 <div>
 ```python
 from stlib.scene import MainHeader
 
 def createScene(rootNode):
-    MainHeader(rootNode)
+    ..autolink::STLIB::MainHeader(rootNode)
 ```
 
 <div>
@@ -41,17 +44,26 @@ def createScene(rootNode):
 </div>
 </div>
 
-The content of a *pyscn* file is standard python code that must define a function called *createScene*.
-This *createScene* function is mandatory and is called automatically by Sofa when the file is loaded.
-This function is in charge of filling the simulation's content and this is where you type your scene's
-description.
+The content of this file is in fact standard python code that must define at least one function named
+*createScene*. This function is the entry point used by Sofa to fill the simulation's content and
+this is the place where you will type your scene's description.
 
-The *MainHeader* line is a scene templates from a library
-called STLIB. [View STLIB Doc](http://stlib.readthedocs.io/en/latest/)
-
-This template adds set of selected components that are needed for most of simulation. Once loaded you
+The *..autolink::STLIB::MainHeader* line is calling a scene templates from the ..autolink::STLIB library.
+This template adds a set of selected components that are needed for most of simulation. Once loaded you
 can explore the loaded scene graph in the sofa GUI and, by double clicking on components, get
 their internal properties and self documentations.
+
+According to its documentation this template load the following sofa components:
+```qml
+   {
+      ..autolink::Sofa::VisualStyle,
+      ..autolink::Sofa::RequiredPlugin,
+      ..autolink::Sofa::OglSceneFrame,
+      ..autolink::Sofa::FreeMotionAnimationLoop,
+      ..autolink::Sofa::GenericConstraintSolver,
+      ..autolink::Sofa::DefaultVisualManagerLoop
+   }
+```
 
 ### Step 2: Modeling and simulating the gripper deformations
 The second step of this tutorial is add a deformable object that will be mechanically simulated.
@@ -61,16 +73,17 @@ for such an objet.
 
 <div>
 ```python
-from stlib.scene import MainHeader
-from stlib.physics.deformable ElasticMaterialObject
+from stlib.scene import ..autolink::STLIB::MainHeader
+from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
 
 def createScene(rootNode):
-    MainHeader(rootNode)
+   ..autolink::STLIB::MainHeader(rootNode)
 
-    ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
+   ..autolink::STLIB::ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
                           withYoungModulus=18000,
                           withPoissonRatio=0.5,
                           withTotalMass=0.5,
+                          withSurfaceMesh="data/mesh/finger.stl",
                           attachedTo=rootNode)
 ```
 

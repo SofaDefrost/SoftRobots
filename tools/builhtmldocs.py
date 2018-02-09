@@ -11,16 +11,25 @@ import sys
 import re
 import ntpath
 import json 
-
+import re
 sofaext=['.scn', ".pyscn", ".psl"]
 
 def replaceStringInFile(aFile, outFile, aDictionary):
         f = open(aFile, "rt")
         fo = open(outFile, "w")
+        lineno=1
         for line in f:
                 for aString in aDictionary:
-                	if aString in line and '<a href="' not in line:
-	                	line=line.replace(aString, "<a href=\"" + dictionary[aString] + "\">" + aString + "</a>")
+                    if re.search(aString+"(?!::)", line) != None:
+                        line = re.sub(aString+"(?!=::)", "<a href=\"" + dictionary[aString]["url"] + "\">" + dictionary[aString]["name"] + "</a>", line)
+
+                if re.search("..autolink::", line):
+                    print("Missing autolink in line "+str(lineno)+" : "+line)
+
+                lineno += 1
+
+                #if aString in line:
+	        #	line=line.replace(aString, "<a href=\"" + dictionary[aString] + "\">" + aString + "</a>")
         	fo.write(line)
         			
         fo.close()
@@ -33,12 +42,12 @@ if len(sys.argv) <= 2:
 
 dictionary={}
 
-for aPathComponent in sys.argv[2:]:
-	for (dirpath, dirnames, aFilenames) in os.walk(aPathComponent):
-	        for aFilename in aFilenames:
-			aFilename,theExt = os.path.splitext(ntpath.basename(aFilename))
-			if theExt in sofaext: 	
-				dictionary[aFilename] = dirpath+"/"+aFilename+theExt
+#for aPathComponent in sys.argv[2:]:
+#	for (dirpath, dirnames, aFilenames) in os.walk(aPathComponent):
+#	        for aFilename in aFilenames:
+#			aFilename,theExt = os.path.splitext(ntpath.basename(aFilename))
+#			if theExt in sofaext:
+#				dictionary[aFilename] = dirpath+"/"+aFilename+theExt
 
 
 print(str(len(dictionary))+" components loaded.")
@@ -47,7 +56,7 @@ hooks = "hooks.json"
 if os.path.exists(hooks):
 	d = json.load(open(hooks))
 	for k in d:
-		dictionary[k] = d[k]["url"]
+		dictionary[k] = d[k]
 
 	print(str(len(d))+" hooks loaded.")
 
@@ -62,8 +71,7 @@ for (dirpath, dirnames, aFilenames) in os.walk(pathprefix):
                         dirpath+aFile+ext )
                         os.chdir(dirpath)
                         relpathstyle = os.path.relpath(pathprefix, dirpath)
-                        retcode = subprocess.call(["pandoc", dirpath + "/" +aFilename, "-s", "-c", relpathstyle+"/docs/style.css", "-o", dirpath + "/" + aFile + ".html"])
-                        #if retcode == 0 :
-                        #	print("Replacing token...")
-                        #        replaceStringInFile(dirpath + "/" + aFile + ".html.tmp", dirpath + "/" + aFile + ".html", dictionary)
-                        #        os.remove( dirpath + "/" + aFile + ".html.tmp" )
+                        retcode = subprocess.call(["pandoc", dirpath + "/" +aFilename, "-s", "-c", relpathstyle+"/docs/style.css", "-o", dirpath + "/" + aFile + ".html.tmp"])
+                        if retcode == 0 :
+                        	replaceStringInFile(dirpath + "/" + aFile + ".html.tmp", dirpath + "/" + aFile + ".html", dictionary)
+                                os.remove( dirpath + "/" + aFile + ".html.tmp" )

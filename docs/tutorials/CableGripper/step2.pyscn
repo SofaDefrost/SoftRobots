@@ -1,0 +1,12 @@
+from stlib.scene import MainHeader
+from stlib.physics.deformable import ElasticMaterialObject
+
+def createScene(rootNode):
+   MainHeader(rootNode)
+
+   ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
+                          withYoungModulus=18000,
+                          withPoissonRatio=0.5,
+                          withTotalMass=0.5,
+                          withSurfaceMesh="data/mesh/finger.stl",
+                          attachedTo=rootNode)

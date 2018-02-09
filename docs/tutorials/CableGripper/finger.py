@@ -34,12 +34,6 @@ def Finger(attachedTo=None, withName="Finger",
                                    withTranslation=withTranslation,
                                    attachedTo=attachedTo)
 
-    finger.createObject('ShewchukPCGLinearSolver', preconditioners='Solver',
-                                                   update_step='1', name='linearsolver',
-                                                   tolerance='1e-10', iterations='15',
-                                                   use_first_precond='false', use_precond='true')
-
-
     FixedBoxConstraint(atPositions=withFixingBox, applyTo=finger,
                        withVisualization=True)
 
