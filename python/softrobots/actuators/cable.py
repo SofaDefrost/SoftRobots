@@ -78,7 +78,7 @@ def createScene(node):
     from stlib.scene import MainHeader
     from stlib.physics.deformable import ElasticMaterialObject
 
-    MainHeader(node)
+    MainHeader(node, plugins=["SoftRobots"])
     target = ElasticMaterialObject(fromVolumeMesh="mesh/liver.msh",
                                    withTotalMass=0.5,
                                    attachedTo=node)
