@@ -10,10 +10,8 @@ Content:
    PneumaticCavity
 |
 
-.. autofunction:: 
-
-   PullingCable
-   PneumaticCavity 
+.. autofunction:: PullingCable
+.. autofunction:: PneumaticCavity
    
 """
 from cable import PullingCable
