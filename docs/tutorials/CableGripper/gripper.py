@@ -17,15 +17,15 @@ class GripperController(Sofa.PythonScriptController):
         dir = None
         # UP key :
         if ord(c)==19:
-            dir = [1.0,0.0,0.0]
+            dir = [0.0,1.0,0.0]
         # DOWN key : rear
         elif ord(c)==21:
-            dir = [-1.0,0.0,0.0]
-        # LEFT key : left
-        elif ord(c)==20:
-            dir = [0.0,1.0,0.0]
-        elif ord(c)==18:
             dir = [0.0,-1.0,0.0]
+        # LEFT key : left
+        elif ord(c)==18:
+            dir = [1.0,0.0,0.0]
+        elif ord(c)==20:
+            dir = [-1.0,0.0,0.0]
 
         if dir != None:
             for finger in self.fingers:

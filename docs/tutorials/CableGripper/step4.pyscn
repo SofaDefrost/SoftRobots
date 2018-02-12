@@ -1,24 +1,69 @@
+from stlib.scene import MainHeader
+from stlib.physics.deformable import ElasticMaterialObject
+from stlib.physics.constraints import FixedBox as FixedBoxConstraint
+from stlib.physics.collision import CollisionMesh
+from softrobots.actuators import PullingCable
+
+import Sofa
+class FingerController(Sofa.PythonScriptController):
+    def __init__(self, cable):
+        self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
+
+    def onKeyPressed(self,c):
+        if (c == "+"):
+            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + 1.
+
+        elif (c == "-"):
+            displacement = self.cableconstraintvalue.value[0][0] - 1.
+            if(displacement < 0):
+                displacement = 0
+            self.cableconstraintvalue.value = displacement
+
 def createScene(rootNode):
-    rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels showForceFields showInteractionForceFields')
-    rootNode.findData('gravity').value='-981.0 0 0';
-    rootNode.findData('dt').value="0.01"
-    
-    rootNode.createObject('RequiredPlugin', name='SofaMiscCollision')
-    rootNode.createObject('RequiredPlugin', name='SofaPython')
-    rootNode.createObject('RequiredPlugin', name='SoftRobots')
-    rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
-              
+    m=MainHeader(rootNode)
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
-    ###################################################################
-    # Direct simulation
-    ###################################################################
-    rootNode.createObject('FreeMotionAnimationLoop')
-    rootNode.createObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
-    rootNode.createObject('CollisionPipeline')
-    rootNode.createObject('BruteForceDetection')
-    rootNode.createObject('RuleBasedContactManager', name="Response",
-                            response="FrictionContact", rules="0 * FrictionContact?mu=0.8" )
-    rootNode.createObject('LocalMinDistance', name="Proximity",
-                            alarmDistance="4", contactDistance="3", angleCone="0.01")
+    finger = ElasticMaterialObject(
+                                   fromVolumeMesh="data/mesh/finger.vtk",
+                                   withPoissonRatio=0.3,
+                                   withYoungModulus=18000,
+                                   withTotalMass=0.5,
+                                   withSurfaceMesh="data/mesh/finger.stl",
+                                   attachedTo=rootNode)
 
-    createAndAddToNode(rootNode)
+    FixedBoxConstraint(atPositions=[-15, 0, 0, 5, 10, 15],
+                       applyTo=finger,
+                       withVisualization=True)
+
+    cable = PullingCable(attachedTo=finger,
+             withAPullPointLocation=[0.0, 12.5, 2.5],
+             withCableGeometry=[[-17.5, 12.5, 2.5],
+                                [-32.5, 12.5, 2.5],
+                                [-47.5, 12.5, 2.5],
+                                [-62.5, 12.5, 2.5],
+                                [-77.5, 12.5, 2.5],
+                                [-83.5, 12.5, 4.5],
+                                [-85.5, 12.5, 6.5],
+                                [-85.5, 12.5, 8.5],
+                                [-83.5, 12.5, 10.5],
+                                [-77.5, 12.5, 12.5],
+                                [-62.5, 12.5, 12.5],
+                                [-47.5, 12.5, 12.5],
+                                [-32.5, 12.5, 12.5],
+                                [-17.5, 12.5, 12.5]]);
+
+    m.getObject("VisualStyle").displayFlags="showForceFields showInteractionForceFields showCollisionModels"
+
+    ## This create a PythonScriptController that permits to programatically implement new behavior
+    ## or interactions using the Python programming langage. 
+    finger.addObject( FingerController(cable) )
+
+    CollisionMesh(attachedTo=finger,
+                 fromSurfaceMesh="data/mesh/fingerCollision_part1.stl",
+                 withName="CollisionMeshAuto1", withACollisionGroup=[1])
+
+    CollisionMesh(attachedTo=finger,
+                 fromSurfaceMesh="data/mesh/fingerCollision_part2.stl",
+                 withName="CollisionMeshAuto2", withACollisionGroup=[2])
+
+    return rootNode

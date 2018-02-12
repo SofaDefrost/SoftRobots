@@ -18,7 +18,7 @@ class FingerController(Sofa.PythonScriptController):
             self.cableconstraintvalue.value = displacement
 
 def createScene(rootNode):
-    MainHeader(rootNode)
+    m=MainHeader(rootNode)
 
     finger = ElasticMaterialObject(
                                    fromVolumeMesh="data/mesh/finger.vtk",
@@ -31,6 +31,9 @@ def createScene(rootNode):
     FixedBoxConstraint(atPositions=[-15, 0, 0, 5, 10, 15],
                        applyTo=finger,
                        withVisualization=True)
+
+    m.getObject("VisualStyle").displayFlags="showForceFields showInteractionForceFields"
+
 
     cable = PullingCable(attachedTo=finger,
              withAPullPointLocation=[0.0, 12.5, 2.5],

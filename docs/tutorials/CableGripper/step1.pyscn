@@ -1,4 +1,6 @@
 from stlib.scene import MainHeader
 
 def createScene(rootNode):
-    MainHeader(rootNode)
+    v = MainHeader(rootNode)
+    v.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+    
