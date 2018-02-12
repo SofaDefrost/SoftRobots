@@ -7,7 +7,7 @@
     "MeshGeneration" : {
         "ns": "SoftRobots::Docs",
         "name": "MeshGeneration",
-        "relativeurl" : "docs/thematicalDocs/T2-FromMeshToSimulation/index.html"
+        "relativepath" : "docs/thematicalDocs/T2-FromMeshToSimulation/index.html"
     }
 
 }

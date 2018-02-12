@@ -21,7 +21,20 @@ def replaceStringInFile(aFile, outFile, aDictionary):
         for line in f:
                 for aString in aDictionary:
                     if aDictionary[aString]["regex"].search(line) != None:
-                        line = aDictionary[aString]["regex"].sub("<a href=\"" + aDictionary[aString]["url"] + "\">" + aDictionary[aString]["name"] + "</a>", line)
+                        url = None
+                        if not "url" in aDictionary[aString]:
+                            if "absolutepath" in aDictionary[aString]:
+                                print("COMPARE:" + os.path.dirname(aFile) + " " + aDictionary[aString]["absolutepath"])
+                                commonprefix = os.path.commonprefix([aFile, aDictionary[aString]["absolutepath"]])
+                                print("PREFIX IS:"+commonprefix)
+                                relpath = os.path.relpath(aDictionary[aString]["absolutepath"], os.path.dirname(aFile))
+                                print("RELPATH:"+relpath)
+                                url = relpath
+                            else:
+                                url = "Oooops autolink::404 (missing URL)"
+                        else:
+                            url = aDictionary[aString]["url"]
+                        line = aDictionary[aString]["regex"].sub("<a href=\"" + url + "\">" + aDictionary[aString]["name"] + "</a>", line)
 
                 if re.search("..autolink::", line):
                     print("Missing autolink in line "+str(lineno)+" : "+line)
@@ -58,8 +71,12 @@ for hook in sys.argv[2:]:
             else:
                 dictionary[k]["regex"] = re.compile("\.\.autolink::"+ns+"::"+k+"(?!::)")
 
-            if "url" not in dictionary[k] and "relativeurl" in dictionary[k] :
-                dictionary[k]["url"] = "file://" + os.path.abspath(dictionary[k]["relativeurl"])
+            if "url" not in dictionary[k] and "relativepath" in dictionary[k] :
+                abspath = os.path.abspath(os.path.dirname(hook))+"/"+dictionary[k]["relativepath"]
+                if os.path.exists(abspath):
+                    dictionary[k]["absolutepath"] = abspath
+                else:
+                    print("WARNING: Invalid absolute path... " + abspath)
 
             if "desc" not in dictionary[k]:
                 dictionary[k]["desc"] = ""
