@@ -54,9 +54,13 @@ for hook in sys.argv[2:]:
             ns = dictionary[k]["ns"]
             
             if ns == "":
-                dictionary[k]["regex"] = re.compile("..autolink::"+k+"(?!::)")
+                dictionary[k]["regex"] = re.compile("\.\.autolink::"+k+"(?!::)")
             else:
-                dictionary[k]["regex"] = re.compile("..autolink::"+ns+"::"+k+"(?!::)")
+                dictionary[k]["regex"] = re.compile("\.\.autolink::"+ns+"::"+k+"(?!::)")
+
+            if "url" not in dictionary[k] and "relativeurl" in dictionary[k] :
+                dictionary[k]["url"] = "file://" + os.path.abspath(dictionary[k]["relativeurl"])
+
             if "desc" not in dictionary[k]:
                 dictionary[k]["desc"] = ""
             
