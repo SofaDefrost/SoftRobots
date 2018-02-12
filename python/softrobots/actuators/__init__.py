@@ -7,10 +7,14 @@ Content:
 .. autosummary::
 
    PullingCable
-
+   PneumaticCavity
 |
 
-.. autofunction:: PullingCable
+.. autofunction:: 
 
+   PullingCable
+   PneumaticCavity 
+   
 """
 from cable import PullingCable
+from pneumatic import PneumaticCavity
