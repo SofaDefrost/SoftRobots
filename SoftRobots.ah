@@ -1,0 +1,6 @@
+{
+	"PullingCable" : {
+	    "name": "PullingCable",
+		"url" : "http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable"
+	}	
+}

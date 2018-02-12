@@ -20,8 +20,8 @@ def replaceStringInFile(aFile, outFile, aDictionary):
         lineno=1
         for line in f:
                 for aString in aDictionary:
-                    if re.search(aString+"(?!::)", line) != None:
-                        line = re.sub(aString+"(?!=::)", "<a href=\"" + dictionary[aString]["url"] + "\">" + dictionary[aString]["name"] + "</a>", line)
+                    if aDictionary[aString]["regex"].search(line) != None:
+                        line = aDictionary[aString]["regex"].sub("<a href=\"" + aDictionary[aString]["url"] + "\">" + aDictionary[aString]["name"] + "</a>", line)
 
                 if re.search("..autolink::", line):
                     print("Missing autolink in line "+str(lineno)+" : "+line)
@@ -36,30 +36,31 @@ def replaceStringInFile(aFile, outFile, aDictionary):
         f.close()
 
 if len(sys.argv) <= 2:
-	print ("USAGE: ./buildhtmldocs dirname componentDirName")
+	print ("USAGE: ./buildhtmldocs dirname <hook1.ah> <hook2.ah> <hook3.ah>")
 	sys.exit(-1)
-
 
 dictionary={}
 
-#for aPathComponent in sys.argv[2:]:
-#	for (dirpath, dirnames, aFilenames) in os.walk(aPathComponent):
-#	        for aFilename in aFilenames:
-#			aFilename,theExt = os.path.splitext(ntpath.basename(aFilename))
-#			if theExt in sofaext:
-#				dictionary[aFilename] = dirpath+"/"+aFilename+theExt
-
-
-print(str(len(dictionary))+" components loaded.")
-
-hooks = "hooks.json"
-if os.path.exists(hooks):
-	d = json.load(open(hooks))
-	for k in d:
-		dictionary[k] = d[k]
-
-	print(str(len(d))+" hooks loaded.")
-
+print("Loading hooks...")
+for hook in sys.argv[2:]:
+    if os.path.exists(hook):
+        bn = os.path.splitext(os.path.basename(hook))[0]
+        print("- Importing "+bn)
+        d = json.load(open(hook))
+        for k in d:
+            dictionary[k] = d[k]
+            if "ns" not in dictionary[k]:
+                dictionary[k]["ns"] = bn     
+            ns = dictionary[k]["ns"]
+            
+            if ns == "":
+                dictionary[k]["regex"] = re.compile("..autolink::"+k+"(?!::)")
+            else:
+                dictionary[k]["regex"] = re.compile("..autolink::"+ns+"::"+k+"(?!::)")
+            if "desc" not in dictionary[k]:
+                dictionary[k]["desc"] = ""
+            
+    print(str(len(d))+" hooks loaded.")
 
 pathprefix = os.path.abspath(sys.argv[1]) + "/"
 for (dirpath, dirnames, aFilenames) in os.walk(pathprefix):

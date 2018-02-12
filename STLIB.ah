@@ -1,0 +1,21 @@
+{
+	"STLIB" : {
+	    "ns": "",
+	    "name" : "STLIB",
+	    "url" : "http://stlib.readthedocs.io/en/latest/"
+	},
+
+	"MainHeader" : {
+	    "name": "MainHeader",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader"
+	},
+	
+    "ElasticMaterialObject" : {
+	    "name": "ElasticMaterialObject",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject"
+	},
+	"FixedBox" : {
+	    "name": "FixedBox",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox"
+	}
+}
