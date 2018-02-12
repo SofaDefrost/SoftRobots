@@ -9,13 +9,49 @@
 	    "name": "MainHeader",
 	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader"
 	},
+
+    "ContactHeader" : {
+	    "name": "ContactHeader",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader"
+	},
 	
     "ElasticMaterialObject" : {
 	    "name": "ElasticMaterialObject",
 	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject"
 	},
-	"FixedBox" : {
+	
+    "FixedBox" : {
 	    "name": "FixedBox",
 	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox"
-	}
+	},
+
+    "CollisionMesh" : {
+	    "name": "CollisionMesh",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh"
+	},
+
+
+    "Cube" : {
+	    "name": "Cube",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.physics.rigid.html#stlib.physics.rigid.Cube"
+	},
+
+    "Floor" : {
+	    "name": "Floor",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.physics.rigid.html#stlib.physics.rigid.Floor"
+	},
+
+
+    "withYoungModulus" : {
+       "ns" : "STLIB::PARAMS",
+       "name" : "withYoungModulus",
+       "url": "https://en.wikipedia.org/wiki/Young%27s_modulus"
+    },
+
+    "withPoissonRatio" : {
+       "ns" : "STLIB::PARAMS",
+       "name" : "withPoissonRatio",
+       "url": "https://en.wikipedia.org/wiki/Poisson%27s_ratio"
+    }
+
 }

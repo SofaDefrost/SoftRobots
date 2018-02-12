@@ -2,5 +2,12 @@
 	"PullingCable" : {
 	    "name": "PullingCable",
 		"url" : "http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable"
-	}	
+	},
+
+    "MeshGeneration" : {
+        "ns": "SoftRobots::Docs",
+        "name": "MeshGeneration",
+        "relativeurl" : "docs/thematicalDocs/T2-FromMeshToSimulation/index.html"
+    }
+
 }

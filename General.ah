@@ -1,6 +1,6 @@
 {
 	"FEM" : {
-	    "ns" : "Concepts",
+	    "ns" : "General",
 	    "name": "FEM",
 		"url" : "https://en.wikipedia.org/wiki/Finite_element_method"
 	},
