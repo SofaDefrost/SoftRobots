@@ -8,5 +8,4 @@ def createScene(rootNode):
                           withYoungModulus=18000,
                           withPoissonRatio=0.5,
                           withTotalMass=0.5,
-                          withSurfaceMesh="data/mesh/finger.stl",
                           attachedTo=rootNode)

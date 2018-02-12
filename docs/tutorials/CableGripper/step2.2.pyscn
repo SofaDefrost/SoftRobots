@@ -1,0 +1,20 @@
+from stlib.scene import MainHeader
+from stlib.physics.deformable import ElasticMaterialObject
+from stlib.physics.constraints import FixedBox as FixedBoxConstraint
+
+def createScene(rootNode):
+    MainHeader(rootNode)
+
+    finger = ElasticMaterialObject(
+                                   fromVolumeMesh="data/mesh/finger.vtk",
+                                   withPoissonRatio=0.3,
+                                   withYoungModulus=18000,
+                                   withTotalMass=0.5,
+                                   withSurfaceMesh="data/mesh/finger.stl",
+                                   attachedTo=rootNode)
+
+    FixedBoxConstraint(atPositions=[-15, 0, 0, 5, 10, 15],
+                       applyTo=finger,
+                       withVisualization=True)
+
+    return rootNode

@@ -2,12 +2,12 @@
 
 ## Simulating a cable based soft gripper
 This tutorial describes how to set-up a simulation environment, a scene, using Sofa and how to use SoftRobots
-plug-in to model a virtual soft gripper driven by cables. Once modeled the robot can be simulated. To
-control our simulated robot dedicated controller can be writen using the Python langage. In this tutorial
-we implements keyboard base control.
+plug-in to model a virtual soft gripper driven by cables. The design is from [Taimoor Hassan et al.].
+Once modeled in Sofa the robot can be simulated. To control our simulated robot dedicated controller can be
+writen using the Python langage. In this tutorial we implements keyboard base control.
 
-This tutorials assumes that you have sucessfully installed the SoftRobots plugins and
-the [STLIB](http://stlib.readthedocs.io/en/latest/) plugin.
+This tutorials assumes that you have sucessfully installed the ..autolink::SoftRobots plugins and
+the ..autolink::STLIB plugin.
 
 
 ### Step 0: Try the simulation in Sofa
@@ -27,8 +27,25 @@ Note that with MacOS, you may have to use *cmd* instead of *ctrl*.
 ### Step 1: Setting up an empty scene
 In this step we will explain how to setup a basic scene in Sofa.
 
-Create a file named *mycablegripper.pyscn*.
-This file should contains the following lines:
+At first, create a file named *mycablegripper.pyscn*. The content of this file is in fact standard python code that must define at least one function named
+*createScene*. This function is the entry point used by Sofa to fill the simulation's content and
+this is the place where you will type your scene's description.
+
+You can try to load the totally empty scene:
+<div>
+```python
+def createScene(rootNode):
+    pass
+```
+
+<div>
+<pre>
+<a href="step0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
+</pre>
+</div>
+</div>
+
+You can change the scene content for this one and observe the result in Sofa: 
 <div>
 ```python
 from stlib.scene import MainHeader
@@ -44,16 +61,9 @@ def createScene(rootNode):
 </div>
 </div>
 
-The content of this file is in fact standard python code that must define at least one function named
-*createScene*. This function is the entry point used by Sofa to fill the simulation's content and
-this is the place where you will type your scene's description.
-
-The *..autolink::STLIB::MainHeader* line is calling a scene templates from the ..autolink::STLIB library.
-This template adds a set of selected components that are needed for most of simulation. Once loaded you
-can explore the loaded scene graph in the sofa GUI and, by double clicking on components, get
-their internal properties and self documentations.
-
-According to its documentation this template load the following sofa components:
+You should notice that the scenegraph view have changed. This is because the ..autolink::STLIB::MainHeader creates 
+a set of components that are the one needed for most common simulation scenarios. A such python function, that creates scene elements, 
+will be refered as scene templates in the following. The ..autolink::STLIB::MainHeader scene template, according to its [documentation](http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader), loads the following sofa components:
 ```qml
    {
       ..autolink::Sofa::VisualStyle,
@@ -65,12 +75,17 @@ According to its documentation this template load the following sofa components:
    }
 ```
 
-### Step 2: Modeling and simulating the gripper deformations
-The second step of this tutorial is add a deformable object that will be mechanically simulated.
-As the real material we want to simulate is made of silicons it can be approximated with and elastic
-deformation law. The *ElasticMaterialObject* from *stlib.physics.deformable* provide a scene template
-for such an objet.
+On the loaded scene you can explore graphically the scene graph and the different components. By simply double clicking on the 
+components you can get their internal properties and self documentations. 
 
+### Step 2: Modeling and simulating the gripper deformations
+You will now add a deformable object to your scene. There exists a lot of different mechanical behavior and
+it is important to understand the one that approximates the behavior of the real object your want to simulate.
+In our case, the real material is silicon which can be approximated with an elastic deformation law and
+it can be simulated using the Finite Element Method. In sofa, the autolink::STLIB::ElasticMaterialObject from
+*stlib.physics.deformable* provides a scenetemplate to easily add such an object in your scene.
+
+You can then write the following scene: 
 <div>
 ```python
 from stlib.scene import ..autolink::STLIB::MainHeader
@@ -83,7 +98,6 @@ def createScene(rootNode):
                           withYoungModulus=18000,
                           withPoissonRatio=0.5,
                           withTotalMass=0.5,
-                          withSurfaceMesh="data/mesh/finger.stl",
                           attachedTo=rootNode)
 ```
 
@@ -94,27 +108,40 @@ def createScene(rootNode):
 </div>
 </div>
 
-Running the previously defined scene results in a infinitly falling finger object. This is because
-the scene is missing the definition of a constraint that will "attached" the object to a given
-position. This can be done easily by adding a box
+To compute the deformation of the object using the Finite Element Method a volumetric representation of shape
+must be provided. In our case we are using a tetrahedral mesh stored in a "vtk" file. You can visualize
+the computation mesh by checking the "Force Fields" option within the
+*View* panel in the runSofa GUI. In case you want to learn more about volumetric mesh generation there is a dedicated
+tutorial called ..autolink::SoftRobots::Docs::MeshGeneration.
 
+Instead of displaying the tetrahedron mesh structure it is possible to wrap it into a kind of skin.
+This skin is called a visual model. This visual
+model being deformed according to the deformation of the tetrahedron mesh. In your scene
+you can add such visual model by adding the following *withSurfaceMesh="data/mesh/finger.stl"*
+to the ..autolink::STLIB::ElasticMaterialObject template's arguments.
 
+If you click on the *Animate* button on this scene you should observe a falling object. This is because the object undergo
+the gravity force but has no fixation point. To prevent the free falling, some fixation constraints are needed to a rest
+position. This can be done easily by adding a box constraint in the following way:
 <div>
 ```python
-from stlib.scene import MainHeader
-from stlib.physics.deformable import ElasticMaterialObject
-from stlib.physics.constraints import FixedBox as FixedBoxConstraint
+from stlib.scene import ..autolink::STLIB::MainHeader
+from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
+from stlib.physics.constraints import ..autolink::STLIB::FixedBox as FixedBoxConstraint
 
 def createScene(rootNode):
-    MainHeader(rootNode)
+    ..autolink::STLIB::MainHeader(rootNode)
 
-    finger = ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
+    finger = ..autolink::STLIB::ElasticMaterialObject(
+                                   fromVolumeMesh="data/mesh/finger.vtk",
                                    withPoissonRatio=0.3,
                                    withYoungModulus=18000,
                                    withTotalMass=0.5,
+                                   withSurfaceMesh="data/mesh/finger.stl",
                                    attachedTo=rootNode)
 
-    FixedBoxConstraint(atPositions=[-15, 0, 0, 5, 10, 15], applyTo=finger,
+    FixedBoxConstraint(atPositions=[-15, 0, 0, 5, 10, 15],
+                       applyTo=finger,
                        withVisualization=True)
 
     return rootNode
@@ -122,36 +149,35 @@ def createScene(rootNode):
 
 <div>
 <pre>
-<a href="step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
+<a href="step2.2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
 </pre>
 </div>
 </div>
 
-Finally, instead of displaying the tetrahedron mesh structure use for the deformation computation
-it is possible to wrap it into a kind of skin. This skin is called a visual model. This visual
-model being deformed according to the deformation of the tetrahedron mesh. In your scene
-you can add such visual model by adding the following *withSurfaceMesh="data/mesh/finger.stl"*
-to the ElasticMaterialObject template's arguments.
-
 
 ## Step 3: Actuating the finger with a cable
 
-In the previous step, we showed how to model and simulate a soft robot with a finger shape
-made of a deformable material (silicone rubber). In this step, we will explain how to actuate
-it using a 1d inelastic cable attached to the fingertip. The cable can be used to pull or
-release the fingertip by pressing ctrl+ and ctrl-.
+In the previous step, we showed how to add a finger like object made of silicone rubber.
+In this step, we will explain how to actuate it using a 1d inelastic cable attached to the fingertip. 
+The cable can be used to pull or release the fingertip by pressing ctrl+ and ctrl-.
 
-This means adding the following functionalities:
- - Create and add a pulling cable with a given geometry
+To do so we needs to add the following functionalities:
+ - Create and add a pulling cable and specifying its geometry
  - Use a Python script to drive the cable
  - Actuate it interactively
 
+
+Use the ..autolink::SoftRobots::PullingCable template from the ..autolink::SoftRobots plugins to add
+a cable.
 <div>
 ```python
+### ... similar to previous step ....
+from softrobots.actuators import ..autolink::SoftRobots::PullingCable
+
 def createScene(rootNode, name="theFinger"):
     ### ... similar to previous step ....
 
-    PullingCable(attachedTo=finger,
+    cable = ..autolink::SoftRobots::PullingCable(attachedTo=finger,
              withAPullPointLocation=[0.0, 12.5, 2.5],
              withCableGeometry=[[-17.5, 12.5, 2.5],
                                 [-32.5, 12.5, 2.5],
@@ -171,10 +197,10 @@ def createScene(rootNode, name="theFinger"):
 </div>
 
 
-Changing the cable lenght at run-time is possible by adding a *PythonScriptController*. To do that
-you first need to create a python object in-heriting from *Sofa.PythonScriptController*. The
-controller will be in charge of redefine the *onKeyPressed* to implement the desired behavior.
-This can be done by adding the following at the beginning of your scene.
+Changing the cable lenght at run-time is possible by adding a ..autolink::Sofa::PythonScriptController. 
+To do that you first need to create a python object in-heriting from *Sofa.PythonScriptController*. This
+controller will be in charge of redefining the *onKeyPressed* behavior and implementing the desired one
+as in the following code:
 <div>
 ```python
 import Sofa
@@ -194,17 +220,16 @@ class FingerController(Sofa.PythonScriptController):
 ```
 </div>
 
-The created controller can then be attached the objet it is supposed to control in the following
-way:
-
+The controller can then be attached the objet it is supposed to control by doing:
 <div>
 ```python
+### ... similar to previous step with the added FingerController ....
+
 def createScene(rootNode, name="theFinger"):
     ### ... similar to previous step ....
 
     ## This create a PythonScriptController that permits to programatically implement new behavior
-    ## or interactions using the Python programming langage. The controller is referring to a
-    ## file named "controller.py".
+    ## or interactions using the Python programming langage. 
     finger.addObject( FingerController(cable) )
 ```
 <div>
@@ -214,10 +239,12 @@ def createScene(rootNode, name="theFinger"):
 </div>
 </div>
 
+If you run the resulting scene you should now be able to change the cable length resulting in
+movements of the finger.
 
 ## Step 4: Defining self-collision regions
 By default Sofa doesn't handle self-collisions, which in general are expensive to compute.
-This can lead to some undesireable results, i.e. self-interesections, when the object deforms a lot
+The drawback is that this can lead to some undesireable behaviors, i.e. self-interesections, when the object deforms a lot
 as illustrated in the figure below.
 
 ![Finger with self-intersecting](data/images/NoCollisionRegions.png){width=200}
@@ -238,6 +265,7 @@ def createScene(rootNode):
 
     CollisionMesh(attachedTo=finger,
              fromSurfaceMesh="data/mesh/fingerCollision_part1.stl", withName="part1", withACollisionGroup=1)
+
     CollisionMesh(attachedTo=finger,
               fromSurfaceMesh="data/mesh/fingerCollision_part2.stl", withName="part2", withACollisionGroup=2)
 
@@ -251,43 +279,18 @@ def createScene(rootNode):
 </div>
 
 ## Step 5: Duplicating the finger to make a complete gripper
-In the previous steps, we showed the simulation of a single finger made of elastic material.
-But the orginal soft gripper robot is composed of three fingers actuated with cables.
-In the design of Taimoor Hassan et al., a single cable is used for the three fingers.
+Now we have a working single finger we can duplicate it so that it can match the orginal soft gripper
+robot design.
 
 ![The soft gripper with three fingers](data/images/gripper.png){with=300}
 
-Our pyscn file is getting bigger and bigger and is not really modular. Let's improve the situation
-by moving the finger creation into a separated file to favor modularity and reusability. You can do
-that by moving the current code into a separated file called *finger.py*.
+As our *pyscn* file is getting bigger and bigger we need to refactor it to improve its modularity.
+To do that we will make our own scene template by moving the finger creation into a separated file.
+You can do that by moving the current code into a separated file that you will call *gripper.py*.
 
-Once this is done it is now possible to use & re-use the finger in any scene in the following way:
-<div>
-```python
-from stlib.scene import MainHeader
-from stlib.physics.collision import FrictionalContact
-from finger import Finger
-
-def createScene(rootNode):
-    MainHeader(rootNode, plugins=["SoftRobots"])
-    FrictionalContact(applyTo=rootNode)
-
-    Finger(attachedTo=rootNode, withName="Finger1")
-    Finger(attachedTo=rootNode, withName="Finger2")
-    Finger(attachedTo=rootNode, withName="Finger3")
-
-    return rootNode
-```
-<pre>
-<a href="step5.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
-</pre>
-</div>
-</div>
-
-By default the three fingers are at the same location and orientation, to change that you need
-to make the orientation, translation and other location specific properties as template parameters
-for the *Finger* function. Here is how should look like the parameterized version of the finger.py.
-
+By default the fingers are at the same location and orientation, to change that you need
+to expose the orientation, translation as well as the other location specific properties (the box fixation point)
+as parameters of the *Finger* function. This should result in something like the following:
 <div>
 ```python
 def Finger(attachedTo=None, withName="Finger",
@@ -337,29 +340,49 @@ def Finger(attachedTo=None, withName="Finger",
                   withName="part2", withACollisionGroup=2)
 
     return finger
+
+def Gripper(node):
+    Finger(node, "Finger1",
+           withRotation=[0, 0, 25], withTranslation=[150, 0, 0],
+            withFixingBox=[135, 0, 0, 155, 10, 15], withPullPointLocation=[150, 12.5, 2.5])
+    Finger(node, "Finger2",
+           withRotation=[180, 0, -25], withTranslation=[150, 20, 0],
+        withFixingBox=[135, 10, -15, 155, 30, 0], withPullPointLocation=[150, 12.5, -2.5])
+    Finger(node, "Finger3",
+           withRotation=[180, 0, -25], withTranslation=[150, 20, 30],
+        withFixingBox=[135, 10, 15, 155, 30, 30], withPullPointLocation=[150, 12.5, 27.5])
+    return node
 ```
 </div>
 
-And in the *mycablegripper.pyscn* file specify the translation/rotation, fixing box & pulling
-point in the following way:
+Let's now make a scene template for the whole gripper by adding the following code in the *gripper.py* file:
 <div>
 ```python
-import finger
+def Gripper(node):
+    """Under-actuated soft gripper from [Taimoor Hassan et al.]"""
+    Finger(node, "Finger1",
+           withRotation=[0, 0, 25], withTranslation=[150, 0, 0],
+            withFixingBox=[135, 0, 0, 155, 10, 15], withPullPointLocation=[150, 12.5, 2.5])
+    Finger(node, "Finger2",
+           withRotation=[180, 0, -25], withTranslation=[150, 20, 0],
+        withFixingBox=[135, 10, -15, 155, 30, 0], withPullPointLocation=[150, 12.5, -2.5])
+    Finger(node, "Finger3",
+           withRotation=[180, 0, -25], withTranslation=[150, 20, 30],
+        withFixingBox=[135, 10, 15, 155, 30, 30], withPullPointLocation=[150, 12.5, 27.5])
+    return node
+```
+</div>
+
+Now the *mycablegripper.pyscn* should be much simpler only containing:
+<div>
+```python
+from stlib.scene import MainHeader, ContactHeader
+from stlib.physics.collision import FrictionalContact
+from stlib.physics.rigid import Floor, Cube
 
 def createScene(rootNode):
-    ### ... similar to previously but with the following at the end...
-
-    Finger(rootNode, "Finger1",
-           withRotation=[0, 0, 25], withTranslation=[150, 0, 0],
-           withFixingBox=[135, 0, 0, 155, 10, 15], withPullPointLocation=[150, 12.5, 2.5])
-    Finger(rootNode, "Finger2",
-           withRotation=[180, 0, -25], withTranslation=[150, 20, 0],
-           withFixingBox=[135, 10, -15, 155, 30, 0], withPullPointLocation=[150, 12.5, -2.5])
-    Finger(rootNode, "Finger3",
-           withRotation=[180, 0, -25], withTranslation=[150, 20, 30],
-           withFixingBox=[135, 10, 15, 155, 30, 30], withPullPointLocation=[150, 12.5, 27.5])
-
-    return rootNode
+    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 ```
 <pre>
 <a href="step5.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
@@ -367,21 +390,38 @@ def createScene(rootNode):
 </div>
 </div>
 
-That's all for the gripper.
 
 ## Step 6: Adding rigid objects to your scene
 
-Adding the floor & cube is as easy as importing the scene templates from *stlib.physics.rigid* :
+Adding as static floor is as easy as importing the scene templates from *stlib.physics.rigid* and
+specify its location, size and orientation. The graspable cube is a bit more complexe as the physics
+is computed at the center of gravity and an inertia matrix need to be provided.
+
 <div>
 ```python
-
-import floor
-import cube
+from stlib.physics.rigid import Cube, Floor
+from gripper import Gripper
 
 def createScene(rootNode):
-   ## .... The content of the previous step ...
+   MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+   ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
-   cube.createAndAddToNode(rootNode)
+   Gripper(attachedTo=rootNode)
+
+   Floor(rootNode, name="Floor",
+         withColor=[1.0,0.0,0.0],
+         withTranslation=[0.0,-160.0,0.0],
+         isAStaticObject=True)
+
+   Cube(rootNode, name="Cube",
+         withScale=20.0,
+         withColor=[1.0,1.0,0.0],
+         withTotalMass=0.03,
+         withVolume=20,
+         withInertiaMatrix=[1000.0,0.0,0.0,0.0,1000.0,0.0,0.0,0.0,1000.0],
+         withTranslation=[0.0,-130.0,10.0])
+
+   return rootNode
 ```
 
 <div>
@@ -391,119 +431,6 @@ def createScene(rootNode):
 </div>
 </div>
 
-
-### How to use the demo
-
-After clicking on "Animate" you can click in the 3d view then pulling/releasing the three cables by pressing CTRL+  and CTLR-.
-
-![the gripper actuated](data/images/gripper2.png)
-
-## Step 5: Grasping simulation
-
-[Open Step 6 in Sofa](06-GraspingSimulation.pyscn)
-
-
-The simulation in SOFA allows to reproduce grasping using a combination of constraints for frictional contact (using Coulomb's friction) and for actuators. To do this, we need to modify several elements of the simulation.
-
-### A. Activate collision and direct simulation
-
-In this exemple, we will simulate the collision response of the gripper with its environment and particularly an object that will be grasped. The first step is to activate the modules for collision detection and response in SOFA. This modules are described in more details in the documentation of SOFA. The user can modify the coefficient of friction in RuleBasedContactManager (mu=0.8). GenericConstraintSolver is able to solve, in a unified system, the constraints         for collision response and the constraints (direct, non inverse) of the actuators.
-
-### B. Add an object that will be grasped
-
-![description](data/images/image1.png)
-
-We add a rigid object, and simulate its dynamics with a 6Dof mechanical object. It computes the physics at the center of gravity. The mass and inertia of the object are computed by UniformMass. The component UncoupledConstraintCorrection provides the physics-based response after collision (in practice, it will use the parameters of the component UniformMass).
-Then, we will need to add a collision model to detect the contact between this cube and the soft gripper. First, we load the mesh that is used for collision and create a mechanical object with it. Then, we add the collision primitive (Triangle, Line and Point) that will be tested. Finally, the collision model is linked to the behavior of the center of gravity by a RigidMapping.
-
-![descr](data/images/image11.png)
-
-In the same way, we can load an other mesh and use a mapping for the visualization.
-
-### C. Add a fixed floor
-
-Now, we add a collision surface collision plane so that we can place the object before and after grasping:
-
-![descr](data/images/image2.png)
-
-### D. Add collision models to the gripper
-
-
-We need to put a collision surface to each finger of the soft gripper. In the graph, the collision model is a child of the node that contains the mechanical object (here, the FEM model of each finger). This surface is defined by a mesh (here finger.stl). The primitive of collision are also defined (Triangle, Line, Point). The surface motion is linked to the motion of the FEM model using a BarycentricMapping:
-
-![descr](data/images/image21.png)
-
-### E. Control the gripper
-
-The user can interactively control the gripper using keyboard events. The definition of the controls is done using a python script. To close/open the gripper, press the following keys:
-
- - ctrl + '+'
- - ctrl + '-'
-
-Note that with MacOS, you may have to use *cmd* instead of *ctrl*. The actuator are controlled in force. They key ctrl + increased the force applied on the cable. To move the gripper, press the following keys:
-
-
-### Volumetric Mesh Generation
-
-Volumetric mesh generation is a complex topic and several tools exists to perform this task such as: [GID](http://www.gidhome.com/), [CGAL](http://www.cgal.org/) or [Gmsh](http://geuz.org/gmsh/). We choose to use the C++ library `CGAL` ([CGAL](http://www.cgal.org)) as a dedicated plug-in for Sofa exists. Volumetric mesh can be computed either using a surface mesh or an image. Whatever the input, we need to add the `CGALPlugin` with the following line:
-
-~~~
-rootNode.createObject('RequiredPlugin', pluginName='CGALPlugin')
-~~~
-
-All the components that will help to build the volumetric mesh will be placed in a child node, this is performed with
-
-~~~
-node = rootNode.createChild('node')
-~~~
-
-Then, we need to load the surface mesh that will be used as input for CGAL. Many file formats are supported (`OBJ`, `VTK`, `STL`...). In our example, a STL file has been produced using some CAD software. This file is then loaded with:
-
-~~~
-node.createObject('MeshSTLLoader', name='mesh', filename=path+'finger.stl')
-~~~
-
-And then the magic is performed with the `MeshGenerationFromPolyhedron` where four parameters are used to control the meshing:
-
- - `cellSize`: this parameter controls the size of mesh tetrahedra. It provides an upper bound on the circumradius of the mesh tetrahedra
- - `facetAngle`: This parameter controls the shape of surface facets. Actually, it is a lower bound for the angle (in degree) of surface facets. When boundary surfaces are smooth, the termination of the meshing process is guaranteed if the angular bound is at most 30 degrees
- - `facetAngle`: this parameter controls the shape of surface facets. Actually, it is a lower bound for the angle (in degree) of surface facets. When boundary surfaces are smooth, the termination of the meshing process is guaranteed if the angular bound is at most 30 degrees
- - `cellRatio`: this parameter controls the shape of mesh cells. Actually, it is an upper bound for the ratio between the circumradius of a mesh tetrahedron and its shortest edge. There is a theoretical bound for this parameter: the Delaunay refinement process is guaranteed to terminate for values larger than 2
- - `facetApproximation`: the approximation error between the boundary and the subdivision surface. It provides an upper bound for the distance between the circumcenter of a surface facet and the center of a surface Delaunay ball of this facet
-
-It may require some trials and errors to find a good set of parameters that capture well the details of the surface mesh without leading to a large number of tetrahedra. The framerate of the simulation is quite sensitive to the setting of these parameters. If the simulation is running to slow consider changing them in order to reduce the number of tetrahedra. For our example, the set of parameters is:
-
-~~~
-node.createObject('MeshGenerationFromPolyhedron', name='gen', template='Vec3d', inputPoints='@mesh.position', inputTriangles='@mesh.triangles', drawTetras='1',
-    cellSize="10",
-    facetAngle="30",
-    facetSize="4",
-    cellRatio="2",   #Convergence problem if lower than 2
-    facetApproximation="1"
-    )
-~~~
-
-The computed tetrahedra are then stored in a mesh container for later usage with:
-
-~~~
-node.createObject('Mesh', position='@gen.outputPoints', tetrahedra='@gen.outputTetras')
-~~~
-
-Mind the fact that the syntax used links the output of the generator 'gen' to the created 'Mesh' object using '@'. After that you may export the resulting volumetric mesh with the following line for further use:
-
-~~~
-node.createObject('VTKExporter', filename=path+'finger', edges='0', tetras='1', exportAtBegin='1')
-~~~
-
-We want to export only the tetrahedra (no edges, no triangles) and we want a single export that is performed at the beginning of the simulation (a single export is needed since the mesh will not deform during this simulation).
-
-For an interactive feedback of what has been computed by `CGAL`, we can use this line:
-
-~~~
-node.createObject('OglModel', filename=path+"finger.stl", color="0.0 0.7 0.7 0.5")
-~~~
-
-It will superimpose the surface mesh on the volumetric mesh.
-
-
-
+### Conclusion
+That's all for this tutorial. You can now try to model your own soft robots and you are strongly
+encouraged to pursue the other tutorial and read the thematical documentations.
