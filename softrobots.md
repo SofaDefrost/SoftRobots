@@ -7,9 +7,9 @@ This plugin is provided as-is under the LGPL Licence.
 Tutorials:
 -----------
 
-* Make a soft-gripper actuated by cables. [Start the tutorial](docs/tutorials/CableGripper-Tutorial/cablegripper.html?sofafile=cablegripper.pyscn)
+* Make a soft-gripper actuated by cables. [Start the tutorial](docs/tutorials/CableGripper/cablegripper.html?sofafile=cablegripper.pyscn)
 
-* Make a soft-gripper actuated by pneumatics. [Start the tutorial](docs/tutorials/PneunetGripper-Tutorial/pneunetgripper.html?sofafile=pneunetgripper.pyscn)
+* Make a soft-gripper actuated by pneumatics. [Start the tutorial](docs/tutorials/PneunetGripper/pneunetgripper.html?sofafile=pneunetgripper.pyscn)
 
 
 Thematical documentations:
