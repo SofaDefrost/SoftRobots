@@ -35,7 +35,7 @@ Note that with MacOS, you may have to use *cmd* instead of *ctrl*.
 ### Step 1: Warming up by setting an simple scene
 Sofa is loading the description of the simulation from *pyscn* files. The content of these file is in fact standard python code with 
 at least one function named *createScene* taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa
-to fill the simulation's content and this is the place where you will type your scene's description.
+to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode".
 
 A very simple scene may look like:
 <div>
@@ -97,12 +97,17 @@ Here is a set of tasks you can do to get better understanding of this step.
 ### Step 2: Modeling and simulating the gripper deformations
 We will now add now a deformable object to a scene. There exists a lot of different mechanical behavior and
 it is important to understand the one that approximates the behavior of the real object your want to simulate.
-In our case, the real material is silicon which we will approximate with an elastic deformation law and
-simulate using the Finite Element Method (..autolink::General::FEM). In sofa, the
-..autolink::STLIB::ElasticMaterialObject from *stlib.physics.deformable* provides a scene template
-to easily add such an object in your scene.
+In particular, it is important to know how soft or stiff the material is, if it has an elastic or more complex 
+behaviour (Hyperelastic, plastic, etc...). In our case, the real material is silicon which we will approximate 
+with an elastic deformation law and simulate using the Finite Element Method (..autolink::General::FEM). In sofa, 
+the ..autolink::STLIB::ElasticMaterialObject from *stlib.physics.deformable* provides a scene template
+to easily add such an object in your scene. 
 
-This should results in the following scene:
+To compute the deformation of the object using the Finite Element Method a volumetric representation of shape
+must be provided. In our case we are using a tetrahedral mesh stored in a "vtk" file. This can be done with any meshing tool 
+such as Gmsh or CGAL but in our case we already provide the tetrahedral mesh in a file name "*finger.vtk*". 
+
+The scene with a finger like soft material may look like:
 <div>
 ```python
 from stlib.scene import ..autolink::STLIB::MainHeader
@@ -118,7 +123,6 @@ def createScene(rootNode):
                           withTotalMass=0.5,
                           attachedTo=rootNode)
 ```
-
 <div>
 <pre>
 <a href="step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene.</a>
@@ -126,12 +130,10 @@ def createScene(rootNode):
 </div>
 </div>
 
-To compute the deformation of the object using the Finite Element Method a volumetric representation of shape
-must be provided. In our case we are using a tetrahedral mesh stored in a "vtk" file. These are the blue-ish element you can see if you
-tried the scene. To control the visualization of this computation mesh you can either check the "Force Fields" option within the
-*View* panel in the runSofa GUI or, as we did, change the displayFlags property of the ..autolink::Sofa::VisualStyle.
+If you run the the scene you can see the tetrahedral mesh with blue-ish element. To control the visualization of this computation mesh you can either check the "Force Fields" option within the *View* panel in the runSofa GUI or, as we did, change the displayFlags property of the ..autolink::Sofa::VisualStyle.
 In case you want to learn more about volumetric mesh generation there is a dedicated tutorial called
 ..autolink::SoftRobots::Docs::MeshGeneration.
+
 
 Instead of displaying the tetrahedron mesh computational structure it is possible to wrap it into a visual model.
 This visual model can be of much higher visual quality and is deformed according to the deformation of the underlying mecanical 
