@@ -19,7 +19,7 @@ class FingerController(Sofa.PythonScriptController):
             self.cableconstraintvalue.value = displacement
 
 def createScene(rootNode):
-    m=MainHeader(rootNode)
+    m=MainHeader(rootNode, plugins=["SoftRobots"])
 
     finger = ElasticMaterialObject(
                                    fromVolumeMesh="data/mesh/finger.vtk",
