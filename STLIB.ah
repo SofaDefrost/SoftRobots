@@ -33,14 +33,18 @@
 
     "Cube" : {
 	    "name": "Cube",
-	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.physics.rigid.html#stlib.physics.rigid.Cube"
+	    "url" : "http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube"
 	},
 
     "Floor" : {
 	    "name": "Floor",
-	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.physics.rigid.html#stlib.physics.rigid.Floor"
+	    "url" : "http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor"
 	},
-
+	
+	"RigidObject" : {
+	    "name": "RigidObject",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.rigid.html#stlib.physics.rigid.RigidObject"
+	},
 
     "withYoungModulus" : {
        "ns" : "STLIB::PARAMS",

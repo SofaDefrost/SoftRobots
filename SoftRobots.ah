@@ -1,4 +1,10 @@
 {
+    "github/SoftRobots" : {
+        "ns" : "",
+	    "name": "github/SoftRobots",
+		"url" : "https://github.com/SofaDefrost"    
+    },
+
 	"PullingCable" : {
 	    "name": "PullingCable",
 		"url" : "http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable"
