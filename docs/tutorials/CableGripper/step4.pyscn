@@ -1,4 +1,4 @@
-from stlib.scene import MainHeader
+from stlib.scene import MainHeader, ContactHeader
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.physics.constraints import FixedBox as FixedBoxConstraint
 from stlib.physics.collision import CollisionMesh
