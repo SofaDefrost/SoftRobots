@@ -2,6 +2,7 @@ from stlib.scene import MainHeader
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.physics.constraints import FixedBox as FixedBoxConstraint
 from softrobots.actuators import PullingCable
+
 import Sofa
 class FingerController(Sofa.PythonScriptController):
     def __init__(self, cable):
@@ -25,6 +26,7 @@ def createScene(rootNode):
                                    withPoissonRatio=0.3,
                                    withYoungModulus=18000,
                                    withTotalMass=0.5,
+                                   withSurfaceColor=[0.0, 0.8, 0.7],
                                    withSurfaceMesh="data/mesh/finger.stl",
                                    attachedTo=rootNode)
 

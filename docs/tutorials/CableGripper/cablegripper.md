@@ -10,11 +10,11 @@ This tutorials assumes that you have sucessfully installed ..autolink::Sofa with
 ..autolink::SoftRobots plugins.
 
 
-<object style="width: 320px; height: 200px;" data="https://www.youtube.com/embed/9JOCe2pf34o?autoplay=0"> </object>
+<center><object style="width: 320px; height: 200px;" data="https://www.youtube.com/embed/9JOCe2pf34o?autoplay=0"> </object></center>
 
 ### Step 0: Try the simulation in Sofa
 Before continuing this tutorial try the resulting simulation you need to achieved.
-You can do that by clicking on the [Animate](sofa?action=animate) button in the Sofa GUI. When the
+You can do that by clicking on the [Animate] button in the Sofa GUI. When the
 simulation is running you can manipulate the gripper by pressing the following keys:
 
  - ctrl + *+* to close the gripper
@@ -26,44 +26,44 @@ simulation is running you can manipulate the gripper by pressing the following k
 
 Note that with MacOS, you may have to use *cmd* instead of *ctrl*.
 
-### Step 1: Warming up by setting an empty scene
-Create a file named *mycablegripper.pyscn*. The content of this file will be standard python code but you need
-at least to have one function named *createScene* taking a parameter. This function is the entry point used by Sofa
+<div>
+<pre>
+<a href="step0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try now the scene in Sofa.</a>
+</pre>
+</div>
+
+### Step 1: Warming up by setting an simple scene
+Sofa is loading the description of the simulation from *pyscn* files. The content of these file is in fact standard python code with 
+at least one function named *createScene* taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa
 to fill the simulation's content and this is the place where you will type your scene's description.
 
-So to most simple file you can have should look like the following:
+A very simple scene may look like:
 <div>
 ```python
+from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
+from stlib.physics.rigid import ..autolink::STLIB::Floor
+from stlib.visuals import ShowGrid
+
 def createScene(rootNode):
-    pass
+    """This is my first scene"""
+    ..autolink::STLIB::MainHeader(rootNode, plugins=["SoftRobots"])
+    ShowGrid(rootNode) 
+
+    ..autolink::STLIB::Floor(rootNode, name="Floor",
+          withTranslation=[0.0,-160.0,0.0],
+          isAStaticObject=True)
+    
+    return rootNode
 ```
 
 <div>
 <pre>
-<a href="step0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
+<a href="step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene.</a>
 </pre>
 </div>
 </div>
 
-You can change the scene content for this one and observe the result in Sofa: 
-<div>
-```python
-from stlib.scene import ..autolink::STLIB::MainHeader
-
-def createScene(rootNode):
-    ..autolink::STLIB::MainHeader(rootNode)
-```
-
-<div>
-<pre>
-<a href="step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
-</pre>
-</div>
-</div>
-
-You should notice that the scenegraph view have changed. This is because the ..autolink::STLIB::MainHeader creates 
-a set of components that are the one needed for most common simulation scenarios. A such python function, that creates scene elements, 
-will be refered as scene templates in the following. The ..autolink::STLIB::MainHeader scene template, according to its [documentation](http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader), loads the following sofa components:
+Both ..autolink::STLIB::MainHeader and ..autolink::STLIB::Floor are functions that creates set of Sofa components. Such functions, that creates scene elements, will be refered as scene templates in the following of this tutorial. As an example the ..autolink::STLIB::MainHeader template, according to its [documentation](http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader), loads the following sofa components into the scene graph (the hierarchical structure you can see in the left side of the Sofa GUI):
 ```qml
    {
       ..autolink::Sofa::VisualStyle,
@@ -75,11 +75,27 @@ will be refered as scene templates in the following. The ..autolink::STLIB::Main
    }
 ```
 
-When the scene is loaded you can explore graphically the scene graph and the different components.
-By simply double clicking on the components you can get their internal properties and self documentations.
+
+Here is a set of tasks you can do to get better understanding of this step.
+ 
+####<i>Task 1.0:</i>
+- Create a new file called *"mycablegripper.pyscn"*. 
+- This file should contain the previously presented content. 
+- Run it with the following command: runSofa mycablegripper.pyscn -i. With the '-i' option Sofa will reload the scene eache time it is modified. 
+- Explore the scene graph and the properties of the different objects it contains in the Sofa GUI. 
+
+####<i>Task 1.1:</i>
+- Search in the documentation how to change the color of floor. 
+(Note, a ..autolink::STLIB::Floor is a specific kind of ..autolink::STLIB::RigidObject).
+
+####<i>Task 1.2:</i>
+- Add a rigid Cube & Sphere. The cube must be of size '20'.
+
+####<i>Task 1.3:</i>
+- Add a serie of 5 cubes in a row with equidistant spacing and different color. 
 
 ### Step 2: Modeling and simulating the gripper deformations
-Add now a deformable object to your scene. There exists a lot of different mechanical behavior and
+We will now add now a deformable object to a scene. There exists a lot of different mechanical behavior and
 it is important to understand the one that approximates the behavior of the real object your want to simulate.
 In our case, the real material is silicon which we will approximate with an elastic deformation law and
 simulate using the Finite Element Method (..autolink::General::FEM). In sofa, the
@@ -93,9 +109,9 @@ from stlib.scene import ..autolink::STLIB::MainHeader
 from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
 
 def createScene(rootNode):
-   m=..autolink::STLIB::MainHeader(rootNode)
-   m.getObject("..autolink::Sofa::VisualStyle").displayFlags="showForceFields"
-
+   m=..autolink::STLIB::MainHeader(rootNode, plugins=["SoftRobots"])
+   m.getObject("..autolink::Sofa::VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+ 
    ..autolink::STLIB::ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
                           ..autolink::STLIB::PARAMS::withYoungModulus=18000,
                           ..autolink::STLIB::PARAMS::withPoissonRatio=0.5,
@@ -105,56 +121,54 @@ def createScene(rootNode):
 
 <div>
 <pre>
-<a href="step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
+<a href="step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene.</a>
 </pre>
 </div>
 </div>
 
 To compute the deformation of the object using the Finite Element Method a volumetric representation of shape
-must be provided. In our case we are using a tetrahedral mesh stored in a "vtk" file. You can visualize
-the computation mesh by checking the "Force Fields" option within the
-*View* panel in the runSofa GUI or, as we did, by changing the displayFlags property of the VisualObject.
+must be provided. In our case we are using a tetrahedral mesh stored in a "vtk" file. These are the blue-ish element you can see if you
+tried the scene. To control the visualization of this computation mesh you can either check the "Force Fields" option within the
+*View* panel in the runSofa GUI or, as we did, change the displayFlags property of the ..autolink::Sofa::VisualStyle.
 In case you want to learn more about volumetric mesh generation there is a dedicated tutorial called
 ..autolink::SoftRobots::Docs::MeshGeneration.
 
 Instead of displaying the tetrahedron mesh computational structure it is possible to wrap it into a visual model.
-This visual model being deformed according to the deformation of the tetrahedron mesh. To add such
-visual model you simply need to add *withSurfaceMesh="data/mesh/finger.stl"*
+This visual model can be of much higher visual quality and is deformed according to the deformation of the underlying mecanical 
+mesh. To add such visual model you simply need to add *withSurfaceMesh="data/mesh/finger.stl"*
 to the ..autolink::STLIB::ElasticMaterialObject template's arguments.
 
-At this step if you click on the *Animate* button on this scene you should observe a falling object. This is because
-the object undergo the gravity force but has no fixation point. To prevent the free falling, some constraints are
-needed to a rest position. This can be done easily by adding a box constraint in the following way:
-<div>
-```python
-from stlib.scene import ..autolink::STLIB::MainHeader
-from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
-from stlib.physics.constraints import ..autolink::STLIB::FixedBox as FixedBoxConstraint
 
-def createScene(rootNode):
-    ..autolink::STLIB::MainHeader(rootNode)
+Here is a set of tasks you can do to get better understanding of this step. 
 
-    finger = ..autolink::STLIB::ElasticMaterialObject(
-                                   fromVolumeMesh="data/mesh/finger.vtk",
-                                   ..autolink::STLIB::PARAMS::withPoissonRatio=0.3,
-                                   ..autolink::STLIB::PARAMS::withYoungModulus=18000,
-                                   withTotalMass=0.5,
-                                   withSurfaceMesh="data/mesh/finger.stl",
-                                   attachedTo=rootNode)
+####<i>Task 2.0:</i>
+- In *mycablegripper.pyscn*, replace the lines from previous step with the one needed to create an elastic object with a finger shape. 
 
-    FixedBoxConstraint(atPositions=[-15, 0, 0, 5, 10, 15],
-                       applyTo=finger,
-                       withVisualization=True)
-
-    return rootNode
-```
-
+####<i>Task 2.1:</i>
+- In *mycablegripper.pyscn*, add a visual model to the elastic object you just created. You should get something similar to:
 <div>
 <pre>
-<a href="step2.2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
+<a href="step2.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Visualize this task.</a>
 </pre>
 </div>
+
+####<i>Task 2.2:</i>
+- In *mycablegripper.pyscn* add a ..autolink::STLIB::FixedBox constraint. This ..autolink::STLIB::FixedBox must be applied to the *finger*, holding one of its extremity so that the object stops free falling  because of gravity.
+This should result in the following simulation:
+<div>
+<pre>
+<a href="step2.2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Visualize this task (the FixedBox is in red).</a>
+</pre>
 </div>
+
+####<i>Task 2.3:</i>
+- What is the ..autolink::Sofa::VisualStyle used for ? What happens if you remove it from your scene ?
+
+####<i>Task 2.4:</i>
+- Gives a small explanation of the role of the poisson ratio parameter. 
+
+####<i>Task 2.5:</i>
+- Gives a small explanation of the role of the young modulus parameter. 
 
 
 ## Step 3: Actuating the finger with a cable
@@ -173,10 +187,6 @@ from softrobots.actuators import ..autolink::SoftRobots::PullingCable
 
 def createScene(rootNode):
     ### ... similar to previous step ....
-
-    ## This is here to display the cable geometry.
-    m.getObject("..autolink::Sofa::VisualStyle").displayFlags="showForceFields showInteractionForceFields"
-
 
     cable = ..autolink::SoftRobots::PullingCable(attachedTo=finger,
              withAPullPointLocation=[0.0, 12.5, 2.5],
@@ -197,11 +207,9 @@ def createScene(rootNode):
 ```
 </div>
 
-
-Changing the cable lenght at run-time is dont using a ..autolink::Sofa::PythonScriptController.
-First you need to create a python object in-heriting from *Sofa.PythonScriptController*. This
-object will be in charge of redefining the *onKeyPressed* behavior and implementing the desired
-behavior using the following code:
+The cable has rest lenght that can be changed interactively using a dedicated python object called 
+a *PythonScriptController*.
+You can create your own controllers by in-heriting from the *Sofa.PythonScriptController* class. As in
 <div>
 ```python
 import Sofa
@@ -212,16 +220,10 @@ class FingerController(Sofa.PythonScriptController):
     def onKeyPressed(self,c):
         if (c == "+"):
             self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + 1.
-
-        elif (c == "-"):
-            displacement = self.cableconstraintvalue.value[0][0] - 1.
-            if(displacement < 0):
-                displacement = 0
-            self.cableconstraintvalue.value = displacement
 ```
 </div>
-
-The controller can then be attached to objet it is supposed to control by doing:
+This controller is redefining the *onKeyPressed* behavior and it can can then be attached to objet 
+it is supposed to control by doing:
 <div>
 ```python
 ### ... similar to previous step with the added FingerController ....
@@ -233,15 +235,24 @@ def createScene(rootNode):
     ## or interactions using the Python programming langage. 
     finger.addObject( FingerController(cable) )
 ```
-<div>
-<pre>
-<a href="step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
-</pre>
-</div>
 </div>
 
-If you now run the scene you should now be able to change the cable length resulting in movements
-of the finger.
+Here is a set of tasks you can do to get better understanding of this step.
+
+####<i>Task 3.0:</i>
+- Add to the *mycablegripper.pyscn* the *FingerController* object and connect it to the cable object. 
+
+####<i>Task 3.1:</i>
+- Add to the *FingerController* object the release of the cable when the key '-' is pressed.
+This should result in a behavior similar to:
+<div>
+<pre>
+<a href="step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
+</pre>
+</div>
+
+####<i>Task 3.2:</i>
+- Add to the *FingerController* some printing in the console indicating that the value has changed. 
 
 ## Step 4: Defining self-collision regions
 By default Sofa doesn't handle self-collisions because they are very expensive to compute.
@@ -261,12 +272,13 @@ checked and handled. This can be done by adding the following code to your scene
 from stlib.physics.collision import ..autolink::STLIB::CollisionMesh
 
 def createScene(rootNode):
-    ..autolink::STLIB::MainHeader(rootNode)
-    ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
-
+    m=..autolink::STLIB::MainHeader(rootNode, plugins=["SoftRobots"])
+    ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=5, contactDistance=4, withFrictionCoef=0.08)
 
     ## ... Remaining content of step 3 ...
-    m.getObject("VisualStyle").displayFlags="showForceFields showInteractionForceFields showCollisionModels"
+    ## ... the finger
+    ## ... the cable..
+    ## ... the controller..
 
     ..autolink::STLIB::CollisionMesh(attachedTo=finger,
              fromSurfaceMesh="data/mesh/fingerCollision_part1.stl", withName="part1", withACollisionGroup=1)
@@ -274,26 +286,36 @@ def createScene(rootNode):
     ..autolink::STLIB::CollisionMesh(attachedTo=finger,
               fromSurfaceMesh="data/mesh/fingerCollision_part2.stl", withName="part2", withACollisionGroup=2)
 ```
+</div>
+
+Here is a set of tasks you can do to get better understanding of this step.
+
+####<i>Task 4.0:</i>
+- Add to your existing *"mycablegripper.pyscn"* the auto-collision and test the result to be sure it work as in the following simulation
 <div>
 <pre>
-<a href="step4.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
+<a href="step4.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
 </pre>
 </div>
+
+####<i>Task 4.1:</i>
+- Tune the ..autolink::STLIB::ContactHeader parameters to decrease the distance at which self-collision repulsion force are generated. 
+<div>
+<pre>
+<a href="step4.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
+</pre>
 </div>
 
 ## Step 5: Duplicating the finger to make a complete gripper
 Now we have a working single finger we can duplicate it so that it can match the orginal soft gripper
-robot design.
+robot design that contains three of them.
 
 ![The soft gripper with three fingers](data/images/gripper.png){with=300}
 
-As our *pyscn* file is getting bigger and bigger we need to refactor it to improve its modularity.
-To do that we will make our own scene template by moving the finger creation into a separated file.
-You can do that by moving the current code into a separated file that you will call *finger.py*.
+Before doing that we need to refactor a bit our scene to improve its modularity.
+To do that we will make a scene template by moving the finger creation into a separated file called *myfinger.py*.
 
-By default the fingers are at the same location and orientation, to change that you need
-to expose the orientation, translation as well as the other location specific properties (the box fixation point)
-as parameters of the *Finger* function. The finger.py file should contains something similar to:
+At this point the *myfinger.py* file should contains something similar to:
 <div>
 ```python
 import Sofa
@@ -376,12 +398,59 @@ def Finger(attachedTo=None, withName="Finger",
 ```
 </div>
 
-At this step we can now create a file named *gripper.py* that will instanciate the three fingers and
-implement a python script script controller to handle the gripper movement.
+Now the *"mycablegripper.pyscn"* should be much simpler and only containing:
+<div>
+```python
+from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
+from myfinger import Finger
+
+def createScene(rootNode):
+    """This is my first Sofa scene"""
+    m=..autolink::STLIB::MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+    ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=3, contactDistance=2, withFrictionCoef=0.08)
+
+    f1 = Finger(selfNode, "Finger1",
+           withRotation=[0, 0, 105],
+           withTranslation=[20.0,0.0, 0.0],
+           withFixingBox=[-20, -10, 0, 20, 10, 15],
+           withPullPointLocation=[3, 10.5, 3])
+```
+</div>
+
+
+
+As usual here is a set of tasks you can do to get better understanding of this step.
+
+####<i>Task 5.0:</i>
+- Create the *"myfinger.py"* file with the adequate content and update the file *"mycablegripper.pyscn"* to make use it.
+<div>
+<pre>
+<a href="step5.0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
+</pre>
+</div>
+
+####<i>Task 5.1:</i>
+- In *mycablegripper.pyscn*, duplicate the Finger object and change the different location, orientation and fixing point so that it match
+the desired robot geometry. Do not forget that you can start Sofa with the '-i' option for an automatic reload of the scene each time the source 
+file is changed. 
+<div>
+<pre>
+<a href="step5.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
+</pre>
+</div>
+
+
+## Step 6: Finalizing the gripper. 
+
+At this step we can now create a file named *gripper.py* that will instanciate the three fingers as a single entity 
+and implement a python script script controller to handle the gripper movement.
+
+In *gripper.py* the Gripper creation should look like: 
 <div>
 ```python
 import Sofa
-from finger import Finger
+from myfinger import Finger
 
 def getTranslated(points, vec):
     r=[]
@@ -398,17 +467,18 @@ class GripperController(Sofa.PythonScriptController):
         dir = None
         # UP key :
         if ord(c)==19:
-            dir = [0.0,1.0,0.0]
+            dir = [1.0,0.0,0.0]
         # DOWN key : rear
         elif ord(c)==21:
-            dir = [0.0,-1.0,0.0]
+            dir = [1.0,0.0,0.0]
         # LEFT key : left
         elif ord(c)==18:
             dir = [1.0,0.0,0.0]
         elif ord(c)==20:
-            dir = [-1.0,0.0,0.0]
+            dir = [1.0,0.0,0.0]
 
         if dir != None:
+            ### Apply the displacement to each finger. 
             for finger in self.fingers:
                 mecaobject = finger.getObject("MechanicalObject")
                 mecaobject.findData('rest_position').value = getTranslated( mecaobject.rest_position,  dir )
@@ -438,8 +508,6 @@ def Gripper(attachedTo=None):
            withFixingBox=[-20, -10, 0, 20, 10, 50],
            withPullPointLocation=[3, 10.5, 31.5])
 
-    selfNode.addObject(GripperController([f1,f2,f3]))
-
     return selfNode
 ```
 </div>
@@ -457,55 +525,69 @@ def createScene(rootNode):
 
     Gripper(attachedTo=rootNode)
 ```
+</div>
+</div>
+
+
+And right now the set of tasks you can do to get better understanding of this step.
+
+####<i>Task 6.0:</i>
+- Create the *mygripper.py* file with the appropriate content and update the *mycablegripper.pyscn* accordingly. 
+<div>
 <pre>
-<a href="step5.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
+<a href="step6.0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
 </pre>
 </div>
+
+####<i>Task 6.1:</i>
+- Attach the GripperController to the Gripper object. When you press CTRL+UP/DOWN/LEFT/RIGHT what do you observe ? 
+<div>
+<pre>
+<a href="step6.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
+</pre>
+</div>
+
+####<i>Task 6.1:</i>
+- Fix the GripperController so that it moves in the proper way according to UP/DOWN/LEFT/RIGHT key pressed.  
+<div>
+<pre>
+<a href="step6.2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
+</pre>
 </div>
 
 
-## Step 6: Adding rigid objects to your scene
+## Step 7: Finalizing the tutorial by adding rigid objects to your scene
 
-Adding as static floor is as easy as importing the scene templates from *stlib.physics.rigid* and
-specify its location, size and orientation. The graspable cube is a bit more complexe as the physics
-is computed at the center of gravity and an inertia matrix need to be provided.
+In a similar way to step 0. We will now add rigids objects into *mycablegripper.pyscn*.  
+The graspable cube is a bit more complexe as the physics is computed at the center of gravity 
+and an inertia matrix need to be provided.
 
+The last set of tasks to do in order to finish this tutorial.
+
+####<i>Task 7.0:</i>
+- Add a static Floor object to the scene. 
 <div>
+<pre>
+<a href="step7.0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Visualize the resulting scene.</a>
+</pre>
+</div>
+
+####<i>Task 7.1:</i>
+
+- Add a rigid cube object to the scene. with the following properties:
 ```python
-from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
-from stlib.physics.rigid import ..autolink::STLIB::Floor, ..autolink::STLIB::Cube
-from gripper import Gripper
-
-def createScene(rootNode):
-    """This is my first scene"""
-    ..autolink::STLIB::MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
-    ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
-
-    Gripper(attachedTo=rootNode)
-
-    ..autolink::STLIB::Floor(rootNode, name="Floor",
-          withColor=[1.0,0.0,0.0],
-          withTranslation=[0.0,-160.0,0.0],
-          isAStaticObject=True)
-
-    ..autolink::STLIB::Cube(rootNode, name="Cube",
-          withScale=20.0,
-          withColor=[1.0,1.0,0.0],
-          withTotalMass=0.03,
-          withVolume=20,
-          withInertiaMatrix=[1000.0,0.0,0.0,0.0,1000.0,0.0,0.0,0.0,1000.0],
-          withTranslation=[0.0,-130.0,10.0])
-
-    return rootNode
+totalMass=0.03,
+volume=20,
+inertiaMatrix=[1000.0,0.0,0.0,0.0,1000.0,0.0,0.0,0.0,1000.0],
 ```
-
 <div>
 <pre>
-<a href="step6.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Run code snippet</a>
+<a href="step7.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Visualize the resulting scene.</a>
 </pre>
-</div>
 </div>
 
 ### Conclusion
-That's all for this tutorial. You can now try to model your own soft robots and you are strongly
-encouraged to pursue the other tutorial and read the thematical documentations.
+Congratulation, you completed this tutorial. You are strongly encouraged to pursue with the other tutorial and 
+read the thematical documentations.
+
+If you have any comments or suggestions, please submit issues on our ..autolink::github/SoftRobots page. 

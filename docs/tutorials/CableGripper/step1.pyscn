@@ -1,6 +1,14 @@
-from stlib.scene import MainHeader
+from stlib.scene import MainHeader, ContactHeader
+from stlib.physics.rigid import Floor
+from stlib.visuals import ShowGrid
 
 def createScene(rootNode):
-    v = MainHeader(rootNode)
-    v.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+    """This is my first scene"""
+    MainHeader(rootNode, plugins=["SoftRobots"])
+    ShowGrid(rootNode) 
+
+    Floor(rootNode, name="Floor",
+          withTranslation=[0.0,-160.0,0.0],
+          isAStaticObject=True)
     
+    return rootNode

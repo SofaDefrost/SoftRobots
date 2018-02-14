@@ -3,7 +3,7 @@ from stlib.physics.deformable import ElasticMaterialObject
 
 def createScene(rootNode):
    v = MainHeader(rootNode)
-   v.getObject("VisualStyle").displayFlags="showForceFields"
+   v.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
 
    ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
                           withYoungModulus=18000,

@@ -1,0 +1,14 @@
+from stlib.scene import MainHeader, ContactHeader
+from finger import Finger
+
+def createScene(rootNode):
+    """This is my first Sofa scene"""
+    m=MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+    ContactHeader(rootNode, alarmDistance=3, contactDistance=2, withFrictionCoef=0.08)
+
+    f1 = Finger(rootNode, "Finger1",
+           withRotation=[0, 0, 105],
+           withTranslation=[20.0,0.0, 0.0],
+           withFixingBox=[-20, -10, 0, 20, 10, 15],
+           withPullPointLocation=[3, 10.5, 3])

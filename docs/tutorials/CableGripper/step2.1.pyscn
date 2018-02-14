@@ -15,8 +15,4 @@ def createScene(rootNode):
                                    withSurfaceMesh="data/mesh/finger.stl",
                                    attachedTo=rootNode)
 
-    FixedBoxConstraint(atPositions=[-14, 0, 0, 5, 10, 15],
-                       applyTo=finger,
-                       withVisualization=True)
-
     return rootNode
