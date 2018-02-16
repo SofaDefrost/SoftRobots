@@ -7,7 +7,6 @@ project(SoftRobots VERSION 1.0)
 
 option(USE_COMPRESSED_ROW_SPARSE "Use compressed row sparse format in the mappings" ON)
 
-
 find_package(STLIB QUIET)
 if(STLIB_FOUND)
     message("-- Found dependency : 'STLIB' plugin .")
