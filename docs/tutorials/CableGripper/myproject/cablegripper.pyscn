@@ -1,0 +1,10 @@
+from gripper import Gripper
+
+def createScene(rootNode):
+    """This is my first scene"""
+    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
+
+    Gripper(attachedTo=rootNode)
+
+    return rootNode
