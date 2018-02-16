@@ -1,0 +1,18 @@
+
+--- NEW SESSION: 14/02/2018 17:12:46 ---
+/actuators/UniformMass.showGravityCenter = 1
+/actuators/UniformMass.showGravityCenter = 1
+/actuators/UniformMass.showGravityCenter = 1
+/actuators/attach0/MechanicalObject.showObject = 1
+/actuators/attach0/MechanicalObject.showIndices = 1
+/actuators/attach0/MechanicalObject.showObject = 1
+/actuators/attach0/MechanicalObject.showIndices = 1
+/actuators/attach0/MechanicalObject.showObject = 1
+/actuators/attach0/MechanicalObject.showIndices = 1
+/actuators/attach0/MechanicalObject.showObject = 1
+/actuators/attach0/MechanicalObject.showObject = 1
+/actuators/attach0/MechanicalObject.showObject = 1
+
+--- NEW SESSION: 15/02/2018 16:25:40 ---
+/actuators/MechanicalObject.velocity = 0 -2.04307e-12 -1.6266e-13 -7.42123e-12 0 0 0 0 -1.6266e-13 3.71062e-12 6.42698e-12 3.66463e-27 0 0 -1.6266e-13 3.71062e-12 -6.42698e-12 -3.66463e-27
+/actuators/MechanicalObject.force = 0 1.94461e-06 1.80989e-07 0 0 0 0 0 1.80989e-07 0 0 0 0 0 1.80989e-07 0 0 0
