@@ -1,0 +1,121 @@
+import Sofa
+
+from stlib.scene import MainHeader, ContactHeader
+from stlib.physics.deformable import ElasticMaterialObject
+from stlib.physics.constraints import FixedBox as FixedBoxConstraint
+
+from math import sin,cos
+
+import os
+path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
+
+#Utils
+def addConstantAndTransformTableInString(Table, add):
+	sizeT =  len(Table);
+	strOut= ' ';
+	for p in range(sizeT):
+		strOut = strOut+ str(Table[p]+add)+' '
+
+	return strOut
+
+def transformTableInString(Table):
+	sizeT =  len(Table);
+	strOut= ' ';
+	for p in range(sizeT):
+		strOut = strOut+ str(Table[p])+' '
+
+	return strOut
+
+def generateBranches(position):
+    listBranch0= [509, 534,556,573,592,603,504,532,555,571,591, 601];
+    listBranch1= [1,2,5,7,11,16,25,28,43,47,63,67];
+    listBranch2= [629,627,623,620,612,602,630,628,624, 621,614,604];
+    listBranches= [listBranch0, listBranch1, listBranch2]
+
+    posBranches = []
+    for k in range(0,3):
+        posBranches.append([0]*3*len(listBranches[k]))
+        j=0;
+        for i in listBranches[k]:
+            posBranches[k][j] = position[i-1][0];
+            posBranches[k][j+1] = position[i-1][1];
+            posBranches[k][j+2] = position[i-1][2];
+            j=j+3;
+
+    return [listBranches, posBranches]
+
+#Scene
+# units: mm and kg
+def createScene(rootNode):
+
+    rootNode.createObject('VisualStyle', displayFlags='showBehaviorModels showForceFields');
+    rootNode.findData('dt').value= 0.01;
+    rootNode.findData('gravity').value= '0. 0. 9810';
+
+    rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765');
+    rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
+    rootNode.createObject('PythonScriptController', classname="controller", filename="ControlKeyboard.py");
+
+    ###############################
+    ## MECHANICAL MODEL
+    ###############################
+
+    robot = rootNode.createChild('robot')
+    robot.createObject('EulerImplicit');
+    robot.createObject('SparseLDLSolver');
+    loader=robot.createObject('GIDMeshLoader', name='loader', filename=path+'tripod1.msh', scale='10');
+    loader.init()
+    ### Here you set the tetrahedra topology
+    topo=robot.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray='1', checkConnexity='1');
+    topo.init()
+
+    ###############################
+    ## ACTUATORS
+    ###############################
+    [listBranches, posBranches] = generateBranches(topo.position)
+    actuators= rootNode.createChild('actuators')
+    actuators.createObject('EulerImplicit')
+    actuators.createObject('CGLinearSolver', tolerance='1e-5', threshold='1e-99')
+
+    PI=3.14159265359;
+    y0=-50;
+    x0=0;
+    y1=cos(2*PI/3)*y0;
+    x1=sin(2*PI/3)*y0;
+    y2=cos(4*PI/3)*y0;
+    x2=sin(4*PI/3)*y0;
+
+    v1=[-0.7071*0.5 ,-0.7071*0.8660254];
+    v2=[-0.7071*0.5 , 0.7071*0.8660254];
+
+    actuators.createObject('MechanicalObject', template='Rigid', position=str(x0)+' '+str(y0)+' 0 0 0 0 1 ' + str(x1)+' '+str(y1)+' 0 0 0 0 1 ' + str(x2)+' '+str(y2)+' 0 0 0 0 1 ',
+                           rest_position=str(x0)+' -50 0 0.7071 0 0 0.7071' + str(x1)+' '+str(y1)+' 0 '+ str(v1[0])+' '+ str(v1[1])+' '+' 0 0.7071 ' + str(x2)+' '+str(y2)+' 0 '+ str(v2[0])+' '+ str(v2[1])+' 0 0.7071 ')
+    actuators.createObject('UniformMass', showGravityCenter='1')
+    actuators.createObject('RestShapeSpringsForceField', stiffness='1e7', angularStiffness='1e6')
+
+    quaternion = ["0 0 0 1", "0 0 "+str(sin(4*PI/6))+" "+str(cos(4*PI/6)), "0 0 "+str(sin(2*PI/6))+" "+str(cos(2*PI/6))]
+    rotation = ["0 0 0", "0 "+str(2*PI/3)+" 0", "0 0 0"]
+    for i in range(0,3):
+        attach= actuators.createChild('attach'+str(i))
+        attach.createObject('MechanicalObject', name='meca', template='Vec3', position=transformTableInString(posBranches[i]), showObject='1')
+        attach.createObject('RigidMapping', globalToLocalCoords='1', index=str(i))
+
+        visuMotor = actuators.createChild('visuMotor'+str(i))
+        visuMotor.createObject('RegularGrid', name='rg', min='-10 -55 5', max='10 -50 -30')
+        visuMotor.createObject('TransformEngine', name='engine', input_position='@rg.position', rotation=rotation[i], quaternion=quaternion[i])
+        visuMotor.createObject('OglModel', position='@engine.output_position', triangles='@rg.triangles')
+        visuMotor.createObject('RigidMapping', globalToLocalCoords='1', index=str(i))
+
+
+    robot.createObject('TetrahedronSetTopologyModifier');
+    robot.createObject('TetrahedronSetTopologyAlgorithms');
+    robot.createObject('TetrahedronSetGeometryAlgorithms');
+
+    robot.createObject('MechanicalObject', name='tetras');
+    robot.createObject('UniformMass', totalmass='0.4');
+    robot.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='600');
+
+    for i in range(0,3):
+        robot.createObject('RestShapeSpringsForceField', external_rest_shape='@../actuators/attach'+str(i)+'/meca', stiffness='1e10', points=addConstantAndTransformTableInString(listBranches[i],-1), external_points=transformTableInString(range(len(listBranches[i]))) )
+
+    return rootNode
