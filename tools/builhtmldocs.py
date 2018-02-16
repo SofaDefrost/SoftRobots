@@ -24,11 +24,8 @@ def replaceStringInFile(aFile, outFile, aDictionary):
                         url = None
                         if not "url" in aDictionary[aString]:
                             if "absolutepath" in aDictionary[aString]:
-                                print("COMPARE:" + os.path.dirname(aFile) + " " + aDictionary[aString]["absolutepath"])
                                 commonprefix = os.path.commonprefix([aFile, aDictionary[aString]["absolutepath"]])
-                                print("PREFIX IS:"+commonprefix)
                                 relpath = os.path.relpath(aDictionary[aString]["absolutepath"], os.path.dirname(aFile))
-                                print("RELPATH:"+relpath)
                                 url = relpath
                             else:
                                 url = "Oooops autolink::404 (missing URL)"
@@ -36,8 +33,12 @@ def replaceStringInFile(aFile, outFile, aDictionary):
                             url = aDictionary[aString]["url"]
                         line = aDictionary[aString]["regex"].sub("<a href=\"" + url + "\">" + aDictionary[aString]["name"] + "</a>", line)
 
-                if re.search("..autolink::", line):
-                    print("Missing autolink in line "+str(lineno)+" : "+line)
+                m=re.search("..autolink::(.)*", line)
+                if m:
+                    res = m.group(0)
+                    if len(res) > 60:
+                        res = res[:60]+" ... "
+                    print("Missing autolink in line "+str(lineno)+" : "+res)
 
                 lineno += 1
 
@@ -60,16 +61,17 @@ for hook in sys.argv[2:]:
         bn = os.path.splitext(os.path.basename(hook))[0]
         print("- Importing "+bn)
         d = json.load(open(hook))
-        for k in d:
-            dictionary[k] = d[k]
-            if "ns" not in dictionary[k]:
-                dictionary[k]["ns"] = bn     
-            ns = dictionary[k]["ns"]
-            
+        for dk in d:
+            if "ns" not in d[dk]:
+                d[dk]["ns"] = bn
+            ns = d[dk]["ns"]
+            k = d[dk]["ns"]+"::"+dk
+            dictionary[k] = d[dk]
+
             if ns == "":
-                dictionary[k]["regex"] = re.compile("\.\.autolink::"+k+"(?!::)")
+                dictionary[k]["regex"] = re.compile("\.\.autolink::"+dk+"(?!::)")
             else:
-                dictionary[k]["regex"] = re.compile("\.\.autolink::"+ns+"::"+k+"(?!::)")
+                dictionary[k]["regex"] = re.compile("\.\.autolink::"+ns+"::"+dk+"(?!::)")
 
             if "url" not in dictionary[k] and "relativepath" in dictionary[k] :
                 abspath = os.path.abspath(os.path.dirname(hook))+"/"+dictionary[k]["relativepath"]
@@ -89,8 +91,7 @@ for (dirpath, dirnames, aFilenames) in os.walk(pathprefix):
         for aFilename in aFilenames:
                 aFile, ext = os.path.splitext(aFilename)
 		if ext in [".md"]:
-                        print("Generating: " + dirpath + aFile + ".html from " +
-                        dirpath+aFile+ext )
+                        print("Generating: " + os.path.relpath(dirpath + aFile + ".html", pathprefix))
                         os.chdir(dirpath)
                         relpathstyle = os.path.relpath(pathprefix, dirpath)
                         retcode = subprocess.call(["pandoc", dirpath + "/" +aFilename, "-s", "-c", relpathstyle+"/docs/style.css", "-o", dirpath + "/" + aFile + ".html.tmp"])

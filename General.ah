@@ -1,20 +1,24 @@
 {
+        "Python" : {
+            "name": "Python",
+            "url": "https://www.python.org/"
+        },
+
 	"FEM" : {
-	    "ns" : "General",
-	    "name": "FEM",
-		"url" : "https://en.wikipedia.org/wiki/Finite_element_method"
+            "name": "FEM",
+            "url" : "https://en.wikipedia.org/wiki/Finite_element_method"
 	},
 	
 	"Sofa" : {
 	    "ns" : "",
-		"name": "Sofa",
-		"url" : "https://www.sofa-framework.org/"
+            "name": "Sofa",
+            "url" : "https://www.sofa-framework.org/"
 	},
 	
 	"SoftRobots" : {
 	    "ns" : "",
-		"name": "SoftRobots",
-		"url" : "https://project.inria.fr/softrobot/"
+            "name": "SoftRobots",
+            "url" : "https://project.inria.fr/softrobot/"
 	},
 	
 	"Defrost" : {

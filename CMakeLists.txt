@@ -26,7 +26,7 @@ set(SOURCE_FILES
     component/initSoftRobots.cpp
         )
 
-file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn")
+file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
 include(cmake/environment.cmake)
 include(cmake/utils.cmake)
