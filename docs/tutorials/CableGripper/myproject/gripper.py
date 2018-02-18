@@ -1,17 +1,18 @@
+# -*- coding: utf-8 -*-
 from finger import Finger
-from grippercontroller import GripperController
 
-def Gripper(attachedTo=None):
+def Gripper(parentNode):
     """A three finger soft gripper."""
-    selfNode = attachedTo.createChild("Gripper")
+    gripper = Node(parentNode, "Gripper")
 
-    f1 = Finger(selfNode, "Finger1",
-           withRotation=[0, 0, 105],
-           withTranslation=[20.0,0.0, 0.0],
+    f1 = Finger(gripper, 
+           Name="Finger1",
+           rotation=[0, 0, 105],
+           translate=[20.0,0.0, 0.0],
            withFixingBox=[-20, -10, 0, 20, 10, 15],
            withPullPointLocation=[3, 10.5, 3])
 
-    return selfNode
+    return gripper
 
 
 def createScene(rootNode):
@@ -19,10 +20,11 @@ def createScene(rootNode):
     >>> runSofa gripper.py 
     """ 
     from stlib.scene import MainHeader, ContactHeader
-    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    m=MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
-    Gripper(attachedTo=rootNode)
+    Gripper(rootNode)
     return rootNode
 
 

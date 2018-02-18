@@ -6,7 +6,7 @@ from softrobots.actuators import PullingCable
 from stlib.physics.collision import CollisionMesh
 
 class FingerController(Sofa.PythonScriptController):
-    def __init__(self, cable ):
+    def __init__(self, node, cable ):
         self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
         self.name = "FingerController"
 
@@ -20,29 +20,29 @@ class FingerController(Sofa.PythonScriptController):
                 displacement = 0
             self.cableconstraintvalue.value = displacement
 
-def Finger(attachedTo=None, withName="Finger",
-           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
+def Finger(parentNode=None, Name="Finger",
+           rotation=[0.0, 0.0, 0.0], translate=[0.0, 0.0, 0.0],
            withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
 
     finger = ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
-                                   withName=withName,
+                                   Name=Name,
                                    withPoissonRatio=0.3,
                                    withYoungModulus=18000,
                                    withTotalMass=0.5,
                                    withSurfaceColor=[0.0, 0.8, 0.7],
                                    withSurfaceMesh="data/mesh/finger.stl",
-                                   withRotation=withRotation,
-                                   withTranslation=withTranslation,
-                                   attachedTo=attachedTo)
+                                   rotation=rotation,
+                                   Name=Name,
+                                   parentNode=parentNode)
 
     FixedBoxConstraint(atPositions=withFixingBox, applyTo=finger,
                        withVisualization=True)
 
-    cable=PullingCable(attachedTo=finger,
-                 withName="PullingCable",
+    cable=PullingCable(parentNode=finger,
+                 Name="PullingCable",
                  withAPullPointLocation=withPullPointLocation,
-                 withRotation=withRotation,
-                 withTranslation=withTranslation,
+                 rotation=rotation,
+                 Name=Name,
                  withCableGeometry=[[-17.5, 12.5, 2.5],
                                     [-32.5, 12.5, 2.5],
                                     [-47.5, 12.5, 2.5],
@@ -58,22 +58,31 @@ def Finger(attachedTo=None, withName="Finger",
                                     [-32.5, 12.5, 12.5],
                                     [-17.5, 12.5, 12.5]]);
 
-    finger.addObject( FingerController(cable) )
+    FingerController(finger, cable)
 
-    CollisionMesh(attachedTo=finger,
+    CollisionMesh(parentNode=finger,
                  fromSurfaceMesh="data/mesh/finger.stl",
-                 withRotation=withRotation, withTranslation=withTranslation,
-                 withName="CollisionMesh", withACollisionGroup=[1, 2])
+                 rotation=rotation, Name=Name,
+                 Name="CollisionMesh", withACollisionGroup=[1, 2])
 
-    CollisionMesh(attachedTo=finger,
+    CollisionMesh(parentNode=finger,
                  fromSurfaceMesh="data/mesh/fingerCollision_part1.stl",
-                 withRotation=withRotation, withTranslation=withTranslation,
-                 withName="CollisionMeshAuto1", withACollisionGroup=[1])
+                 rotation=rotation, Name=Name,
+                 Name="CollisionMeshAuto1", withACollisionGroup=[1])
 
-    CollisionMesh(attachedTo=finger,
+    CollisionMesh(parentNode=finger,
                  fromSurfaceMesh="data/mesh/fingerCollision_part2.stl",
-                 withRotation=withRotation, withTranslation=withTranslation,
-                 withName="CollisionMeshAuto2", withACollisionGroup=[2])
+                 rotation=rotation, Name=Name,
+                 Name="CollisionMeshAuto2", withACollisionGroup=[2])
 
 
     return finger
+
+def createScene(rootNode):
+    from stlib.scene import MainHeader, ContactHeader
+    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
+
+    Finger(rootNode, translate=[1.0,0.0,0.0])
+    return rootNode
+

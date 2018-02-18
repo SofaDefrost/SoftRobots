@@ -1,62 +1,43 @@
-from stlib.scene import MainHeader
 from stlib.physics.deformable import ElasticMaterialObject
-from stlib.physics.constraints import FixedBox as FixedBoxConstraint
+from stlib.physics.constraints import FixedBox
+from stlib.scene import Node 
 from softrobots.actuators import PullingCable
+from stlib.tools import loadPointListFromFile
 
 import Sofa
 class FingerController(Sofa.PythonScriptController):
-    def __init__(self, cable):
+    def __init__(self, node, cable):
         self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
+        self.name = "FingerController"
 
     def onKeyPressed(self,c):
         if (c == "+"):
             self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + 1.
+        if (c == "-"):
+            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] - 1.
 
-        elif (c == "-"):
-            displacement = self.cableconstraintvalue.value[0][0] - 1.
-            if(displacement < 0):
-                displacement = 0
-            self.cableconstraintvalue.value = displacement
+def Finger(parentNode=None, name="Finger",
+           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
+           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
+
+    finger = Node(parentNode, "Finger")
+    eobject = ElasticMaterialObject(finger, fromVolumeMesh="data/mesh/finger.vtk")
+
+    FixedBox(eobject, withVisualization=True, atPositions=[-10,-10,-10,10,10,10])
+    cable = PullingCable(eobject, withCableGeometry=loadPointListFromFile("data/mesh/cable.json"))
+   
+    FingerController(finger, cable)
 
 def createScene(rootNode):
-    m=MainHeader(rootNode, plugins=["SoftRobots"])
-
-    finger = ElasticMaterialObject(
-                                   fromVolumeMesh="data/mesh/finger.vtk",
-                                   withPoissonRatio=0.3,
-                                   withYoungModulus=18000,
-                                   withTotalMass=0.5,
-                                   withSurfaceColor=[0.0, 0.8, 0.7],
-                                   withSurfaceMesh="data/mesh/finger.stl",
-                                   attachedTo=rootNode)
-
-    FixedBoxConstraint(atPositions=[-15, 0, 0, 5, 10, 15],
-                       applyTo=finger,
-                       withVisualization=True)
-
-    m.getObject("VisualStyle").displayFlags="showForceFields showInteractionForceFields"
-
-
-    cable = PullingCable(attachedTo=finger,
-             withAPullPointLocation=[0.0, 12.5, 2.5],
-             withCableGeometry=[[-17.5, 12.5, 2.5],
-                                [-32.5, 12.5, 2.5],
-                                [-47.5, 12.5, 2.5],
-                                [-62.5, 12.5, 2.5],
-                                [-77.5, 12.5, 2.5],
-                                [-83.5, 12.5, 4.5],
-                                [-85.5, 12.5, 6.5],
-                                [-85.5, 12.5, 8.5],
-                                [-83.5, 12.5, 10.5],
-                                [-77.5, 12.5, 12.5],
-                                [-62.5, 12.5, 12.5],
-                                [-47.5, 12.5, 12.5],
-                                [-32.5, 12.5, 12.5],
-                                [-17.5, 12.5, 12.5]]);
-
-    
-    ## This create a PythonScriptController that permits to programatically implement new behavior
-    ## or interactions using the Python programming langage. 
-    finger.addObject( FingerController(cable) )
+    # -*- coding: utf-8 -*-
+    from stlib.scene import MainHeader
+    from stlib.visuals import ShowGrid
+    from stlib.physics.rigid import Floor
+    from stlib.physics.rigid import Cube
+    m=MainHeader(rootNode)
+    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+ 
+    ShowGrid(rootNode)
+    Finger(rootNode)
 
     return rootNode

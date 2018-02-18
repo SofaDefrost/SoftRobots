@@ -9,7 +9,7 @@ def getTranslated(points, vec):
     return r
 
 class GripperController(Sofa.PythonScriptController):
-    def __init__(self, fingers):
+    def __init__(self, node, fingers):
         self.fingers = fingers
         self.name = "FingerController"
 
@@ -36,8 +36,8 @@ class GripperController(Sofa.PythonScriptController):
                 p = cable.pullPoint[0]
                 cable.findData("pullPoint").value = [p[0]+dir[0], p[1]+dir[1], p[2]+dir[2]]
 
-def Gripper(attachedTo=None):
-    selfNode = attachedTo.createChild("Gripper")
+def Gripper(parentNode=None):
+    selfNode = parentNode.createChild("Gripper")
 
     f1 = Finger(selfNode, "Finger1",
            withRotation=[0, 0, 105],
@@ -57,7 +57,7 @@ def Gripper(attachedTo=None):
            withFixingBox=[-20, -10, 0, 20, 10, 50],
            withPullPointLocation=[3, 10.5, 31.5])
 
-    selfNode.addObject(GripperController([f1,f2,f3]))
+    GripperController(selfNode, [f1,f2,f3])
 
     return selfNode
 
@@ -67,7 +67,7 @@ def createScene(rootNode):
     MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
-    Gripper(attachedTo=rootNode)
+    Gripper(parentNode=rootNode)
     return rootNode
 
 
