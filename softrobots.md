@@ -7,6 +7,8 @@ This plugin is provided as-is under the LGPL Licence.
 Tutorials:
 -----------
 
+* First step for Sofa newcommers. [Start the tutorial](docs/tutorials/FirstSteps/firststeps-tuto.html?sofafile=firststeps-tuto.pyscn)
+
 * Make a soft-gripper actuated by cables. [Start the tutorial](docs/tutorials/CableGripper/cablegripper-tuto.html?sofafile=cablegripper-tuto.pyscn)
 
 * Make a soft-gripper actuated by pneumatics. [Start the tutorial](docs/tutorials/PneunetGripper/pneunetgripper.html?sofafile=pneunetgripper.pyscn)
