@@ -4,6 +4,11 @@
             "url": "https://www.python.org/"
         },
 
+        "PythonTutorials" : {
+            "name": "PythonTutorials",
+            "url": "https://www.python.org/about/gettingstarted/"
+        },
+
 	"FEM" : {
             "name": "FEM",
             "url" : "https://en.wikipedia.org/wiki/Finite_element_method"
