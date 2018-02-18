@@ -1,84 +1,48 @@
 # -*- coding: utf-8 -*-
 import Sofa
-from stlib.scene import Node
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.physics.constraints import FixedBox
+
+from softrobots.actuators import PullingCable
 from stlib.physics.collision import CollisionMesh
 from stlib.tools import loadPointListFromFile
-from softrobots.actuators import PullingCable
+from stlib.scene import Node
 
+####################################################################################################
+### FingerController
+####################################################################################################
 class FingerController(Sofa.PythonScriptController):
     def __init__(self, node, cable ):
         self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
         self.name = "FingerController"
 
     def onKeyPressed(self,c):
-        if (c == "+"):
-            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + 1.
+        print("Key pressed "+str(c))
 
-        elif (c == "-"):
-            displacement = self.cableconstraintvalue.value[0][0] - 1.
-            if(displacement < 0):
-                displacement = 0
-            self.cableconstraintvalue.value = displacement
-
-def Finger(parentNode=None, Name="Finger",
-           rotation=[0.0, 0.0, 0.0], translate=[0.0, 0.0, 0.0],
+####################################################################################################
+### Finger
+####################################################################################################
+def Finger(parentNode=None, name="Finger",
+           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
            withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
 
-    finger = Node(parentNode, Name)
+    finger = Node(parentNode, name)
 
-    eobject = ElasticMaterialObject(
-                                   finger,
-                                   fromVolumeMesh="data/mesh/finger.vtk",
-                                   withPoissonRatio=0.3,
-                                   withYoungModulus=18000,
-                                   withTotalMass=0.5,
-                                   withSurfaceMesh="data/mesh/finger.stl",
-                                   rotation=rotation,
-                                   withSurfaceColor=[0.0,0.7,0.8],
-                                   Name=Name)
-
-    FixedBox(applyTo=eobject,
-                                atPositions=withFixingBox,
-                                withVisualization=True)
-
-    cable=PullingCable(eobject,
-                 Name="PullingCable",
-                 withAPullPointLocation=withPullPointLocation,
-                 rotation=rotation,
-                 Name=Name,
-                 withCableGeometry=loadPointListFromFile("data/mesh/cablepoints.json"));
-
-    FingerController(eobject, cable)
-
-    CollisionMesh(parentNode=eobject,
-                 fromSurfaceMesh="data/mesh/finger.stl",
-                 rotation=rotation, Name=Name,
-                 Name="CollisionMesh", withACollisionGroup=[1, 2])
-
-    CollisionMesh(parentNode=eobject,
-                 fromSurfaceMesh="data/mesh/fingerCollision_part1.stl",
-                 rotation=rotation, Name=Name,
-                 Name="CollisionMeshAuto1", withACollisionGroup=[1])
-
-    CollisionMesh(parentNode=eobject,
-                 fromSurfaceMesh="data/mesh/fingerCollision_part2.stl",
-                 rotation=rotation, Name=Name,
-                 Name="CollisionMeshAuto2", withACollisionGroup=[2])
+    #### YOU NEED TO PUT THE FINGER CONTENT HERE.
 
     return finger
 
-def createScene(rootNode):
-    from stlib.scene import MainHeader
-    from stlib.visuals import ShowGrid
-    from stlib.physics.rigid import Floor
-    from stlib.physics.rigid import Cube
-    m=MainHeader(rootNode, plugins=["SoftRobots"])
-    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
 
-    ## Creation de modèle 
-    ShowGrid(rootNode)
-    Finger(rootNode, withFixingBox=[-10,-10,-5,10,10,15], withPullPointLocation=[0.0,10,0.0])
-   
+####################################################################################################
+### You can test the gripper by typing runSofa finger.py
+####################################################################################################
+def createScene(rootNode):
+    """You can load the finger only by typing runSofa finger.py"""
+    from stlib.scene import MainHeader, ContactHeader
+    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
+
+    Finger(rootNode,
+           withTranslation=[1.0,0.0,0.0])
     return rootNode
+

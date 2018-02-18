@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.physics.constraints import FixedBox
 from stlib.scene import Node
@@ -20,7 +21,7 @@ def createScene(rootNode):
     from stlib.visuals import ShowGrid
     from stlib.physics.rigid import Floor
     from stlib.physics.rigid import Cube
-    m=MainHeader(rootNode)
+    m=MainHeader(rootNode, plugins=["SoftRobots"])
     m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
 
     ShowGrid(rootNode)

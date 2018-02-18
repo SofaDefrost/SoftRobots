@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.physics.constraints import FixedBox
 from stlib.physics.collision import CollisionMesh
@@ -29,18 +30,18 @@ def Finger(parentNode=None, name="Finger",
                                     )
 
     FixedBox(eobject, withVisualization=True, atPositions=[-10,-10,-10,10,10,10])
-    cable = PullingCable(parentNode=eobject,
+    cable = PullingCable(eobject,
                          withCableGeometry=loadPointListFromFile("data/mesh/cable.json"))
    
     FingerController(finger, cable)
 
-    CollisionMesh(parentNode=eobject,
+    CollisionMesh(eobject,
                  fromSurfaceMesh="data/mesh/fingerCollision_part1.stl",
-                 Name="CollisionMeshAuto1", withACollisionGroup=[1])
+                 withName="CollisionMeshAuto1", withACollisionGroup=[1])
 
-    CollisionMesh(parentNode=eobject,
+    CollisionMesh(eobject,
                  fromSurfaceMesh="data/mesh/fingerCollision_part2.stl",
-                 Name="CollisionMeshAuto2", withACollisionGroup=[2])
+                 withName="CollisionMeshAuto2", withACollisionGroup=[2])
 
 def createScene(rootNode):
     # -*- coding: utf-8 -*-
@@ -48,7 +49,7 @@ def createScene(rootNode):
     from stlib.visuals import ShowGrid
     from stlib.physics.rigid import Floor
     from stlib.physics.rigid import Cube
-    m=MainHeader(rootNode)
+    m=MainHeader(rootNode, plugins=["SoftRobots"])
     m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields showCollisionModels'
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
