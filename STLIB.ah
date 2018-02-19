@@ -30,7 +30,6 @@
 	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh"
 	},
 
-
     "Cube" : {
 	    "name": "Cube",
 	    "url" : "http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube"
@@ -44,6 +43,11 @@
 	"RigidObject" : {
 	    "name": "RigidObject",
 	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.rigid.html#stlib.physics.rigid.RigidObject"
+	},
+
+	"Node": {
+	    "name": "Node",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.Node"
 	},
 
     "withYoungModulus" : {
