@@ -1,24 +1,120 @@
 ![](../../images/pluginimage.png){width=100%}
 
-..autolink::SoftRobots::TODO-BECAUSE-NOTHING-IS-DONE
-
-## First steps
-Welcome in Sofa and the SoftRobots plugins. This tutorial is aimed at people 
-that have never use Sofa to give them the basis to understand the other tutorials
-of the SoftRobots plugins. 
-
-We provide a myproject.zip with some basic element. Un-compress this folder which should contain:
-- myproject.pyscn, this is the file loaded that sofa that will create the scene 
-- cubes.py, this file contains 
-- data/images/
-
-### Step 0: Load the scene in Sofa
-To execute the scene you need to type runSofa myproject.pyscn 
 
 
-####<i>Task 1.2:</i>
-- Add a rigid Cube. The cube must be of size '20'.
+## First steps with Sofa & SoftRobots
+Welcome in Sofa and the SoftRobots plugins. This tutorial is aimed at people
+that have never use Sofa and aims at give them the basis of Sofa scene modelling.
 
-####<i>Task 1.3:</i>
-- Add a serie of 5 cubes in a row with equidistant spacing and different color.
-(Note, with Sofa colors are encoded as a triplet of float encoding bewteen 0.0 and 1.0 the intensity of the Red/Green/Blue component. a ..autolink::STLIB::Floor is a specific kind of ..autolink::STLIB::RigidObject thus it have the same parameters).
+This tutorial describes how to set-up a simulation environment, a scene, using ..autolink::Sofa and how to use the
+..autolink::STLIB plugin to add simulated elements.
+
+Tutorials prequisites:
+
+- installed ..autolink::Sofa with the ..autolink::STLIB.
+
+- you have basic knowledge of the ..autolink::General::Python programming language. If not you can go to ..autolink::General::PythonTutorials.
+
+### Step 1: Setting up simple scene
+
+Sofa is loading the description of the simulation from *pyscn* files. The content of these file is in fact standard python code with
+at least one function named *createScene* taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa
+to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode".
+
+A very simple scene may look like:
+<div>
+```python
+from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
+from stlib.visuals import ShowGrid
+from stlib.physics.rigid import ..autolink::STLIB::Floor
+from stlib.physics.rigid import ..autolink::STLIB::Cube
+
+def createScene(rootNode):
+    """This is my first scene"""
+    ..autolink::STLIB::MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+    ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=15, contactDistance=10)
+
+    ShowGrid(rootNode)
+
+    ..autolink::STLIB::Floor(rootNode,
+          withTranslation=[0.0,-160.0,0.0],
+          isAStaticObject=True)
+
+    ..autolink::STLIB::Cube(rootNode,
+          withTranslation=[0.0,0.0,0.0],
+          withScale=20.0)
+
+
+    return rootNode
+```
+<div>
+<pre>
+<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/firststeps.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+</pre>
+</div>
+</div>
+
+
+####<i>Comments (things to present or do in this step):</i>
+
+- Load the file 'firststeps.pyscn' in runSofa with the -i option and in your text editor.
+
+- The '-i' option is there to automatically reload the file when there is changes.
+
+- Move the object in the scene
+
+- Change their scale
+
+- Explaine the role of the alarmDistance & contactDistance
+
+
+
+### Step 2: Adding more elements to the sene
+
+We will now add much more cube falling on the floor.
+
+<div>
+```python
+from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
+from stlib.visuals import ShowGrid
+from stlib.physics.rigid import ..autolink::STLIB::Floor
+from stlib.physics.rigid import ..autolink::STLIB::Cube
+
+def createScene(rootNode):
+    """This is my first scene"""
+    ..autolink::STLIB::MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+    ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=2, contactDistance=1)
+
+    ShowGrid(rootNode)
+
+    ..autolink::STLIB::Floor(rootNode,
+          withTranslation=[0.0,-160.0,0.0],
+          withScale=5.0,
+          isAStaticObject=True)
+
+    for c in range(10):
+        ..autolink::STLIB::Cube(rootNode,
+             withTranslation=[-200+c*50,0.0,0.0],
+             withColor=[c/10.0,c*0.7/10.0,0.9],
+             withScale=20.0)
+
+
+    return rootNode
+```
+<div>
+<pre>
+<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/firststeps.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+</pre>
+</div>
+</div>
+
+
+####<i>Comments (things to present or do in this step):</i>
+
+- Add the for loop and change the translation.
+
+- Explain a bit the rendering options to change the color
+
+- Explain that a Floor and Cube are specific cases of a ..autolink::STLIB::RigidObject
