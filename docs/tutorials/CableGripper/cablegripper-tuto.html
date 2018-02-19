@@ -405,14 +405,14 @@ return selfNode</code></pre>
 <h2 id="step-6-putting-everything-in-a-single-simulation.">Step 6: Putting everything in a single simulation.</h2>
 Open the <em>'cablegripper.pyscn'</em> and add the Cube, the Floor and the Gripper which should resuts in something similar to:
 <div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>
 <span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>, <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>
 <span class="im">from</span> gripper <span class="im">import</span> Gripper
 
 <span class="kw">def</span> createScene(rootNode):
     <span class="co">&quot;&quot;&quot;This is my first scene&quot;&quot;&quot;</span>
     <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">981.0</span>, <span class="fl">0.0</span>], plugins<span class="op">=</span>[<span class="st">&quot;SoftRobots&quot;</span>])
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>(rootNode, alarmDistance<span class="op">=</span><span class="dv">4</span>, contactDistance<span class="op">=</span><span class="dv">3</span>, withFrictionCoef<span class="op">=</span><span class="fl">0.08</span>)
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>(rootNode, alarmDistance<span class="op">=</span><span class="dv">4</span>, contactDistance<span class="op">=</span><span class="dv">3</span>, withFrictionCoef<span class="op">=</span><span class="fl">0.08</span>)
 
     Gripper(parentNode<span class="op">=</span>rootNode)
 

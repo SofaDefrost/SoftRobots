@@ -12,7 +12,7 @@
 
     "ContactHeader" : {
 	    "name": "ContactHeader",
-	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader"
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader"
 	},
 	
     "ElasticMaterialObject" : {
