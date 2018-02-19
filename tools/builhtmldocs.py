@@ -12,6 +12,8 @@ import re
 import ntpath
 import json 
 import re
+import urllib2
+
 sofaext=['.scn', ".pyscn", ".psl"]
 
 def replaceStringInFile(aFile, outFile, aDictionary):
@@ -22,16 +24,27 @@ def replaceStringInFile(aFile, outFile, aDictionary):
                 for aString in aDictionary:
                     if aDictionary[aString]["regex"].search(line) != None:
                         url = None
+                        validUrl =False
                         if not "url" in aDictionary[aString]:
                             if "absolutepath" in aDictionary[aString]:
                                 commonprefix = os.path.commonprefix([aFile, aDictionary[aString]["absolutepath"]])
                                 relpath = os.path.relpath(aDictionary[aString]["absolutepath"], os.path.dirname(aFile))
                                 url = relpath
-                            else:
-                                url = "Oooops autolink::404 (missing URL)"
+                                validUrl = True
                         else:
                             url = aDictionary[aString]["url"]
-                        line = aDictionary[aString]["regex"].sub("<a href=\"" + url + "\">" + aDictionary[aString]["name"] + "</a>", line)
+                            try:
+                                ret = urllib2.urlopen(url)
+                                if ret.code == 200:
+                                    validUrl = True
+                            except:
+                                pass
+
+                        if validUrl:
+                            line = aDictionary[aString]["regex"].sub("<a href=\"" + url + "\">" + aDictionary[aString]["name"] + "</a>", line)
+                        else:
+                            print("Cannot retrieve autlink target '"+aDictionary[aString]["name"]+"' in line "+str(lineno)+" pointing to: "+url )
+                            line = aDictionary[aString]["regex"].sub(aDictionary[aString]["name"], line)
 
                 m=re.search("..autolink::(.)*", line)
                 if m:
