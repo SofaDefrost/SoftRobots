@@ -34,6 +34,10 @@ def Finger(parentNode=None, name="Finger",
                          withCableGeometry=loadPointListFromFile("data/mesh/cable.json"))
    
     FingerController(finger, cable)
+   
+    CollisionMesh(eobject,
+         fromSurfaceMesh="data/mesh/finger.stl", withName="part0", withACollisionGroup=[1, 2])
+
 
     CollisionMesh(eobject,
                  fromSurfaceMesh="data/mesh/fingerCollision_part1.stl",

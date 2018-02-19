@@ -9,7 +9,15 @@ def Finger(parentNode=None, name="Finger",
 
     finger = Node(parentNode, "Finger")
     eobject = ElasticMaterialObject(finger,
-                                    fromVolumeMesh="data/mesh/finger.vtk")
+                                   fromVolumeMesh="data/mesh/finger.vtk",
+                                   withPoissonRatio=0.3,
+                                   withYoungModulus=18000,
+                                   withTotalMass=0.5,
+                                   withSurfaceColor=[0.0, 0.8, 0.7],
+                                   withSurfaceMesh="data/mesh/finger.stl",
+                                   withRotation=withRotation,
+                                   withTranslation=withTranslation)
+
 
     FixedBox(eobject,
              withVisualization=True,

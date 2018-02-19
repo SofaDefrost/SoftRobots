@@ -304,14 +304,14 @@ def Finger(parentNode):
     ## ... the cable..
     ## ... the controller..
 
-    ..autolink::STLIB::CollisionMesh(parentNode=eobject,
+    ..autolink::STLIB::CollisionMesh(eobject,
          fromSurfaceMesh="data/mesh/finger.stl", withName="part0", withACollisionGroup=1)
 
 
-    ..autolink::STLIB::CollisionMesh(parentNode=eobject,
+    ..autolink::STLIB::CollisionMesh(eobject,
              fromSurfaceMesh="data/mesh/fingerCollision_part1.stl", withName="part1", withACollisionGroup=1)
 
-    ..autolink::STLIB::CollisionMesh(parentNode=eobject,
+    ..autolink::STLIB::CollisionMesh(eobject,
               fromSurfaceMesh="data/mesh/fingerCollision_part2.stl", withName="part2", withACollisionGroup=2)
 ```
 <div>
@@ -380,7 +380,7 @@ def Finger(parentNode=None, name="Finger",
     eobject = ..autolink::STLIB::ElasticMaterialObject(finger,
                                    fromVolumeMesh="data/mesh/finger.vtk",
                                    withPoissonRatio=0.3,
-                                   withYoungModulus=18000,
+                                   withYoungModulus=100,
                                    withTotalMass=0.5,
                                    withSurfaceColor=[0.0, 0.8, 0.7],
                                    withSurfaceMesh="data/mesh/finger.stl",
@@ -484,20 +484,20 @@ def createScene(rootNode):
     ..autolink::STLIB::MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
     ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
-    Gripper(parentNode=rootNode)
+    Gripper(rootNode)
 
     ..autolink::STLIB::Floor(rootNode, name="Floor",
           withColor=[1.0,0.0,0.0],
-          Name=[0.0,-160.0,0.0],
+          withTranslation=[0.0,-160.0,0.0],
           isAStaticObject=True)
 
     ..autolink::STLIB::Cube(rootNode, name="Cube",
-          Scale=20.0,
+          withScale=20.0,
           withColor=[1.0,1.0,0.0],
           withTotalMass=0.03,
           withVolume=20,
           withInertiaMatrix=[1000.0,0.0,0.0,0.0,1000.0,0.0,0.0,0.0,1000.0],
-          Name=[0.0,-130.0,10.0])
+          withTranslation=[0.0,-130.0,10.0])
 
     return rootNode
 ```
