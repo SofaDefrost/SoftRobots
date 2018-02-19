@@ -2,7 +2,7 @@
 import Sofa
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.physics.constraints import FixedBox
-
+from stlib.scene import Node
 from softrobots.actuators import PullingCable
 from stlib.physics.collision import CollisionMesh
 
@@ -27,9 +27,9 @@ def Finger(parentNode=None, name="Finger",
            withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
            withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
 
-    finger = ElasticMaterialObject(parentNode,
+    finger = Node(parentNode, name)
+    eobject = ElasticMaterialObject(finger,
                                    fromVolumeMesh="data/mesh/finger.vtk",
-                                   withName=name,
                                    withPoissonRatio=0.3,
                                    withYoungModulus=18000,
                                    withTotalMass=0.5,
@@ -38,28 +38,28 @@ def Finger(parentNode=None, name="Finger",
                                    withRotation=withRotation,
                                    withTranslation=withTranslation)
 
-    FixedBox(finger, atPositions=withFixingBox, withVisualization=True)
+    FixedBox(eobject, atPositions=withFixingBox, withVisualization=True)
 
-    cable=PullingCable(finger,
+    cable=PullingCable(eobject,
                  "PullingCable",
                  withAPullPointLocation=withPullPointLocation,
                  withRotation=withRotation,
                  withTranslation=withTranslation,
                  withCableGeometry=loadPointListFromFile("data/mesh/cable.json"));
 
-    FingerController(finger, cable)
+    FingerController(eobject, cable)
 
-    CollisionMesh(finger, withName="CollisionMesh",
+    CollisionMesh(eobject, withName="CollisionMesh",
                  fromSurfaceMesh="data/mesh/finger.stl",
                  withRotation=withRotation, withTranslation=withTranslation,
                  withACollisionGroup=[1, 2])
 
-    CollisionMesh(finger, withName="CollisionMeshAuto1",
+    CollisionMesh(eobject, withName="CollisionMeshAuto1",
                  fromSurfaceMesh="data/mesh/fingerCollision_part1.stl",
                  withRotation=withRotation, withTranslation=withTranslation,
                  withACollisionGroup=[1])
 
-    CollisionMesh(finger, withName="CollisionMeshAuto2",
+    CollisionMesh(eobject, withName="CollisionMeshAuto2",
                  fromSurfaceMesh="data/mesh/fingerCollision_part2.stl",
                  withRotation=withRotation, withTranslation=withTranslation,
                  withACollisionGroup=[2])

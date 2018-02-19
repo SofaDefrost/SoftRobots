@@ -28,10 +28,11 @@ class GripperController(Sofa.PythonScriptController):
 
         if dir != None:
             for finger in self.fingers:
-                mecaobject = finger.getObject("MechanicalObject")
+                m = finger.getChild("ElasticMaterialObject")
+                mecaobject = m.getObject("MechanicalObject")
                 mecaobject.findData('rest_position').value = getTranslated( mecaobject.rest_position,  dir )
 
-                cable = finger.getChild("PullingCable").getObject("CableConstraint")
+                cable = m.getChild("PullingCable").getObject("CableConstraint")
                 p = cable.pullPoint[0]
                 cable.findData("pullPoint").value = [p[0]+dir[0], p[1]+dir[1], p[2]+dir[2]]
 

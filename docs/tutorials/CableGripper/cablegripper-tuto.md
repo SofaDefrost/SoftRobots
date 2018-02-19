@@ -4,7 +4,10 @@
 This tutorial describes how to set-up a simulation environment, a scene, using ..autolink::Sofa and how to use the
 ..autolink::SoftRobots plugin to model a virtual soft gripper driven by cables. The design of the gripper
 we are going to model is from [Taimoor Hassan et al. ](https://dl.acm.org/citation.cfm?id=2977533).
-Once modeled in Sofa the robot can be simulated and controlled.
+Once modeled in Sofa the robot can be simulated and controlled as in:
+
+<center><object style="width: 320px; height: 200px;" data="https://www.youtube.com/embed/9JOCe2pf34o?autoplay=0"> </object></center>
+
 
 Tutorials prequisites:
 
@@ -39,9 +42,6 @@ simulation to manipulate the gripper by pressing the following keys:
 
 Note that with MacOS, you may have to use *cmd* instead of *ctrl*.
 
-In case you cannot execute the simulation here is the result you should get:
-<center><object style="width: 320px; height: 200px;" data="https://www.youtube.com/embed/9JOCe2pf34o?autoplay=0"> </object></center>
-
 ### Step 1: Setting up simple scene
 
 Sofa is loading the description of the simulation from *pyscn* files. The content of these file is in fact standard python code with 
@@ -57,10 +57,10 @@ from stlib.physics.rigid import ..autolink::STLIB::Cube
 
 def createScene(rootNode):
     """This is my first scene"""
-    ShowGrid(rootNode) 
+    ShowGrid(rootNode)
 
     ..autolink::STLIB::Floor(rootNode,
-          Name=[0.0,-160.0,0.0],
+          Name=[0.0,0.0,0.0],
           isAStaticObject=True)
 
     ..autolink::STLIB::Cube(rootNode,
@@ -76,6 +76,16 @@ def createScene(rootNode):
 </pre>
 </div>
 </div>
+
+####<i>Comments (things to present or do in this step):</i>
+
+- load "cablegripper.pyscn" in sofa (with option '-i') and in your text editor
+
+- add a floor and a cube in the scene
+
+- show the scene graph structure and compare it with the content of the scene.
+
+- move the floor so that it is -160 along they y Axis.
 
 
 ### Step 2: Modeling and simulating the gripper's finger deformations
@@ -95,23 +105,22 @@ provide the appropriate tetrahedral mesh in a file name "*finger.vtk*".
 Let's now work in *'finger.py'* to add:
 <div>
 ```python
-from stlib.physics.deformable import ElasticMaterialObject
+from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
 
-def Finger(parentNode=None, Name="Finger",
-           rotation=[0.0, 0.0, 0.0], Name=[0.0, 0.0, 0.0],
+def Finger(parentNode=None, name="Finger",
+           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
            withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
 
     finger = Node(parentNode, "Finger")
-    finger = ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
-                               Name=Name,
+    eobject = ..autolink::STLIB::ElasticMaterialObject(finger,
+                               fromVolumeMesh="data/mesh/finger.vtk",
                                withPoissonRatio=0.3,
                                withYoungModulus=18000,
                                withTotalMass=0.5,
                                withSurfaceColor=[0.0, 0.8, 0.7],
                                withSurfaceMesh="data/mesh/finger.stl",
-                               rotation=rotation,
-                               Name=Name,
-                               parentNode=parentNode)
+                               withRotation=withRotation,
+                               withTranslation=withTranslation)
 
     return finger
 ```
@@ -137,24 +146,23 @@ Let's now work in *'finger.py'* to add:
 ```python
 from stlib.physics.constraint import FixedBox
 
-def Finger(parentNode=None, Name="Finger",
-           rotation=[0.0, 0.0, 0.0], Name=[0.0, 0.0, 0.0],
+def Finger(parentNode=None, name="Finger",
+           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
            withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
 
-    finger = parentNode.createChild(Name)
-    eobject = ElasticMaterialObject(fromVolumeMesh="data/mesh/finger.vtk",
-                               Name=Name,
+    finger = ..autolink::STLIB::Node(parentNode, name)
+    eobject = ..autolink::STLIB::ElasticMaterialObject(finger,
+                               fromVolumeMesh="data/mesh/finger.vtk",
                                withPoissonRatio=0.3,
                                withYoungModulus=18000,
                                withTotalMass=0.5,
                                withSurfaceColor=[0.0, 0.8, 0.7],
                                withSurfaceMesh="data/mesh/finger.stl",
-                               rotation=rotation,
-                               Name=Name,
-                               parentNode=parentNode)
+                               withRotation=withRotation,
+                               withTranslation=withTranslation)
 
-    FixedBox(applyTo=eobject, atPositions=[-10,-10,-10,10,10,15], withVisualization=True)
-
+    ..autolink::STLIB::FixedBox(eobject, atPositions=[-10,-10,-10,10,10,15],
+                      withVisualization=True)
 
     return finger
 ```
@@ -168,11 +176,13 @@ def Finger(parentNode=None, Name="Finger",
 
 
 
-####<i>Commentary:</i>
+####<i>Comments (things to present or do in this step):</i>
 
 - Load the file 'finger.py' in runSofa and in your text editor.
 
 - In *finger.py*, add an elastic object in a similar way to the one given in example 2.
+
+- Gives a small explanation of how the arguments are passed. s
 
 - Gives a small explanation of the role of the poisson ratio parameter. 
 
@@ -203,9 +213,11 @@ the ..autolink::SoftRobots plugin and use it in the following way:
 from softrobots.actuators import ..autolink::SoftRobots::PullingCable
 from stlib.tools import loadPointListFromFile
 
-def Finger(rootNode):
+### ... similar to previous step ....
+def Finger(parentNode):
     ### ... similar to previous step ....
-    cable = ..autolink::SoftRobots::PullingCable(parentNode=material, withCableGeometry=loadPointListFromFile("data/mesh/cable.json"))
+
+    cable = ..autolink::SoftRobots::PullingCable(eobject, withCableGeometry=loadPointListFromFile("data/mesh/cable.json"))
 ```
 
 <div>
@@ -244,7 +256,7 @@ The controller can then be attached to the object *finger* it is supposed to con
 ```python
     ## This create a PythonScriptController that permits to programatically implement new behavior
     ## or interactions using the Python programming langage. 
-    FingerController(finger, cable)
+    FingerController(eobject, cable)
 ```
 
 <div>
@@ -256,48 +268,51 @@ The controller can then be attached to the object *finger* it is supposed to con
 </div>
 
 
-####<i>Commentary</i>
+####<i>Comments (things to present or do lively) </i>
 
 - In  *finger.py*, add the pulling cable to the finger as shown in the example.
 
-- In *'fingercontroller.py'* add some print in the console indicating that the value has changed.
+- In *'fingercontroller.py'* show there is some print in the console indicating that the key is pressed.
 
-- In *fingercontroller.py* only the press on '+' change the cable length. Implement
+- In *fingercontroller.py* add the code so that the the cable length is changed on ky pressed with - and +. Implement
   the release of the cable when the key '-' is pressed.
 
 
 
-## Step 4: Defining self-collision regions
-By default Sofa doesn't handle self-collisions because they are very expensive to compute.
-The drawback is that this can lead to some undesireable behaviors, i.e. self-interesections, when the object deforms a lot
-as illustrated in the figure below.
+## Step 4: Defining collision regions
+By default Sofa doesn't handle collision as they are very expensive to compute. To activate collisions you need to define specially
+the geometries for which collions are checked and how they are handled. This can be done by adding a dedicated
+structure called a ..autolink::STLIB::CollisionMesh.  By default self-collision are not handled which,
+if the object is strongly deformable leads some undesireable behaviors as illustrated in the figure below.
 
 ![Finger with self-intersecting](images/NoCollisionRegions.png){width=200}
 
 ![Without self-intersection](images/CollisionRegions2.png){width=200}
 
+Additional ..autolink::STLIB::CollisionMesh are required to precisely define the self-collision
+behavior.
 
-To activate self-collision you need to define speciallly the geometries for which collions are
-checked and handled. This can be done by adding ..autolink::STLIB::CollisionMesh as in the following:
+The finger.py file should now contains :
 <div>
 ```python
 ## ... Same imports as in step 3 ...
 from stlib.physics.collision import ..autolink::STLIB::CollisionMesh
 
-def createScene(rootNode):
-    m=..autolink::STLIB::MainHeader(rootNode, plugins=["SoftRobots"])
-    ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=5, contactDistance=4, withFrictionCoef=0.08)
-
-    ## ... Remaining content of step 3 ...
+## ... Same as in step 3 ...
+def Finger(parentNode):
     ## ... the finger
     ## ... the cable..
     ## ... the controller..
 
-    ..autolink::STLIB::CollisionMesh(parentNode=finger,
-             fromSurfaceMesh="data/mesh/fingerCollision_part1.stl", Name="part1", withACollisionGroup=1)
+    ..autolink::STLIB::CollisionMesh(parentNode=eobject,
+         fromSurfaceMesh="data/mesh/finger.stl", withName="part0", withACollisionGroup=1)
 
-    ..autolink::STLIB::CollisionMesh(parentNode=finger,
-              fromSurfaceMesh="data/mesh/fingerCollision_part2.stl", Name="part2", withACollisionGroup=2)
+
+    ..autolink::STLIB::CollisionMesh(parentNode=eobject,
+             fromSurfaceMesh="data/mesh/fingerCollision_part1.stl", withName="part1", withACollisionGroup=1)
+
+    ..autolink::STLIB::CollisionMesh(parentNode=eobject,
+              fromSurfaceMesh="data/mesh/fingerCollision_part2.stl", withName="part2", withACollisionGroup=2)
 ```
 <div>
 <pre>
@@ -315,7 +330,11 @@ intersections and contact handling.
 
 ####<i>Comments:</i>
 
-- Explain the import
+- Explain the import of the CollisionMesh (if it was not done before)
+
+- Explain the load of the mesh...
+
+- Explain the role of collision group. Object in two different groups can collide.
 
 - Explain the contactDistance parameters
 
@@ -331,12 +350,12 @@ At this point the *finger.py* file should contains something similar to:
 ```python
 # -*- coding: utf-8 -*-
 import Sofa
-from stlib.scene import Node
-from stlib.physics.deformable import ElasticMaterialObject
-from stlib.physics.constraints import FixedBox
-from stlib.physics.collision import CollisionMesh
+from stlib.scene import ..autolink::STLIB::Node
+from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
+from stlib.physics.constraints import ..autolink::STLIB::FixedBox
+from stlib.physics.collision import ..autolink::STLIB::CollisionMesh
 from stlib.tools import loadPointListFromFile
-from softrobots.actuators import PullingCable
+from softrobots.actuators import ..autolink::SoftRobots::PullingCable
 
 class FingerController(Sofa.PythonScriptController):
     def __init__(self, node, cable ):
@@ -353,50 +372,47 @@ class FingerController(Sofa.PythonScriptController):
                 displacement = 0
             self.cableconstraintvalue.value = displacement
 
-def Finger(parentNode=None, Name="Finger",
-           rotation=[0.0, 0.0, 0.0], Name=[0.0, 0.0, 0.0],
+def Finger(parentNode=None, name="Finger",
+           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
            withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
 
-    finger = Node(parentNode, Name)
-
-    eobject = ElasticMaterialObject(
-                                   finger,
+    finger = ..autolink::STLIB::Node(parentNode, name)
+    eobject = ..autolink::STLIB::ElasticMaterialObject(finger,
                                    fromVolumeMesh="data/mesh/finger.vtk",
                                    withPoissonRatio=0.3,
                                    withYoungModulus=18000,
                                    withTotalMass=0.5,
+                                   withSurfaceColor=[0.0, 0.8, 0.7],
                                    withSurfaceMesh="data/mesh/finger.stl",
-                                   rotation=rotation,
-                                   withSurfaceColor=[0.0,0.7,0.8],
-                                   Name=Name)
+                                   withRotation=withRotation,
+                                   withTranslation=withTranslation)
 
-    FixedBox(applyTo=eobject,
-                                atPositions=withFixingBox,
-                                withVisualization=True)
+    ..autolink::STLIB::FixedBox(eobject, atPositions=withFixingBox, withVisualization=True)
 
-    cable=PullingCable(eobject,
-                 Name="PullingCable",
+    cable=..autolink::SoftRobots::PullingCable(eobject,
+                 "PullingCable",
                  withAPullPointLocation=withPullPointLocation,
-                 rotation=rotation,
-                 Name=Name,
-                 withCableGeometry=loadPointListFromFile("data/mesh/cablepoints.json"));
+                 withRotation=withRotation,
+                 withTranslation=withTranslation,
+                 withCableGeometry=loadPointListFromFile("data/mesh/cable.json"));
 
     FingerController(eobject, cable)
 
-    CollisionMesh(parentNode=eobject,
+    ..autolink::STLIB::CollisionMesh(eobject, withName="CollisionMesh",
                  fromSurfaceMesh="data/mesh/finger.stl",
-                 rotation=rotation, Name=Name,
-                 Name="CollisionMesh", withACollisionGroup=[1, 2])
+                 withRotation=withRotation, withTranslation=withTranslation,
+                 withACollisionGroup=[1, 2])
 
-    CollisionMesh(parentNode=eobject,
+    ..autolink::STLIB::CollisionMesh(eobject, withName="CollisionMeshAuto1",
                  fromSurfaceMesh="data/mesh/fingerCollision_part1.stl",
-                 rotation=rotation, Name=Name,
-                 Name="CollisionMeshAuto1", withACollisionGroup=[1])
+                 withRotation=withRotation, withTranslation=withTranslation,
+                 withACollisionGroup=[1])
 
-    CollisionMesh(parentNode=eobject,
+    ..autolink::STLIB::CollisionMesh(eobject, withName="CollisionMeshAuto2",
                  fromSurfaceMesh="data/mesh/fingerCollision_part2.stl",
-                 rotation=rotation, Name=Name,
-                 Name="CollisionMeshAuto2", withACollisionGroup=[2])
+                 withRotation=withRotation, withTranslation=withTranslation,
+                 withACollisionGroup=[2])
+
 
     return finger
 ```
@@ -404,36 +420,34 @@ def Finger(parentNode=None, Name="Finger",
 
 The file *'gripper.py'* should contains:
 <div>
-```python
-## ... Same imports as in step 3 ...
-from stlib.scene import Node
+import Sofa
 from grippercontroller import GripperController
 from finger import Finger
 
 def Gripper(parentNode=None):
-    gripper = Node(parentNode, "Gripper")
+    selfNode = parentNode.createChild("Gripper")
 
-    f1 = Finger(gripper, Name="Finger1",
-           rotation=[0, 0, 105],
-           Name=[20.0,0.0, 0.0],
+    f1 = Finger(selfNode, "Finger1",
+           withRotation=[0, 0, 105],
+           withTranslation=[20.0,0.0, 0.0],
            withFixingBox=[-20, -10, 0, 20, 10, 15],
            withPullPointLocation=[3, 10.5, 3])
 
-    f2 = Finger(gripper, Name="Finger2",
-           rotation=[180, 0, 65],
-           Name=[-10.0,0.0, -4.0],
+    f2 = Finger(selfNode, "Finger2",
+           withRotation=[180, 0, 65],
+           withTranslation=[-10.0,0.0, -4.0],
            withFixingBox=[-20, -10, -30, 20, 10, 0],
            withPullPointLocation=[3, 10.5, -7])
 
-    f3 = Finger(gripper, Name="Finger3",
-           rotation=[180, 0, 65],
-           Name=[-10.0,0.0, 34.0],
+    f3 = Finger(selfNode, "Finger3",
+           withRotation=[180, 0, 65],
+           withTranslation=[-10.0,0.0, 34.0],
            withFixingBox=[-20, -10, 0, 20, 10, 50],
            withPullPointLocation=[3, 10.5, 31.5])
 
-    GripperController(gripper, withFingers=[f1,f2,f3])
+    GripperController(selfNode, [f1,f2,f3])
 
-    return gripper
+    return selfNode
 ```
 <div>
 <pre>
@@ -445,36 +459,39 @@ def Gripper(parentNode=None):
 
 ####<i>Comments:</i>
 
+- In *gripper.py*, show how to add one finger at default position and location. Do not forget that you can start Sofa
+with the '-i' option for an automatic reload of the 'gripper.py' each time the source file is changed.
+
 - In *gripper.py*, duplicate the Finger object and change the location, orientation and fixing point so that it match
 the desired robot geometry of the gripper. Do not forget that you can start Sofa with the '-i' option for an automatic
 reload of the 'gripper.py' each time the source file is changed.
 
-- Attach the GripperController to the Gripper object. When you press CTRL+UP/DOWN/LEFT/RIGHT what do you observe ? 
+- Attach the GripperController to the Gripper object. So that when you press CTRL+UP/DOWN/LEFT/RIGHT the gripper is moving.
 
 
-## Step 6: Putting everything in a single place.
+## Step 6: Putting everything in a single simulation.
 
-Add to the *'cablegripper.pyscn'* scene the Cube, the Floor and the Gripper which should resuts in:
 
+Open the *'cablegripper.pyscn'* and add the Cube, the Floor and the Gripper which should resuts in something similar to:
 <div>
 ```python
-from stlib.scene import MainHeader, ContactHeader
-from stlib.physics.rigid import Floor, Cube
+from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
+from stlib.physics.rigid import ..autolink::STLIB::Floor, ..autolink::STLIB::Cube
 from gripper import Gripper
 
 def createScene(rootNode):
     """This is my first scene"""
-    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
-    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
+    ..autolink::STLIB::MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
     Gripper(parentNode=rootNode)
 
-    Floor(rootNode, name="Floor",
+    ..autolink::STLIB::Floor(rootNode, name="Floor",
           withColor=[1.0,0.0,0.0],
           Name=[0.0,-160.0,0.0],
           isAStaticObject=True)
 
-    Cube(rootNode, name="Cube",
+    ..autolink::STLIB::Cube(rootNode, name="Cube",
           Scale=20.0,
           withColor=[1.0,1.0,0.0],
           withTotalMass=0.03,
