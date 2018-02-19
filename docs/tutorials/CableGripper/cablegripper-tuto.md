@@ -60,11 +60,11 @@ def createScene(rootNode):
     ShowGrid(rootNode)
 
     ..autolink::STLIB::Floor(rootNode,
-          Name=[0.0,0.0,0.0],
+          withTranslation=[0.0,0.0,0.0],
           isAStaticObject=True)
 
     ..autolink::STLIB::Cube(rootNode,
-          Name=[0.0,0.0,0.0])
+          withTranslation=[0.0,0.0,0.0])
 
 
     return rootNode
