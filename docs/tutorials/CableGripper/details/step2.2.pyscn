@@ -7,7 +7,7 @@ def Finger(parentNode=None, name="Finger",
            withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
            withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
 
-    finger = Node(parentNode, Name="Finger")
+    finger = Node(parentNode, "Finger")
     eobject = ElasticMaterialObject(finger,
                                     fromVolumeMesh="data/mesh/finger.vtk")
 
