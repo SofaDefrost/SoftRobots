@@ -1,11 +1,41 @@
-from stlib.scene import MainHeader, ContactHeader
-from stlib.physics.rigid import Floor, Cube
-from gripper import Gripper
+# -*- coding: utf-8 -*-
+from stlib.scene import Node
+from grippercontroller import GripperController
+from finger import Finger
+
+def Gripper(parentNode=None):
+    gripper = Node(parentNode, "Gripper")
+
+    f1 = Finger(gripper, "Finger1",
+           withRotation=[0, 0, 105],
+           withTranslation=[20.0,0.0, 0.0],
+           withFixingBox=[-20, -10, 0, 20, 10, 15],
+           withPullPointLocation=[3, 10.5, 3])
+
+    f2 = Finger(gripper, "Finger2",
+           withRotation=[180, 0, 65],
+           withTranslation=[-10.0,0.0, -4.0],
+           withFixingBox=[-20, -10, -30, 20, 10, 0],
+           withPullPointLocation=[3, 10.5, -7])
+
+    f3 = Finger(gripper, "Finger3",
+           withRotation=[180, 0, 65],
+           withTranslation=[-10.0,0.0, 34.0],
+           withFixingBox=[-20, -10, 0, 20, 10, 50],
+           withPullPointLocation=[3, 10.5, 31.5])
+
+    GripperController(gripper, fingers=[f1,f2,f3])
+
+    return gripper
 
 def createScene(rootNode):
-    """This is my first scene"""
-    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    """To test the content of this file, try:    
+    >>> runSofa gripper.py 
+    """ 
+    from stlib.scene import MainHeader, ContactHeader
+    m=MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
-    Gripper(attachedTo=rootNode)
-
+    Gripper(rootNode)
+    return rootNode

@@ -51,14 +51,26 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 </div>
 <h2 id="simulating-a-cable-based-soft-gripper">Simulating a cable based soft gripper</h2>
-<p>This tutorial describes how to set-up a simulation environment, a scene, using <a href="https://www.sofa-framework.org/">Sofa</a> and how to use the <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin to model a virtual soft gripper driven by cables. The design of the gripper we are going to model is from <a href="https://dl.acm.org/citation.cfm?id=2977533">Taimoor Hassan et al.</a>. Once modeled in Sofa the robot can be simulated and controlled.</p>
-<p>This tutorials assumes that you have sucessfully installed <a href="https://www.sofa-framework.org/">Sofa</a> with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> and <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugins and that you are familiar with the <a href="https://www.python.org/">Python</a> programming language. If this is not the case we strongly advise you to first complete a python tutorial.</p>
+<p>This tutorial describes how to set-up a simulation environment, a scene, using <a href="https://www.sofa-framework.org/">Sofa</a> and how to use the <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin to model a virtual soft gripper driven by cables. The design of the gripper we are going to model is from <a href="https://dl.acm.org/citation.cfm?id=2977533">Taimoor Hassan et al.</a>. Once modeled in Sofa the robot can be simulated and controlled as in:</p>
 <center>
 <object style="width: 320px; height: 200px;" data="https://www.youtube.com/embed/9JOCe2pf34o?autoplay=0">
 </object>
 </center>
+<p>Tutorials prequisites:</p>
+<ul>
+<li><p>installed <a href="https://www.sofa-framework.org/">Sofa</a> with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> and <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugins.</p></li>
+<li><p>you have basic knowledge of the <a href="https://www.python.org/">Python</a> programming language. If not you can go to <a href="https://www.python.org/">Python</a>Tutorials.</p></li>
+<li><p>you have basic knowledge of making scene with Sofa. If not, please complete the <a href="../FirstSteps/firststeps-tuto.html">FirstStep</a> first.</p></li>
+</ul>
 <h3 id="step-0-try-the-simulation-in-sofa">Step 0: Try the simulation in Sofa</h3>
-<p>Before continuing this tutorial try the resulting simulation you need to achieved. You can do that by clicking on the [Animate] button in the Sofa GUI. When the simulation is running you can manipulate the gripper by pressing the following keys:</p>
+<p>Before continuing this tutorial try the resulting simulation you need to achieved.</p>
+You can load the scene directly from this documentation by clicking on the following:
+<div>
+<pre>
+<a href="details/step0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try now the scene in Sofa.</a>
+</pre>
+</div>
+<p>Once loaded you can now click on the [Animate] button in the Sofa GUI and start interacting in the 3D window. When your cursor have clicked on the 3D window you can control the simulation to manipulate the gripper by pressing the following keys:</p>
 <ul>
 <li>ctrl + <em>+</em> to close the gripper</li>
 <li>ctrl + <em>-</em> to open the gripper</li>
@@ -68,260 +80,232 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>ctrl + <em>arrow right</em> to move it right</li>
 </ul>
 <p>Note that with MacOS, you may have to use <em>cmd</em> instead of <em>ctrl</em>.</p>
-<div>
-<pre>
-<a href="details/step0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try now the scene in Sofa.</a>
-</pre>
-</div>
-<h3 id="step-1-warming-up-by-setting-an-simple-scene">Step 1: Warming up by setting an simple scene</h3>
+<h3 id="step-1-setting-up-simple-scene">Step 1: Setting up simple scene</h3>
 <p>Sofa is loading the description of the simulation from <em>pyscn</em> files. The content of these file is in fact standard python code with at least one function named <em>createScene</em> taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called &quot;rootNode&quot;.</p>
 A very simple scene may look like:
 <div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid
 <span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>
-<span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid
+<span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>
 
 <span class="kw">def</span> createScene(rootNode):
     <span class="co">&quot;&quot;&quot;This is my first scene&quot;&quot;&quot;</span>
-    m<span class="op">=</span><a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>(rootNode, plugins<span class="op">=</span>[<span class="st">&quot;SoftRobots&quot;</span>]) 
-    ShowGrid(rootNode) 
+    ShowGrid(rootNode)
 
-    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>(rootNode, name<span class="op">=</span><span class="st">&quot;Floor&quot;</span>,
-          withTranslation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">160.0</span>,<span class="fl">0.0</span>],
+    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>(rootNode,
+          withTranslation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],
           isAStaticObject<span class="op">=</span><span class="va">True</span>)
-    
+
+    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>(rootNode,
+          withTranslation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])
+
+
     <span class="cf">return</span> rootNode</code></pre></div>
 <div>
 <pre>
-<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene.</a>
+<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/cablegripper.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
 </div>
-<p>Both <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a> and <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a> are functions that creates set of Sofa components. Such functions, that creates scene elements, will be refered as scene templates in the following of this tutorial. As an example the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a> template, according to its <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">documentation</a>, loads the following sofa components into the scene graph (the hierarchical structure you can see in the left side of the Sofa GUI):</p>
-<pre class="qml"><code>   {
-      <a href="http://sofacomponents.readthedocs.io/en/latest/">VisualStyle</a>,
-      <a href="http://sofacomponents.readthedocs.io/en/latest/">RequiredPlugin</a>,
-      <a href="http://sofacomponents.readthedocs.io/en/latest/">OglSceneFrame</a>,
-      <a href="http://sofacomponents.readthedocs.io/en/latest/">FreeMotionAnimationLoop</a>,
-      <a href="http://sofacomponents.readthedocs.io/en/latest/">GenericConstraintSolver</a>,
-      <a href="http://sofacomponents.readthedocs.io/en/latest/">DefaultVisualManagerLoop</a>
-   }</code></pre>
-<p>Here is a set of tasks you can do to get better understanding of this step.</p>
-<h4 id="task-1.0"><i>Task 1.0:</i></h4>
+<h4 id="comments-things-to-present-or-do-in-this-step"><i>Comments (things to present or do in this step):</i></h4>
 <ul>
-<li>Download and extract the file myproject.zip to any location of your choice.</li>
-<li>Try the scene by doing runSofa cablegripper.pyscn -i. With the '-i' option Sofa will reload the scene eache time it is modified &amp; saved.</li>
-<li>Explore the scene graph and the properties of the different objects it contains in the Sofa GUI.</li>
+<li><p>load &quot;cablegripper.pyscn&quot; in sofa (with option '-i') and in your text editor</p></li>
+<li><p>add a floor and a cube in the scene</p></li>
+<li><p>show the scene graph structure and compare it with the content of the scene.</p></li>
+<li><p>move the floor so that it is -160 along they y Axis.</p></li>
 </ul>
-<h4 id="task-1.1"><i>Task 1.1:</i></h4>
-<p>..autolink::FIXME...</p>
-<h4 id="task-1.2"><i>Task 1.2:</i></h4>
-<ul>
-<li>Add a rigid Cube. The cube must be of size '20'.</li>
-</ul>
-<h4 id="task-1.3"><i>Task 1.3:</i></h4>
-<ul>
-<li>Add a serie of 5 cubes in a row with equidistant spacing and different color. (Note, with Sofa colors are encoded as a triplet of float encoding bewteen 0.0 and 1.0 the intensity of the Red/Green/Blue component. a <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a> is a specific kind of <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.rigid.html#stlib.physics.rigid.RigidObject">RigidObject</a> thus it have the same parameters).</li>
-</ul>
-<h4 id="task-1.4"><i>Task 1.4:</i></h4>
-<ul>
-<li>Add the Gripper object to the scene in a way similar to the Floor the Cubes. Normally, only a cylindric shape should appear indicating the location of the Gripper base.</li>
-</ul>
-<h3 id="step-2-modeling-and-simulating-the-gripper-deformations">Step 2: Modeling and simulating the gripper deformations</h3>
+<h3 id="step-2-modeling-and-simulating-the-grippers-finger-deformations">Step 2: Modeling and simulating the gripper's finger deformations</h3>
 <p>We will now add a deformable object to a scene. There exists a lot of different mechanical behavior and it is important to understand the one that approximates the behavior of the real object your want to simulate. In particular, it is important to know how soft or stiff the material is, if it has an elastic or more complex behaviour (Hyperelastic, plastic, etc...). In our case, the real material is silicon which we will approximate with an elastic deformation law and simulate using the Finite Element Method (<a href="https://en.wikipedia.org/wiki/Finite_element_method">FEM</a>). In sofa, the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a> from <em>stlib.physics.deformable</em> provides a scene template to easily add such an object in your scene.</p>
-<p>To compute the deformation of the object using the Finite Element Method a volumetric representation of shape must be provided. In our case we are using a tetrahedral mesh stored in a &quot;vtk&quot; file. This can be done with any meshing tool such as Gmsh or CGAL but in our case we already provide the tetrahedral mesh in a file name &quot;<em>finger.vtk</em>&quot;.</p>
-The scene with a finger like soft material may look like:
+<p>To compute the deformation of the object using the Finite Element Method a volumetric representation of shape must be provided. In our case we are using a tetrahedral mesh stored in a &quot;vtk&quot; file. In this tutorial we already provide the appropriate tetrahedral mesh in a file name &quot;<em>finger.vtk</em>&quot;.</p>
+Let's now work in <em>'finger.py'</em> to add:
 <div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>
-<span class="im">from</span> stlib.physics.deformable <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.physics.deformable <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>
 
-<span class="kw">def</span> createScene(rootNode):
-   m<span class="op">=</span><a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>(rootNode, plugins<span class="op">=</span>[<span class="st">&quot;SoftRobots&quot;</span>])
-   m.getObject(<span class="st">&quot;<a href="http://sofacomponents.readthedocs.io/en/latest/">VisualStyle</a>&quot;</span>).displayFlags<span class="op">=</span><span class="st">&#39;showForceFields showBehaviorModels showInteractionForceFields&#39;</span>
- 
-   finger <span class="op">=</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>(fromVolumeMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.vtk&quot;</span>,
-                          <a href="https://en.wikipedia.org/wiki/Young%27s_modulus">withYoungModulus</a><span class="op">=</span><span class="dv">18000</span>,
-                          <a href="https://en.wikipedia.org/wiki/Poisson%27s_ratio">withPoissonRatio</a><span class="op">=</span><span class="fl">0.5</span>,
-                          withTotalMass<span class="op">=</span><span class="fl">0.5</span>,
-                          attachedTo<span class="op">=</span>rootNode)</code></pre></div>
+<span class="kw">def</span> Finger(parentNode<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">&quot;Finger&quot;</span>,
+           withRotation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>], withTranslation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],
+           withFixingBox<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], withPullPointLocation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>]):
+
+    finger <span class="op">=</span> Node(parentNode, <span class="st">&quot;Finger&quot;</span>)
+    eobject <span class="op">=</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>(finger,
+                               fromVolumeMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.vtk&quot;</span>,
+                               withPoissonRatio<span class="op">=</span><span class="fl">0.3</span>,
+                               withYoungModulus<span class="op">=</span><span class="dv">18000</span>,
+                               withTotalMass<span class="op">=</span><span class="fl">0.5</span>,
+                               withSurfaceColor<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>],
+                               withSurfaceMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.stl&quot;</span>,
+                               withRotation<span class="op">=</span>withRotation,
+                               withTranslation<span class="op">=</span>withTranslation)
+
+    <span class="cf">return</span> finger</code></pre></div>
 <div>
 <pre>
-<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene.</a>
+<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
 </div>
 <p>If you run the the scene you can see the tetrahedral mesh with blue-ish element. To control the visualization of this computation mesh you can either check the &quot;Force Fields&quot; option within the <em>View</em> panel in the runSofa GUI or, as we did, change the displayFlags property of the <a href="http://sofacomponents.readthedocs.io/en/latest/">VisualStyle</a>. In case you want to learn more about volumetric mesh generation there is a dedicated tutorial called <a href="../../thematicalDocs/T2-FromMeshToSimulation/index.html">MeshGeneration</a>.</p>
-<p>Instead of displaying the tetrahedron mesh computational structure it is possible to wrap it into a visual model. This visual model can be of much higher visual quality and is deformed according to the deformation of the underlying mecanical mesh. To add such visual model you simply need to add <em>withSurfaceMesh=&quot;data/mesh/finger.stl&quot;</em> to the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a> template's arguments.</p>
-<p>Here is a set of tasks you can do to get better understanding of this step.</p>
-<h4 id="task-2.0"><i>Task 2.0:</i></h4>
-<ul>
-<li>In <em>mycablegripper.pyscn</em>, replace the lines from previous step with the one needed to create an elastic object with a finger shape.</li>
-</ul>
-<h4 id="task-2.1"><i>Task 2.1:</i></h4>
-<ul>
-<li>In <em>mycablegripper.pyscn</em>, add a visual model to the elastic object you just created. You should get something similar to:
+<p>Still in the finger.py file we need to add a fixing box to avoid the free falling the finger under gravity. This can be done in the following way:</p>
+Let's now work in <em>'finger.py'</em> to add:
+<div>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.physics.constraint <span class="im">import</span> FixedBox
+
+<span class="kw">def</span> Finger(parentNode<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">&quot;Finger&quot;</span>,
+           withRotation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>], withTranslation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],
+           withFixingBox<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], withPullPointLocation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>]):
+
+    finger <span class="op">=</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.Node">Node</a>(parentNode, name)
+    eobject <span class="op">=</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>(finger,
+                               fromVolumeMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.vtk&quot;</span>,
+                               withPoissonRatio<span class="op">=</span><span class="fl">0.3</span>,
+                               withYoungModulus<span class="op">=</span><span class="dv">18000</span>,
+                               withTotalMass<span class="op">=</span><span class="fl">0.5</span>,
+                               withSurfaceColor<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>],
+                               withSurfaceMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.stl&quot;</span>,
+                               withRotation<span class="op">=</span>withRotation,
+                               withTranslation<span class="op">=</span>withTranslation)
+
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox">FixedBox</a>(eobject, atPositions<span class="op">=</span>[<span class="op">-</span><span class="dv">10</span>,<span class="op">-</span><span class="dv">10</span>,<span class="op">-</span><span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">15</span>],
+                      withVisualization<span class="op">=</span><span class="va">True</span>)
+
+    <span class="cf">return</span> finger</code></pre></div>
 <div>
 <pre>
-<a href="details/step2.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Visualize this task.</a>
+<a href="details/step2.2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
-</div></li>
-</ul>
-<h4 id="task-2.2"><i>Task 2.2:</i></h4>
+</div>
+</div>
+<h4 id="comments-things-to-present-or-do-in-this-step-1"><i>Comments (things to present or do in this step):</i></h4>
 <ul>
-<li>In <em>mycablegripper.pyscn</em> add a <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox">FixedBox</a> constraint. This <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox">FixedBox</a> must be applied to the <em>finger</em>, holding one of its extremity so that the object stops free falling because of gravity. This should result in the following simulation:
-<div>
-<pre>
-<a href="details/step2.2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Visualize this task (the FixedBox is in red).</a>
-</pre>
-</div></li>
-</ul>
-<h4 id="task-2.3"><i>Task 2.3:</i></h4>
-<ul>
-<li>What is the <a href="http://sofacomponents.readthedocs.io/en/latest/">VisualStyle</a> used for ? What happens if you remove it from your scene ?</li>
-</ul>
-<h4 id="task-2.4"><i>Task 2.4:</i></h4>
-<ul>
-<li>Gives a small explanation of the role of the poisson ratio parameter.</li>
-</ul>
-<h4 id="task-2.5"><i>Task 2.5:</i></h4>
-<ul>
-<li>Gives a small explanation of the role of the young modulus parameter.</li>
+<li><p>Load the file 'finger.py' in runSofa and in your text editor.</p></li>
+<li><p>In <em>finger.py</em>, add an elastic object in a similar way to the one given in example 2.</p></li>
+<li><p>Gives a small explanation of how the arguments are passed. s</p></li>
+<li><p>Gives a small explanation of the role of the poisson ratio parameter.</p></li>
+<li><p>Gives a small explanation of the role of the young modulus parameter.</p></li>
+<li><p>Instead of displaying the tetrahedron mesh computational structure it is possible to wrap it into a visual model. This visual model can be of much higher visual quality and is deformed according to the deformation of the underlying mecanical mesh. To add such visual model you simply need to add <em>withSurfaceMesh=&quot;data/mesh/finger.stl&quot;</em> to the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a> template's arguments.</p></li>
+<li><p>In <em>finger.py</em> add a <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox">FixedBox</a> constraint to hold one of the finger extremities so that the object stops free falling because of gravity. This should result in the following simulation:</p></li>
+<li><p>In <em>finger.py</em> forward the different arguments specifying the position of the finger to the ElasticMaterialObject and the FixedBox.</p></li>
 </ul>
 <h2 id="step-3-actuating-the-finger-with-a-cable">Step 3: Actuating the finger with a cable</h2>
-<p>In the previous step, we showed how to add a finger shape object made of silicone rubber. We will now actuate it using a 1d inelastic cable attached to the fingertip and passing through the object geomertry. Using a specific ScriptController the cable length can be increase or decrease at run-time using the ctrl+ and ctrl- touch.</p>
+<p>In the previous step, we showed how to add a finger shape object made of silicone rubber. We will now actuate it using a 1d inelastic cable attached to the fingertip and passing through the object geomertry.</p>
 To model the cable you can use the <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a> template from the <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin and use it in the following way:
 <div>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co">### ... similar to previous step ....</span>
 <span class="im">from</span> softrobots.actuators <span class="im">import</span> <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>
+<span class="im">from</span> stlib.tools <span class="im">import</span> loadPointListFromFile
 
-<span class="kw">def</span> createScene(rootNode):
+<span class="co">### ... similar to previous step ....</span>
+<span class="kw">def</span> Finger(parentNode):
     <span class="co">### ... similar to previous step ....</span>
 
-    cable <span class="op">=</span> <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>(attachedTo<span class="op">=</span>finger,
-             withAPullPointLocation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-             withCableGeometry<span class="op">=</span>[[<span class="op">-</span><span class="fl">17.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                [<span class="op">-</span><span class="fl">32.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                [<span class="op">-</span><span class="fl">47.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                [<span class="op">-</span><span class="fl">62.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                [<span class="op">-</span><span class="fl">77.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                [<span class="op">-</span><span class="fl">83.5</span>, <span class="fl">12.5</span>, <span class="fl">4.5</span>],
-                                [<span class="op">-</span><span class="fl">85.5</span>, <span class="fl">12.5</span>, <span class="fl">6.5</span>],
-                                [<span class="op">-</span><span class="fl">85.5</span>, <span class="fl">12.5</span>, <span class="fl">8.5</span>],
-                                [<span class="op">-</span><span class="fl">83.5</span>, <span class="fl">12.5</span>, <span class="fl">10.5</span>],
-                                [<span class="op">-</span><span class="fl">77.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>],
-                                [<span class="op">-</span><span class="fl">62.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>],
-                                [<span class="op">-</span><span class="fl">47.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>],
-                                [<span class="op">-</span><span class="fl">32.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>],
-                                [<span class="op">-</span><span class="fl">17.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>]])<span class="op">;</span></code></pre></div>
+    cable <span class="op">=</span> <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>(eobject, withCableGeometry<span class="op">=</span>loadPointListFromFile(<span class="st">&quot;data/mesh/cable.json&quot;</span>))</code></pre></div>
+<div>
+<pre>
+<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+</pre>
 </div>
-The cable has rest lenght that can be changed interactively using a dedicated python object called a <em>PythonScriptController</em>. You can create your own controllers by in-heriting from the <em>Sofa.PythonScriptController</em> class. As in
+</div>
+<p>The cable has rest lenght that can be changed interactively using a dedicated python object called a <em>PythonScriptController</em> to connect key pressed on ctrl+ and ctrl- touch to a change of cable length.</p>
+You can create your own controllers by in-heriting from the <em>Sofa.PythonScriptController</em> class and redefine the <em>onKeyPressed</em> method. As in
 <div>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> Sofa
 <span class="kw">class</span> FingerController(Sofa.PythonScriptController):
-    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, cable):
+    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, node, cable):
         <span class="va">self</span>.cableconstraintvalue <span class="op">=</span> cable.getObject(<span class="st">&quot;CableConstraint&quot;</span>).findData(<span class="st">&#39;value&#39;</span>)
+        <span class="va">self</span>.name <span class="op">=</span> <span class="st">&quot;FingerController&quot;</span>
 
     <span class="kw">def</span> onKeyPressed(<span class="va">self</span>,c):
         <span class="cf">if</span> (c <span class="op">==</span> <span class="st">&quot;+&quot;</span>):
-            <span class="va">self</span>.cableconstraintvalue.value <span class="op">=</span>  <span class="va">self</span>.cableconstraintvalue.value[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">+</span> <span class="dv">1</span>.</code></pre></div>
+            <span class="va">self</span>.cableconstraintvalue.value <span class="op">=</span>  <span class="va">self</span>.cableconstraintvalue.value[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">+</span> <span class="dv">1</span>.
+        <span class="cf">if</span> (c <span class="op">==</span> <span class="st">&quot;-&quot;</span>):
+            <span class="va">self</span>.cableconstraintvalue.value <span class="op">=</span>  <span class="va">self</span>.cableconstraintvalue.value[<span class="dv">0</span>][<span class="dv">0</span>] <span class="op">-</span> <span class="dv">1</span>.</code></pre></div>
 </div>
-This controller is redefining the <em>onKeyPressed</em> behavior and it can can then be attached to objet it is supposed to control by doing:
+The controller can then be attached to the object <em>finger</em> it is supposed to control by doing:
 <div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co">### ... similar to previous step with the added FingerController ....</span>
-
-<span class="kw">def</span> createScene(rootNode):
-    <span class="co">### ... similar to previous step ....</span>
-
-    <span class="co">## This create a PythonScriptController that permits to programatically implement new behavior</span>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">    <span class="co">## This create a PythonScriptController that permits to programatically implement new behavior</span>
     <span class="co">## or interactions using the Python programming langage. </span>
-    finger.addObject( FingerController(cable) )</code></pre></div>
-</div>
-<p>Here is a set of tasks you can do to get better understanding of this step.</p>
-<h4 id="task-3.0"><i>Task 3.0:</i></h4>
-<ul>
-<li>Add to the <em>mycablegripper.pyscn</em> the <em>FingerController</em> object and connect it to the cable object.</li>
-</ul>
-<h4 id="task-3.1"><i>Task 3.1:</i></h4>
-<ul>
-<li>Add to the <em>FingerController</em> object the release of the cable when the key '-' is pressed. This should result in a behavior similar to:
+    FingerController(eobject, cable)</code></pre></div>
 <div>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
+<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
-</div></li>
-</ul>
-<h4 id="task-3.2"><i>Task 3.2:</i></h4>
+</div>
+</div>
+<h4 id="comments-things-to-present-or-do-lively"><i>Comments (things to present or do lively) </i></h4>
 <ul>
-<li>Add to the <em>FingerController</em> some printing in the console indicating that the value has changed.</li>
+<li><p>In <em>finger.py</em>, add the pulling cable to the finger as shown in the example.</p></li>
+<li><p>In <em>'fingercontroller.py'</em> show there is some print in the console indicating that the key is pressed.</p></li>
+<li><p>In <em>fingercontroller.py</em> add the code so that the the cable length is changed on ky pressed with - and +. Implement the release of the cable when the key '-' is pressed.</p></li>
 </ul>
-<h2 id="step-4-defining-self-collision-regions">Step 4: Defining self-collision regions</h2>
-<p>By default Sofa doesn't handle self-collisions because they are very expensive to compute. The drawback is that this can lead to some undesireable behaviors, i.e. self-interesections, when the object deforms a lot as illustrated in the figure below.</p>
+<h2 id="step-4-defining-collision-regions">Step 4: Defining collision regions</h2>
+<p>By default Sofa doesn't handle collision as they are very expensive to compute. To activate collisions you need to define specially the geometries for which collions are checked and how they are handled. This can be done by adding a dedicated structure called a <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>. By default self-collision are not handled which, if the object is strongly deformable leads some undesireable behaviors as illustrated in the figure below.</p>
 <div class="figure">
-<img src="data/images/NoCollisionRegions.png" alt="Finger with self-intersecting" width="200" />
+<img src="images/NoCollisionRegions.png" alt="Finger with self-intersecting" width="200" />
 <p class="caption">Finger with self-intersecting</p>
 </div>
 <div class="figure">
-<img src="data/images/CollisionRegions2.png" alt="Without self-intersection" width="200" />
+<img src="images/CollisionRegions2.png" alt="Without self-intersection" width="200" />
 <p class="caption">Without self-intersection</p>
 </div>
-To activate self-collision you need to define speciallly the geometries for which collions are checked and handled. This can be done by adding <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a> as in the following:
+<p>Additional <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a> are required to precisely define the self-collision behavior.</p>
+The finger.py file should now contains :
 <div>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co">## ... Same imports as in step 3 ...</span>
 <span class="im">from</span> stlib.physics.collision <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>
 
-<span class="kw">def</span> createScene(rootNode):
-    m<span class="op">=</span><a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>(rootNode, plugins<span class="op">=</span>[<span class="st">&quot;SoftRobots&quot;</span>])
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>(rootNode, alarmDistance<span class="op">=</span><span class="dv">5</span>, contactDistance<span class="op">=</span><span class="dv">4</span>, withFrictionCoef<span class="op">=</span><span class="fl">0.08</span>)
-
-    <span class="co">## ... Remaining content of step 3 ...</span>
+<span class="co">## ... Same as in step 3 ...</span>
+<span class="kw">def</span> Finger(parentNode):
     <span class="co">## ... the finger</span>
     <span class="co">## ... the cable..</span>
     <span class="co">## ... the controller..</span>
 
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(attachedTo<span class="op">=</span>finger,
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(parentNode<span class="op">=</span>eobject,
+         fromSurfaceMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.stl&quot;</span>, withName<span class="op">=</span><span class="st">&quot;part0&quot;</span>, withACollisionGroup<span class="op">=</span><span class="dv">1</span>)
+
+
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(parentNode<span class="op">=</span>eobject,
              fromSurfaceMesh<span class="op">=</span><span class="st">&quot;data/mesh/fingerCollision_part1.stl&quot;</span>, withName<span class="op">=</span><span class="st">&quot;part1&quot;</span>, withACollisionGroup<span class="op">=</span><span class="dv">1</span>)
 
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(attachedTo<span class="op">=</span>finger,
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(parentNode<span class="op">=</span>eobject,
               fromSurfaceMesh<span class="op">=</span><span class="st">&quot;data/mesh/fingerCollision_part2.stl&quot;</span>, withName<span class="op">=</span><span class="st">&quot;part2&quot;</span>, withACollisionGroup<span class="op">=</span><span class="dv">2</span>)</code></pre></div>
+<div>
+<pre>
+<a href="details/step4.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+</pre>
 </div>
-<p>The <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a> are set of triangules, each set can be part of one or multiple collision group. By using the <em>&quot;withACollisionGroup&quot;</em> option you can specify the group of which the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a> belong to. Triangle from different collision groupes are tested for intersections and contact handling.</p>
-<p>Here is a set of tasks you can do to get better understanding of this step.</p>
-<h4 id="task-4.0"><i>Task 4.0:</i></h4>
+</div>
+<p>The <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a> are set of triangles, each set can be part of one or multiple collision group. By using the <em>&quot;withACollisionGroup&quot;</em> option you can specify the group of which the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a> belong to. Triangle from different collision groupes are tested for intersections and contact handling.</p>
+<h4 id="comments"><i>Comments:</i></h4>
 <ul>
-<li>Add to your existing <em>&quot;mycablegripper.pyscn&quot;</em> the auto-collisions and test the result to be sure it work as in the following simulation
-<div>
-<pre>
-<a href="details/step4.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
-</pre>
-</div></li>
-</ul>
-<h4 id="task-4.1"><i>Task 4.1:</i></h4>
-<ul>
-<li>Tune the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a> parameters to decrease the distance at which self-collision repulsion force are generated.
-<div>
-<pre>
-<a href="details/step4.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
-</pre>
-</div></li>
+<li><p>Explain the import of the CollisionMesh (if it was not done before)</p></li>
+<li><p>Explain the load of the mesh...</p></li>
+<li><p>Explain the role of collision group. Object in two different groups can collide.</p></li>
+<li><p>Explain the contactDistance parameters</p></li>
 </ul>
 <h2 id="step-5-duplicating-the-finger-to-make-a-complete-gripper">Step 5: Duplicating the finger to make a complete gripper</h2>
 <p>Now we have a working single finger we can duplicate it so that it can match the orginal soft gripper robot design that contains three of them.</p>
 <div class="figure">
-<img src="data/images/gripper.png" alt="The soft gripper with three fingers" with="300" />
+<img src="images/gripper.png" alt="The soft gripper with three fingers" with="300" />
 <p class="caption">The soft gripper with three fingers</p>
 </div>
-<p>Before doing that we need to refactor a bit our scene to improve its modularity. To do that we will make a scene template by moving the finger creation into a separated file called <em>myfinger.py</em>.</p>
-At this point the <em>myfinger.py</em> file should contains something similar to:
+At this point the <em>finger.py</em> file should contains something similar to:
 <div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> Sofa
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
+<span class="im">import</span> Sofa
+<span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.Node">Node</a>
 <span class="im">from</span> stlib.physics.deformable <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>
-<span class="im">from</span> stlib.physics.constraints <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox">FixedBox</a> <span class="im">as</span> FixedBoxConstraint
+<span class="im">from</span> stlib.physics.constraints <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox">FixedBox</a>
 <span class="im">from</span> stlib.physics.collision <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>
-
+<span class="im">from</span> stlib.tools <span class="im">import</span> loadPointListFromFile
 <span class="im">from</span> softrobots.actuators <span class="im">import</span> <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>
 
 <span class="kw">class</span> FingerController(Sofa.PythonScriptController):
-    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, cable ):
+    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, node, cable ):
         <span class="va">self</span>.cableconstraintvalue <span class="op">=</span> cable.getObject(<span class="st">&quot;CableConstraint&quot;</span>).findData(<span class="st">&#39;value&#39;</span>)
         <span class="va">self</span>.name <span class="op">=</span> <span class="st">&quot;FingerController&quot;</span>
 
@@ -335,230 +319,124 @@ At this point the <em>myfinger.py</em> file should contains something similar to
                 displacement <span class="op">=</span> <span class="dv">0</span>
             <span class="va">self</span>.cableconstraintvalue.value <span class="op">=</span> displacement
 
-<span class="kw">def</span> Finger(attachedTo<span class="op">=</span><span class="va">None</span>, withName<span class="op">=</span><span class="st">&quot;Finger&quot;</span>,
+<span class="kw">def</span> Finger(parentNode<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">&quot;Finger&quot;</span>,
            withRotation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>], withTranslation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],
            withFixingBox<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], withPullPointLocation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>]):
 
-    finger <span class="op">=</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>(fromVolumeMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.vtk&quot;</span>,
-                                   withName<span class="op">=</span>withName,
+    finger <span class="op">=</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.Node">Node</a>(parentNode, name)
+    eobject <span class="op">=</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>(finger,
+                                   fromVolumeMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.vtk&quot;</span>,
                                    withPoissonRatio<span class="op">=</span><span class="fl">0.3</span>,
                                    withYoungModulus<span class="op">=</span><span class="dv">18000</span>,
                                    withTotalMass<span class="op">=</span><span class="fl">0.5</span>,
+                                   withSurfaceColor<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>],
                                    withSurfaceMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.stl&quot;</span>,
                                    withRotation<span class="op">=</span>withRotation,
-                                   withTranslation<span class="op">=</span>withTranslation,
-                                   attachedTo<span class="op">=</span>attachedTo)
+                                   withTranslation<span class="op">=</span>withTranslation)
 
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox">FixedBox</a>Constraint(atPositions<span class="op">=</span>withFixingBox, applyTo<span class="op">=</span>finger,
-                       withVisualization<span class="op">=</span><span class="va">True</span>)
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox">FixedBox</a>(eobject, atPositions<span class="op">=</span>withFixingBox, withVisualization<span class="op">=</span><span class="va">True</span>)
 
-    cable<span class="op">=</span><a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>(attachedTo<span class="op">=</span>finger,
-                 withName<span class="op">=</span><span class="st">&quot;PullingCable&quot;</span>,
+    cable<span class="op">=</span><a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>(eobject,
+                 <span class="st">&quot;PullingCable&quot;</span>,
                  withAPullPointLocation<span class="op">=</span>withPullPointLocation,
                  withRotation<span class="op">=</span>withRotation,
                  withTranslation<span class="op">=</span>withTranslation,
-                 withCableGeometry<span class="op">=</span>[[<span class="op">-</span><span class="fl">17.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                    [<span class="op">-</span><span class="fl">32.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                    [<span class="op">-</span><span class="fl">47.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                    [<span class="op">-</span><span class="fl">62.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                    [<span class="op">-</span><span class="fl">77.5</span>, <span class="fl">12.5</span>, <span class="fl">2.5</span>],
-                                    [<span class="op">-</span><span class="fl">83.5</span>, <span class="fl">12.5</span>, <span class="fl">4.5</span>],
-                                    [<span class="op">-</span><span class="fl">85.5</span>, <span class="fl">12.5</span>, <span class="fl">6.5</span>],
-                                    [<span class="op">-</span><span class="fl">85.5</span>, <span class="fl">12.5</span>, <span class="fl">8.5</span>],
-                                    [<span class="op">-</span><span class="fl">83.5</span>, <span class="fl">12.5</span>, <span class="fl">10.5</span>],
-                                    [<span class="op">-</span><span class="fl">77.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>],
-                                    [<span class="op">-</span><span class="fl">62.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>],
-                                    [<span class="op">-</span><span class="fl">47.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>],
-                                    [<span class="op">-</span><span class="fl">32.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>],
-                                    [<span class="op">-</span><span class="fl">17.5</span>, <span class="fl">12.5</span>, <span class="fl">12.5</span>]])<span class="op">;</span>
+                 withCableGeometry<span class="op">=</span>loadPointListFromFile(<span class="st">&quot;data/mesh/cable.json&quot;</span>))<span class="op">;</span>
 
-    finger.addObject( FingerController(cable) )
+    FingerController(eobject, cable)
 
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(attachedTo<span class="op">=</span>finger,
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(eobject, withName<span class="op">=</span><span class="st">&quot;CollisionMesh&quot;</span>,
                  fromSurfaceMesh<span class="op">=</span><span class="st">&quot;data/mesh/finger.stl&quot;</span>,
                  withRotation<span class="op">=</span>withRotation, withTranslation<span class="op">=</span>withTranslation,
-                 withName<span class="op">=</span><span class="st">&quot;CollisionMesh&quot;</span>, withACollisionGroup<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">2</span>])
+                 withACollisionGroup<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">2</span>])
 
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(attachedTo<span class="op">=</span>finger,
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(eobject, withName<span class="op">=</span><span class="st">&quot;CollisionMeshAuto1&quot;</span>,
                  fromSurfaceMesh<span class="op">=</span><span class="st">&quot;data/mesh/fingerCollision_part1.stl&quot;</span>,
                  withRotation<span class="op">=</span>withRotation, withTranslation<span class="op">=</span>withTranslation,
-                 withName<span class="op">=</span><span class="st">&quot;CollisionMeshAuto1&quot;</span>, withACollisionGroup<span class="op">=</span>[<span class="dv">1</span>])
+                 withACollisionGroup<span class="op">=</span>[<span class="dv">1</span>])
 
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(attachedTo<span class="op">=</span>finger,
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>(eobject, withName<span class="op">=</span><span class="st">&quot;CollisionMeshAuto2&quot;</span>,
                  fromSurfaceMesh<span class="op">=</span><span class="st">&quot;data/mesh/fingerCollision_part2.stl&quot;</span>,
                  withRotation<span class="op">=</span>withRotation, withTranslation<span class="op">=</span>withTranslation,
-                 withName<span class="op">=</span><span class="st">&quot;CollisionMeshAuto2&quot;</span>, withACollisionGroup<span class="op">=</span>[<span class="dv">2</span>])
+                 withACollisionGroup<span class="op">=</span>[<span class="dv">2</span>])
+
 
     <span class="cf">return</span> finger</code></pre></div>
 </div>
-Now the <em>&quot;mycablegripper.pyscn&quot;</em> should be much simpler and only containing:
+The file <em>'gripper.py'</em> should contains:
 <div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>
-<span class="im">from</span> myfinger <span class="im">import</span> Finger
+<p>import Sofa from grippercontroller import GripperController from finger import Finger</p>
+<p>def Gripper(parentNode=None): selfNode = parentNode.createChild(&quot;Gripper&quot;)</p>
+<pre><code>f1 = Finger(selfNode, &quot;Finger1&quot;,
+       withRotation=[0, 0, 105],
+       withTranslation=[20.0,0.0, 0.0],
+       withFixingBox=[-20, -10, 0, 20, 10, 15],
+       withPullPointLocation=[3, 10.5, 3])
 
-<span class="kw">def</span> createScene(rootNode):
-    <span class="co">&quot;&quot;&quot;This is my first Sofa scene&quot;&quot;&quot;</span>
-    m<span class="op">=</span><a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">981.0</span>, <span class="fl">0.0</span>], plugins<span class="op">=</span>[<span class="st">&quot;SoftRobots&quot;</span>])
-    m.getObject(<span class="st">&quot;VisualStyle&quot;</span>).displayFlags<span class="op">=</span><span class="st">&#39;showForceFields showBehaviorModels showInteractionForceFields&#39;</span>
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>(rootNode, alarmDistance<span class="op">=</span><span class="dv">3</span>, contactDistance<span class="op">=</span><span class="dv">2</span>, withFrictionCoef<span class="op">=</span><span class="fl">0.08</span>)
+f2 = Finger(selfNode, &quot;Finger2&quot;,
+       withRotation=[180, 0, 65],
+       withTranslation=[-10.0,0.0, -4.0],
+       withFixingBox=[-20, -10, -30, 20, 10, 0],
+       withPullPointLocation=[3, 10.5, -7])
 
-    f1 <span class="op">=</span> Finger(selfNode, <span class="st">&quot;Finger1&quot;</span>,
-           withRotation<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">105</span>],
-           withTranslation<span class="op">=</span>[<span class="fl">20.0</span>,<span class="fl">0.0</span>, <span class="fl">0.0</span>],
-           withFixingBox<span class="op">=</span>[<span class="op">-</span><span class="dv">20</span>, <span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">15</span>],
-           withPullPointLocation<span class="op">=</span>[<span class="dv">3</span>, <span class="fl">10.5</span>, <span class="dv">3</span>])</code></pre></div>
-</div>
-<p>As usual here is a set of tasks you can do to get better understanding of this step.</p>
-<h4 id="task-5.0"><i>Task 5.0:</i></h4>
-<ul>
-<li>Create the <em>&quot;myfinger.py&quot;</em> file with the adequate content and update the file <em>&quot;mycablegripper.pyscn&quot;</em> to make use it.
-<div>
-<pre>
-<a href="details/step5.0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
-</pre>
-</div></li>
-</ul>
-<h4 id="task-5.1"><i>Task 5.1:</i></h4>
-<ul>
-<li>In <em>mycablegripper.pyscn</em>, duplicate the Finger object and change the different location, orientation and fixing point so that it match the desired robot geometry. Do not forget that you can start Sofa with the '-i' option for an automatic reload of the scene each time the source file is changed.
+f3 = Finger(selfNode, &quot;Finger3&quot;,
+       withRotation=[180, 0, 65],
+       withTranslation=[-10.0,0.0, 34.0],
+       withFixingBox=[-20, -10, 0, 20, 10, 50],
+       withPullPointLocation=[3, 10.5, 31.5])
+
+GripperController(selfNode, [f1,f2,f3])
+
+return selfNode</code></pre>
+```
 <div>
 <pre>
-<a href="details/step5.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
+<a href="details/step5.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/gripper.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
-</div></li>
-</ul>
-<h2 id="step-6-finalizing-the-gripper.">Step 6: Finalizing the gripper.</h2>
-<p>At this step we can now create a file named <em>gripper.py</em> that will instanciate the three fingers as a single entity and implement a python script script controller to handle the gripper movement.</p>
-In <em>gripper.py</em> the Gripper creation should look like:
-<div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> Sofa
-<span class="im">from</span> myfinger <span class="im">import</span> Finger
-
-<span class="kw">def</span> getTranslated(points, vec):
-    r<span class="op">=</span>[]
-    <span class="cf">for</span> v <span class="op">in</span> points:
-        r.append( [v[<span class="dv">0</span>]<span class="op">+</span>vec[<span class="dv">0</span>], v[<span class="dv">1</span>]<span class="op">+</span>vec[<span class="dv">1</span>], v[<span class="dv">2</span>]<span class="op">+</span>vec[<span class="dv">2</span>]] )
-    <span class="cf">return</span> r
-
-<span class="kw">class</span> GripperController(Sofa.PythonScriptController):
-    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, fingers):
-        <span class="va">self</span>.fingers <span class="op">=</span> fingers
-        <span class="va">self</span>.name <span class="op">=</span> <span class="st">&quot;FingerController&quot;</span>
-
-    <span class="kw">def</span> onKeyPressed(<span class="va">self</span>,c):
-        <span class="bu">dir</span> <span class="op">=</span> <span class="va">None</span>
-        <span class="co"># UP key :</span>
-        <span class="cf">if</span> <span class="bu">ord</span>(c)<span class="op">==</span><span class="dv">19</span>:
-            <span class="bu">dir</span> <span class="op">=</span> [<span class="fl">1.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>]
-        <span class="co"># DOWN key : rear</span>
-        <span class="cf">elif</span> <span class="bu">ord</span>(c)<span class="op">==</span><span class="dv">21</span>:
-            <span class="bu">dir</span> <span class="op">=</span> [<span class="fl">1.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>]
-        <span class="co"># LEFT key : left</span>
-        <span class="cf">elif</span> <span class="bu">ord</span>(c)<span class="op">==</span><span class="dv">18</span>:
-            <span class="bu">dir</span> <span class="op">=</span> [<span class="fl">1.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>]
-        <span class="cf">elif</span> <span class="bu">ord</span>(c)<span class="op">==</span><span class="dv">20</span>:
-            <span class="bu">dir</span> <span class="op">=</span> [<span class="fl">1.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>]
-
-        <span class="cf">if</span> <span class="bu">dir</span> <span class="op">!=</span> <span class="va">None</span>:
-            <span class="co">### Apply the displacement to each finger. </span>
-            <span class="cf">for</span> finger <span class="op">in</span> <span class="va">self</span>.fingers:
-                mecaobject <span class="op">=</span> finger.getObject(<span class="st">&quot;MechanicalObject&quot;</span>)
-                mecaobject.findData(<span class="st">&#39;rest_position&#39;</span>).value <span class="op">=</span> getTranslated( mecaobject.rest_position,  <span class="bu">dir</span> )
-
-                cable <span class="op">=</span> finger.getChild(<span class="st">&quot;PullingCable&quot;</span>).getObject(<span class="st">&quot;CableConstraint&quot;</span>)
-                p <span class="op">=</span> cable.pullPoint[<span class="dv">0</span>]
-                cable.findData(<span class="st">&quot;pullPoint&quot;</span>).value <span class="op">=</span> [p[<span class="dv">0</span>]<span class="op">+</span><span class="bu">dir</span>[<span class="dv">0</span>], p[<span class="dv">1</span>]<span class="op">+</span><span class="bu">dir</span>[<span class="dv">1</span>], p[<span class="dv">2</span>]<span class="op">+</span><span class="bu">dir</span>[<span class="dv">2</span>]]
-
-<span class="kw">def</span> Gripper(attachedTo<span class="op">=</span><span class="va">None</span>):
-    selfNode <span class="op">=</span> attachedTo.createChild(<span class="st">&quot;Gripper&quot;</span>)
-
-    f1 <span class="op">=</span> Finger(selfNode, <span class="st">&quot;Finger1&quot;</span>,
-           withRotation<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">105</span>],
-           withTranslation<span class="op">=</span>[<span class="fl">20.0</span>,<span class="fl">0.0</span>, <span class="fl">0.0</span>],
-           withFixingBox<span class="op">=</span>[<span class="op">-</span><span class="dv">20</span>, <span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">15</span>],
-           withPullPointLocation<span class="op">=</span>[<span class="dv">3</span>, <span class="fl">10.5</span>, <span class="dv">3</span>])
-
-    f2 <span class="op">=</span> Finger(selfNode, <span class="st">&quot;Finger2&quot;</span>,
-           withRotation<span class="op">=</span>[<span class="dv">180</span>, <span class="dv">0</span>, <span class="dv">65</span>],
-           withTranslation<span class="op">=</span>[<span class="op">-</span><span class="fl">10.0</span>,<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">4.0</span>],
-           withFixingBox<span class="op">=</span>[<span class="op">-</span><span class="dv">20</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">30</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">0</span>],
-           withPullPointLocation<span class="op">=</span>[<span class="dv">3</span>, <span class="fl">10.5</span>, <span class="op">-</span><span class="dv">7</span>])
-
-    f3 <span class="op">=</span> Finger(selfNode, <span class="st">&quot;Finger3&quot;</span>,
-           withRotation<span class="op">=</span>[<span class="dv">180</span>, <span class="dv">0</span>, <span class="dv">65</span>],
-           withTranslation<span class="op">=</span>[<span class="op">-</span><span class="fl">10.0</span>,<span class="fl">0.0</span>, <span class="fl">34.0</span>],
-           withFixingBox<span class="op">=</span>[<span class="op">-</span><span class="dv">20</span>, <span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">50</span>],
-           withPullPointLocation<span class="op">=</span>[<span class="dv">3</span>, <span class="fl">10.5</span>, <span class="fl">31.5</span>])
-
-    <span class="cf">return</span> selfNode</code></pre></div>
 </div>
-Now the <em>mycablegripper.pyscn</em> should be much simpler only containing:
+</div>
+<h4 id="comments-1"><i>Comments:</i></h4>
+<ul>
+<li><p>In <em>gripper.py</em>, show how to add one finger at default position and location. Do not forget that you can start Sofa with the '-i' option for an automatic reload of the 'gripper.py' each time the source file is changed.</p></li>
+<li><p>In <em>gripper.py</em>, duplicate the Finger object and change the location, orientation and fixing point so that it match the desired robot geometry of the gripper. Do not forget that you can start Sofa with the '-i' option for an automatic reload of the 'gripper.py' each time the source file is changed.</p></li>
+<li><p>Attach the GripperController to the Gripper object. So that when you press CTRL+UP/DOWN/LEFT/RIGHT the gripper is moving.</p></li>
+</ul>
+<h2 id="step-6-putting-everything-in-a-single-simulation.">Step 6: Putting everything in a single simulation.</h2>
+Open the <em>'cablegripper.pyscn'</em> and add the Cube, the Floor and the Gripper which should resuts in something similar to:
 <div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>
+<span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>, <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>
 <span class="im">from</span> gripper <span class="im">import</span> Gripper
 
 <span class="kw">def</span> createScene(rootNode):
-    <span class="co">&quot;&quot;&quot;This is my first Sofa scene&quot;&quot;&quot;</span>
+    <span class="co">&quot;&quot;&quot;This is my first scene&quot;&quot;&quot;</span>
     <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="op">-</span><span class="fl">981.0</span>, <span class="fl">0.0</span>], plugins<span class="op">=</span>[<span class="st">&quot;SoftRobots&quot;</span>])
-    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>(rootNode, alarmDistance<span class="op">=</span><span class="dv">4</span>, contactDistance<span class="op">=</span><span class="dv">3</span>, withFrictionCoef<span class="op">=</span><span class="fl">0.08</span>)
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>(rootNode, alarmDistance<span class="op">=</span><span class="dv">4</span>, contactDistance<span class="op">=</span><span class="dv">3</span>, withFrictionCoef<span class="op">=</span><span class="fl">0.08</span>)
 
-    Gripper(attachedTo<span class="op">=</span>rootNode)</code></pre></div>
+    Gripper(parentNode<span class="op">=</span>rootNode)
+
+    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>(rootNode, name<span class="op">=</span><span class="st">&quot;Floor&quot;</span>,
+          withColor<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],
+          Name<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">160.0</span>,<span class="fl">0.0</span>],
+          isAStaticObject<span class="op">=</span><span class="va">True</span>)
+
+    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>(rootNode, name<span class="op">=</span><span class="st">&quot;Cube&quot;</span>,
+          Scale<span class="op">=</span><span class="fl">20.0</span>,
+          withColor<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.0</span>],
+          withTotalMass<span class="op">=</span><span class="fl">0.03</span>,
+          withVolume<span class="op">=</span><span class="dv">20</span>,
+          withInertiaMatrix<span class="op">=</span>[<span class="fl">1000.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">1000.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">1000.0</span>],
+          Name<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">130.0</span>,<span class="fl">10.0</span>])
+
+    <span class="cf">return</span> rootNode</code></pre></div>
+<div>
+<pre>
+<a href="details/step6.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/cablegripper.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+</pre>
 </div>
 </div>
-<p>And right now the set of tasks you can do to get better understanding of this step.</p>
-<h4 id="task-6.0"><i>Task 6.0:</i></h4>
-<ul>
-<li>Create the <em>mygripper.py</em> file with the appropriate content and update the <em>mycablegripper.pyscn</em> accordingly.
-<div>
-<pre>
-<a href="details/step6.0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
-</pre>
-</div></li>
-</ul>
-<h4 id="task-6.1"><i>Task 6.1:</i></h4>
-<ul>
-<li>Attach the GripperController to the Gripper object. When you press CTRL+UP/DOWN/LEFT/RIGHT what do you observe ?
-<div>
-<pre>
-<a href="details/step6.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
-</pre>
-</div></li>
-</ul>
-<h4 id="task-6.1-1"><i>Task 6.1:</i></h4>
-<ul>
-<li>Fix the GripperController so that it moves in the proper way according to UP/DOWN/LEFT/RIGHT key pressed.<br />
-
-<div>
-<pre>
-<a href="details/step6.2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the result of this task</a>
-</pre>
-</div></li>
-</ul>
-<h2 id="step-7-finalizing-the-tutorial-by-adding-rigid-objects-to-your-scene">Step 7: Finalizing the tutorial by adding rigid objects to your scene</h2>
-<p>In a similar way to step 0. We will now add rigids objects into <em>mycablegripper.pyscn</em>.<br />
-The graspable cube is a bit more complexe as the physics is computed at the center of gravity and an inertia matrix need to be provided.</p>
-<p>The last set of tasks to do in order to finish this tutorial.</p>
-<h4 id="task-7.0"><i>Task 7.0:</i></h4>
-<ul>
-<li>Add a static Floor object to the scene.
-<div>
-<pre>
-<a href="details/step7.0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Visualize the resulting scene.</a>
-</pre>
-</div></li>
-</ul>
-<h4 id="task-7.1"><i>Task 7.1:</i></h4>
-<ul>
-<li><p>Add a rigid cube object to the scene. with the following properties:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">totalMass<span class="op">=</span><span class="fl">0.03</span>,
-volume<span class="op">=</span><span class="dv">20</span>,
-inertiaMatrix<span class="op">=</span>[<span class="fl">1000.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">1000.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">1000.0</span>],</code></pre></div>
-<div>
-<pre>
-<a href="details/step7.1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Visualize the resulting scene.</a>
-</pre>
-</div></li>
-</ul>
 <h3 id="conclusion">Conclusion</h3>
 <p>Congratulation, you completed this tutorial. You are strongly encouraged to pursue with the other tutorial and read the thematical documentations.</p>
 <p>If you have any comments or suggestions, please submit issues on our <a href="https://github.com/SofaDefrost">github/SoftRobots</a> page.</p>

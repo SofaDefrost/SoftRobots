@@ -1,28 +1,35 @@
-from finger import Finger
+# -*- coding: utf-8 -*-
+import Sofa
+from stlib.scene import Node
 from grippercontroller import GripperController
+from finger import Finger
 
-def Gripper(attachedTo=None):
-    """A three finger soft gripper."""
-    selfNode = attachedTo.createChild("Gripper")
+####################################################################################################
+### Gripper
+####################################################################################################
+def Gripper(parentNode=None):
+    gripper = Node(parentNode, "Gripper")
 
-    f1 = Finger(selfNode, "Finger1",
-           withRotation=[0, 0, 105],
-           withTranslation=[20.0,0.0, 0.0],
-           withFixingBox=[-20, -10, 0, 20, 10, 15],
-           withPullPointLocation=[3, 10.5, 3])
+    #### YOU NEED TO PUT THE GRIPPER CONTENT HERE.
+    f1=Finger(gripper)
+    f2=Finger(gripper)
+    f3=Finger(gripper)
 
-    return selfNode
+    GripperController(gripper, fingers=[f1,f2,f3])
+
+    return gripper
 
 
+
+####################################################################################################
+### You can test the gripper by typing runSofa gripper.py
+####################################################################################################
 def createScene(rootNode):
-    """To test the content of this file, try:    
-    >>> runSofa gripper.py 
-    """ 
     from stlib.scene import MainHeader, ContactHeader
     MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
-    Gripper(attachedTo=rootNode)
+    Gripper(rootNode)
     return rootNode
 
 

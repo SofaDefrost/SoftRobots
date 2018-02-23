@@ -9,29 +9,34 @@ from stlib.physics.collision import CollisionMesh
 from stlib.tools import loadPointListFromFile
 
 class FingerController(Sofa.PythonScriptController):
-    def __init__(self, node, cable ):
+
+    def __init__(self, node, cable, valueType ):
         self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
         self.name = "FingerController"
+        if(valueType == "position"):
+            self.valueIncrement = 1
+        else:
+            self.valueIncrement = 20
 
     def onKeyPressed(self,c):
         if (c == "+"):
-            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + 1.
+            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + self.valueIncrement
 
         elif (c == "-"):
-            displacement = self.cableconstraintvalue.value[0][0] - 1.
-            if(displacement < 0):
-                displacement = 0
-            self.cableconstraintvalue.value = displacement
+            actuation = self.cableconstraintvalue.value[0][0] - self.valueIncrement
+            if(actuation < 0):
+                actuation = 0
+            self.cableconstraintvalue.value = actuation
 
 def Finger(parentNode=None, name="Finger",
            withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
-           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
+           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0], withYoungModulus=18000, withCableValueAs='position'):
 
     finger = Node(parentNode, name)
     eobject = ElasticMaterialObject(finger,
-                                   fromVolumeMesh="data/mesh/finger.vtk",
+                                   fromVolumeMesh="data/mesh/finger.vtk", #MISK need to change the relative file
                                    withPoissonRatio=0.3,
-                                   withYoungModulus=18000,
+                                   withYoungModulus=withYoungModulus,
                                    withTotalMass=0.5,
                                    withSurfaceColor=[0.0, 0.8, 0.7],
                                    withSurfaceMesh="data/mesh/finger.stl",
@@ -45,9 +50,10 @@ def Finger(parentNode=None, name="Finger",
                  withAPullPointLocation=withPullPointLocation,
                  withRotation=withRotation,
                  withTranslation=withTranslation,
-                 withCableGeometry=loadPointListFromFile("data/mesh/cable.json"));
+                 withCableGeometry=loadPointListFromFile("data/mesh/cable.json"),
+                 withValueAs=withCableValueAs);
 
-    FingerController(eobject, cable)
+    FingerController(eobject, cable, withCableValueAs) #MISK may change to vary variation based on value type
 
     CollisionMesh(eobject, withName="CollisionMesh",
                  fromSurfaceMesh="data/mesh/finger.stl",
@@ -74,4 +80,3 @@ def createScene(rootNode):
 
     Finger(rootNode, withTranslate=[1.0,0.0,0.0])
     return rootNode
-

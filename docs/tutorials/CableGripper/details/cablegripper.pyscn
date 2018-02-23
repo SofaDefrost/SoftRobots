@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from stlib.scene import MainHeader, ContactHeader
 from stlib.physics.rigid import Floor, Cube
 from gripper import Gripper
@@ -7,7 +8,7 @@ def createScene(rootNode):
     MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
 
-    Gripper(attachedTo=rootNode)
+    Gripper(rootNode)
 
     Floor(rootNode, name="Floor",
           withColor=[1.0,0.0,0.0],

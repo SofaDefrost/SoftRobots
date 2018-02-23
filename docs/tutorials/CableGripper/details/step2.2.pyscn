@@ -1,22 +1,38 @@
-from stlib.scene import MainHeader
+# -*- coding: utf-8 -*-
 from stlib.physics.deformable import ElasticMaterialObject
-from stlib.physics.constraints import FixedBox as FixedBoxConstraint
+from stlib.physics.constraints import FixedBox
+from stlib.scene import Node
 
-def createScene(rootNode):
-    v=MainHeader(rootNode)
-    v.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+def Finger(parentNode=None, name="Finger",
+           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
+           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
 
-    finger = ElasticMaterialObject(
+    finger = Node(parentNode, "Finger")
+    eobject = ElasticMaterialObject(finger,
                                    fromVolumeMesh="data/mesh/finger.vtk",
                                    withPoissonRatio=0.3,
                                    withYoungModulus=18000,
                                    withTotalMass=0.5,
                                    withSurfaceColor=[0.0, 0.8, 0.7],
                                    withSurfaceMesh="data/mesh/finger.stl",
-                                   attachedTo=rootNode)
+                                   withRotation=withRotation,
+                                   withTranslation=withTranslation)
 
-    FixedBoxConstraint(atPositions=[-14, 0, 0, 5, 10, 15],
-                       applyTo=finger,
-                       withVisualization=True)
+
+    FixedBox(eobject,
+             withVisualization=True,
+             atPositions=[-10,-10,-10,10,10,10])
+
+def createScene(rootNode):
+    # -*- coding: utf-8 -*-
+    from stlib.scene import MainHeader
+    from stlib.visuals import ShowGrid
+    from stlib.physics.rigid import Floor
+    from stlib.physics.rigid import Cube
+    m=MainHeader(rootNode, plugins=["SoftRobots"])
+    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+
+    ShowGrid(rootNode)
+    Finger(rootNode)
 
     return rootNode

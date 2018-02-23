@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../../../docs/style.css" type="text/css" />
+</head>
+<body>
+<div class="figure">
+<img src="../../images/pluginimage.png" style="width:100.0%" />
+
+</div>
+<h2 id="first-steps-with-sofa-softrobots">First steps with Sofa &amp; SoftRobots</h2>
+<p>Welcome in Sofa and the SoftRobots plugins. This tutorial is aimed at people that have never use Sofa and aims at give them the basis of Sofa scene modelling.</p>
+<p>This tutorial describes how to set-up a simulation environment, a scene, using <a href="https://www.sofa-framework.org/">Sofa</a> and how to use the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> plugin to add simulated elements.</p>
+<p>Tutorials prequisites:</p>
+<ul>
+<li><p>installed <a href="https://www.sofa-framework.org/">Sofa</a> with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a>.</p></li>
+<li><p>you have basic knowledge of the <a href="https://www.python.org/">Python</a> programming language. If not you can go to <a href="https://www.python.org/">Python</a>Tutorials.</p></li>
+</ul>
+<h3 id="step-1-setting-up-simple-scene">Step 1: Setting up simple scene</h3>
+<p>Sofa is loading the description of the simulation from <em>pyscn</em> files. The content of these file is in fact standard python code with at least one function named <em>createScene</em> taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called &quot;rootNode&quot;.</p>
+A very simple scene may look like:
+<div>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>
+<span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid
+<span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>
+<span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>
+
+<span class="kw">def</span> createScene(rootNode):
+    <span class="co">&quot;&quot;&quot;This is my first scene&quot;&quot;&quot;</span>
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="dv">10</span>)
+
+    ShowGrid(rootNode)
+
+    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>(rootNode,
+          withTranslation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">160.0</span>,<span class="fl">0.0</span>],
+          isAStaticObject<span class="op">=</span><span class="va">True</span>)
+
+    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>(rootNode,
+          withTranslation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],
+          withScale<span class="op">=</span><span class="fl">20.0</span>)
+
+
+    <span class="cf">return</span> rootNode</code></pre></div>
+<div>
+<pre>
+<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/firststeps.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+</pre>
+</div>
+</div>
+<h4 id="comments-things-to-present-or-do-in-this-step"><i>Comments (things to present or do in this step):</i></h4>
+<ul>
+<li><p>Load the file 'firststeps.pyscn' in runSofa with the -i option and in your text editor.</p></li>
+<li><p>The '-i' option is there to automatically reload the file when there is changes.</p></li>
+<li><p>Move the object in the scene</p></li>
+<li><p>Change their scale</p></li>
+<li><p>Explaine the role of the alarmDistance &amp; contactDistance</p></li>
+</ul>
+<h3 id="step-2-adding-more-elements-to-the-sene">Step 2: Adding more elements to the sene</h3>
+<p>We will now add much more cube falling on the floor.</p>
+<div>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>
+<span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid
+<span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>
+<span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>
+
+<span class="kw">def</span> createScene(rootNode):
+    <span class="co">&quot;&quot;&quot;This is my first scene&quot;&quot;&quot;</span>
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])
+    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>(rootNode, alarmDistance<span class="op">=</span><span class="dv">2</span>, contactDistance<span class="op">=</span><span class="dv">1</span>)
+
+    ShowGrid(rootNode)
+
+    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>(rootNode,
+          withTranslation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">160.0</span>,<span class="fl">0.0</span>],
+          withScale<span class="op">=</span><span class="fl">5.0</span>,
+          isAStaticObject<span class="op">=</span><span class="va">True</span>)
+
+    <span class="cf">for</span> c <span class="op">in</span> <span class="bu">range</span>(<span class="dv">10</span>):
+        <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>(rootNode,
+             withTranslation<span class="op">=</span>[<span class="op">-</span><span class="dv">200</span><span class="op">+</span>c<span class="op">*</span><span class="dv">50</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],
+             withColor<span class="op">=</span>[c<span class="op">/</span><span class="fl">10.0</span>,c<span class="op">*</span><span class="fl">0.7</span><span class="op">/</span><span class="fl">10.0</span>,<span class="fl">0.9</span>],
+             withScale<span class="op">=</span><span class="fl">20.0</span>)
+
+
+    <span class="cf">return</span> rootNode</code></pre></div>
+<div>
+<pre>
+<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/firststeps.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+</pre>
+</div>
+</div>
+<h4 id="comments-things-to-present-or-do-in-this-step-1"><i>Comments (things to present or do in this step):</i></h4>
+<ul>
+<li><p>Add the for loop and change the translation.</p></li>
+<li><p>Explain a bit the rendering options to change the color</p></li>
+<li><p>Explain that a Floor and Cube are specific cases of a <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.rigid.html#stlib.physics.rigid.RigidObject">RigidObject</a></p></li>
+</ul>
+</body>
+</html>
