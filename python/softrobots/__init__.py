@@ -49,5 +49,4 @@ Indices and tables
 
 """
 
-__all__=["actuators"]
-
+__all__=["actuators","primitives"]
