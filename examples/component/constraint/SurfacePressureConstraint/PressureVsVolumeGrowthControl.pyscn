@@ -16,50 +16,11 @@ def createScene(rootNode):
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
                 
                 
+                Translation = [0,0,0]
                 BunnyPressure = createBunny(rootNode)                         
                 
-                
-                #bunnyVolume
-                bunnyVolume = rootNode.createChild('bunnyVolume')
-                bunnyVolume.createObject('EulerImplicit')
-                bunnyVolume.createObject('SparseLDLSolver')
-                
-                bunnyVolume.createObject('MeshVTKLoader', name='loader', filename=path+'Hollow_Stanford_Bunny.vtu', translation="15 0 0")
-                bunnyVolume.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
-                bunnyVolume.createObject('TetrahedronSetTopologyModifier')
-                bunnyVolume.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
-                bunnyVolume.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
-                
-                bunnyVolume.createObject('MechanicalObject', name='tetras', template='Vec3d')
-                bunnyVolume.createObject('UniformMass', totalmass='0.5')
-                bunnyVolume.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', poissonRatio='0.3',  youngModulus='18000')
-		  
-                bunnyVolume.createObject('BoxROI', name='boxROI', box='10 -6 -5  20 -4.5 5', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
-                bunnyVolume.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
-                
-                bunnyVolume.createObject('LinearSolverConstraintCorrection')
-                #bunnyVolume.createObject('UncoupledConstraintCorrection')
-
-
-		#bunnyVolume/cavity
-                cavity = bunnyVolume.createChild('cavity')
-                cavity.createObject('MeshObjLoader', name='loader', filename=path+'Hollow_Bunny_Body_Cavity.obj', translation="15 0 0")
-                cavity.createObject('Mesh', src='@loader', name='topo')
-                cavity.createObject('MechanicalObject', name='cavity')
-                cavity.createObject('SurfacePressureConstraint', triangles='@topo.triangles', value='15', valueType="volumeGrowth")
-                cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')                
-                
-                
-		#bunnyVolume/bunnyVolumeVisu
-                bunnyVolumeVisu = bunnyVolume.createChild('visu')
-                bunnyVolumeVisu.createObject('TriangleSetTopologyContainer', name='container')
-                bunnyVolumeVisu.createObject('TriangleSetTopologyModifier')
-                bunnyVolumeVisu.createObject('TriangleSetTopologyAlgorithms', template='Vec3d')
-                bunnyVolumeVisu.createObject('TriangleSetGeometryAlgorithms', template='Vec3d')
-                bunnyVolumeVisu.createObject('Tetra2TriangleTopologicalMapping', name='Mapping', input="@../container", output="@container")
-                
-                bunnyVolumeVisu.createObject('OglModel', template='ExtVec3f', color='0.3 0.3 0.3 0.6', translation="15 0 0")
-                bunnyVolumeVisu.createObject('IdentityMapping')
+                Translation = [15,0,0]
+                BunnyVolume = createBunny(rootNode,Translation,'VolumeConstraint')
 
 
                 return rootNode
