@@ -1,6 +1,8 @@
 import Sofa
 
+from Bunny import createBunny
 import os
+
 path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
@@ -13,49 +15,8 @@ def createScene(rootNode):
              
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
                 
-                #bunnyPressure
-                bunnyPressure = rootNode.createChild('bunnyPressure')
-                bunnyPressure.createObject('EulerImplicit', name='odesolver')
-                bunnyPressure.createObject('SparseLDLSolver', name='preconditioner')
                 
-                bunnyPressure.createObject('MeshVTKLoader', name='loader', filename=path+'Hollow_Stanford_Bunny.vtu')
-                bunnyPressure.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
-                bunnyPressure.createObject('TetrahedronSetTopologyModifier')
-                bunnyPressure.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
-                bunnyPressure.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
-                
-                bunnyPressure.createObject('MechanicalObject', name='tetras', template='Vec3d')
-                bunnyPressure.createObject('UniformMass', totalmass='0.5')
-                bunnyPressure.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', poissonRatio='0.3',  youngModulus='18000')
-		  
-                bunnyPressure.createObject('BoxROI', name='boxROI', box='-5 -6 -5  5 -4.5 5', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
-                bunnyPressure.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
-                
-                bunnyPressure.createObject('LinearSolverConstraintCorrection')
-                #bunnyPressure.createObject('UncoupledConstraintCorrection')
-
-
-		#bunnyPressure/cavity
-                cavity = bunnyPressure.createChild('cavity')
-                cavity.createObject('MeshObjLoader', name='loader', filename=path+'Hollow_Bunny_Body_Cavity.obj')
-                cavity.createObject('Mesh', src='@loader', name='topo')
-                cavity.createObject('MechanicalObject', name='cavity')
-                cavity.createObject('SurfacePressureConstraint', triangles='@topo.triangles', value='40')
-                cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')                
-                
-                
-		#bunnyPressure/bunnyPressureVisu
-                bunnyPressureVisu = bunnyPressure.createChild('visu')
-                bunnyPressureVisu.createObject('TriangleSetTopologyContainer', name='container')
-                bunnyPressureVisu.createObject('TriangleSetTopologyModifier')
-                bunnyPressureVisu.createObject('TriangleSetTopologyAlgorithms', template='Vec3d')
-                bunnyPressureVisu.createObject('TriangleSetGeometryAlgorithms', template='Vec3d')
-                bunnyPressureVisu.createObject('Tetra2TriangleTopologicalMapping', name='Mapping', input="@../container", output="@container")
-                
-                bunnyPressureVisu.createObject('OglModel', template='ExtVec3f', color='0.3 0.2 0.2 0.6')
-                bunnyPressureVisu.createObject('IdentityMapping')
-                
-                
+                BunnyPressure = createBunny(rootNode)                         
                 
                 
                 #bunnyVolume
