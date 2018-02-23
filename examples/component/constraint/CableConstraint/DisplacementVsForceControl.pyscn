@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import Sofa
-from softrobots.primitives.finger import Finger
+from softrobots.parts.finger import Finger
 from stlib.scene import MainHeader, ContactHeader
 
 def createScene(rootNode):
