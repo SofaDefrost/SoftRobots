@@ -18,7 +18,7 @@ Example:
     from stlib.physics.deformable import ElasticMaterialObject
 
     from softrobots.actuators import PullingCable
-    #from softrobots.grippers.parts import FingerCable
+    from softrobots.sensors import StringSensor
 
     def createScene(rootNode):
         MainHeader(rootNode)
@@ -27,10 +27,12 @@ Example:
         Cube(rootNode, translation=[5.0,0.0,0.0])
         Floor(rootNode, translation=[0.0,-1.0,0.0])
 
-        f = ElasticMaterialObject(rootNode, name="finger",
-                              surface="finger.stl", volume="finger.vtk",
-                              translation=[0.0,0.0,0.0])
-        PullingCable(,,)
+       target = ElasticMaterialObject(fromVolumeMesh="mesh/liver.msh",
+                                       withTotalMass=0.5,
+                                       attachedTo=node)
+
+        PullingCable(target)
+        StringSensor(target)
 
 Content of the library
 **********************
@@ -39,6 +41,7 @@ Content of the library
     :toctree: _autosummary
 
     softrobots.actuators
+    softrobots.sensors
 
 Indices and tables
 ******************
@@ -49,5 +52,5 @@ Indices and tables
 
 """
 
-__all__=["actuators"]
+__all__=["actuators", "sensors"]
 
