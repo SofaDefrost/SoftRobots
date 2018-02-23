@@ -10,7 +10,7 @@ Content:
 
 |
 
-.. autofunction:: StingSensor
+.. autofunction:: StringSensor
 
 """
 from stringsensor import StringSensor

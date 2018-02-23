@@ -42,6 +42,8 @@ Content of the library
 
     softrobots.actuators
     softrobots.sensors
+    softrobots.primitives
+    softrobots.inverse
 
 Indices and tables
 ******************
@@ -52,4 +54,5 @@ Indices and tables
 
 """
 
-__all__=["actuators","primitives", "sensors"]
+__all__=["actuators","primitives", "sensors", "inverse"]
+
