@@ -5,14 +5,14 @@ from stlib.scene import MainHeader, ContactHeader
 
 def createScene(rootNode):
     MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
-    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, frictionCoef=0.08)
 
     # stiff, position controlled
-    f1 = Finger(rootNode, name="StiffPosition", withTranslation=[0.0,0.0,0.0], withFixingBox=[-20, -10, 0, 20, 10, 15], withYoungModulus=18000, withCableValueAs='position', withPullPointLocation=[0.0,0.0,0.0])
+    f1 = Finger(rootNode, name="StiffPosition", translation=[0.0,0.0,0.0], fixingBox=[-20, -10, 0, 20, 10, 15], youngModulus=18000, valueType='position', pullPointLocation=[0.0,0.0,0.0])
     # stiff, force controlled
-    f2 = Finger(rootNode, name="StiffForce", withTranslation=[150.0,0.0,0.0], withFixingBox=[130, -10, 0, 170, 10, 15], withYoungModulus=18000,  withCableValueAs='force', withPullPointLocation=[150.0,0.0,0.0])
+    f2 = Finger(rootNode, name="StiffForce", translation=[150.0,0.0,0.0], fixingBox=[130, -10, 0, 170, 10, 15], youngModulus=18000,  valueType='force', pullPointLocation=[150.0,0.0,0.0])
     # soft, position controlled
-    f3 = Finger(rootNode, name="SoftPosition", withTranslation=[0.0,100.0,0.0], withFixingBox=[-20, 90, 0, 20, 110, 15],  withYoungModulus=9000, withCableValueAs='position', withPullPointLocation=[0.0,100.0,0.0])
+    f3 = Finger(rootNode, name="SoftPosition", translation=[0.0,100.0,0.0], fixingBox=[-20, 90, 0, 20, 110, 15],  youngModulus=9000, valueType='position', pullPointLocation=[0.0,100.0,0.0])
     # soft, force controlled
-    f4 = Finger(rootNode, name="SoftForce", withTranslation=[150.0,100.0,0.0], withFixingBox=[130, 90, 0, 170, 110, 15], withYoungModulus=9000, withCableValueAs='force', withPullPointLocation=[150.0,100.0,0.0])
+    f4 = Finger(rootNode, name="SoftForce", translation=[150.0,100.0,0.0], fixingBox=[130, 90, 0, 170, 110, 15], youngModulus=9000, valueType='force', pullPointLocation=[150.0,100.0,0.0])
     return rootNode

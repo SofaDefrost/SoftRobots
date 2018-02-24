@@ -27,8 +27,8 @@ Example:
         Cube(rootNode, translation=[5.0,0.0,0.0])
         Floor(rootNode, translation=[0.0,-1.0,0.0])
 
-       target = ElasticMaterialObject(fromVolumeMesh="mesh/liver.msh",
-                                       withTotalMass=0.5,
+       target = ElasticMaterialObject(volumeMeshFileName="mesh/liver.msh",
+                                       totalMass=0.5,
                                        attachedTo=node)
 
         PullingCable(target)

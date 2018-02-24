@@ -50,15 +50,15 @@
 	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.Node"
 	},
 
-    "withYoungModulus" : {
+    "youngModulus" : {
        "ns" : "STLIB::PARAMS",
-       "name" : "withYoungModulus",
+       "name" : "youngModulus",
        "url": "https://en.wikipedia.org/wiki/Young%27s_modulus"
     },
 
-    "withPoissonRatio" : {
+    "poissonRatio" : {
        "ns" : "STLIB::PARAMS",
-       "name" : "withPoissonRatio",
+       "name" : "poissonRatio",
        "url": "https://en.wikipedia.org/wiki/Poisson%27s_ratio"
     }
 

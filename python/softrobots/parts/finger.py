@@ -29,46 +29,47 @@ class FingerController(Sofa.PythonScriptController):
             self.cableconstraintvalue.value = actuation
 
 def Finger(parentNode=None, name="Finger",
-           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
-           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0], withYoungModulus=18000, withCableValueAs='position'):
+           rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
+           fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0], youngModulus=18000, valueType='position'):
 
     finger = Node(parentNode, name)
     eobject = ElasticMaterialObject(finger,
-                                   fromVolumeMesh="data/mesh/finger.vtk", #MISK need to change the relative file
-                                   withPoissonRatio=0.3,
-                                   withYoungModulus=withYoungModulus,
-                                   withTotalMass=0.5,
-                                   withSurfaceColor=[0.0, 0.8, 0.7],
-                                   withSurfaceMesh="data/mesh/finger.stl",
-                                   withRotation=withRotation,
-                                   withTranslation=withTranslation)
+                                   volumeMeshFileName="data/mesh/finger.vtk", #MISK need to change the relative file
+                                   poissonRatio=0.3,
+                                   youngModulus=youngModulus,
+                                   totalMass=0.5,
+                                   surfaceColor=[0.0, 0.8, 0.65],
+                                   surfaceMeshFileName="data/mesh/finger.stl",
+                                   rotation=rotation,
+                                   translation=translation)
 
-    FixedBox(eobject, atPositions=withFixingBox, withVisualization=True)
+
+    FixedBox(eobject, atPositions=fixingBox, doVisualization=True)
 
     cable=PullingCable(eobject,
                  "PullingCable",
-                 withAPullPointLocation=withPullPointLocation,
-                 withRotation=withRotation,
-                 withTranslation=withTranslation,
-                 withCableGeometry=loadPointListFromFile("data/mesh/cable.json"),
-                 withValueAs=withCableValueAs);
+                 pullPointLocation=pullPointLocation,
+                 rotation=rotation,
+                 translation=translation,
+                 cableGeometry=loadPointListFromFile("data/mesh/cable.json"),
+                 valueType=valueType);
 
-    FingerController(eobject, cable, withCableValueAs) #MISK may change to vary variation based on value type
+    FingerController(eobject, cable, valueType) #MISK may change to vary variation based on value type
 
-    CollisionMesh(eobject, withName="CollisionMesh",
-                 fromSurfaceMesh="data/mesh/finger.stl",
-                 withRotation=withRotation, withTranslation=withTranslation,
-                 withACollisionGroup=[1, 2])
+    CollisionMesh(eobject, name="CollisionMesh",
+                 surfaceMeshFileName="data/mesh/finger.stl",
+                 rotation=rotation, translation=translation,
+                 collisionGroup=[1, 2])
 
-    CollisionMesh(eobject, withName="CollisionMeshAuto1",
-                 fromSurfaceMesh="data/mesh/fingerCollision_part1.stl",
-                 withRotation=withRotation, withTranslation=withTranslation,
-                 withACollisionGroup=[1])
+    CollisionMesh(eobject, name="CollisionMeshAuto1",
+                 surfaceMeshFileName="data/mesh/fingerCollision_part1.stl",
+                 rotation=rotation, translation=translation,
+                 collisionGroup=[1])
 
-    CollisionMesh(eobject, withName="CollisionMeshAuto2",
-                 fromSurfaceMesh="data/mesh/fingerCollision_part2.stl",
-                 withRotation=withRotation, withTranslation=withTranslation,
-                 withACollisionGroup=[2])
+    CollisionMesh(eobject, name="CollisionMeshAuto2",
+                 surfaceMeshFileName="data/mesh/fingerCollision_part2.stl",
+                 rotation=rotation, translation=translation,
+                 collisionGroup=[2])
 
 
     return finger
@@ -76,7 +77,7 @@ def Finger(parentNode=None, name="Finger",
 def createScene(rootNode):
     from stlib.scene import MainHeader, ContactHeader
     MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
-    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, frictionCoef=0.08)
 
-    Finger(rootNode, withTranslate=[1.0,0.0,0.0])
+    Finger(rootNode, translation=[1.0,0.0,0.0])
     return rootNode

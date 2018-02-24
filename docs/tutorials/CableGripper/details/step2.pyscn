@@ -3,13 +3,13 @@ from stlib.physics.deformable import ElasticMaterialObject
 from stlib.scene import Node
 
 def Finger(parentNode=None, Name="Finger",
-           withRotation=[0.0, 0.0, 0.0],
-           withTranslation=[0.0, 0.0, 0.0],
-           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
+           rotation=[0.0, 0.0, 0.0],
+           translation=[0.0, 0.0, 0.0],
+           fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0]):
 
     finger = Node(parentNode, "Finger")
     mobject = ElasticMaterialObject(finger,
-                    fromVolumeMesh="data/mesh/finger.vtk")
+                    volumeMeshFileName="data/mesh/finger.vtk")
    
     return None
 

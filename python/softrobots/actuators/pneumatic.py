@@ -1,16 +1,16 @@
-def getOrCreateTheTemplateNode(attachedAsAChildOf=None, attachedTo=None, withName=None):
+def getOrCreateTheTemplateNode(attachedAsAChildOf=None, attachedTo=None, name=None):
     if attachedTo != None:
-        if withName != None:
-            Sofa.msg_error(attachedTo, "The withName parameter cannot be used when a template is attachedTo to an existing node")
+        if name != None:
+            Sofa.msg_error(attachedTo, "The name parameter cannot be used when a template is attachedTo to an existing node")
             return attachedTo
         if attachedAsAChildOf != None:
             Sofa.msg_error(attachedTo, "Both attachedTo and attachedAsAChildOf are set is not allowed.")
             return attachedTo
         return attachedTo
-    return attachedAsAChildOf.createChild(withName)
+    return attachedAsAChildOf.createChild(name)
 
-def PneumaticCavity(fromSurfaceMesh, attachedAsAChildOf,
-                    withName="PneumaticCavity", withValue=0, withValueType="volumeGrowth"):
+def PneumaticCavity(surfaceMeshFileName, attachedAsAChildOf,
+                    name="PneumaticCavity", initialValue=0, valueType="volumeGrowth"):
     
     """Creates and adds a pneumatic constraint.
     
@@ -19,11 +19,11 @@ def PneumaticCavity(fromSurfaceMesh, attachedAsAChildOf,
     Args:
         cavityMeshFile (string): path to the cavity mesh (the mesh should be a surfacic mesh, ie only triangles or quads).
         
-        withName (string): name of the created node.
+        name (string): name of the created node.
 
-        withValue (real): value to apply, default is 0.
+        initialValue (real): value to apply, default is 0.
         
-        withValueType (string): type of the parameter value (volumeGrowth or pressure), default is volumeGrowth.
+        valueType (string): type of the parameter value (volumeGrowth or pressure), default is volumeGrowth.
         
     Structure:
     .. sourcecode:: qml
@@ -38,13 +38,13 @@ def PneumaticCavity(fromSurfaceMesh, attachedAsAChildOf,
     """
     
     node = getOrCreateTheTemplateNode(attachedAsAChildOf=attachedAsAChildOf,
-                                      withName=withName)
+                                      name=name)
 
     #  This create a new node in the scene. This node is appended to the finger's node.
-    pneumatic = node.createChild(withName)
+    pneumatic = node.createChild(name)
     
     # This create a MeshTopology, a componant loading and holding the topology of the cavity.
-    pneumatic.createObject('MeshTopology', name="topology", filename=fromSurfaceMesh)
+    pneumatic.createObject('MeshTopology', name="topology", filename=surfaceMeshFileName)
 
     # This create a MechanicalObject, a componant holding the degree of freedom of our
     # mechanical modelling. In the case of a cavity actuated with pneumatic, it is a set of positions specifying
@@ -55,8 +55,8 @@ def PneumaticCavity(fromSurfaceMesh, attachedAsAChildOf,
     # the indices are referring to the MechanicalObject's positions.
     # The last indice is where the pullPoint is connected.
     pneumatic.createObject('SurfacePressureConstraint',
-                          value=withValue,
-                          valueType=withValueType)
+                          value=initialValue,
+                          valueType=valueType)
                         
     # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
     # between the cavity's DoFs and the parents's ones so that the pressure applied on the cavity wall will be mapped
@@ -70,4 +70,4 @@ def createScene(node):
     MainHeader(node, plugins=["SoftRobots"])
     node.createObject('MechanicalObject')
 
-    PneumaticCavity(fromSurfaceMesh="mesh/cube.obj", attachedAsAChildOf=node)
+    PneumaticCavity(surfaceMeshFileName="mesh/cube.obj", attachedAsAChildOf=node)
