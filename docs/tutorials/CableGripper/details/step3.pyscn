@@ -18,14 +18,14 @@ class FingerController(Sofa.PythonScriptController):
             self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] - 1.
 
 def Finger(parentNode=None, name="Finger",
-           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
-           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
+           rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
+           fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0]):
 
     finger = Node(parentNode, "Finger")
-    eobject = ElasticMaterialObject(finger, fromVolumeMesh="data/mesh/finger.vtk")
+    eobject = ElasticMaterialObject(finger, volumeMeshFileName="data/mesh/finger.vtk")
 
-    FixedBox(eobject, withVisualization=True, atPositions=[-10,-10,-10,10,10,10])
-    cable = PullingCable(eobject, withCableGeometry=loadPointListFromFile("data/mesh/cable.json"))
+    FixedBox(eobject, doVisualization=True, atPositions=[-10,-10,-10,10,10,10])
+    cable = PullingCable(eobject, cableGeometry=loadPointListFromFile("data/mesh/cable.json"))
    
     FingerController(finger, cable)
 

@@ -37,12 +37,12 @@ def createScene(rootNode):
     ShowGrid(rootNode)
 
     ..autolink::STLIB::Floor(rootNode,
-          withTranslation=[0.0,-160.0,0.0],
+          translation=[0.0,-160.0,0.0],
           isAStaticObject=True)
 
     ..autolink::STLIB::Cube(rootNode,
-          withTranslation=[0.0,0.0,0.0],
-          withScale=20.0)
+          translation=[0.0,0.0,0.0],
+          uniformScale=20.0)
 
 
     return rootNode
@@ -89,15 +89,15 @@ def createScene(rootNode):
     ShowGrid(rootNode)
 
     ..autolink::STLIB::Floor(rootNode,
-          withTranslation=[0.0,-160.0,0.0],
-          withScale=5.0,
+          translation=[0.0,-160.0,0.0],
+          uniformScale=5.0,
           isAStaticObject=True)
 
     for c in range(10):
         ..autolink::STLIB::Cube(rootNode,
-             withTranslation=[-200+c*50,0.0,0.0],
-             withColor=[c/10.0,c*0.7/10.0,0.9],
-             withScale=20.0)
+             translation=[-200+c*50,0.0,0.0],
+             color=[c/10.0,c*0.7/10.0,0.9],
+             uniformScale=20.0)
 
 
     return rootNode

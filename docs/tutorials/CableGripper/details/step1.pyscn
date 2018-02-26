@@ -8,12 +8,12 @@ def createScene(rootNode):
     ShowGrid(rootNode)
 
     Floor(rootNode,
-          withTranslation=[0.0,-160.0,0.0],
+          translation=[0.0,-160.0,0.0],
           isAStaticObject=True)
 
     Cube(rootNode,
-          withTranslation=[0.0,0.0,0.0],
-          withScale=20,
-          withColor=[1.0,0.0,0.0])
+          translation=[0.0,0.0,0.0],
+          uniformScale=20,
+          color=[1.0,0.0,0.0])
  
     return rootNode

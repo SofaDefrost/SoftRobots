@@ -23,8 +23,8 @@ class FingerController(Sofa.PythonScriptController):
 ### Finger
 ####################################################################################################
 def Finger(parentNode=None, name="Finger",
-           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
-           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
+           rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
+           fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0]):
 
     finger = Node(parentNode, name)
 
@@ -40,9 +40,9 @@ def createScene(rootNode):
     """You can load the finger only by typing runSofa finger.py"""
     from stlib.scene import MainHeader, ContactHeader
     MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
-    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, withFrictionCoef=0.08)
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, frictionCoef=0.08)
 
     Finger(rootNode,
-           withTranslation=[1.0,0.0,0.0])
+           translation=[1.0,0.0,0.0])
     return rootNode
 
