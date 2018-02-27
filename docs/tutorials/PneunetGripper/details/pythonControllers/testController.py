@@ -30,118 +30,119 @@ class GripperController(Sofa.PythonScriptController):
             self.name = "GripperController"
             self.node = node
 
-            print "test success!"
-    #         self.finger1Node=self.node.getChild('finger1')
-    #         self.finger2Node=self.node.getChild('finger2')
-    #         self.finger3Node=self.node.getChild('finger3')    
-    #         self.pressureConstraint1Node = self.finger1Node.getChild('cavity')
-    #         self.pressureConstraint2Node = self.finger2Node.getChild('cavity')
-    #         self.pressureConstraint3Node = self.finger3Node.getChild('cavity')
+    def initGraph(self, node):
+
+            self.finger1Node=self.node.getChild('finger1')
+            self.finger2Node=self.node.getChild('finger2')
+            self.finger3Node=self.node.getChild('finger3')    
+            self.pressureConstraint1Node = self.finger1Node.getChild('cavity')
+            self.pressureConstraint2Node = self.finger2Node.getChild('cavity')
+            self.pressureConstraint3Node = self.finger3Node.getChild('cavity')
             
-    #         self.centerPosY = 70
-    #         self.centerPosZ = 0
-    #         self.rotAngle = 0
+            self.centerPosY = 70
+            self.centerPosZ = 0
+            self.rotAngle = 0
             
-    # def onKeyPressed(self,c):
-    #         print ord(c)
-    #         self.dt = self.node.findData('dt').value
-    #         incr = self.dt*1000.0;
+    def onKeyPressed(self,c):
+            print ord(c)
+            self.dt = self.node.findData('dt').value
+            incr = self.dt*1000.0;
             
-    #         self.MecaObject1=self.finger1Node.getObject('tetras');
-    #         self.MecaObject2=self.finger2Node.getObject('tetras');
-    #         self.MecaObject3=self.finger3Node.getObject('tetras');
+            self.MecaObject1=self.finger1Node.getObject('MechanicalObject');
+            self.MecaObject2=self.finger2Node.getObject('MechanicalObject');
+            self.MecaObject3=self.finger3Node.getObject('MechanicalObject');
 
-    #         self.pressureConstraint1 = self.pressureConstraint1Node.getObject('SurfacePressureConstraint')
-    #         self.pressureConstraint2 = self.pressureConstraint2Node.getObject('SurfacePressureConstraint')
-    #         self.pressureConstraint3 = self.pressureConstraint3Node.getObject('SurfacePressureConstraint')
+            self.pressureConstraint1 = self.pressureConstraint1Node.getObject('SurfacePressureConstraint')
+            self.pressureConstraint2 = self.pressureConstraint2Node.getObject('SurfacePressureConstraint')
+            self.pressureConstraint3 = self.pressureConstraint3Node.getObject('SurfacePressureConstraint')
 
-    #         if (c == "+"):
-    #             print 'squeezing...'
-    #             pressureValue = self.pressureConstraint1.findData('value').value[0][0] + 0.01
-    #             if pressureValue > 1.5:
-    #                 pressureValue = 1.5
-    #             self.pressureConstraint1.findData('value').value = str(pressureValue)
-    #             pressureValue = self.pressureConstraint2.findData('value').value[0][0] + 0.01
-    #             if pressureValue > 1.5:
-    #                 pressureValue = 1.5
-    #             self.pressureConstraint2.findData('value').value = str(pressureValue)
-    #             pressureValue = self.pressureConstraint3.findData('value').value[0][0] + 0.01
-    #             if pressureValue > 1.5:
-    #                 pressureValue = 1.5
-    #             self.pressureConstraint3.findData('value').value = str(pressureValue)
+            if (c == "+"):
+                print 'squeezing...'
+                pressureValue = self.pressureConstraint1.findData('value').value[0][0] + 0.01
+                if pressureValue > 1.5:
+                    pressureValue = 1.5
+                self.pressureConstraint1.findData('value').value = str(pressureValue)
+                pressureValue = self.pressureConstraint2.findData('value').value[0][0] + 0.01
+                if pressureValue > 1.5:
+                    pressureValue = 1.5
+                self.pressureConstraint2.findData('value').value = str(pressureValue)
+                pressureValue = self.pressureConstraint3.findData('value').value[0][0] + 0.01
+                if pressureValue > 1.5:
+                    pressureValue = 1.5
+                self.pressureConstraint3.findData('value').value = str(pressureValue)
 
-    #         if (c == "-"):
-    #             print 'releasing...'
-    #             pressureValue = self.pressureConstraint1.findData('value').value[0][0] - 0.01
-    #             self.pressureConstraint1.findData('value').value = str(pressureValue)
-    #             pressureValue = self.pressureConstraint2.findData('value').value[0][0] - 0.01
-    #             self.pressureConstraint2.findData('value').value = str(pressureValue)
-    #             pressureValue = self.pressureConstraint3.findData('value').value[0][0] - 0.01
-    #             self.pressureConstraint3.findData('value').value = str(pressureValue)
+            if (c == "-"):
+                print 'releasing...'
+                pressureValue = self.pressureConstraint1.findData('value').value[0][0] - 0.01
+                self.pressureConstraint1.findData('value').value = str(pressureValue)
+                pressureValue = self.pressureConstraint2.findData('value').value[0][0] - 0.01
+                self.pressureConstraint2.findData('value').value = str(pressureValue)
+                pressureValue = self.pressureConstraint3.findData('value').value[0][0] - 0.01
+                self.pressureConstraint3.findData('value').value = str(pressureValue)
 
-    #         # UP key :
-    #         if ord(c)==19:
-    #             test1 = moveRestPos(self.MecaObject1.rest_position, 3.0, 0.0, 0.0)
-    #             self.MecaObject1.findData('rest_position').value = test1
-    #             test2 = moveRestPos(self.MecaObject2.rest_position, 3.0, 0.0, 0.0)
-    #             self.MecaObject2.findData('rest_position').value = test2
-    #             test3 = moveRestPos(self.MecaObject3.rest_position, 3.0, 0.0, 0.0)
-    #             self.MecaObject3.findData('rest_position').value = test3
+            # UP key :
+            if ord(c)==20:
+                test1 = moveRestPos(self.MecaObject1.rest_position, 3.0, 0.0, 0.0)
+                self.MecaObject1.findData('rest_position').value = test1
+                test2 = moveRestPos(self.MecaObject2.rest_position, 3.0, 0.0, 0.0)
+                self.MecaObject2.findData('rest_position').value = test2
+                test3 = moveRestPos(self.MecaObject3.rest_position, 3.0, 0.0, 0.0)
+                self.MecaObject3.findData('rest_position').value = test3
                 
             
 
-    #         # DOWN key : rear
-    #         if ord(c)==21:
-    #             test = moveRestPos(self.MecaObject1.rest_position, -3.0, 0.0, 0.0)
-    #             self.MecaObject1.findData('rest_position').value = test
-    #             test = moveRestPos(self.MecaObject2.rest_position, -3.0, 0.0, 0.0)
-    #             self.MecaObject2.findData('rest_position').value = test
-    #             test = moveRestPos(self.MecaObject3.rest_position, -3.0, 0.0, 0.0)
-    #             self.MecaObject3.findData('rest_position').value = test
+            # DOWN key : rear
+            if ord(c)==18:
+                test = moveRestPos(self.MecaObject1.rest_position, -3.0, 0.0, 0.0)
+                self.MecaObject1.findData('rest_position').value = test
+                test = moveRestPos(self.MecaObject2.rest_position, -3.0, 0.0, 0.0)
+                self.MecaObject2.findData('rest_position').value = test
+                test = moveRestPos(self.MecaObject3.rest_position, -3.0, 0.0, 0.0)
+                self.MecaObject3.findData('rest_position').value = test
 
 
-    #         # LEFT key : left
-    #         if ord(c)==20:
-    #             dy = 3.0*math.cos(self.rotAngle)
-    #             dz = 3.0*math.sin(self.rotAngle)
-    #             test = moveRestPos(self.MecaObject1.rest_position, 0.0, dy, dz)
-    #             self.MecaObject1.findData('rest_position').value = test
-    #             test = moveRestPos(self.MecaObject2.rest_position, 0.0, dy, dz)
-    #             self.MecaObject2.findData('rest_position').value = test
-    #             test = moveRestPos(self.MecaObject3.rest_position, 0.0, dy, dz)
-    #             self.MecaObject3.findData('rest_position').value = test
-    #             self.centerPosY = self.centerPosY + dy        
-    #             self.centerPosZ = self.centerPosZ + dz
+            # LEFT key : left
+            if ord(c)==19:
+                dy = 3.0*math.cos(self.rotAngle)
+                dz = 3.0*math.sin(self.rotAngle)
+                test = moveRestPos(self.MecaObject1.rest_position, 0.0, dy, dz)
+                self.MecaObject1.findData('rest_position').value = test
+                test = moveRestPos(self.MecaObject2.rest_position, 0.0, dy, dz)
+                self.MecaObject2.findData('rest_position').value = test
+                test = moveRestPos(self.MecaObject3.rest_position, 0.0, dy, dz)
+                self.MecaObject3.findData('rest_position').value = test
+                self.centerPosY = self.centerPosY + dy        
+                self.centerPosZ = self.centerPosZ + dz
                 
-    #         # RIGHT key : right
-    #         if ord(c)==18:
-    #             dy = -3.0*math.cos(self.rotAngle)
-    #             dz = -3.0*math.sin(self.rotAngle)
-    #             test = moveRestPos(self.MecaObject1.rest_position, 0.0, dy, dz)
-    #             self.MecaObject1.findData('rest_position').value = test
-    #             test = moveRestPos(self.MecaObject2.rest_position, 0.0, dy, dz)
-    #             self.MecaObject2.findData('rest_position').value = test
-    #             test = moveRestPos(self.MecaObject3.rest_position, 0.0, dy, dz)
-    #             self.MecaObject3.findData('rest_position').value = test
-    #             self.centerPosY = self.centerPosY + dy        
-    #             self.centerPosZ = self.centerPosZ + dz
+            # RIGHT key : right
+            if ord(c)==21:
+                dy = -3.0*math.cos(self.rotAngle)
+                dz = -3.0*math.sin(self.rotAngle)
+                test = moveRestPos(self.MecaObject1.rest_position, 0.0, dy, dz)
+                self.MecaObject1.findData('rest_position').value = test
+                test = moveRestPos(self.MecaObject2.rest_position, 0.0, dy, dz)
+                self.MecaObject2.findData('rest_position').value = test
+                test = moveRestPos(self.MecaObject3.rest_position, 0.0, dy, dz)
+                self.MecaObject3.findData('rest_position').value = test
+                self.centerPosY = self.centerPosY + dy        
+                self.centerPosZ = self.centerPosZ + dz
 
-    #         # a key : direct rotation
-    #         if (ord(c) == 65):
-    #             test = rotateRestPos(self.MecaObject1.rest_position, math.pi/16, self.centerPosY,self.centerPosZ)
-    #             self.MecaObject1.findData('rest_position').value = test
-    #             test = rotateRestPos(self.MecaObject2.rest_position, math.pi/16, self.centerPosY,self.centerPosZ)
-    #             self.MecaObject2.findData('rest_position').value = test
-    #             test = rotateRestPos(self.MecaObject3.rest_position, math.pi/16,self.centerPosY,self.centerPosZ)
-    #             self.MecaObject3.findData('rest_position').value = test
-    #             self.rotAngle = self.rotAngle + math.pi/16
+            # a key : direct rotation
+            if (ord(c) == 65):
+                test = rotateRestPos(self.MecaObject1.rest_position, math.pi/16, self.centerPosY,self.centerPosZ)
+                self.MecaObject1.findData('rest_position').value = test
+                test = rotateRestPos(self.MecaObject2.rest_position, math.pi/16, self.centerPosY,self.centerPosZ)
+                self.MecaObject2.findData('rest_position').value = test
+                test = rotateRestPos(self.MecaObject3.rest_position, math.pi/16,self.centerPosY,self.centerPosZ)
+                self.MecaObject3.findData('rest_position').value = test
+                self.rotAngle = self.rotAngle + math.pi/16
             
-    #         # q key : indirect rotation
-    #         if (ord(c) == 81):
-    #             test = rotateRestPos(self.MecaObject1.rest_position, -math.pi/16, self.centerPosY,self.centerPosZ)
-    #             self.MecaObject1.findData('rest_position').value = test
-    #             test = rotateRestPos(self.MecaObject2.rest_position, -math.pi/16, self.centerPosY,self.centerPosZ)
-    #             self.MecaObject2.findData('rest_position').value = test
-    #             test = rotateRestPos(self.MecaObject3.rest_position, -math.pi/16, self.centerPosY,self.centerPosZ)
-    #             self.MecaObject3.findData('rest_position').value = test
-    #             self.rotAngle = self.rotAngle - math.pi/16
+            # q key : indirect rotation
+            if (ord(c) == 81):
+                test = rotateRestPos(self.MecaObject1.rest_position, -math.pi/16, self.centerPosY,self.centerPosZ)
+                self.MecaObject1.findData('rest_position').value = test
+                test = rotateRestPos(self.MecaObject2.rest_position, -math.pi/16, self.centerPosY,self.centerPosZ)
+                self.MecaObject2.findData('rest_position').value = test
+                test = rotateRestPos(self.MecaObject3.rest_position, -math.pi/16, self.centerPosY,self.centerPosZ)
+                self.MecaObject3.findData('rest_position').value = test
+                self.rotAngle = self.rotAngle - math.pi/16
