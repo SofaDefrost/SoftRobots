@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Template for actuators.
+Templates for robot parts.
 
-Content:
-********
+Content of the library
+**********************
+
 .. autosummary::
+    :toctree: _autosummary
 
-   Finger
-|
+    parts.finger
 
-.. autofunction:: Finger
 
 """
-from finger import Finger
+
+__all__=["finger"]

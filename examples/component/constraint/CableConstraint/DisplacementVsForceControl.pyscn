@@ -8,11 +8,11 @@ def createScene(rootNode):
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, frictionCoef=0.08)
 
     # stiff, position controlled
-    f1 = Finger(rootNode, name="StiffPosition", translation=[0.0,0.0,0.0], fixingBox=[-20, -10, 0, 20, 10, 15], youngModulus=18000, valueType='position', pullPointLocation=[0.0,0.0,0.0])
+    f1 = Finger(rootNode, name="StiffPosition", translation=[0.0,0.0,0.0], fixingBox=[-20, -10, 0, 20, 10, 15], youngModulus=18000, valueType='position', pullPointLocation=[0.0,12.5,2.5])
     # stiff, force controlled
-    f2 = Finger(rootNode, name="StiffForce", translation=[150.0,0.0,0.0], fixingBox=[130, -10, 0, 170, 10, 15], youngModulus=18000,  valueType='force', pullPointLocation=[150.0,0.0,0.0])
+    f2 = Finger(rootNode, name="StiffForce", translation=[150.0,0.0,0.0], fixingBox=[130, -10, 0, 170, 10, 15], youngModulus=18000,  valueType='force', pullPointLocation=[150.0,12.5,2.5])
     # soft, position controlled
-    f3 = Finger(rootNode, name="SoftPosition", translation=[0.0,100.0,0.0], fixingBox=[-20, 90, 0, 20, 110, 15],  youngModulus=9000, valueType='position', pullPointLocation=[0.0,100.0,0.0])
+    f3 = Finger(rootNode, name="SoftPosition", translation=[0.0,100.0,0.0], fixingBox=[-20, 90, 0, 20, 110, 15],  youngModulus=9000, valueType='position', pullPointLocation=[0.0,112.5,2.5])
     # soft, force controlled
-    f4 = Finger(rootNode, name="SoftForce", translation=[150.0,100.0,0.0], fixingBox=[130, 90, 0, 170, 110, 15], youngModulus=9000, valueType='force', pullPointLocation=[150.0,100.0,0.0])
+    f4 = Finger(rootNode, name="SoftForce", translation=[150.0,100.0,0.0], fixingBox=[130, 90, 0, 170, 110, 15], youngModulus=9000, valueType='force', pullPointLocation=[150.0,112.5,2.5])
     return rootNode

@@ -7,6 +7,9 @@ from softrobots.actuators import PullingCable
 from stlib.physics.collision import CollisionMesh
 
 from stlib.tools import loadPointListFromFile
+import os.path
+
+templatepath = os.path.abspath(os.path.dirname(__file__) )
 
 class FingerController(Sofa.PythonScriptController):
 
@@ -34,12 +37,12 @@ def Finger(parentNode=None, name="Finger",
 
     finger = Node(parentNode, name)
     eobject = ElasticMaterialObject(finger,
-                                   volumeMeshFileName="data/mesh/finger.vtk", #MISK need to change the relative file
+                                   volumeMeshFileName=os.path.join(templatepath, "mesh/finger.vtk"), #MISK need to change the relative file
                                    poissonRatio=0.3,
                                    youngModulus=youngModulus,
                                    totalMass=0.5,
                                    surfaceColor=[0.0, 0.8, 0.65],
-                                   surfaceMeshFileName="data/mesh/finger.stl",
+                                   surfaceMeshFileName=os.path.join(templatepath, "mesh/finger.stl"),
                                    rotation=rotation,
                                    translation=translation)
 
@@ -51,23 +54,23 @@ def Finger(parentNode=None, name="Finger",
                  pullPointLocation=pullPointLocation,
                  rotation=rotation,
                  translation=translation,
-                 cableGeometry=loadPointListFromFile("data/mesh/cable.json"),
+                 cableGeometry=loadPointListFromFile(os.path.join(templatepath, "mesh/cable.json")),
                  valueType=valueType);
 
     FingerController(eobject, cable, valueType) #MISK may change to vary variation based on value type
 
     CollisionMesh(eobject, name="CollisionMesh",
-                 surfaceMeshFileName="data/mesh/finger.stl",
+                 surfaceMeshFileName=os.path.join(templatepath, "mesh/finger.stl"),
                  rotation=rotation, translation=translation,
                  collisionGroup=[1, 2])
 
     CollisionMesh(eobject, name="CollisionMeshAuto1",
-                 surfaceMeshFileName="data/mesh/fingerCollision_part1.stl",
+                 surfaceMeshFileName=os.path.join(templatepath, "mesh/fingerCollision_part1.stl"),
                  rotation=rotation, translation=translation,
                  collisionGroup=[1])
 
     CollisionMesh(eobject, name="CollisionMeshAuto2",
-                 surfaceMeshFileName="data/mesh/fingerCollision_part2.stl",
+                 surfaceMeshFileName=os.path.join(templatepath, "mesh/fingerCollision_part2.stl"),
                  rotation=rotation, translation=translation,
                  collisionGroup=[2])
 
