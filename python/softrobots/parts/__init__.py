@@ -13,4 +13,4 @@ Content of the library
 
 """
 
-__all__=["finger"]
+__all__=["finger","Bunny"]
