@@ -24,7 +24,7 @@ def Finger(parentNode=None, name="Finger",
 
     finger = Node(parentNode, "Finger")
     eobject = ElasticMaterialObject(finger,
-                                    fromVolumeMesh="data/mesh/finger.vtk",
+                                    volumeMeshFileName="data/mesh/finger.vtk",
                                     withSurfaceMesh="data/mesh/finger.stl",
                                     withSurfaceColor=[0.0,0.7,0.8]
                                     )
