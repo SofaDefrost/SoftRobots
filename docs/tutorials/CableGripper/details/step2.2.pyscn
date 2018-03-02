@@ -4,24 +4,24 @@ from stlib.physics.constraints import FixedBox
 from stlib.scene import Node
 
 def Finger(parentNode=None, name="Finger",
-           withRotation=[0.0, 0.0, 0.0], withTranslation=[0.0, 0.0, 0.0],
-           withFixingBox=[0.0,0.0,0.0], withPullPointLocation=[0.0,0.0,0.0]):
+           rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
+           fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0]):
 
     finger = Node(parentNode, "Finger")
     eobject = ElasticMaterialObject(finger,
-                                   fromVolumeMesh="data/mesh/finger.vtk",
-                                   withPoissonRatio=0.3,
-                                   withYoungModulus=18000,
-                                   withTotalMass=0.5,
-                                   withSurfaceColor=[0.0, 0.8, 0.7],
-                                   withSurfaceMesh="data/mesh/finger.stl",
-                                   withRotation=withRotation,
-                                   withTranslation=withTranslation)
-
+                                   volumeMeshFileName="data/mesh/finger.vtk",
+                                   poissonRatio=0.3,
+                                   youngModulus=18000,
+                                   totalMass=0.5,
+                                   surfaceColor=[0.0, 0.8, 0.7],
+                                   surfaceMeshFileName="data/mesh/finger.stl",
+                                   rotation=rotation,
+                                   translation=translation)
 
     FixedBox(eobject,
-             withVisualization=True,
+             doVisualization=True,
              atPositions=[-10,-10,-10,10,10,10])
+
 
 def createScene(rootNode):
     # -*- coding: utf-8 -*-

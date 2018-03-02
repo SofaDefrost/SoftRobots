@@ -1,31 +1,31 @@
 def PullingCable(attachedTo=None,
-    withName="cable",
-    withCableGeometry=[[1.0, 0.0, 0.0],[0.0, 0.0, 0.0]],
-    withRotation=[0.0,0.0,0.0],
-    withTranslation=[0.0,0.0,0.0],
-    withScale=1.0,
-    withAPullPointLocation=None,
-    withInitialValue=0.0,
-    withValueAs="displacement"):
+    name="cable",
+    cableGeometry=[[1.0, 0.0, 0.0],[0.0, 0.0, 0.0]],
+    rotation=[0.0,0.0,0.0],
+    translation=[0.0,0.0,0.0],
+    uniformScale=1.0,
+    pullPointLocation=None,
+    initialValue=0.0,
+    valueType="displacement"):
     """Creates and adds a cable constraint.
 
     The constraint apply to a parent mesh.
 
     Args:
-        withName (str): Name of the created cable.
+        name (str): Name of the created cable.
 
-        withCableGeometry: (list vec3f): Location of the degree of freedom of the cable.
+        cableGeometry: (list vec3f): Location of the degree of freedom of the cable.
 
-        withAPullPointLocation (vec3f): Position from where the cable is pulled. If not specified
+        pullPointLocation (vec3f): Position from where the cable is pulled. If not specified
         the point will be considered in the structure.
 
-        withValueAs (str): either "force" or "displacement". Default is displacement.
+        valueType (str): either "force" or "displacement". Default is displacement.
 
-        withTranslation (vec3f):   Apply a 3D translation to the object.
+        translation (vec3f):   Apply a 3D translation to the object.
 
-        withRotation (vec3f):   Apply a 3D rotation to the object in Euler angles.
+        rotation (vec3f):   Apply a 3D rotation to the object in Euler angles.
 
-        withScale (vec3f):   Apply an uniform scaling to the object.
+        uniformScale (vec3f):   Apply an uniform scaling to the object.
 
 
     Structure:
@@ -40,30 +40,30 @@ def PullingCable(attachedTo=None,
 
     """
     #  This create a new node in the scene. This node is appended to the finger's node.
-    cable = attachedTo.createChild(withName)
+    cable = attachedTo.createChild(name)
 
     # This create a MechanicalObject, a componant holding the degree of freedom of our
     # mechanical modelling. In the case of a cable it is a set of positions specifying
     # the points where the cable is passing by.
-    cable.createObject('MechanicalObject', position=withCableGeometry,
-                        rotation=withRotation, translation=withTranslation, scale=withScale)
+    cable.createObject('MechanicalObject', position=cableGeometry,
+                        rotation=rotation, translation=translation, scale=uniformScale)
 
     # Create a CableConstraint object with a name.
     # the indices are referring to the MechanicalObject's positions.
     # The last indice is where the pullPoint is connected.
-    if withAPullPointLocation != None:
+    if pullPointLocation != None:
         cable.createObject('CableConstraint',
-                            indices=range(len(withCableGeometry)),
-                            pullPoint=withAPullPointLocation,
-                            value=withInitialValue,
-                            valueType=withValueAs,
+                            indices=range(len(cableGeometry)),
+                            pullPoint=pullPointLocation,
+                            value=initialValue,
+                            valueType=valueType,
                             hasPullPoint=True
                             )
     else:
         cable.createObject('CableConstraint',
-                            indices=range(len(withCableGeometry)),
-                            value=withInitialValue,
-                            valueType=withValueAs,
+                            indices=range(len(cableGeometry)),
+                            value=initialValue,
+                            valueType=valueType,
                             hasPullPoint=False
                             )
 
@@ -79,8 +79,8 @@ def createScene(node):
     from stlib.physics.deformable import ElasticMaterialObject
 
     MainHeader(node, plugins=["SoftRobots"])
-    target = ElasticMaterialObject(fromVolumeMesh="mesh/liver.msh",
-                                   withTotalMass=0.5,
+    target = ElasticMaterialObject(volumeMeshFileName="mesh/liver.msh",
+                                   totalMass=0.5,
                                    attachedTo=node)
 
     PullingCable(target)

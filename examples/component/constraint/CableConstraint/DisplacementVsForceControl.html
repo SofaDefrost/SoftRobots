@@ -1,23 +1,7 @@
-<html>
-
-<head>
-<link href="../../../../../examples/Objects/sofa_white.css" rel="stylesheet" type="text/css" />
-</head>
-
-<body bgcolor="#F0F8FF">
-
-	<div id="contenu">
-
-		<h1>Cable constraint</h1>
-		
-		<p>In this scene we demonstrate how to use the <FONT COLOR="#0B2161">CableConstraint</FONT> component to model an inelastic 
-		   1d cable. This cable is then connected to a mechanical object made of an elastic material. You can either control the force (left) applyed by the cable
-		   or its displacement (right).
-		<br>
-		<center><img src="images/DisplacementVsForceControl.png" /></center>
-               
-	</div>
-
-</body>
-
-</html>
+<h1 id="displacement-vs.-force-control-for-cables">Displacement vs. Force Control for Cables</h1>
+<p>In this scene we demonstrate how to use the <em>CableConstraint</em> component to model an inelastic 1d cable. This cable is embedded in an elastic finger. The cable is free to slide through the material. You can either control the force (left) applied by the cable or its displacement (right). If the force is controlled (for example, with a DC motor), the simulation will solve for the displacement that satisfies that force condition. If the displacement is controlled (for example, with a servo motor), the simulation will solve for the force that is required to obtain that displacement. The cable can only apply force in tension.</p>
+<div>
+<pre>
+<img src="images/DisplacementVsForceControl.png" />
+</pre>
+</div>

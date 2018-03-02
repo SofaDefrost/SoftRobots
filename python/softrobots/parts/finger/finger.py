@@ -7,36 +7,45 @@ from softrobots.actuators import PullingCable
 from stlib.physics.collision import CollisionMesh
 
 from stlib.tools import loadPointListFromFile
+import os.path
+
+templatepath = os.path.abspath(os.path.dirname(__file__) )
 
 class FingerController(Sofa.PythonScriptController):
-    def __init__(self, node, cable ):
+
+    def __init__(self, node, cable, valueType ):
         self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
         self.name = "FingerController"
+        if(valueType == "position"):
+            self.valueIncrement = 1
+        else:
+            self.valueIncrement = 20
 
     def onKeyPressed(self,c):
         if (c == "+"):
-            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + 1.
+            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + self.valueIncrement
 
         elif (c == "-"):
-            displacement = self.cableconstraintvalue.value[0][0] - 1.
-            if(displacement < 0):
-                displacement = 0
-            self.cableconstraintvalue.value = displacement
+            actuation = self.cableconstraintvalue.value[0][0] - self.valueIncrement
+            if(actuation < 0):
+                actuation = 0
+            self.cableconstraintvalue.value = actuation
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
-           fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0]):
+           fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0], youngModulus=18000, valueType='position'):
 
     finger = Node(parentNode, name)
     eobject = ElasticMaterialObject(finger,
-                                   volumeMeshFileName="data/mesh/finger.vtk",
+                                   volumeMeshFileName=os.path.join(templatepath, "mesh/finger.vtk"), #MISK need to change the relative file
                                    poissonRatio=0.3,
-                                   youngModulus=18000,
+                                   youngModulus=youngModulus,
                                    totalMass=0.5,
-                                   surfaceColor=[0.0, 0.8, 0.7],
-                                   surfaceMeshFileName="data/mesh/finger.stl",
+                                   surfaceColor=[0.0, 0.8, 0.65],
+                                   surfaceMeshFileName=os.path.join(templatepath, "mesh/finger.stl"),
                                    rotation=rotation,
                                    translation=translation)
+
 
     FixedBox(eobject, atPositions=fixingBox, doVisualization=True)
 
@@ -45,22 +54,23 @@ def Finger(parentNode=None, name="Finger",
                  pullPointLocation=pullPointLocation,
                  rotation=rotation,
                  translation=translation,
-                 cableGeometry=loadPointListFromFile("data/mesh/cable.json"));
+                 cableGeometry=loadPointListFromFile(os.path.join(templatepath, "mesh/cable.json")),
+                 valueType=valueType);
 
-    FingerController(eobject, cable)
+    FingerController(eobject, cable, valueType) #MISK may change to vary variation based on value type
 
     CollisionMesh(eobject, name="CollisionMesh",
-                 surfaceMeshFileName="data/mesh/finger.stl",
+                 surfaceMeshFileName=os.path.join(templatepath, "mesh/finger.stl"),
                  rotation=rotation, translation=translation,
                  collisionGroup=[1, 2])
 
     CollisionMesh(eobject, name="CollisionMeshAuto1",
-                 surfaceMeshFileName="data/mesh/fingerCollision_part1.stl",
+                 surfaceMeshFileName=os.path.join(templatepath, "mesh/fingerCollision_part1.stl"),
                  rotation=rotation, translation=translation,
                  collisionGroup=[1])
 
     CollisionMesh(eobject, name="CollisionMeshAuto2",
-                 surfaceMeshFileName="data/mesh/fingerCollision_part2.stl",
+                 surfaceMeshFileName=os.path.join(templatepath, "mesh/fingerCollision_part2.stl"),
                  rotation=rotation, translation=translation,
                  collisionGroup=[2])
 
@@ -74,4 +84,3 @@ def createScene(rootNode):
 
     Finger(rootNode, translation=[1.0,0.0,0.0])
     return rootNode
-
