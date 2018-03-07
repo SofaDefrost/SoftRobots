@@ -58,8 +58,10 @@ VolumeFromTetrahedrons<DataTypes>::VolumeFromTetrahedrons()
     , d_tetras(initData(&d_tetras,"tetras","If not set by user, find the context topology"))
     , d_hexas(initData(&d_hexas,"hexas","If not set by user, find the context topology"))
     , d_volume(initData(&d_volume,Real(0.0),"volume",""))
-    , d_doUpdate(initData(&d_doUpdate,false,"update","If true, will update the volume at each time step"))
+    , d_doUpdate(initData(&d_doUpdate,true,"update","If true, will update the volume at each time step"))//Set at true by default, otherwise the volume is not computed
 {
+    f_printLog.setValue(true);
+    this->f_listening.setValue(true); //To wait for the events, otherwise the function update will never be called
     d_volume.setReadOnly(true);
     setDirtyValue();
 }

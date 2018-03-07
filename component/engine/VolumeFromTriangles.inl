@@ -57,10 +57,11 @@ VolumeFromTriangles<DataTypes>::VolumeFromTriangles()
     , d_triangles(initData(&d_triangles,"triangles","If not set by user, find the context topology"))
     , d_quads(initData(&d_quads,"quads","If not set by user, find the context topology"))
     , d_volume(initData(&d_volume,Real(0.0),"volume","Relevant if closed surface"))
-    , d_doUpdate(initData(&d_doUpdate,false,"update","If true, will update the volume at each time step"))
+    , d_doUpdate(initData(&d_doUpdate,true,"update","If true, will update the volume at each time step")) //Set at true by default, otherwise the volume is not computed
 {
     d_volume.setReadOnly(true);
     setDirtyValue();
+    this->f_listening.setValue(true); //To wait for the events, otherwise the function update will never be called
 }
 
 
