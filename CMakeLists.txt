@@ -29,6 +29,10 @@ include(component/controller/Controller_Files.cmake)
 include(component/engine/Engine_Files.cmake)
 include(component/forcefield/Forcefield_Files.cmake)
 
+IF(WIN32)
+	add_definitions(-D_WINSOCKAPI_)
+ENDIF(WIN32)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${DOC_FILES} ${RESOURCE_FILES})
 
 include(component/behavior/Behavior_Links.cmake)
