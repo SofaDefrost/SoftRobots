@@ -1,0 +1,96 @@
+from stlib.animation import AnimationManager, animate
+from stlib.animation.easing import LinearRamp
+from stlib.scene import MainHeader, Node
+from stlib.physics.deformable import ElasticMaterialObject
+from stlib.algorithms import get
+from stlib.debug import DebugManager, drawLine
+from stlib.numerics import *
+from stlib.components import OrientedBoxRoi
+from math import sin,cos,pi,fmod
+from parts import ActuatedArm
+
+def ActuatedArmWithConstraint(parentNode, name="ActuatedArm", position=[], translation=[0,0,0], eulerRotation=[0,0,0]):
+
+    arm = ActuatedArm(parentNode, name=name,
+                      translation=translation,
+                      eulerRotation=eulerRotation)
+
+    constraint = Node(arm, "Constraint")
+    OrientedBoxRoi(constraint, position=position,
+                     translation=vadd(translation, [0.0,1.0,0.0]),
+                     eulerRotation=eulerRotation, scale=[2.5,1,0.7])
+
+    constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
+                            translation=translation, rotation=eulerRotation, inverse=True )
+
+    constraint.createObject("MechanicalObject", template="Vec3d", position="@TransformEngine.output_position",
+                            showObject=True, showObjectScale=10.0)
+
+    constraint.createObject('RigidMapping', input="@../ServoMotor/ServoWheel/MechanicalObject", output="@./")
+
+    return arm
+
+def Tripod(parentNode):
+    tripod = Node(parentNode, 'Tripod')
+
+    em=ElasticMaterialObject(tripod,
+                         volumeMeshFileName="data/mesh/tripod1.gidmsh",
+                         totalMass=0.4, poissonRatio=0.45, youngModulus=600, rotation=[90,0,0])
+    dist = 4.6
+    numstep = 3
+    for i in range(0,numstep):
+        name = "ActuatedArm"+str(i)
+        fi = float(i)
+        fnumstep = float(numstep)
+        angle = fi*360/fnumstep
+        angle2 = fi*360/fnumstep+180
+        eulerRotation = [0,angle,0]
+        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
+
+        c = ActuatedArmWithConstraint(tripod, name=name, position="@../../ElasticMaterialObject/MechanicalObject.rest_position",
+                                      translation=translation, eulerRotation=eulerRotation)
+
+        em.createObject('RestShapeSpringsForceField',
+                    points=get(c, 'Constraint/BoxROI.indices').getLinkPath(),
+                    external_rest_shape=get(c, 'Constraint/MechanicalObject').getLinkPath())
+
+    return tripod
+
+
+def tripodAnimation1(motor1, motor2, motor3, factor):
+    motor1.angle = LinearRamp(0, -3.14/2, cos(factor*pi))
+    motor2.angle = LinearRamp(0, -3.14/2, sin(factor*pi*2))
+    motor3.angle = LinearRamp(0, -3.14/2, factor)
+
+def tripodAnimation2(motors, factor):
+    for i in range(0,len(motors)):
+        motor = motors[i]
+        f1 = cos(LinearRamp(-3.14, 3.14, factor*float(i)*3.14/3))
+        p = motor.position[0]
+        pp = p[:3]
+        pp[1] = f1
+        motor.findData("position").value = pp + p[3:7]
+
+#Units: cm and kg
+def createScene(rootNode):
+    r = MainHeader(rootNode, plugins=["SoftRobots"])
+    r.getObject("VisualStyle").displayFlags="showForceFields"
+
+    AnimationManager(rootNode)
+    DebugManager(rootNode)
+
+    tripod = Tripod(rootNode)
+
+    animate(tripodAnimation1, {"motor1" : get(tripod, "ActuatedArm0/ServoMotor/KinematicMotorController"),
+                               "motor2" : get(tripod, "ActuatedArm1/ServoMotor/KinematicMotorController"),
+                               "motor3" : get(tripod, "ActuatedArm2/ServoMotor/KinematicMotorController")},
+                               duration=1.0, mode="pingpong")
+
+    animate(tripodAnimation2, {"motors" : [get(tripod, "ActuatedArm0/MechanicalObject"),
+                                           get(tripod, "ActuatedArm1/MechanicalObject"),
+                                           get(tripod, "ActuatedArm2/MechanicalObject")]},
+                               duration=1.0, mode="pingpong")
+
+
+
+    return rootNode
