@@ -1,4 +1,4 @@
-![](../../images/pluginimage.png){width=100%}
+![](../../images/pluginimage.png)
 
 ## Simulating a cable based soft gripper
 This tutorial describes how to set-up a simulation environment, a scene, using ..autolink::Sofa and how to use the
@@ -285,9 +285,8 @@ the geometries for which collions are checked and how they are handled. This can
 structure called a ..autolink::STLIB::CollisionMesh.  By default self-collision are not handled which,
 if the object is strongly deformable leads some undesireable behaviors as illustrated in the figure below.
 
-![Finger with self-intersecting](images/NoCollisionRegions.png){width=200}
-
-![Without self-intersection](images/CollisionRegions2.png){width=200}
+<img src="images/NoCollisionRegions.png" width="350">
+<img src="images/CollisionRegions2.png" width="350">
 
 Additional ..autolink::STLIB::CollisionMesh are required to precisely define the self-collision
 behavior.
