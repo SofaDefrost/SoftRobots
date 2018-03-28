@@ -25,7 +25,7 @@ Before continuing this tutorial try the resulting simulation you need to achieve
 You can load the scene directly from this documentation by clicking on the following:
 <div>
 <pre>
-<a href="details/step0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try now the scene in Sofa.</a>
+<a href="details/step0.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Try now the scene in Sofa.</a>
 </pre>
 </div>
 
@@ -126,8 +126,8 @@ def Finger(parentNode=None, name="Finger",
 ```
 <div>
 <pre>
-<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 </div>
@@ -222,8 +222,8 @@ def Finger(parentNode):
 
 <div>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 
@@ -261,8 +261,8 @@ The controller can then be attached to the object *finger* it is supposed to con
 
 <div>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 </div>
@@ -502,8 +502,8 @@ def createScene(rootNode):
 ```
 <div>
 <pre>
-<a href="details/step6.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/cablegripper.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step6.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/cablegripper.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 </div>
