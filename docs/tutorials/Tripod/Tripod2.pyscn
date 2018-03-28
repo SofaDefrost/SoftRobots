@@ -35,6 +35,9 @@ def createScene(rootNode):
     rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765');
     rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
     rootNode.createObject('PythonScriptController', classname="controller", filename="ControlKeyboard2.py");
+    rootNode.createObject('SerialPortBridgeGeneric', name="serial", port="/dev/ttyUSB0", baudRate="115200", size="3", listening="true")
+
+
     
     
     actuators= rootNode.createChild('actuators')
