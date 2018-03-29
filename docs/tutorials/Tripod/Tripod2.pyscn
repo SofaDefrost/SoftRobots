@@ -52,6 +52,8 @@ def createScene(rootNode):
     ### Here you set the tetrahedra topology
     topo=robot.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray='1', checkConnexity='1');
     topo.init()
+    
+
     #print test.position
     
     list_branch0= [509, 534,556,573,592,603,504,532,555,571,591, 601];
@@ -101,7 +103,7 @@ def createScene(rootNode):
     
     
     actuators.createObject('MechanicalObject', template='Rigid', position=str(x0)+' '+str(y0)+' 0 0 0 0 1 ' + str(x1)+' '+str(y1)+' 0 0 0 0 1 ' + str(x2)+' '+str(y2)+' 0 0 0 0 1 ',
-                           rest_position=str(x0)+' -50 0 0.7071 0 0 0.7071' + str(x1)+' '+str(y1)+' 0 '+ str(v1[0])+' '+ str(v1[1])+' '+' 0 0.7071 ' + str(x2)+' '+str(y2)+' 0 '+ str(v2[0])+' '+ str(v2[1])+' 0 0.7071 ') 
+                           rest_position=str(x0)+' '+str(y0)+' 0 0.7071 0 0 0.7071' + str(x1)+' '+str(y1)+' 0 '+ str(v1[0])+' '+ str(v1[1])+' '+' 0 0.7071 ' + str(x2)+' '+str(y2)+' 0 '+ str(v2[0])+' '+ str(v2[1])+' 0 0.7071 ') 
     actuators.createObject('UniformMass', showGravityCenter='1')
     actuators.createObject('RestShapeSpringsForceField', stiffness='1e7', angularStiffness='1e6')
     
@@ -188,6 +190,12 @@ def createScene(rootNode):
     visuArm3.createObject('OglModel', name='arm3', position='@loaderArm.position', triangles='@loaderArm.triangles', translation=[20*sin(4*PI/3),-20*cos(4*PI/3),0], rotation=[0,0,240 ], color='green') 
 
     visuArm3.createObject('RigidMapping',  globalToLocalCoords='1', index='1')    
+
+
+    ######## Export (to record the final position) ########
+    robot.createObject('VTKExporter',position='@tetras.position', tetras='1', filename=path+'deformedMesh.vtu', exportAtEnd='1', overwrite='1')
+        
+
 
 
           
