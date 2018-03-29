@@ -3,11 +3,12 @@ from stlib.animation.easing import LinearRamp
 from stlib.scene import MainHeader, Node
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.algorithms import get
-from stlib.debug import DebugManager, drawLine
+from stlib.debug import DebugManager, drawLine, drawText, worldToScreenPoint
 from stlib.numerics import *
 from stlib.components import OrientedBoxRoi
 from math import sin,cos,pi,fmod
 from parts import ActuatedArm
+import Sofa
 
 def ActuatedArmWithConstraint(parentNode, name="ActuatedArm", position=[], translation=[0,0,0], eulerRotation=[0,0,0]):
 
@@ -63,6 +64,7 @@ def tripodAnimation1(motor1, motor2, motor3, factor):
     motor3.angle = LinearRamp(0, -3.14/2, factor)
 
 def tripodAnimation2(motors, factor):
+    drawLine([0,0,0],[10,0,0])
     for i in range(0,len(motors)):
         motor = motors[i]
         f1 = cos(LinearRamp(-3.14, 3.14, factor*float(i)*3.14/3))
@@ -71,26 +73,51 @@ def tripodAnimation2(motors, factor):
         pp[1] = f1
         motor.findData("position").value = pp + p[3:7]
 
+def textAnimation(factor):
+    drawText("Dancing Tripod", 20 , LinearRamp(-20,100, sin(factor)))
+    drawText("Let's Party", 250 , LinearRamp(-20,100, sin(2*factor)))
+    drawText("Have Fun", 400 , LinearRamp(-20,100, cos(3*factor)))
+
+class Controller(Sofa.PythonScriptController):
+    def __init__(self, node, tripod):
+        self.tripod = tripod
+
+    def onKeyPressed(self, c):
+        print("KEY "+str(c))
+        if c == "A":
+            animate(tripodAnimation2, {"motors" : [get(self.tripod, "ActuatedArm0/MechanicalObject"),
+                                                   get(self.tripod, "ActuatedArm1/MechanicalObject"),
+                                                   get(self.tripod, "ActuatedArm2/MechanicalObject")]},
+                                       duration=1.0, mode="pingpong")
+            animate(textAnimation, {}, duration=0.3, mode="pingpong")
+        elif c == "F":
+            animate(tripodAnimation1, {"motor1" : get(self.tripod, "ActuatedArm0/ServoMotor/KinematicMotorController"),
+                                       "motor2" : get(self.tripod, "ActuatedArm1/ServoMotor/KinematicMotorController"),
+                                       "motor3" : get(self.tripod, "ActuatedArm2/ServoMotor/KinematicMotorController")},
+                                       duration=1.0, mode="pingpong")
+
+            pass
+        elif c == "+":
+            pass
+        elif c == "-":
+            pass
+
+    def onBeginAnimationStep(self, dt):
+        k = get(self.tripod, "ActuatedArm0/ServoMotor/KinematicMotorController")
+        m = get(self.tripod, "ActuatedArm0/ServoArm/MechanicalObject")
+        p = worldToScreenPoint( m.position[0][0:3] )
+        drawText("Angle: "+str(k.angle), p[0], p[1])
+
 #Units: cm and kg
 def createScene(rootNode):
     r = MainHeader(rootNode, plugins=["SoftRobots"])
     r.getObject("VisualStyle").displayFlags="showForceFields"
 
-    AnimationManager(rootNode)
     DebugManager(rootNode)
+    AnimationManager(rootNode)
 
     tripod = Tripod(rootNode)
 
-    animate(tripodAnimation1, {"motor1" : get(tripod, "ActuatedArm0/ServoMotor/KinematicMotorController"),
-                               "motor2" : get(tripod, "ActuatedArm1/ServoMotor/KinematicMotorController"),
-                               "motor3" : get(tripod, "ActuatedArm2/ServoMotor/KinematicMotorController")},
-                               duration=1.0, mode="pingpong")
-
-    animate(tripodAnimation2, {"motors" : [get(tripod, "ActuatedArm0/MechanicalObject"),
-                                           get(tripod, "ActuatedArm1/MechanicalObject"),
-                                           get(tripod, "ActuatedArm2/MechanicalObject")]},
-                               duration=1.0, mode="pingpong")
-
-
+    Controller(rootNode, tripod)
 
     return rootNode
