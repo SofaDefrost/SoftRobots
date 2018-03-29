@@ -16,6 +16,7 @@ def smoothAnimation(motors, begin, end, factor):
 
 class Controller(Sofa.PythonScriptController):
     def __init__(self, node, tripod):
+        self.name = "TripodController"
         self.tripod = tripod
         self.motors = [get(self.tripod, "ActuatedArm0/ServoMotor/KinematicMotorController"),
                        get(self.tripod, "ActuatedArm1/ServoMotor/KinematicMotorController"),

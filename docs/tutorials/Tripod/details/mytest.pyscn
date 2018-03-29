@@ -1,0 +1,8 @@
+from stlib.scene import MainHeader
+
+def createScene(rootNode):
+    r = MainHeader(rootNode, plugins=["SoftRobots"])
+    r.getObject("VisualStyle").displayFlags="showForceFields"
+
+    return rootNode
+

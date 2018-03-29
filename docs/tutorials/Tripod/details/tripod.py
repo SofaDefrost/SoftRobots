@@ -5,6 +5,7 @@
 
     List of available parts:
         - Tripod
+        - ElasticBody
         - ActuatedArmWithConstraint (add to a s90 ActuatedArm a set of constraints to attach a deformable object )
 
     Example of use:
@@ -24,6 +25,37 @@ from stlib.algorithms import get
 from stlib.numerics import *
 from math import sin,cos
 from parts import ActuatedArm
+
+def Tripod(parentNode):
+    tripod = Node(parentNode, 'Tripod')
+
+    em = ElasticBody(tripod, rotation=[90.0,0.0,0.0],
+                     name="ElasticMaterialObject")
+
+    dist = 4.6
+    numstep = 3
+    for i in range(0,numstep):
+        name = "ActuatedArm"+str(i)
+        fi = float(i)
+        fnumstep = float(numstep)
+        angle = fi*360/fnumstep
+        angle2 = fi*360/fnumstep+180
+        eulerRotation = [0,angle,0]
+        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
+
+        c = ActuatedArmWithConstraint(tripod, name=name, position="@../../ElasticMaterialObject/MechanicalObject.rest_position",
+                                      translation=translation, eulerRotation=eulerRotation)
+
+        em.createObject('RestShapeSpringsForceField',
+                    points=get(c, 'Constraint/BoxROI.indices').getLinkPath(),
+                    external_rest_shape=get(c, 'Constraint/MechanicalObject').getLinkPath())
+
+    return tripod
+
+def ElasticBody(parentNode, rotation=[0.0,0.0,0.0], youngModulus=600, totalMass=0.4, name="ElasticBody"):
+    return ElasticMaterialObject(parentNode, name=name,
+                         volumeMeshFileName="data/mesh/tripod1.gidmsh",
+                         totalMass=totalMass, poissonRatio=0.45, youngModulus=youngModulus, rotation=rotation)
 
 def ActuatedArmWithConstraint(parentNode, name="ActuatedArm", position=[], translation=[0,0,0], eulerRotation=[0,0,0]):
 
@@ -46,31 +78,7 @@ def ActuatedArmWithConstraint(parentNode, name="ActuatedArm", position=[], trans
 
     return arm
 
-def Tripod(parentNode):
-    tripod = Node(parentNode, 'Tripod')
 
-    em=ElasticMaterialObject(tripod,
-                         volumeMeshFileName="data/mesh/tripod1.gidmsh",
-                         totalMass=0.4, poissonRatio=0.45, youngModulus=600, rotation=[90,0,0])
-    dist = 4.6
-    numstep = 3
-    for i in range(0,numstep):
-        name = "ActuatedArm"+str(i)
-        fi = float(i)
-        fnumstep = float(numstep)
-        angle = fi*360/fnumstep
-        angle2 = fi*360/fnumstep+180
-        eulerRotation = [0,angle,0]
-        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
-
-        c = ActuatedArmWithConstraint(tripod, name=name, position="@../../ElasticMaterialObject/MechanicalObject.rest_position",
-                                      translation=translation, eulerRotation=eulerRotation)
-
-        em.createObject('RestShapeSpringsForceField',
-                    points=get(c, 'Constraint/BoxROI.indices').getLinkPath(),
-                    external_rest_shape=get(c, 'Constraint/MechanicalObject').getLinkPath())
-
-    return tripod
 
 #Units: cm and kg
 def createScene(rootNode):
