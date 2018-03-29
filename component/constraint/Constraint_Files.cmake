@@ -12,6 +12,9 @@ list(APPEND HEADER_FILES
 
     component/constraint/UnilateralPlaneConstraint.h
     component/constraint/UnilateralPlaneConstraint.inl
+	
+	component/constraint/SlidingConstraintActuator.h
+	component/constraint/SlidingConstraintActuator.inl
 
     )
 
@@ -21,7 +24,9 @@ list(APPEND SOURCE_FILES
     component/constraint/PartialRigidificationConstraint.cpp
     component/constraint/SurfacePressureConstraint.cpp
     component/constraint/UnilateralPlaneConstraint.cpp
-    )
+	component/constraint/SlidingConstraintActuator.cpp
+    
+	)
 
 include(component/constraint/model/Model.cmake)
 
