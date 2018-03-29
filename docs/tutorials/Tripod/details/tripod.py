@@ -1,3 +1,22 @@
+""" Sofa model for the "tripod' robot
+
+    This model is part of the SoftRobot toolkit available at:
+        https://github.com/SofaDefrost/SoftRobots
+
+    List of available parts:
+        - Tripod
+        - ActuatedArmWithConstraint (add to a s90 ActuatedArm a set of constraints to attach a deformable object )
+
+    Example of use:
+        def createScene(rootNode):
+            from stlib.scene import MainHeader
+            r = MainHeader(rootNode, plugins=["SoftRobots"])
+            r.getObject("VisualStyle").displayFlags="showForceFields"
+
+            tripod = Tripod(rootNode)
+
+            return rootNode
+"""
 from stlib.scene import Node
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.components import OrientedBoxRoi
