@@ -30,7 +30,7 @@
 #include "../../behavior/SoftRobotsConstraint.h"
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/defaulttype/Vec3Types.h> // MISK: do we need to include Rigid here?
+#include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -79,7 +79,7 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
 
 public:
-    SlidingModel(); // MISK
+    SlidingModel();
     SlidingModel(MechanicalState* object);
     virtual ~SlidingModel();
 
@@ -124,8 +124,7 @@ private:
     void initDatas();
 
     void checkIndicesRegardingState();
-    // void initActuatedPoints(); // MISK
-
+    
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring m_state in the current lookup context.

@@ -26,8 +26,6 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_SLIDINGMODEL_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGMODEL_INL
-//#include <cstdio> MISK: check if these are needed
-//#include <cstdlib>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
