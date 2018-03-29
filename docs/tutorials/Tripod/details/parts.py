@@ -34,23 +34,25 @@ def ActuatedArm(parentNode, name="ActuatedArm",
 
     """
     actuatedArm = Node(parentNode, name)
-    DefaultSolver(actuatedArm)
     r=Transform(translation, eulerRotation=eulerRotation)
+    DefaultSolver(actuatedArm)
     actuatedArm.createObject("MechanicalObject", size=1, position=r.toSofaRepr(),
     template='Rigid', showObject=True, showObjectScale=0.5)
 
-    ServoMotor(actuatedArm)
+    ServoMotor(actuatedArm, inFrame=True)
     ServoArm(actuatedArm)
 
     return actuatedArm
 
 
-def ServoMotor(parentNode, color="white"):
+def ServoMotor(parentNode, color="white", inFrame=False):
     servoMotor = Node(parentNode, 'ServoMotor')
 
     parentFrame = servoMotor.createObject("MechanicalObject", size=1,
                                           template='Rigid', showObject=True, showObjectScale=0.5)
-    servoMotor.createObject('RigidRigidMapping')
+
+    if inFrame:
+        servoMotor.createObject('RigidRigidMapping')
 
     servoWheel = Node(servoMotor, "ServoWheel")
     meca = servoWheel.createObject("MechanicalObject", size=1, template='Rigid',
@@ -114,7 +116,7 @@ def createScene(rootNode):
     from stlib.animation.easing import LinearRamp
     from stlib.algorithms import get
     MainHeader(rootNode)
-    DefaultSolver(rootNode)
+    s=DefaultSolver(rootNode)
     AnimationManager(rootNode)
 
     ### Test a assembly that also implements a KinematicMotorController

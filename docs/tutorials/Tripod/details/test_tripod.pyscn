@@ -1,8 +1,8 @@
 import Sofa
-from stlib.scene import MainHeader
+from stlib.scene import MainHeader, get
+from stlib.solver import DefaultSolver
 from stlib.animation import AnimationManager, animate
 from stlib.animation.easing import LinearRamp
-from stlib.algorithms import get
 from math import sin,cos
 from tripod import Tripod
 
@@ -42,9 +42,8 @@ class Controller(Sofa.PythonScriptController):
 
 #Units: cm and kg
 def createScene(rootNode):
-    AnimationManager(rootNode)
     r = MainHeader(rootNode, plugins=["SoftRobots"])
-    r.getObject("VisualStyle").displayFlags="showForceFields"
+    get(r, "VisualStyle.displayFlags").value = "showForceFields"
 
     tripod = Tripod(rootNode)
 
