@@ -1,4 +1,4 @@
-""" Sofa model for a S90 servo actuators with a controller
+""" Sofa prefab for a S90 servo actuators with a controller
 
     This model is part of the SoftRobot toolkit available at:
         https://github.com/SofaDefrost/SoftRobots

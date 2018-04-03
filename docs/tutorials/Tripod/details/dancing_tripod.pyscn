@@ -45,8 +45,6 @@ class Controller(Sofa.PythonScriptController):
                                        "motor2" : get(self.tripod, "ActuatedArm1/ServoMotor/KinematicMotorController"),
                                        "motor3" : get(self.tripod, "ActuatedArm2/ServoMotor/KinematicMotorController")},
                                        duration=1.0, mode="pingpong")
-
-            pass
         elif c == "+":
             pass
 
@@ -57,9 +55,6 @@ class Controller(Sofa.PythonScriptController):
 def createScene(rootNode):
     r = MainHeader(rootNode, plugins=["SoftRobots"])
     r.getObject("VisualStyle").displayFlags="showForceFields"
-
-    DebugManager(rootNode)
-    AnimationManager(rootNode)
 
     tripod = Tripod(rootNode)
 
