@@ -44,7 +44,10 @@ class controller(Sofa.PythonScriptController):
         self.Angle1=PI/2;
         self.Angle2=PI/2;
         
+    def onEndAnimationStep(self, node):
         
+        PI=3.14159265359;
+        self.node.getObject('serial').findData('sentData').value = [self.Angle0*180/PI, self.Angle1*180/PI, self.Angle2*180/PI]
 
 
     def onKeyPressed(self,c):
@@ -78,7 +81,7 @@ class controller(Sofa.PythonScriptController):
             rest_pos[0][6] = cos(self.Angle0/2)
             
             
-        elif (ord(c) == 19): #  up
+        elif (ord(c) == 21): #  up
             self.Angle1 = self.Angle1 - Delta_angle
             
             rest_pos[1][0]= (-CenterRot - Radius*sin(self.Angle1))*sin(2*PI/3)
@@ -90,7 +93,7 @@ class controller(Sofa.PythonScriptController):
             rest_pos[1][6] = cos(self.Angle1/2)
         
         
-        elif (ord(c) == 21): # down 
+        elif (ord(c) == 19): # down 
             self.Angle1 = self.Angle1 + Delta_angle
 
             rest_pos[1][0]= (-CenterRot - Radius*sin(self.Angle1))*sin(2*PI/3)
@@ -126,4 +129,5 @@ class controller(Sofa.PythonScriptController):
             
         rest_pos_table= transformDoubleTableInSimpleTable(rest_pos)
         mo.findData('rest_position').value = transformTableInString(rest_pos_table)
+        
         
