@@ -30,9 +30,7 @@
 #ifndef SOFA_CONTROLLER_ANIMATIONEDITOR_INL
 #define SOFA_CONTROLLER_ANIMATIONEDITOR_INL
 
-#include <sofa/config/build_option_opengl.h>
-
-#ifdef SOFA_WITH_OPENGL
+#ifndef SOFA_NO_OPENGL
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/glut.h>
 using sofa::helper::gl::glVertexT;
@@ -756,7 +754,7 @@ void AnimationEditor<DataTypes>::draw(const VisualParams* vparams)
         return ;
 #endif // SOFA_WITH_DACCORD
 
-#ifdef SOFA_WITH_OPENGL
+#ifndef SOFA_NO_OPENGL
     glDisable(GL_LIGHTING);
     int ratio = round(vparams->viewport()[2]/d_maxKeyFrame.getValue());
 
