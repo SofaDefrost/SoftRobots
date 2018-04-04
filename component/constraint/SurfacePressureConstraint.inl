@@ -62,9 +62,10 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState*
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"pressure","volumeGrowth"), "valueType",
+    , d_valueType(initData(&d_valueType, OptionsGroup(3,"pressure","volumeGrowth", "boyleMariott"), "valueType",
                                           "volumeGrowth = the contstraint will impose the volume growth provided in data d_inputValue[d_iputIndex] \n"
-                                          "force = the contstraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
+                                          "pressure = the contstraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
+                                           "boyleMariott = the boyleMariott low will be imposed pressure*volume= constant \n"
                                           "If unspecified, the default value is pressure"))
 
     , d_visualization(initData(&d_visualization, false, "visualization",
@@ -90,9 +91,10 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint()
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified, the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"pressure","volumeGrowth"), "valueType",
+    , d_valueType(initData(&d_valueType, OptionsGroup(2,"pressure","volumeGrowth", "boyleMariott"), "valueType",
                                           "volumeGrowth = the contstraint will impose the volume growth provided in data d_inputValue[d_iputIndex] \n"
                                           "force = the constraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
+                                          "boyleMariott = the boyleMariott low will be imposed pressure*volume= constant"
                                           "If unspecified, the default value is pressure"))
 
     , d_visualization(initData(&d_visualization, false, "visualization",
@@ -168,6 +170,11 @@ void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<C
     if(d_valueType.getValue().getSelectedItem() == "volumeGrowth")
     {
         VolumeGrowthConstraintResolution *cr=  new VolumeGrowthConstraintResolution(imposed_value);
+        resTab[offset++] =cr;
+    }
+    else if(d_valueType.getValue().getSelectedItem() == "boyleMariott")
+    {
+        BoyleMariottConstraintResolution *cr=  new BoyleMariottConstraintResolution(imposed_value);
         resTab[offset++] =cr;
     }
     else // pressure
