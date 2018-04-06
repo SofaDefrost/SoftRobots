@@ -24,9 +24,9 @@ def createBunny(Node, Translation=[0,0,0], ControlType='PressureConstraint', Nam
        
 
     if ControlType == 'PressureConstraint':
-        cavity = PneumaticCavity(name='Cavity',attachedAsAChildOf=Bunny,surfaceMeshFileName=meshpath+'Hollow_Bunny_Body_Cavity.obj',valueType='pressureGrowth', initialValue=InitialValue)
+        cavity = PneumaticCavity(name='Cavity',attachedAsAChildOf=Bunny,surfaceMeshFileName=meshpath+'Hollow_Bunny_Body_Cavity.obj',valueType='pressureGrowth', initialValue=InitialValue, translation=Translation)
     elif ControlType=='VolumeConstraint':
-        cavity = PneumaticCavity(name='Cavity',attachedAsAChildOf=Bunny,surfaceMeshFileName=meshpath+'Hollow_Bunny_Body_Cavity.obj',valueType='volumeGrowth', initialValue=InitialValue)
+        cavity = PneumaticCavity(name='Cavity',attachedAsAChildOf=Bunny,surfaceMeshFileName=meshpath+'Hollow_Bunny_Body_Cavity.obj',valueType='volumeGrowth', initialValue=InitialValue, translation=Translation)
     
     BunnyVisu = Bunny.createChild('visu')
     BunnyVisu.createObject('TriangleSetTopologyContainer', name='container')
