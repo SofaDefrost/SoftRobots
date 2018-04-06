@@ -6,7 +6,7 @@ Content:
 ********
 .. autosummary::
 
-   Bunny
+   A (Stanford) bunny with a cavity, which can either by actuated by pressure or volume change. This part is used in some tutorials.
 
 .. autofunction:: Finger
 
