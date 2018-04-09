@@ -437,6 +437,9 @@ div.footnotes li[id^="fn"] /* A footnote item within that div */
     {
     }
 
+div.hide { display: none; }
+div.show { display: inherit; }
+
 #sofaplay {  
     position: absolute;
     width: 150;
