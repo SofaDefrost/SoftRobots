@@ -1,0 +1,67 @@
+from stlib.scene import MainHeader, get, Node
+from stlib.animation import * 
+from stlib.components import OrientedBoxRoi
+from stlib.physics.deformable import ElasticMaterialObject
+
+def SpringConstraint(parentNode,object1, object2, roi):
+    t=[]
+    for i in roi.indices:
+        t.append([i, len(t), 1000000000, 1, 0])
+    return parentNode.createObject('StiffSpringForceField',
+                        object1=object1.getLinkPath(),
+                        object2=object2.getLinkPath(), spring=t)
+
+def BoxConstraint(parentNode, inputDOFs, name="BoxConstraint", translation=[0.0,0.0,0.0], eulerRotation=[0.0,0.0,0.0],
+    scale=[1,1,1]):
+    constraint = Node(parentNode, name=name)
+    o = OrientedBoxRoi(constraint, position=inputDOFs, translation=translation,
+                       eulerRotation=eulerRotation, scale=scale)
+    o.drawSize = 5
+    constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
+                        translation=translation, rotation=eulerRotation, inverse=True )
+    constraint.createObject("MechanicalObject", template="Vec3d", position="@TransformEngine.output_position",
+                                                showObject=True, showObjectScale=10.0)
+ 
+    constraint.createObject('RigidMapping', input="@../MechanicalObject", output="@./")
+
+    return constraint
+
+def Modeling(parentNode):
+    modeling = parentNode.createChild("Modeling")
+    e=ElasticMaterialObject(modeling, volumeMeshFileName="data/mesh/tripod1.gidmsh",
+                         totalMass=1.0, poissonRatio=0.45, youngModulus=600, 
+                         solver=True, withConstrain=False)
+    e.init()
+
+    d = modeling.createChild("Constraint")    
+    d.createObject("MechanicalObject", template="Rigid3d", position=[0,0,0,0,0,0,0])
+    d.createObject("FixedConstraint")
+    b=BoxConstraint(d, get(e, "MechanicalObject.rest_position").getLinkPath(), scale=[2.0,2.0,2.0])
+    b.init()
+
+    SpringConstraint(e, object1=get(e, "MechanicalObject"),
+                        object2=get(b, "MechanicalObject"), roi=get(b, "BoxROI"))
+
+
+    return modeling
+
+def Simulation(parentNode):
+    simulation = parentNode.createChild("Simulation")
+    simulation.createObject('DefaultAnimationLoop')
+    simulation.createObject('EulerImplicit')
+    simulation.createObject('SparseLDLSolver', name="Solver")
+    simulation.createObject('DefaultVisualManagerLoop')
+        
+    return simulation
+
+def createScene(rootNode):
+    r = MainHeader(rootNode, plugins=["SoftRobots"])
+    r.createObject("DefaultAnimationLoop")
+    r.createObject("DefaultVisualManagerLoop")
+    r.getObject("VisualStyle").displayFlags="showForceFields"
+
+    m=Modeling(rootNode)
+    s = Simulation(rootNode)
+    s.addChild(m)
+    return rootNode
+
