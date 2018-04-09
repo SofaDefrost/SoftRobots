@@ -19,20 +19,20 @@
             return rootNode
 """
 from stlib.scene import Node
-from stlib.physics.deformable import ElasticMaterialObject
 from stlib.components import OrientedBoxRoi
 from stlib.algorithms import get
 from stlib.solver import DefaultSolver
 from stlib.numerics import *
 from math import sin,cos
-from parts import ActuatedArm, ServoMotor
+from parts import ActuatedArm, ServoMotor, ElasticBody
 
 def Tripod(parentNode, numMotors=3, radius=4.6, angleShift=180):
     tripod = Node(parentNode, 'Tripod')
 
+  
     em = ElasticBody(tripod, rotation=[90.0,0.0,0.0],
-                     name="ElasticMaterialObject")
-
+                     name="ElasticBody")
+    eb = em.getChild("ElasticMaterialObject")
     dist = radius
     numstep = numMotors
     for i in range(0,numstep):
@@ -44,20 +44,14 @@ def Tripod(parentNode, numMotors=3, radius=4.6, angleShift=180):
         eulerRotation = [0,angle,0]
         translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
 
-        c = ActuatedArmWithConstraint(tripod, name=name, position="@../../ElasticMaterialObject/MechanicalObject.rest_position",
+        c = ActuatedArmWithConstraint(tripod, name=name, position=get(em, "ElasticMaterialObject/MechanicalObject.rest_position").getLinkPath(),
                                       translation=translation, eulerRotation=eulerRotation)
 
-        em.createObject('RestShapeSpringsForceField',
+        eb.createObject('RestShapeSpringsForceField',
                     points=get(c, 'Constraint/BoxROI.indices').getLinkPath(),
                     external_rest_shape=get(c, 'Constraint/MechanicalObject').getLinkPath(), stiffness='1e12')
 
     return tripod
-
-def ElasticBody(parentNode, rotation=[0.0,0.0,0.0], youngModulus=600, totalMass=0.4, name="ElasticBody"):
-    return ElasticMaterialObject(parentNode, name=name,
-                         volumeMeshFileName="data/mesh/tripod1.gidmsh",
-                         totalMass=totalMass, poissonRatio=0.45, youngModulus=youngModulus, rotation=rotation, withConstrain=False)
-
 
 def ActuatedArmWithConstraint(parentNode, name="ActuatedArm", position=[], translation=[0,0,0], eulerRotation=[0,0,0]):
 
@@ -81,7 +75,24 @@ def ActuatedArmWithConstraint(parentNode, name="ActuatedArm", position=[], trans
 
     return arm
 
+def addSimulationPlan(parentNode, modelNode):
+    parentNode.createObject("DefaultAnimationLoop")
+    parentNode.createObject("DefaultVisualManagerLoop")
 
+    part1 = Node(parentNode, "MechanicalPart1")
+    part1.createObject("EulerImplicit")
+    part1.createObject("SparseLDLSolver")
+    part1.addChild( get(modelNode, "ElasticBody") )
+    
+    #get(modelNode, "ElasticBody/ElasticMaterialObject").createObject("LinearSolverConstraintCorrection", solverName="SparseLDLSolver")
+
+    part2 = Node(parentNode, "MechanicalPart2")
+    part2.createObject("EulerImplicit")
+    part2.createObject("CGLinearSolver")
+    part2.addChild( get(modelNode, "ActuatedArm0") )
+    part2.addChild( get(modelNode, "ActuatedArm1") )
+    part2.addChild( get(modelNode, "ActuatedArm2") )
+    return parentNode
 
 #Units: cm and kg
 def createScene(rootNode):
@@ -89,6 +100,10 @@ def createScene(rootNode):
     r = MainHeader(rootNode, plugins=["SoftRobots"])
     r.getObject("VisualStyle").displayFlags="showForceFields"
 
-    tripod = Tripod(rootNode)
+    m = Node(rootNode, "Model")
+    tripod = Tripod(m)
+
+    n = Node(rootNode, "SimulationPlan")
+    addSimulationPlan(n, tripod)
 
     return rootNode

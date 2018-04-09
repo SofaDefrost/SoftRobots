@@ -13,9 +13,10 @@
 
 """
 import Sofa
-from stlib.solver import DefaultSolver
 from stlib.numerics import *
-from stlib.scene import Node
+from stlib.scene import Node, get
+from stlib.physics.deformable import ElasticMaterialObject
+from s90servo import ServoMotor, KinematicMotorController
 
 def ActuatedArm(parentNode, name="ActuatedArm",
                             translation=[0.0,0.0,0.0], eulerRotation=[0.0,0.0,0.0]):
@@ -35,7 +36,6 @@ def ActuatedArm(parentNode, name="ActuatedArm",
     """
     actuatedArm = Node(parentNode, name)
     r=Transform(translation, eulerRotation=eulerRotation)
-    DefaultSolver(actuatedArm)
     actuatedArm.createObject("MechanicalObject", size=1, position=r.toSofaRepr(),
     template='Rigid', showObject=True, showObjectScale=0.5)
 
@@ -45,27 +45,32 @@ def ActuatedArm(parentNode, name="ActuatedArm",
     return actuatedArm
 
 
-def ServoMotor(parentNode, color="white", inFrame=False):
-    servoMotor = Node(parentNode, 'ServoMotor')
+def ElasticBody(parentNode, rotation=[0.0,0.0,0.0], youngModulus=600, totalMass=0.4, name="ElasticBody"):
+    eb = parentNode.createChild(name)
 
-    parentFrame = servoMotor.createObject("MechanicalObject", size=1,
-                                          template='Rigid', showObject=True, showObjectScale=0.5)
+    em = ElasticMaterialObject(eb, 
+                         volumeMeshFileName="data/mesh/tripod1.gidmsh",
+                         totalMass=totalMass, poissonRatio=0.45, youngModulus=youngModulus,
+                         rotation=rotation, solver=True,withConstrain=False)
 
-    if inFrame:
-        servoMotor.createObject('RigidRigidMapping')
+    return eb
 
-    servoWheel = Node(servoMotor, "ServoWheel")
-    meca = servoWheel.createObject("MechanicalObject", size=1, template='Rigid',
-                                   showObject=True, showObjectScale=0.5)
-
-    controller = KinematicMotorController(servoMotor, parentFrame, meca)
-
-    visu = Node(servoMotor, "Visual")
-    visu.createObject('MeshSTLLoader', name="Loader", filename='data/mesh/SG90_servo_with_base.stl')
-    visu.createObject('OglModel', position='@Loader.position', triangles='@Loader.triangles', color=color)
-    visu.createObject('RigidMapping')
-
-    return servoMotor
+def addCollisionTo(eb):
+    em = get(eb, "ElasticMaterialObject")   
+    
+    ec=em.createChild("Collision")
+    c = ec.createObject("TriangleSetTopologyContainer", name="TriangleSetTopologyContainer")
+    m = ec.createObject("TriangleSetTopologyModifier", name="TriangleSetTopologyModifier")    
+    ec.createObject("TriangleSetTopologyAlgorithms", name="TriangleSetTopologyModifierX")    
+    ec.createObject("TriangleSetGeometryAlgorithms", name="TriangleSetTopologyModifierA")    
+    em.createObject("LinearSolverConstraintCorrection")
+    
+    ec.createObject("Tetra2TriangleTopologicalMapping", 
+                    input=get(em, "TetrahedronSetTopologyContainer").getLinkPath(),    output=c.getLinkPath())
+    ec.createObject("TriangleModel")
+    #ec.createObject("PointModel")
+    #ec.createObject("IdentityMapping", input=get(em, "MechanicalObject").getLinkPath())
+    return eb
 
 def ServoArm(parentNode, color="white"):
     servoArm = Node(parentNode, 'ServoArm')
@@ -83,31 +88,6 @@ def ServoArm(parentNode, color="white"):
     visual.createObject('RigidMapping')
 
     return servoArm
-
-class KinematicMotorController(Sofa.PythonScriptController):
-    """
-        This controller is in charge of transforming the angular 'positional' control of the
-        of the ServoWheel.
-    """
-    def __init__(self, node, parentframe, target):
-        self.parentframe = parentframe
-        self.node = node
-        self.target = target
-        self.addNewData("angle", "Properties", "The angular position of the motor (in radians)","f", 0.0)
-        self.name = "KinematicMotorController"
-
-    def applyAngleToServoWheel(self, angle):
-        pq = self.parentframe.position[0]
-        local = Transform(pq[0:3], pq[3:7])
-        f = local.forward
-        self.target.findData("position").value = pq[0:3] + list(Quaternion.prod(axisToQuat(f, angle), pq[3:7]))
-
-    def bwdInitGraph(self, root):
-        self.applyAngleToServoWheel(self.angle)
-
-    def onBeginAnimationStep(self, dt):
-        self.applyAngleToServoWheel(self.angle)
-
 
 def createScene(rootNode):
     from stlib.scene import MainHeader

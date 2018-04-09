@@ -1,10 +1,10 @@
 import Sofa
-from stlib.scene import MainHeader, get
+from stlib.scene import MainHeader, get,Node
 from stlib.solver import DefaultSolver
 from stlib.animation import AnimationManager, animate
 from stlib.animation.easing import LinearRamp
 from math import sin,cos
-from tripod import Tripod
+from tripod import Tripod, addSimulationPlan
 
 def openCloseAnimation(motors, factor):
     for motor in motors:
@@ -14,7 +14,7 @@ def smoothAnimation(motors, begin, end, factor):
     for motor in motors:
         motor.angle = LinearRamp(begin, end, factor)
 
-class Controller(Sofa.PythonScriptController):
+class MyController(Sofa.PythonScriptController):
     def __init__(self, node, tripod):
         self.name = "TripodController"
         self.tripod = tripod
@@ -40,13 +40,20 @@ class Controller(Sofa.PythonScriptController):
                                        "begin" : self.motors[0].angle ,
                                        "end" : self.motors[0].angle + incrStep }, duration=0.1)
 
-#Units: cm and kg
+def addMyController(rootNode, targetTripod):
+    return MyController(rootNode, targetTripod)
+
+## Units: cm and kg
 def createScene(rootNode):
     r = MainHeader(rootNode, plugins=["SoftRobots"])
     get(r, "VisualStyle.displayFlags").value = "showForceFields"
+    
 
-    tripod = Tripod(rootNode)
+    m = Node(rootNode, "Model")
+    tripod = Tripod(m)
+    addMyController(m, tripod)
 
-    Controller(rootNode, tripod)
-
+    s = Node(rootNode, "Simulation")
+    addSimulationPlan(s, tripod)
+    
     return rootNode
