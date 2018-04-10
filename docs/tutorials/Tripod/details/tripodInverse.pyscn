@@ -1,0 +1,117 @@
+""" Sofa simulation for the control of the "tripod' robot: finds the inverse of the model
+
+	This simulation is part of the SoftRobot toolkit available at:
+		https://github.com/SofaDefrost/SoftRobots
+
+	Example of use:
+		def createScene(rootNode):
+			from stlib.scene import MainHeader
+			from tripod import Tripod
+			from tripodInverse import addSimulationPlan
+			scene = MainHeader(rootNode, plugins=["SoftRobots"])
+			scene.getObject("VisualStyle").displayFlags="showForceFields"
+
+			model = Node(rootNode, "Model")
+			tripod = Tripod(model)
+
+			simulation = Node(rootNode, "SimulationPlan")
+			addSimulationPlan(simulation, tripod)
+
+			return rootNode
+"""
+from stlib.scene import Node
+from stlib.algorithms import get
+from stlib.numerics import *
+
+from math import sin,cos
+
+from tripod import ActuatedArmWithConstraint, Tripod, ElasticBody
+
+# The components StiffSpringForceField needs a list of springs of the form:
+#                [node_i_model1, node_i_model2, stiffness, damping, restLength]
+# This list allows to set up each spring between model1 and model2
+# The function GenerateSprings generate this list from the following arguments:
+#   indices1 : list of indices of model1
+#   indices2 : list of indices of model2 (size should be the same of indices1)
+#   stiffness : scalar, stiffness of all the springs
+#   damping : scalar, damping of all the springs
+#   restLength : scalar, length at rest of all the springs
+def GenerateSprings(indices1, indices2, stiffness=1e12, damping=5, restLength=0):
+
+	spring = []
+	size1 = len(indices1)
+	size2 = len(indices2)
+
+	if size1 != size2:
+		return spring
+
+	spring = [[0.,0.,0.,0.,0.]]*size1
+	for i in range(0,size1):
+		spring[i] = [indices1[i],indices2[i],stiffness,damping,restLength]
+
+	return spring
+
+
+def addSimulationPlan(parentNode, modelNode):
+
+	parentNode.createObject("DefaultAnimationLoop")
+	parentNode.createObject("DefaultVisualManagerLoop")
+
+	part1 = Node(parentNode, "MechanicalPart1")
+	part1.createObject("EulerImplicit")
+	part1.createObject("SparseLDLSolver")
+	part1.addChild( get(modelNode, "ElasticBody") )
+
+	part2 = Node(parentNode, "MechanicalPart2")
+	part2.createObject("EulerImplicit")
+	part2.createObject("CGLinearSolver")
+
+	## Add constraint
+
+	## Initialisation needed for the generation of springs
+	elasticBody = get(modelNode, "ElasticBody/ElasticMaterialObject")
+	get(elasticBody, 'MeshLoader').init()
+	get(elasticBody, 'container').init()
+	get(elasticBody, 'MechanicalObject').init()
+	
+	for i in range(0,3):
+		constraint = get(modelNode, "ActuatedArm"+str(i))
+		part2.addChild(constraint)
+
+		## Initialisation needed for the generation of springs
+		boxROI = get(constraint, 'Constraint/BoxROI')
+		boxROI.init()
+		spring = GenerateSprings(range(0,boxROI.nbIndices), get(constraint, 'Constraint/BoxROI.indices').value)
+
+		elasticBody.createObject('StiffSpringForceField',
+								name='StiffSpringForceField'+str(i),
+								spring=spring,
+								object1=get(constraint, 'Constraint/MechanicalObject').getLinkPath(),
+								object2="@./")
+
+		# elasticBody.createObject('MappedMatrixForceFieldAndMass',
+		# 						template="Vec3d,Vec3d",
+		# 						name='MappedMatrixForceFieldAndMass'+str(i),
+		# 						object1=get(constraint, 'Constraint/MechanicalObject').getLinkPath(),
+		# 						object2="@./")
+		# 						#example: template='Vec3d,Rigid', object1='@./FreeNodes/FreeNodes', object2='@./Rigid/RigidFrames', mappedForceField='@'+self.forceFields[0].getPathName(), mappedMass='@'+self.forceFields[1].getPathName()
+
+	    ## TO ADD:
+		# effector: PositionEffector node (prefab)
+		# effector target: target node (prefab)
+		# actuator: SlidingActuator node (prefab)
+
+	return parentNode
+
+def createScene(rootNode):
+	from stlib.scene import MainHeader
+	scene = MainHeader(rootNode, plugins=["SoftRobots"])
+	scene.getObject("VisualStyle").displayFlags="showForceFields"
+
+	model = Node(rootNode, "Model")
+	tripod = Tripod(model)
+
+	simulation = Node(rootNode, "SimulationPlan")
+	addSimulationPlan(simulation, tripod)
+
+	return rootNode
