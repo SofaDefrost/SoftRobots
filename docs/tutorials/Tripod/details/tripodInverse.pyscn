@@ -24,7 +24,6 @@ from stlib.algorithms import get
 from stlib.numerics import *
 
 from softrobots.inverse.effectors import PositionEffector, EffectorGoal
-# from softrobots.inverse.actuators import SlidingActuator
 
 from math import sin,cos
 
@@ -108,11 +107,6 @@ def addSimulationPlan(parentNode, modelNode):
 								object2=get(actuatedArm,'MechanicalObject').getLinkPath(),
 								mappedForceField="@./TetrahedronFEMForceField",
 								mappedMass="@./UniformMass")
-
-	    ## TO ADD:
-		# effector: PositionEffector node (prefab)
-		# effector target: target node (prefab)
-		# actuator: SlidingActuator node (prefab)
 
 	return parentNode
 
