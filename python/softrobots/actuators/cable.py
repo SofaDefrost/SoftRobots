@@ -1,5 +1,5 @@
 def PullingCable(attachedTo=None,
-    name="cable",
+    name="Cable",
     cableGeometry=[[1.0, 0.0, 0.0],[0.0, 0.0, 0.0]],
     rotation=[0.0,0.0,0.0],
     translation=[0.0,0.0,0.0],
@@ -32,7 +32,7 @@ def PullingCable(attachedTo=None,
         .. sourcecode:: qml
 
             Node : {
-                    name : "cable"
+                    name : "Cable"
                     MechanicalObject,
                     CableConstraint,
                     BarycentricMapping
@@ -71,9 +71,9 @@ def PullingCable(attachedTo=None,
     # between the cable's DoFs and the parents's ones so that movements of the cable's DoFs will be mapped
     # to the finger and vice-versa;
     cable.createObject('BarycentricMapping', name="Mapping", mapForces=False, mapMasses=False)
-    
+
     return cable
-    
+
 def createScene(node):
     from stlib.scene import MainHeader
     from stlib.physics.deformable import ElasticMaterialObject

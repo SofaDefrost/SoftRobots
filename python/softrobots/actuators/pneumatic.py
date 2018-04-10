@@ -21,20 +21,20 @@ def PneumaticCavity(surfaceMeshFileName=None,
                     uniformScale=1,
                     initialValue=0,
                     valueType="volumeGrowth"):
-    
+
     """Creates and adds a pneumatic constraint.
-    
+
     The constraint apply to a parent mesh.
-    
+
     Args:
         cavityMeshFile (string): path to the cavity mesh (the mesh should be a surfacic mesh, ie only triangles or quads).
-        
+
         name (string): name of the created node.
 
         initialValue (real): value to apply, default is 0.
-        
+
         valueType (string): type of the parameter value (volumeGrowth or pressure), default is volumeGrowth.
-        
+
     Structure:
     .. sourcecode:: qml
         Node : {
@@ -44,7 +44,7 @@ def PneumaticCavity(surfaceMeshFileName=None,
                 SurfacePressureConstraint,
                 BarycentricMapping
         }
-        
+
     """
     if attachedAsAChildOf == None and attachedTo == None:
         Sofa.msg_error("Your PneumaticCavity isn't link/child of any node, please set the argument attachedTo or attachedAsAChildOf")
@@ -78,7 +78,6 @@ def PneumaticCavity(surfaceMeshFileName=None,
 
     # Create a SurfacePressureConstraint object with a name.
     # the indices are referring to the MechanicalObject's positions.
-    # The last indice is where the pullPoint is connected.
     pneumatic.createObject('SurfacePressureConstraint',
                           value=initialValue,
                           valueType=valueType)

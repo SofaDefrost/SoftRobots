@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Template for a robot finger.
+Template for deformable (Stanford) bunny, actuated with pressure.
 
 Content:
 ********
@@ -8,8 +8,7 @@ Content:
 
    A (Stanford) bunny with a cavity, which can either by actuated by pressure or volume change. This part is used in some tutorials.
 
-.. autofunction:: Finger
+.. autofunction:: createBunny
 
 """
 from Bunny import createBunny
-
