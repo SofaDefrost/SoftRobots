@@ -23,9 +23,13 @@ from stlib.scene import Node
 from stlib.algorithms import get
 from stlib.numerics import *
 
+from softrobots.inverse.effectors import PositionEffector, EffectorGoal
+# from softrobots.inverse.actuators import SlidingActuator
+
 from math import sin,cos
 
 from tripod import ActuatedArmWithConstraint, Tripod, ElasticBody
+
 
 # The components StiffSpringForceField needs a list of springs of the form:
 #                [node_i_model1, node_i_model2, stiffness, damping, restLength]
@@ -36,7 +40,7 @@ from tripod import ActuatedArmWithConstraint, Tripod, ElasticBody
 #   stiffness : scalar, stiffness of all the springs
 #   damping : scalar, damping of all the springs
 #   restLength : scalar, length at rest of all the springs
-def GenerateSprings(indices1, indices2, stiffness=1e12, damping=5, restLength=0):
+def GenerateSprings(indices1, indices2, stiffness=1e12, damping=5, restLength=0.001):
 
 	spring = []
 	size1 = len(indices1)
@@ -56,11 +60,16 @@ def addSimulationPlan(parentNode, modelNode):
 
 	parentNode.createObject("DefaultAnimationLoop")
 	parentNode.createObject("DefaultVisualManagerLoop")
+	parentNode.createObject("QPInverseProblemSolver")
+
+	goal = EffectorGoal(parentNode, position=[[0,4,0]], visuScale=0.2)
 
 	part1 = Node(parentNode, "MechanicalPart1")
 	part1.createObject("EulerImplicit")
 	part1.createObject("SparseLDLSolver")
 	part1.addChild( get(modelNode, "ElasticBody") )
+
+	PositionEffector(get(modelNode, "ElasticBody/ElasticMaterialObject"), position=[[0,0,0]], effectorGoal=get(goal, 'MechanicalObject.position').getLinkPath())
 
 	part2 = Node(parentNode, "MechanicalPart2")
 	part2.createObject("EulerImplicit")
@@ -73,28 +82,32 @@ def addSimulationPlan(parentNode, modelNode):
 	get(elasticBody, 'MeshLoader').init()
 	get(elasticBody, 'container').init()
 	get(elasticBody, 'MechanicalObject').init()
-	
+
 	for i in range(0,3):
-		constraint = get(modelNode, "ActuatedArm"+str(i))
-		part2.addChild(constraint)
+		actuatedArm = get(modelNode, "ActuatedArm"+str(i))
+		part2.addChild(actuatedArm)
+
+		wheel = get(actuatedArm, 'ServoMotor/ServoWheel')
+		wheel.createObject('SlidingActuator', template="Rigid", indices="0", direction="0 0 0 1 0 0")
 
 		## Initialisation needed for the generation of springs
-		boxROI = get(constraint, 'Constraint/BoxROI')
+		boxROI = get(actuatedArm, 'Constraint/BoxROI')
 		boxROI.init()
-		spring = GenerateSprings(range(0,boxROI.nbIndices), get(constraint, 'Constraint/BoxROI.indices').value)
+		spring = GenerateSprings(range(0,boxROI.nbIndices), get(actuatedArm, 'Constraint/BoxROI.indices').value)
 
 		elasticBody.createObject('StiffSpringForceField',
 								name='StiffSpringForceField'+str(i),
 								spring=spring,
-								object1=get(constraint, 'Constraint/MechanicalObject').getLinkPath(),
+								object1=get(actuatedArm, 'Constraint/MechanicalObject').getLinkPath(),
 								object2="@./")
 
-		# elasticBody.createObject('MappedMatrixForceFieldAndMass',
-		# 						template="Vec3d,Vec3d",
-		# 						name='MappedMatrixForceFieldAndMass'+str(i),
-		# 						object1=get(constraint, 'Constraint/MechanicalObject').getLinkPath(),
-		# 						object2="@./")
-		# 						#example: template='Vec3d,Rigid', object1='@./FreeNodes/FreeNodes', object2='@./Rigid/RigidFrames', mappedForceField='@'+self.forceFields[0].getPathName(), mappedMass='@'+self.forceFields[1].getPathName()
+		elasticBody.createObject('MappedMatrixForceFieldAndMass',
+								template="Vec3d,Rigid3d",
+								name='MappedMatrixForceFieldAndMass'+str(i),
+								object1=get(actuatedArm,'Constraint/MechanicalObject').getLinkPath(),
+								object2=get(actuatedArm,'MechanicalObject').getLinkPath(),
+								mappedForceField="@./TetrahedronFEMForceField",
+								mappedMass="@./UniformMass")
 
 	    ## TO ADD:
 		# effector: PositionEffector node (prefab)
@@ -106,7 +119,7 @@ def addSimulationPlan(parentNode, modelNode):
 def createScene(rootNode):
 	from stlib.scene import MainHeader
 	scene = MainHeader(rootNode, plugins=["SoftRobots"])
-	scene.getObject("VisualStyle").displayFlags="showForceFields"
+	scene.getObject("VisualStyle").displayFlags="showForceFields showInteractionForceFields"
 
 	model = Node(rootNode, "Model")
 	tripod = Tripod(model)
