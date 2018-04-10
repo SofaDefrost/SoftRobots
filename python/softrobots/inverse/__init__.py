@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Inverse model. 
+Inverse model.
 
 Content:
 ********
+.. autosummary::
+    :toctree: _autosummary
 
-   
+    softrobots.inverse.actuators
+    softrobots.inverse.effectors
+
 """
+
+__all__=["actuators","effectors"]
 
 from Sofa import msg_error, msg_info
 
@@ -22,5 +28,3 @@ except:
     msg_error("SoftRobots", """Missing SoftRobots.Inverse.
 This scene is using the SoftRobots.Inverse plugin which does not seem available on your system.
 More infos at: https://project.inria.fr/softrobot/install-get-started-2/download/""")
-
-
