@@ -53,14 +53,17 @@ SlidingConstraintActuator<DataTypes>::SlidingConstraintActuator(MechanicalState*
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
+    , d_valueType(initData(&d_valueType, OptionsGroup(3,"displacement","force","stiffness"), "valueType",
                                           "displacement = the contstraint will impose the displacement provided in data d_inputValue[d_iputIndex] \n"
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
+										  "stiffness = the constraint will impose a stiffness (centered around a given displacement). The displacement should be in d_inputValue[d_inputIndex]\n"
                                           "If unspecified, the default value is displacement"))
+	, d_stiffness(initData(&d_stiffness, (double) 0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
 {
     d_value.setGroup("Input");
     d_valueIndex.setGroup("Input");
     d_valueType.setGroup("Input");
+	d_stiffness.setGroup("Input");
 }
 
 
@@ -75,14 +78,17 @@ SlidingConstraintActuator<DataTypes>::SlidingConstraintActuator()
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
+    , d_valueType(initData(&d_valueType, OptionsGroup(3,"displacement","force","stiffness"), "valueType",
                                           "displacement = the contstraint will impose the displacement provided in data d_inputValue[d_iputIndex] \n"
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
+										  "stiffness = the constraint will impose a stiffness (centered around a given displacement). The displacement should be in d_inputValue[d_inputIndex]\n"
                                           "If unspecified, the default value is displacement"))
+		, d_stiffness(initData(&d_stiffness, (double) 0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
 {
     d_value.setGroup("Input");
     d_valueIndex.setGroup("Input");
     d_valueType.setGroup("Input");
+	d_stiffness.setGroup("Input");
 }
 
 template<class DataTypes>
@@ -126,7 +132,7 @@ void SlidingConstraintActuator<DataTypes>::getConstraintResolution(const Constra
     SOFA_UNUSED(cParam);
 
     double imposed_value=d_value.getValue()[d_valueIndex.getValue()];
-
+	
     if(d_valueType.getValue().getSelectedItem() == "displacement") // displacement
     {
         if(d_maxDispVariation.isSet())
@@ -145,13 +151,21 @@ void SlidingConstraintActuator<DataTypes>::getConstraintResolution(const Constra
         d_displacement.setValue(imposed_value);
         d_force.setValue(m_force);
     }
-    else // force
+    else if (d_valueType.getValue().getSelectedItem() == "force") // force
     {
         SlidingForceConstraintResolution *cr = new SlidingForceConstraintResolution(imposed_value, &m_displacement);
         resTab[offset++] =cr;
         d_force.setValue(imposed_value);
         d_displacement.setValue(m_displacement);
     }
+	else // stiffness
+	{
+		double imposed_stiffness = d_stiffness.getValue();
+		SlidingStiffnessConstraintResolution *cr = new SlidingStiffnessConstraintResolution(imposed_value, imposed_stiffness, &m_displacement, &m_force);
+		resTab[offset++] = cr;
+		d_displacement.setValue(m_displacement);
+		d_force.setValue(m_force);
+	}
 }
 
 

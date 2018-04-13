@@ -82,6 +82,29 @@ protected:
 
 };
 
+class SlidingStiffnessConstraintResolution : public ConstraintResolution
+{
+public:
+	SlidingStiffnessConstraintResolution(double& imposedNeutralPosition, double& imposedStiffness, double* displacement, double* force);
+
+
+	//////////////////// Inherited from ConstraintResolution ////////////////////
+	virtual void init(int line, double** w, double *force) override;
+	virtual void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+	/////////////////////////////////////////////////////////////////////////////
+
+protected:
+
+	void storeForceAndDisplacement(int line, double* d, double* lambda);
+
+	double      m_wActuatorActuator;
+	double      m_imposedStiffness;
+	double		m_imposedNeutralPosition;
+	double*		m_force;
+	double*     m_displacement;
+
+};
+
 
 
 
@@ -106,7 +129,7 @@ public:
 
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
-    typedef Data<MatrixDeriv>    DataMatrixDeriv;
+    typedef Data<MatrixDeriv>   DataMatrixDeriv;
 
 public:
     SlidingConstraintActuator(MechanicalState* object);
@@ -141,8 +164,10 @@ protected:
     Data<helper::vector< Real > >       d_value;
     Data<unsigned int>                  d_valueIndex;
     Data<helper::OptionsGroup>          d_valueType;
-                                        // displacement = the constraint will impose the displacement provided in data d_inputValue[d_iputIndex]
-                                        // force = the constraint will impose the force provided in data d_inputValue[d_iputIndex]
+                                        // displacement = the constraint will impose the displacement provided in data d_value[d_valueIndex]
+                                        // force = the constraint will impose the force provided in data d_value[d_valueIndex]
+										// stiffness = the constraint will impose a stiffness. The provided data is a neutral position and a stiffness. 
+	Data<double>						d_stiffness;
 
     void internalInit();
 

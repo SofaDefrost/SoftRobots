@@ -24,9 +24,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
+#include <sofa/helper/logging/Messaging.h>
 #include "SlidingConstraintActuator.inl"
 
 #include <sofa/core/ObjectFactory.h>
+
+#define STIFFNESS_CONSTRAINT_TOLERANCE 1E-8
 
 namespace sofa
 {
@@ -114,6 +118,43 @@ void SlidingForceConstraintResolution::storeDisplacement(int line,  double* d)
     *m_displacement = d[line];
 }
 
+
+//------------- Stiffness Constraint -----------
+SlidingStiffnessConstraintResolution::SlidingStiffnessConstraintResolution(double& imposedNeutralPosition, double& imposedStiffness, double* displacement, double* force)
+	: m_imposedNeutralPosition(imposedNeutralPosition)
+	, m_imposedStiffness(imposedStiffness)
+	, m_displacement(displacement)
+	, m_force(force)	
+{}
+
+void SlidingStiffnessConstraintResolution::init(int line, double** w, double * lambda)
+{
+	SOFA_UNUSED(lambda);
+
+	m_wActuatorActuator = w[line][line];
+}
+
+void SlidingStiffnessConstraintResolution::resolution(int line, double**, double* d, double* lambda, double* dfree)
+{
+	SOFA_UNUSED(dfree);
+	if (abs(m_imposedStiffness*m_wActuatorActuator - 1) < STIFFNESS_CONSTRAINT_TOLERANCE)
+	{
+		// TODO MISK msg_warning() << "Commanded stiffness matches natural stiffness. Stiffness constraint is not imposed (no force was added).";
+	}
+	else
+	{
+		double lastLambda = lambda[line];
+		lambda[line] = m_imposedStiffness*(m_wActuatorActuator*lastLambda + m_imposedNeutralPosition - d[line]) / (m_wActuatorActuator*m_imposedStiffness - 1);
+	}
+	storeForceAndDisplacement(line, d, lambda);
+}
+
+
+void SlidingStiffnessConstraintResolution::storeForceAndDisplacement(int line, double* d, double* lambda)
+{
+	*m_displacement = d[line];
+	*m_force = lambda[line];
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
