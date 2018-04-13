@@ -66,9 +66,9 @@ def ActuatedArmWithConstraint(parentNode, name="ActuatedArm", position=[], trans
 	constraint = Node(arm, "Constraint")
 	o = OrientedBoxRoi(constraint, position=position,
 					 translation=vadd(translation, [0.0,1.0,0.0]),
-					 eulerRotation=eulerRotation, scale=[2.5,1,0.9])
+					 eulerRotation=eulerRotation, scale=[2.5,1,1])
 
-	o.drawSize = 5
+	get(o, "BoxROI").drawSize = 2
 	constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
 							translation=translation, rotation=eulerRotation, inverse=True )
 
@@ -79,16 +79,11 @@ def ActuatedArmWithConstraint(parentNode, name="ActuatedArm", position=[], trans
 
 	return arm
 
+
 # The components StiffSpringForceField needs a list of springs of the form:
 #                [node_i_model1, node_i_model2, stiffness, damping, restLength]
 # This list allows to set up each spring between model1 and model2
-# The function GenerateSprings generate this list from the following arguments:
-#   indices1 : list of indices of model1
-#   indices2 : list of indices of model2 (size should be the same of indices1)
-#   stiffness : scalar, stiffness of all the springs
-#   damping : scalar, damping of all the springs
-#   restLength : scalar, length at rest of all the springs
-def GenerateSprings(indices1, indices2, stiffness=1e12, damping=5, restLength=0.001):
+def GenerateSprings(indices1, indices2, stiffness=1e12, damping=5, restLength=0):
 
 	spring = []
 	size1 = len(indices1)
@@ -103,6 +98,7 @@ def GenerateSprings(indices1, indices2, stiffness=1e12, damping=5, restLength=0.
 
 	return spring
 
+
 def addInvertibleSpringConstraint(modelNode, numMotors=3):
     ## Initialisation needed for the generation of springs
     elasticBody = get(modelNode, "ElasticBody/ElasticMaterialObject")
@@ -112,7 +108,7 @@ def addInvertibleSpringConstraint(modelNode, numMotors=3):
 
     for i in range(0, numMotors):
         actuatedArm = get(modelNode, "ActuatedArm"+str(i))
-        
+
         wheel = get(actuatedArm, 'ServoMotor/ServoWheel')
         wheel.createObject('SlidingActuator', template="Rigid", indices="0", direction="0 0 0 1 0 0")
 
@@ -124,12 +120,14 @@ def addInvertibleSpringConstraint(modelNode, numMotors=3):
         elasticBody.createObject('StiffSpringForceField',
                                                         name='StiffSpringForceField'+str(i),
                                                         spring=spring,
+														rayleighStiffness="0.1",
                                                         object1=get(actuatedArm, 'Constraint/MechanicalObject').getLinkPath(),
                                                         object2="@./")
 
         elasticBody.createObject('MappedMatrixForceFieldAndMass',
                                                         template="Vec3d,Rigid3d",
                                                         name='MappedMatrixForceFieldAndMass'+str(i),
+														rayleighStiffness="0.1",
                                                         object1=get(actuatedArm,'Constraint/MechanicalObject').getLinkPath(),
                                                         object2=get(actuatedArm,'MechanicalObject').getLinkPath(),
                                                         mappedForceField="@./TetrahedronFEMForceField",
@@ -166,7 +164,7 @@ def addDirectSimulationPlan(parentNode, modelNode):
     return parentNode
 
 def addInverseSimulationPlan(parentNode, modelNode):
-    parentNode.createObject("DefaultAnimationLoop")
+    parentNode.createObject("FreeMotionAnimationLoop")
     parentNode.createObject("DefaultVisualManagerLoop")
     parentNode.createObject("QPInverseProblemSolver")
 
@@ -176,18 +174,19 @@ def addInverseSimulationPlan(parentNode, modelNode):
     part1.createObject("EulerImplicit")
     part1.createObject("SparseLDLSolver")
     part1.addChild( get(modelNode, "ElasticBody") )
+    get(modelNode, "ElasticBody/ElasticMaterialObject").createObject("LinearSolverConstraintCorrection")
 
     PositionEffector(get(modelNode, "ElasticBody/ElasticMaterialObject"),
                          position=[[0,0,0]],
                          effectorGoal=get(goal, 'MechanicalObject.position').getLinkPath())
-    
+
     part2 = Node(parentNode, "MechanicalPart2")
     part2.createObject("EulerImplicit")
     part2.createObject("CGLinearSolver")
-    #part2.addChild( get(modelNode, "ActuatedArm1") )
-    #part2.addChild( get(modelNode, "ActuatedArm2") )
-    #part2.addChild( get(modelNode, "ActuatedArm3") )
-
+    for i in range(0, 3):
+        a = get(modelNode, "ActuatedArm"+str(i))
+        part2.addChild(a)
+        a.createObject("UncoupledConstraintCorrection")
 
     return parentNode
 
@@ -197,8 +196,8 @@ def createScene(rootNode):
     import Sofa
     from stlib.scene import MainHeader
     r = MainHeader(rootNode, plugins=["SoftRobots"])
-    r.getObject("VisualStyle").displayFlags="showForceFields"
-        
+    r.getObject("VisualStyle").displayFlags="showForceFields showInteractionForceFields"
+
     if len(sys.argv) == 2 and sys.argv[1] == "inverse":
         Sofa.msg_info("CreateScene(Tripod)", "Loading the scene with the inverse model")
         m = Node(rootNode, "Model")
@@ -215,4 +214,4 @@ def createScene(rootNode):
         n = Node(rootNode, "SimulationPlan")
         addDirectSimulationPlan(n, tripod)
 
-	return rootNode
+    return rootNode
