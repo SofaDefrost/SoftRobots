@@ -29,7 +29,7 @@ class GripperController(Sofa.PythonScriptController):
         if dir != None:
             for finger in self.fingers:
                 m = finger.getChild("ElasticMaterialObject")
-                mecaobject = m.getObject("MechanicalObject")
+                mecaobject = m.getObject("dofs")
                 mecaobject.findData('rest_position').value = getTranslated( mecaobject.rest_position,  dir )
 
                 cable = m.getChild("PullingCable").getObject("CableConstraint")

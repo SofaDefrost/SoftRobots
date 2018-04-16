@@ -207,7 +207,7 @@ the ..autolink::SoftRobots plugin and use it in the following way:
 ```python
 ### ... similar to previous step ....
 from softrobots.actuators import ..autolink::SoftRobots::PullingCable
-from stlib.tools import loadPointListFromFile
+from splib.loaders import loadPointListFromFile
 
 ### ... similar to previous step ....
 def Finger(parentNode):
@@ -350,7 +350,7 @@ from stlib.scene import ..autolink::STLIB::Node
 from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
 from stlib.physics.constraints import ..autolink::STLIB::FixedBox
 from stlib.physics.collision import ..autolink::STLIB::CollisionMesh
-from stlib.tools import loadPointListFromFile
+from splib.loaders import loadPointListFromFile
 from softrobots.actuators import ..autolink::SoftRobots::PullingCable
 
 class FingerController(Sofa.PythonScriptController):

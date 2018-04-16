@@ -4,44 +4,61 @@
         https://github.com/SofaDefrost/SoftRobots
 
     List of available parts:
-        - ActuatedArm (assemblage of a ServoMotor and a ServoArm)
         - ServoMotor
-        - ServoArm
 
     Other public components:
         - KinematicMotorController
-
+        - ServoWheel 
 """
 import Sofa
+from splib.numerics import *
+from splib.objectmodel import *  
+
+from stlib.visuals import VisualModel 
 from stlib.solver import DefaultSolver
-from stlib.numerics import *
-from stlib.scene import Node, get
+from stlib.scene import Scene, Node, get
 
-def ServoMotor(parentNode, translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0], scale=[1.0,1.0,1.0],
-               inFrame=False, color="white"):
-    servoMotor = Node(parentNode, 'ServoMotor')
-    servoMotor.addNewData("angle",  "ServoMotor Properties", "The angular position of the motor (in radians)","d", 0.0)
+@SofaPrefab
+class ServoMotor(SofaObject):
+    """A S90 servo motor
 
-    parentFrame = servoMotor.createObject("MechanicalObject", size=1, 
+    Use this prefab to get a S90 servo motor including:
+        - a visual model
+        - a simple mechanical model made of two rigids one for the the servo motor the other
+          for the servo wheel.
+
+    ServoMotor Properties:
+        - angle     use this to specify the angle of rotation of the servo motor
+    """
+    def __init__(self, parent, 
+                 translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0], scale=[1.0,1.0,1.0], doAddVisualModel=True):
+        self.node = Node(parent, "ServoMotor")
+        self.node.addNewData("angle",  
+                             "ServoMotor Properties", 
+                             "The angular position of the motor (in radians)","d", 0.0)
+        self.angle=self.node.findData("angle")
+        
+        self.dofs = self.node.createObject("MechanicalObject", size=1, 
+                                          name="dofs",
                                           translation=translation, rotation=rotation, scale=scale,
                                           template='Rigid', showObject=True, showObjectScale=0.5)
+        
+        self.servowheel = ServoWheel(self.node)
+        self.controller = KinematicMotorController(self.node, self.dofs, self.servowheel.dofs, 
+                                                   angleValue=self.angle.getLinkPath())
+                                                   
+        if doAddVisualModel:
+            self.addVisualModel()        
 
-    if inFrame:
-        servoMotor.createObject('RigidRigidMapping')
+    def addVisualModel(self):
+        self.visualmodel = VisualModel(self.node, 'data/mesh/SG90_servo_with_base.stl')
+        self.visualmodel.node.createObject('RigidMapping', name = "mapping")
 
-    servoWheel = Node(servoMotor, "ServoWheel")
-    meca = servoWheel.createObject("MechanicalObject", size=1, template='Rigid',
-                                   showObject=True, showObjectScale=0.5)
-
-    controller = KinematicMotorController(servoMotor, parentFrame,
-                                          meca, angleValue=get(servoMotor, "angle").getLinkPath())
-
-    visu = Node(servoMotor, "Visual")
-    visu.createObject('MeshSTLLoader', name="Loader", filename='data/mesh/SG90_servo_with_base.stl')
-    visu.createObject('OglModel', position='@Loader.position', triangles='@Loader.triangles', color=color)
-    visu.createObject('RigidMapping')
-    
-    return servoMotor
+class ServoWheel(SofaObject):
+    def __init__(self, parentNode):
+        self.node = Node(parentNode, "ServoWheel")
+        self.dofs = self.node.createObject("MechanicalObject", size=1, template='Rigid',
+                                           showObject=True, showObjectScale=0.5, name="dofs")
 
 class KinematicMotorController(Sofa.PythonScriptController):
     """
@@ -49,11 +66,11 @@ class KinematicMotorController(Sofa.PythonScriptController):
         of the ServoWheel.
     """
     def __init__(self, node, parentframe, target, angleValue):
+        self.name = "controller"
         self.parentframe = parentframe
         self.node = node
         self.target = target
         self.addNewData("angle", "Properties", "The angular position of the motor (in radians)","d", angleValue)
-        self.name = "KinematicMotorController"
 
     def applyAngleToServoWheel(self, angle):
         pq = self.parentframe.position[0]
@@ -69,18 +86,19 @@ class KinematicMotorController(Sofa.PythonScriptController):
 
 
 def createScene(rootNode):
+    from splib.animation import animate
+    from splib.animation.easing import LinearRamp      
+    from splib.scenegraph import get
+        
     from stlib.scene import MainHeader
-    from stlib.animation import animate
-    from stlib.animation.easing import LinearRamp
-    from stlib.algorithms import get
-    MainHeader(rootNode)
+    Scene(rootNode)
     s=DefaultSolver(rootNode)
 
     ### Test a assembly that also implements a KinematicMotorController
     ## The angle of the KinematicMotorController is dynamically changed using a
     ## animation function
-    servoMotor = ServoMotor(rootNode, translation=[2,0,0])
+    servomotor = ServoMotor(rootNode, translation=[2,0,0])
     def myAnimation(motorctrl, factor):
         motorctrl.angle = LinearRamp(-3.14/2, 3.14/2, factor)
 
-    animate(myAnimation, {"motorctrl" : servoMotor }, duration=1.0, mode="pingpong")
+    animate(myAnimation, {"motorctrl" : servomotor.node }, duration=1.0, mode="pingpong")

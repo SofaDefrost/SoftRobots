@@ -6,7 +6,7 @@ from stlib.scene import Node
 from softrobots.actuators import PullingCable
 from stlib.physics.collision import CollisionMesh
 
-from stlib.tools import loadPointListFromFile
+from splib.loaders import loadPointListFromFile
 
 class FingerController(Sofa.PythonScriptController):
     def __init__(self, node, cable ):
@@ -25,7 +25,7 @@ class FingerController(Sofa.PythonScriptController):
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
-           fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0]):
+           fixingBox=[-5.0,0.0,0.0,10.0,15.0,20.0], pullPointLocation=[0.0,0.0,0.0]):
 
     finger = Node(parentNode, name)
     eobject = ElasticMaterialObject(finger,
@@ -38,28 +38,28 @@ def Finger(parentNode=None, name="Finger",
                                    rotation=rotation,
                                    translation=translation)
 
-    FixedBox(eobject, atPositions=fixingBox, doVisualization=True)
+    FixedBox(eobject.node, atPositions=fixingBox, doVisualization=True)
 
-    cable=PullingCable(eobject,
+    cable=PullingCable(eobject.node,
                  "PullingCable",
                  pullPointLocation=pullPointLocation,
                  rotation=rotation,
                  translation=translation,
                  cableGeometry=loadPointListFromFile("data/mesh/cable.json"));
 
-    FingerController(eobject, cable)
+    FingerController(eobject.node, cable)
 
-    CollisionMesh(eobject, name="CollisionMesh",
+    CollisionMesh(eobject.node, name="CollisionMesh",
                  surfaceMeshFileName="data/mesh/finger.stl",
                  rotation=rotation, translation=translation,
                  collisionGroup=[1, 2])
 
-    CollisionMesh(eobject, name="CollisionMeshAuto1",
+    CollisionMesh(eobject.node, name="CollisionMeshAuto1",
                  surfaceMeshFileName="data/mesh/fingerCollision_part1.stl",
                  rotation=rotation, translation=translation,
                  collisionGroup=[1])
 
-    CollisionMesh(eobject, name="CollisionMeshAuto2",
+    CollisionMesh(eobject.node, name="CollisionMeshAuto2",
                  surfaceMeshFileName="data/mesh/fingerCollision_part2.stl",
                  rotation=rotation, translation=translation,
                  collisionGroup=[2])

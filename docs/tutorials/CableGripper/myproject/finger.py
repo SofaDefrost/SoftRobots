@@ -5,7 +5,7 @@ from stlib.physics.constraints import FixedBox
 
 from softrobots.actuators import PullingCable
 from stlib.physics.collision import CollisionMesh
-from stlib.tools import loadPointListFromFile
+from splib.loaders import loadPointListFromFile
 from stlib.scene import Node
 
 ####################################################################################################

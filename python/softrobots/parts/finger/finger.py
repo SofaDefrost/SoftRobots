@@ -6,7 +6,7 @@ from stlib.scene import Node
 from softrobots.actuators import PullingCable
 from stlib.physics.collision import CollisionMesh
 
-from stlib.tools import loadPointListFromFile
+from splib.loaders import loadPointListFromFile
 import os.path
 
 templatepath = os.path.abspath(os.path.dirname(__file__) )

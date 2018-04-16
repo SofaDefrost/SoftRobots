@@ -4,7 +4,7 @@ from stlib.physics.constraints import FixedBox
 from stlib.physics.collision import CollisionMesh
 from stlib.scene import Node 
 from softrobots.actuators import PullingCable
-from stlib.tools import loadPointListFromFile
+from splib.loaders import loadPointListFromFile
 
 import Sofa
 class FingerController(Sofa.PythonScriptController):

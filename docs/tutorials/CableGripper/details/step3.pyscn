@@ -3,7 +3,7 @@ from stlib.physics.constraints import FixedBox
 from stlib.scene import Node 
 # -*- coding: utf-8 -*-
 from softrobots.actuators import PullingCable
-from stlib.tools import loadPointListFromFile
+from splib.loaders import loadPointListFromFile
 
 import Sofa
 class FingerController(Sofa.PythonScriptController):
