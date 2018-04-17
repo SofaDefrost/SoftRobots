@@ -112,7 +112,7 @@ class ElasticBody(SofaObject):
         
             
 def createScene(rootNode):
-    from stlib.scene import MainHeader
+    from stlib.scene import Scene
     from stlib.solver import DefaultSolver
     from splib.animation import animate, AnimationManager
     from splib.animation.easing import LinearRamp
@@ -124,7 +124,7 @@ def createScene(rootNode):
     ### Test a assembly that also implements a KinematicMotorController
     ## The angle of the KinematicMotorController is dynamically changed using a
     ## animation function
-    aa = ActuatedArm(rootNode, translation=[2,0,0])
+    aa = ActuatedArm(rootNode, translation=[3,7,0])
     eb = ElasticBody(rootNode, eulerRotation=[90.0,0.0,0.0])
     eb.addCollisionModel()
     def myAnimation(actuatedarm, factor):

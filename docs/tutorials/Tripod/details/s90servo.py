@@ -1,20 +1,21 @@
-""" Sofa prefab for a S90 servo actuators with a controller
+# -*- coding: utf-8 -*-
+""" Sofa prefab for a S90 servo actuators with a default kinematic controller and visual model
 
     This model is part of the SoftRobot toolkit available at:
         https://github.com/SofaDefrost/SoftRobots
 
-    List of available parts:
+    Available prefab:
         - ServoMotor
 
-    Other public components:
+    Available python object:
         - KinematicMotorController
-        - ServoWheel 
+        - ServoWheel
 """
 import Sofa
 from splib.numerics import *
-from splib.objectmodel import *  
+from splib.objectmodel import *
 
-from stlib.visuals import VisualModel 
+from stlib.visuals import VisualModel
 from stlib.solver import DefaultSolver
 from stlib.scene import Scene, Node, get
 
@@ -22,37 +23,63 @@ from stlib.scene import Scene, Node, get
 class ServoMotor(SofaObject):
     """A S90 servo motor
 
-    Use this prefab to get a S90 servo motor including:
-        - a visual model
-        - a simple mechanical model made of two rigids one for the the servo motor the other
-          for the servo wheel.
+    This prefab is implementing a S90 servo motor.
+    https://servodatabase.com/servo/towerpro/sg90
 
-    ServoMotor Properties:
-        - angle     use this to specify the angle of rotation of the servo motor
+    The prefab ServoMotor is composed of:
+    - a visual model
+    - a mechanical model composed two rigids. One rigid is for the motor body 
+      while the other is implementing the servo rotating wheel.
+    - a KinematicMotorController to compute from an input angle the new orientation of the 
+      servo wheel according to its parent frame. 
+
+    The prefab has the following parameters:
+    - translation       to change default location of the servo (default [0.0,0.0,0.0]) 
+    - rotation          to change default rotation of the servo (default [0.0,0.0,0.0,1])
+    - scale             to change default scale of the servo (default 1)
+    - doAddVisualModel  to control wether a visual model is added (default True)
+    
+    The prefab have the following property:
+    - angle     use this to specify the angle of rotation of the servo motor
+    
+    Example of use in a Sofa scene:
+            
+    def createScene(root):
+        ...
+        servo = ServoMotor(root)
+
+        ## Direct access to the components
+        servo.node.angle = 1.0  
+        servo.dofs.showObjects = False
+
+        ## Indirect access to the components
+        get(servo.node, "dofs.showObjects").value = False
+        get(servo.node, "servowheel.dofs.showObjects").value = False
     """
-    def __init__(self, parent, 
+    def __init__(self, parent,
                  translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0], scale=[1.0,1.0,1.0], doAddVisualModel=True):
         self.node = Node(parent, "ServoMotor")
-        self.node.addNewData("angle",  
-                             "ServoMotor Properties", 
+        self.node.addNewData("angle",
+                             "ServoMotor Properties",
                              "The angular position of the motor (in radians)","d", 0.0)
         self.angle=self.node.findData("angle")
-        
-        self.dofs = self.node.createObject("MechanicalObject", size=1, 
+
+        self.dofs = self.node.createObject("MechanicalObject", size=1,
                                           name="dofs",
                                           translation=translation, rotation=rotation, scale=scale,
                                           template='Rigid', showObject=True, showObjectScale=0.5)
-        
+
         self.servowheel = ServoWheel(self.node)
-        self.controller = KinematicMotorController(self.node, self.dofs, self.servowheel.dofs, 
+        self.controller = KinematicMotorController(self.node, self.dofs, self.servowheel.dofs,
                                                    angleValue=self.angle.getLinkPath())
-                                                   
+
         if doAddVisualModel:
-            self.addVisualModel()        
+            self.addVisualModel()
 
     def addVisualModel(self):
         self.visualmodel = VisualModel(self.node, 'data/mesh/SG90_servo_with_base.stl')
         self.visualmodel.node.createObject('RigidMapping', name = "mapping")
+
 
 class ServoWheel(SofaObject):
     def __init__(self, parentNode):
@@ -73,10 +100,11 @@ class KinematicMotorController(Sofa.PythonScriptController):
         self.addNewData("angle", "Properties", "The angular position of the motor (in radians)","d", angleValue)
 
     def applyAngleToServoWheel(self, angle):
-        pq = self.parentframe.position[0]
-        local = Transform(pq[0:3], pq[3:7])
-        f = local.forward
-        self.target.findData("position").value = pq[0:3] + list(Quaternion.prod(axisToQuat(f, angle), pq[3:7]))
+        rigidparent = RigidDof(self.parentframe)
+        rigidtarget = RigidDof(self.target)
+
+        rigidtarget.copyFrom( rigidparent )
+        rigidtarget.rotateAround( rigidparent.left, angle)
 
     def bwdInitGraph(self, root):
         self.applyAngleToServoWheel(self.angle)
@@ -87,9 +115,9 @@ class KinematicMotorController(Sofa.PythonScriptController):
 
 def createScene(rootNode):
     from splib.animation import animate
-    from splib.animation.easing import LinearRamp      
+    from splib.animation.easing import LinearRamp
     from splib.scenegraph import get
-        
+
     from stlib.scene import MainHeader
     Scene(rootNode)
     s=DefaultSolver(rootNode)
