@@ -1,0 +1,24 @@
+# -*- coding: utf-8 -*-
+"""
+    In step2 we are teaching the basic concepts of Sofa that are:
+    Components: MechanicaObject, UniformMass, (rester vague: EulerImplicit, CGLinearSolver)
+"""       
+#from tuto import Scene
+
+def createScene(rootNode):
+    rootNode.createObject("EulerImplicit")
+    rootNode.createObject("CGLinearSolver")
+    
+    visual = rootNode.createChild("Visual")
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
+    visual.createObject("OglModel", name="renderer", fileMesh="data/mesh/tripod.stl")
+    
+
+    elasticbody = rootNode.createChild("ElasticBody") 
+    elasticbody.createObject("MechanicalObject", name="dofs",
+                             position=visual.loader.position, 
+                             showObject=True, showObjectScale=10.0)
+    elasticbody.createObject("UniformMass")
+
+    elasticbody.createObject("IdentityMapping", input=elasticbody.dofs.getLinkPath(), output=visual.renderer.getLinkPath())
+

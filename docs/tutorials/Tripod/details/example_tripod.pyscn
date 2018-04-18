@@ -1,0 +1,57 @@
+# -*- coding: utf-8 -*-
+import Sofa
+
+from splib.constants import Key
+from splib.numerics import *
+from splib.scenegraph import get
+from splib.animation import animate
+from splib.animation.easing import LinearRamp
+from stlib.scene import Scene, Node
+from tripod import Tripod, addDirectSimulationPlan
+
+def setupanimation(servos, step, factor):
+    for servo in servos:
+            rigid = RigidDof( get(servo, "dofs") ) 
+            rigid.translate( rigid.forward * step * factor )
+            get(servo, "ServoMotor").angle = get(servo, "ServoMotor").angle - step * factor
+
+def testanimation(servos, side, factor):
+    for servo in servos:
+            get(servo, "ServoMotor").angle = side * LinearRamp( 3.14/2, -3.14/2, factor ) 
+
+class MyController(Sofa.PythonScriptController):
+    def __init__(self, node, servos):
+        self.node = node
+        self.servos = servos
+
+    def onKeyPressed(self, key):
+        if key == Key.leftarrow:
+            animate(setupanimation,{"servos" : self.servos,
+                             "step" : 0.14 }, duration=0.2)
+        elif key == Key.rightarrow:
+            animate(setupanimation,{"servos" : self.servos,
+                             "step" : -0.14 }, duration=0.2)
+        elif key == Key.uparrow:
+            animate(testanimation,{"servos" : self.servos, "side" : -1.0}, duration=0.2)
+
+        elif key == Key.downarrow:
+            animate(testanimation,{"servos" : self.servos, "side" : 1.0}, duration=0.2)
+            
+
+def createScene(rootNode):
+    scene = Scene(rootNode)
+    scene.VisualStyle.displayFlags = "showBehavior"
+    
+    ### Model 
+    tripod = Tripod(scene.node)
+
+    MyController( scene.node, [get(tripod.node, "ActuatedArm0"),
+                               get(tripod.node, "ActuatedArm1"),
+                               get(tripod.node, "ActuatedArm2")] )
+
+
+    ### Simulation     
+    n = Node(rootNode, "SimulationPlan")
+    addDirectSimulationPlan(n, tripod.node)
+
+

@@ -12,7 +12,7 @@
         - ServoWheel
 """
 import Sofa
-from splib.numerics import *
+from splib.numerics import RigidDof
 from splib.objectmodel import *
 
 from stlib.visuals import VisualModel

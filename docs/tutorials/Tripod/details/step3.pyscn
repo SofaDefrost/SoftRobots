@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*-
+"""
+    In step3 we are teaching the following concepts
+    Components: TetrahedronFEMForceField, Constraints
+"""       
+
+from stlib.physics.deformable import ElasticMaterialObject
+
+
+def ElasticBody(parent):
+    body = parent.createChild("ElasticBody")
+
+    e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
+    visual = body.createChild("Visual")
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
+    visual.createObject("OglModel", name="renderer", src="@loader")
+
+    visual.createObject("BarycentricMapping", 
+                             input=e.dofs.getLinkPath(), 
+                             output=visual.renderer.getLinkPath())
+
+    return body 
+
+
+
+def createScene(rootNode):
+    rootNode.createObject("EulerImplicit")
+    rootNode.createObject("CGLinearSolver")
+    
+    body = ElasticBody(rootNode)
+
