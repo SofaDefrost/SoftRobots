@@ -95,7 +95,7 @@ const char* getModuleComponentList()
 }
 
 SOFA_LINK_CLASS(AnimationEditor)
-SOFA_LINK_CLASS(CommunicationController)
+//SOFA_LINK_CLASS(CommunicationController)
 SOFA_LINK_CLASS(DataVariationLimiter)
 SOFA_LINK_CLASS(PartialRigidificationConstraint)
 SOFA_LINK_CLASS(PartialRigidificationForceField)
