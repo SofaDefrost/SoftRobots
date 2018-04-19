@@ -3,12 +3,12 @@
     In step3 we are teaching the following concepts
     Components: TetrahedronFEMForceField, Constraints
 """
-import Sofa
-from splib.constants import Key
-from stlib.scene import Scene
+
+from stlib.scene import Scene, ContactHeader
 from splib.numerics import sin,cos, to_radians
 from stlib.scene import Scene
 from stlib.physics.deformable import ElasticMaterialObject
+from stlib.physics.rigid import Sphere
 from actuatedarm import ActuatedArm
 
 def ElasticBody(parent):
@@ -18,7 +18,7 @@ def ElasticBody(parent):
                               volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
     visual = body.createChild("Visual")
     visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")
-    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
+    visual.createObject("OglModel", name="renderer", src="@loader")
 
     visual.createObject("BarycentricMapping",
                              input=e.dofs.getLinkPath(),
@@ -50,38 +50,20 @@ def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
     return tripod
 
 
-class MyController(Sofa.PythonScriptController):
-    def __init__(self, node, servos):
-        self.stepsize = 0.1
-        self.servos = servos
-
-    def onKeyPressed(self, key):
-        if key == Key.uparrow:
-            self.servos[0].angle += self.stepsize 
-        elif key == Key.downarrow:            
-            self.servos[0].angle -= self.stepsize
-
-        if key == Key.leftarrow:
-            self.servos[1].angle += self.stepsize 
-        elif key == Key.rightarrow:            
-            self.servos[1].angle -= self.stepsize
-
-        if key == Key.plus:
-            self.servos[1].angle += self.stepsize 
-        elif key == Key.minus:            
-            self.servos[1].angle -= self.stepsize
-
 def createScene(rootNode):
     scene = Scene(rootNode)
     scene.VisualStyle.displayFlags="showBehavior"
 
-    model = scene.createChild("Model")
+    ContactHeader(rootNode, alarmDistance=0.1, contactDistance=0.01)
     
+    model = scene.createChild("Model")
+    Sphere(model, translation=[0.0,2.0,0.0])
+
     tripod = Tripod(model)
 
-    MyController(rootNode, [tripod.ActuatedArm0.ServoMotor, 
-                            tripod.ActuatedArm1.ServoMotor, 
-                            tripod.ActuatedArm2.ServoMotor])
+    #body.ElasticMaterialObject.createObject("EulerImplicit")
+    #body.ElasticMaterialObject.createObject("SparseLDLSolver", name="solver")
+    #body.ElasticMaterialObject.createObject('LinearSolverConstraintCorrection', solverName="solver")
 
     simu = scene.createChild("SimulationPlan")
     simu.createObject("EulerImplicit")    
