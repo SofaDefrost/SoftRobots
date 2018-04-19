@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import Sofa
 from stlib.scene import Scene, ContactHeader
 from splib.numerics import sin,cos, to_radians
 from stlib.scene import Scene
@@ -23,7 +24,6 @@ def ElasticBody(parent):
 
     return body
 
-
 def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
     tripod = parent.createChild(name)
     body = ElasticBody(tripod)
@@ -45,8 +45,19 @@ def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
     return tripod
 
 
+def SerialPort(rootNode, serialport="/dev/ttyUSB0"):
+    rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True)
+    
+class SerialPortController(Sofa.PythonScriptController):
+    def __init__(self, node, inputs, serialport):
+        self.servos = inputs
+        self.serialport = serialport
+
+    def onAnimationEnd(self, dt):
+        print("On Animation. " + str(dt)) 
+
 def createScene(rootNode):
-    scene = Scene(rootNode)
+    scene = Scene(rootNode, plugins=["SoftRobots"])
     scene.VisualStyle.displayFlags="showBehavior"
 
     ContactHeader(rootNode, alarmDistance=0.1, contactDistance=0.01)
@@ -55,6 +66,11 @@ def createScene(rootNode):
     Sphere(model, translation=[0.0,2.0,0.0])
 
     tripod = Tripod(model)
+
+    serial = SerialPort(rootNode)
+    SerialPortController(rootNode, [tripod.ActuatedArm0.ServoMotor, 
+                                    tripod.ActuatedArm1.ServoMotor,
+                                    tripod.ActuatedArm2.ServoMotor], serial)
 
     simu = scene.createChild("SimulationPlan")
     simu.createObject("EulerImplicit")    
