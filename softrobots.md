@@ -9,9 +9,11 @@ Tutorials:
 
 * First step for Sofa newcommers. [Start the tutorial](docs/tutorials/FirstSteps/firststeps-tuto.html?sofafile=firststeps-tuto.pyscn)
 
-* Make a soft-gripper actuated by cables. [Start the tutorial](docs/tutorials/CableGripper/cablegripper-tuto.html?sofafile=cablegripper-tuto.pyscn)
+* Make a soft-gripper actuated by cables. [Start the tutorial](docs/tutorials/CableGripper/cablegripper-tuto.pyscn)
 
-* Make a soft-gripper actuated by pneumatics. [Start the tutorial](docs/tutorials/PneunetGripper/pneunetgripper.html?sofafile=pneunetgripper.pyscn)
+* Make a soft-gripper actuated by pneumatics. [Start the tutorial](docs/tutorials/PneunetGripper/pneunetgripper.pyscn)
+
+* Make a soft-tripod actuated by servo motors. [Start the tutorial](docs/tutorials/Tripod/tripod-tuto.pyscn)
 
 
 Thematical documentations:

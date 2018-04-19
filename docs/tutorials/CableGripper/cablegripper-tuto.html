@@ -194,7 +194,7 @@ To model the cable you can use the <a href="http://softrobots.readthedocs.io/en/
 <div>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co">### ... similar to previous step ....</span>
 <span class="im">from</span> softrobots.actuators <span class="im">import</span> <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>
-<span class="im">from</span> stlib.tools <span class="im">import</span> loadPointListFromFile
+<span class="im">from</span> splib.loaders <span class="im">import</span> loadPointListFromFile
 
 <span class="co">### ... similar to previous step ....</span>
 <span class="kw">def</span> Finger(parentNode):
@@ -294,7 +294,7 @@ At this point the <em>finger.py</em> file should contains something similar to:
 <span class="im">from</span> stlib.physics.deformable <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>
 <span class="im">from</span> stlib.physics.constraints <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox">FixedBox</a>
 <span class="im">from</span> stlib.physics.collision <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>
-<span class="im">from</span> stlib.tools <span class="im">import</span> loadPointListFromFile
+<span class="im">from</span> splib.loaders <span class="im">import</span> loadPointListFromFile
 <span class="im">from</span> softrobots.actuators <span class="im">import</span> <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>
 
 <span class="kw">class</span> FingerController(Sofa.PythonScriptController):
