@@ -89,7 +89,7 @@ function toggle(target) {
 <span class="kw">def</span> createScene(rootNode):
     visual <span class="op">=</span> rootNode.createChild(<span class="st">&quot;Visual&quot;</span>)
     visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)    
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)</code></pre></div>
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])</code></pre></div>
 </div>
 </div>
 <h4 id="at-this-step-you-should-be-able-to"><i>At this step you should be able to:</i></h4>
@@ -117,15 +117,16 @@ function toggle(target) {
 <span class="co">#from tuto import Scene</span>
 
 <span class="kw">def</span> createScene(rootNode):
-    rootNode.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
-    rootNode.createObject(<span class="st">&quot;CGLinearSolver&quot;</span>)
     
+    rootNode.findData(<span class="st">&#39;dt&#39;</span>).value <span class="op">=</span> <span class="fl">0.001</span>
     visual <span class="op">=</span> rootNode.createChild(<span class="st">&quot;Visual&quot;</span>)
     visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)    
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
     
 
     elasticbody <span class="op">=</span> rootNode.createChild(<span class="st">&quot;ElasticBody&quot;</span>) 
+    elasticbody.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
+    elasticbody.createObject(<span class="st">&quot;SparseLDLSolver&quot;</span>)
     elasticbody.createObject(<span class="st">&quot;MechanicalObject&quot;</span>, name<span class="op">=</span><span class="st">&quot;dofs&quot;</span>,
                              position<span class="op">=</span>visual.loader.position, 
                              showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="fl">10.0</span>)
@@ -153,30 +154,45 @@ function toggle(target) {
 <span class="co">    Components: TetrahedronFEMForceField, Constraints</span>
 <span class="co">&quot;&quot;&quot;</span>       
 
-<span class="im">from</span> stlib.physics.deformable <span class="im">import</span> ElasticMaterialObject
+<span class="co">#from stlib.physics.deformable import ElasticMaterialObject</span>
+<span class="im">from</span> stlib.scene <span class="im">import</span> Scene
 
+<span class="co">#def ElasticBody(parent):</span>
+    <span class="co">#body = parent.createChild(&quot;ElasticBody&quot;)</span>
 
-<span class="kw">def</span> ElasticBody(parent):
-    body <span class="op">=</span> parent.createChild(<span class="st">&quot;ElasticBody&quot;</span>)
+    <span class="co">#e = ElasticMaterialObject(body, volumeMeshFileName=&quot;data/mesh/tripod.gidmsh&quot;,rotation=[90,0,0])</span>
+    <span class="co">#visual = body.createChild(&quot;Visual&quot;)</span>
+    <span class="co">#visual.createObject(&quot;MeshSTLLoader&quot;, name=&quot;loader&quot;, filename=&quot;data/mesh/tripod.stl&quot;)    </span>
+    <span class="co">#visual.createObject(&quot;OglModel&quot;, name=&quot;renderer&quot;, src=&quot;@loader&quot;, color=[1.0,1.0,1.0,0.5])</span>
 
-    e <span class="op">=</span> ElasticMaterialObject(body, volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh/tripod.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
-    visual <span class="op">=</span> body.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)    
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)
+    <span class="co">#visual.createObject(&quot;BarycentricMapping&quot;, </span>
+                             <span class="co">#input=e.dofs.getLinkPath(), </span>
+                             <span class="co">#output=visual.renderer.getLinkPath())</span>
 
-    visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>, 
-                             <span class="bu">input</span><span class="op">=</span>e.dofs.getLinkPath(), 
-                             output<span class="op">=</span>visual.renderer.getLinkPath())
-
-    <span class="cf">return</span> body 
+    <span class="co">#return body </span>
 
 
 
 <span class="kw">def</span> createScene(rootNode):
-    rootNode.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
-    rootNode.createObject(<span class="st">&quot;CGLinearSolver&quot;</span>)
+    scene <span class="op">=</span> Scene(rootNode)
+    scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showForceFields&quot;</span>
     
-    body <span class="op">=</span> ElasticBody(rootNode)</code></pre></div>
+    elasticbody <span class="op">=</span> rootNode.createChild(<span class="st">&quot;ElasticBody&quot;</span>) 
+    elasticbody.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
+    elasticbody.createObject(<span class="st">&quot;SparseLDLSolver&quot;</span>)
+    elasticbody.createObject(<span class="st">&#39;GIDMeshLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+    elasticbody.createObject(<span class="st">&#39;TetrahedronSetTopologyContainer&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, name<span class="op">=</span><span class="st">&#39;container&#39;</span>)
+    elasticbody.createObject(<span class="st">&quot;MechanicalObject&quot;</span>, name<span class="op">=</span><span class="st">&quot;dofs&quot;</span>, showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="fl">5.0</span>)
+    elasticbody.createObject(<span class="st">&quot;UniformMass&quot;</span>, totalMass<span class="op">=</span><span class="st">&#39;0.4&#39;</span>)
+    elasticbody.createObject(<span class="st">&quot;TetrahedronFEMForceField&quot;</span>,youngModulus<span class="op">=</span><span class="st">&#39;20000&#39;</span>)
+    
+    visual <span class="op">=</span> elasticbody.createChild(<span class="st">&quot;Visual&quot;</span>)
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)    
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
+    visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>)
+
+
+    </code></pre></div>
 </div>
 </div>
 <h4 id="at-this-step-you-should-be-able-to-2"><i>At this step you should be able to:</i></h4>
@@ -220,9 +236,7 @@ function toggle(target) {
     scene <span class="op">=</span> Scene(rootNode)
     scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showBehavior&quot;</span>
 
-    rootNode.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
-    rootNode.createObject(<span class="st">&quot;CGLinearSolver&quot;</span>)
-    
+   
     body <span class="op">=</span> ElasticBody(rootNode)
 
     fix <span class="op">=</span> FixingBox(rootNode, body.ElasticMaterialObject, translation<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])

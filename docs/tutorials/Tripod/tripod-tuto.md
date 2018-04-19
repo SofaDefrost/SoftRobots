@@ -16,10 +16,6 @@ function toggle(target) {
 This tutorial describes how to set-up a simulation environment, a scene, using ..autolink::Sofa and how to use the
 ..autolink::SoftRobots plugin to model a virtual soft robot driven by servo motors. Once modeled in Sofa the robot can be simulated and controlled.
 
-The robot we are going to simulate is acutated by three servo motors connected to a deformable material. 
-
-![](images/tripodPhoto.jpg){width=25%}
-
 Tutorials prequisites:
 
 - installed ..autolink::Sofa with the ..autolink::STLIB and
@@ -28,6 +24,11 @@ Tutorials prequisites:
 - you have basic knowledge of the ..autolink::General::Python programming language. If this is not the case you can go to ..autolink::General::PythonTutorials.
 
 - you have basic knowledge of making scenes with Sofa. If not, please complete the ..autolink::SoftRobots::Docs::FirstStep tutorial first.
+
+
+The robot we are going to simulate and controlled is acutated by three servo motors connected to a deformable material. 
+
+![](images/tripodPhoto.jpg){width=25%}
 
 
 ### Step 1: Making a simple scene with Sofa
