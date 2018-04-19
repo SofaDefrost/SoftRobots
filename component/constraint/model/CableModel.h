@@ -63,7 +63,7 @@ using sofa::core::VecCoordId ;
  * This class contains common implementation of cable constraints
 */
 template< class DataTypes >
-class CableModel : virtual public SoftRobotsConstraint<DataTypes>
+class SOFA_SOFTROBOTS_API CableModel : virtual public SoftRobotsConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(CableModel,DataTypes),
