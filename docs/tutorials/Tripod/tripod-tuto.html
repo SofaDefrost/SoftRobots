@@ -62,17 +62,17 @@ function toggle(target) {
 </script>
 <h2 id="simulating-a-soft-robot">Simulating a soft robot</h2>
 <p>This tutorial describes how to set-up a simulation environment, a scene, using <a href="https://www.sofa-framework.org/">Sofa</a> and how to use the <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin to model a virtual soft robot driven by servo motors. Once modeled in Sofa the robot can be simulated and controlled.</p>
-<p>The robot we are going to simulate is acutated by three servo motors connected to a deformable material.</p>
-<div class="figure">
-<img src="images/tripodPhoto.jpg" style="width:25.0%" />
-
-</div>
 <p>Tutorials prequisites:</p>
 <ul>
 <li><p>installed <a href="https://www.sofa-framework.org/">Sofa</a> with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> and <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugins.</p></li>
 <li><p>you have basic knowledge of the <a href="https://www.python.org/">Python</a> programming language. If this is not the case you can go to <a href="https://www.python.org/">Python</a>Tutorials.</p></li>
 <li><p>you have basic knowledge of making scenes with Sofa. If not, please complete the <a href="../FirstSteps/firststeps-tuto.html">FirstStep</a> tutorial first.</p></li>
 </ul>
+<p>The robot we are going to simulate and controlled is acutated by three servo motors connected to a deformable material.</p>
+<div class="figure">
+<img src="images/tripodPhoto.jpg" style="width:25.0%" />
+
+</div>
 <h3 id="step-1-making-a-simple-scene-with-sofa">Step 1: Making a simple scene with Sofa</h3>
 <pre>
 <a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
@@ -430,20 +430,87 @@ function toggle(target) {
     simu.addChild(tripod.ActuatedArm2)</code></pre></div>
 </div>
 </div>
-<h4 id="at-this-step-you-should-be-able-to-5"><i>At this step you should be able to:</i></h4>
-<ul>
-<li><p>Add your own controller</p></li>
-<li><p>handle user input</p></li>
-<li><p>start an animation</p></li>
-</ul>
-<h3 id="step-7-adding-collision">Step 7: Adding collision</h3>
-<p>In this step we are adding a rigid Sphere object falling on the robots. By default there is no collision so we need to specifically activate that by adding 'Contact' to the existing scene.</p>
+<h3 id="step-7-connecting-to-the-physical-world.">Step 7: Connecting to the physical world.</h3>
 <pre>
 <a href="details/step7.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step7code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
-<div id="step7code" class="hide">
+<div id="step6code" class="hide">
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
+<span class="im">from</span> stlib.scene <span class="im">import</span> Scene, ContactHeader
+<span class="im">from</span> splib.numerics <span class="im">import</span> sin,cos, to_radians
+<span class="im">from</span> stlib.scene <span class="im">import</span> Scene
+<span class="im">from</span> stlib.physics.deformable <span class="im">import</span> ElasticMaterialObject
+<span class="im">from</span> stlib.physics.rigid <span class="im">import</span> Sphere
+<span class="im">from</span> actuatedarm <span class="im">import</span> ActuatedArm
+
+<span class="kw">def</span> ElasticBody(parent):
+    body <span class="op">=</span> parent.createChild(<span class="st">&quot;ElasticBody&quot;</span>)
+
+    e <span class="op">=</span> ElasticMaterialObject(body, 
+                              volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh/tripod.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+    visual <span class="op">=</span> body.createChild(<span class="st">&quot;Visual&quot;</span>)
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)
+
+    visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>,
+                             <span class="bu">input</span><span class="op">=</span>e.dofs.getLinkPath(),
+                             output<span class="op">=</span>visual.renderer.getLinkPath())
+
+    e.addCollisionModel(collisionMesh<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)
+
+    <span class="cf">return</span> body
+
+
+<span class="kw">def</span> Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="fl">4.0</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):
+    tripod <span class="op">=</span> parent.createChild(name)
+    body <span class="op">=</span> ElasticBody(tripod)
+    
+    dist <span class="op">=</span> radius
+    numstep <span class="op">=</span> numMotors
+    <span class="cf">for</span> i <span class="op">in</span> <span class="bu">range</span>(<span class="dv">0</span>,numstep):
+        name <span class="op">=</span> <span class="st">&quot;ActuatedArm&quot;</span><span class="op">+</span><span class="bu">str</span>(i)
+        fi <span class="op">=</span> <span class="bu">float</span>(i)
+        fnumstep <span class="op">=</span> <span class="bu">float</span>(numstep)
+        angle <span class="op">=</span> fi<span class="op">*</span><span class="dv">360</span><span class="op">/</span>fnumstep
+        angle2 <span class="op">=</span> fi<span class="op">*</span><span class="dv">360</span><span class="op">/</span>fnumstep<span class="op">+</span>angleShift
+        eulerRotation <span class="op">=</span> [<span class="dv">0</span>,angle,<span class="dv">0</span>]
+        translation <span class="op">=</span> [dist<span class="op">*</span>sin(to_radians(angle2)), <span class="op">-</span><span class="fl">1.35</span>, dist<span class="op">*</span>cos(to_radians(angle2))]
+
+        c <span class="op">=</span> ActuatedArm(tripod, name<span class="op">=</span>name,
+                                       translation<span class="op">=</span>translation, eulerRotation<span class="op">=</span>eulerRotation,
+                                       attachingTo<span class="op">=</span>body.ElasticMaterialObject)
+    <span class="cf">return</span> tripod
+
+
+<span class="kw">def</span> createScene(rootNode):
+    scene <span class="op">=</span> Scene(rootNode)
+    scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showBehavior&quot;</span>
+
+    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="fl">0.1</span>, contactDistance<span class="op">=</span><span class="fl">0.01</span>)
+    
+    model <span class="op">=</span> scene.createChild(<span class="st">&quot;Model&quot;</span>)
+    Sphere(model, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">2.0</span>,<span class="fl">0.0</span>])
+
+    tripod <span class="op">=</span> Tripod(model)
+
+    simu <span class="op">=</span> scene.createChild(<span class="st">&quot;SimulationPlan&quot;</span>)
+    simu.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)    
+    simu.createObject(<span class="st">&quot;CGLinearSolver&quot;</span>)
+    simu.addChild(tripod.ActuatedArm0)
+    simu.addChild(tripod.ActuatedArm1)
+    simu.addChild(tripod.ActuatedArm2)</code></pre></div>
+</div>
+</div>
+<h3 id="step-8-adding-collision">Step 8: Adding collision</h3>
+<p>In this step we are adding a rigid Sphere object falling on the robots. By default there is no collision so we need to specifically activate that by adding 'Contact' to the existing scene.</p>
+<pre>
+<a href="details/step8.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step8code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+</pre>
+<div id="step8code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
 <span class="co">&quot;&quot;&quot;</span>
 <span class="co">    In step3 we are teaching the following concepts</span>
@@ -519,14 +586,14 @@ function toggle(target) {
     simu.addChild(tripod.ActuatedArm2)</code></pre></div>
 </div>
 </div>
-<h3 id="step-8-inverse-control">Step 8: Inverse control</h3>
+<h3 id="step-9-inverse-control">Step 9: Inverse control</h3>
 <p>In the previous steps we where controlling the robot by directly specifying the angle of the ServorMotor object. In this step we will use Sofa to inverse the model and adding an effector to the simulation so that it become possible to specify the effector position and let the simulation computes the angles to reach the effectors's position.</p>
 <pre>
 <a href="Rigidification/TripodRigidInverse.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step8code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="javascript:void" onclick="toggle('step9code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
-<div id="step8code" class="hide">
+<div id="step9code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> Sofa
 <span class="im">from</span> math <span class="im">import</span> sin,cos
 

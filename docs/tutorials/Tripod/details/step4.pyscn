@@ -13,7 +13,7 @@ def ElasticBody(parent):
     e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
     visual = body.createChild("Visual")
     visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
-    visual.createObject("OglModel", name="renderer", src="@loader")
+    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
     visual.createObject("BarycentricMapping", 
                              input=e.dofs.getLinkPath(), 

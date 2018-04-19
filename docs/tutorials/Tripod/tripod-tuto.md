@@ -174,23 +174,14 @@ name MyController. This implemented behavior is that the ServoMotor angles when 
 </div>
 </div>
 
-####<i>At this step you should be able to:</i>
-
-- Add your own controller
-
-- handle user input
-
-- start an animation 
-
-### Step 7: Adding collision
-In this step we are adding a rigid Sphere object falling on the robots. By default there is no collision so we need to specifically activate that by adding 'Contact' to the existing scene. 
+### Step 7: Connecting to the  physical world. 
 
 <pre>
 <a href="details/step7.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step7code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
-<div id='step7code' class='hide'>
+<div id='step6code' class='hide'>
 ```python
 ..autofile::details/step7.pyscn
 ```
@@ -198,16 +189,31 @@ In this step we are adding a rigid Sphere object falling on the robots. By defau
 </div>
 
 
+### Step 8: Adding collision
+In this step we are adding a rigid Sphere object falling on the robots. By default there is no collision so we need to specifically activate that by adding 'Contact' to the existing scene. 
 
-### Step 8: Inverse control
+<pre>
+<a href="details/step8.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step8code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+</pre>
+<div id='step8code' class='hide'>
+```python
+..autofile::details/step8.pyscn
+```
+</div>
+</div>
+
+
+### Step 9: Inverse control
 In the previous steps we where controlling  the robot by directly specifying the angle of the ServorMotor object. In this step we will use Sofa to inverse the model and adding an effector to the simulation so that it become possible to specify the effector position and let the simulation computes the angles to reach the effectors's position. 
 
 <pre>
 <a href="Rigidification/TripodRigidInverse.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step8code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="javascript:void" onclick="toggle('step9code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
-<div id='step8code' class='hide'>
+<div id='step9code' class='hide'>
 ```python
 ..autofile::Rigidification/TripodRigidInverse.pyscn
 ```

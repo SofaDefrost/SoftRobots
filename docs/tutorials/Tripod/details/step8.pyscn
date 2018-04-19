@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+    In step3 we are teaching the following concepts
+    Components: TetrahedronFEMForceField, Constraints
+"""
+
 from stlib.scene import Scene, ContactHeader
 from splib.numerics import sin,cos, to_radians
 from stlib.scene import Scene
