@@ -3,7 +3,7 @@
     In step3 we are teaching the following concepts
     Components: TetrahedronFEMForceField, Constraints
 """
-from splib.numerics import sin,cos, to_radians
+from splib.numerics import sin,cos, to_radians, RigidDof
 from stlib.scene import Scene
 from stlib.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
@@ -14,7 +14,7 @@ def ElasticBody(parent):
     e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
     visual = body.createChild("Visual")
     visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")
-    visual.createObject("OglModel", name="renderer", src="@loader")
+    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
     visual.createObject("BarycentricMapping",
                              input=e.dofs.getLinkPath(),
@@ -22,7 +22,7 @@ def ElasticBody(parent):
     return body
 
 
-def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
+def Tripod(parent, name="Tripod", radius=4.5, numMotors=3, angleShift=180.0):
     tripod = parent.createChild(name)
     body = ElasticBody(tripod)
     
@@ -40,6 +40,7 @@ def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
         c = ActuatedArm(tripod, name=name,
                                        translation=translation, eulerRotation=eulerRotation,
                                        attachingTo=body.ElasticMaterialObject)
+
     return tripod
 
 
