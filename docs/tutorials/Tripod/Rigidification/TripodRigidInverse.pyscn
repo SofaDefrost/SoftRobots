@@ -46,7 +46,6 @@ def transformDoubleTableInSimpleTable(Table):
 #Units: cm and kg
 def createScene(rootNode):
     rootNode.createObject('RequiredPlugin', name='SoftRobots')
-    rootNode.createObject('RequiredPlugin', name='ModelOrderReduction', pluginName='ModelOrderReduction')
     rootNode.createObject('RequiredPlugin', name='SofaPython', pluginName='SofaPython')
     rootNode.createObject('VisualStyle', displayFlags='showBehaviorModels showForceFields hideWireframe');
 
@@ -129,7 +128,7 @@ def createScene(rootNode):
 
     tetras= nodeFEM.createObject('MechanicalObject', name='tetras',  position='@container.position', rest_position='@container.position');
     mass = nodeFEM.createObject('UniformMass', totalmass='0.4');
-    tetraFF= nodeFEM.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='2000');
+    tetraFF= nodeFEM.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='20000');
 
     #fix = nodeFEM.createObject('RestShapeSpringsForceField', name='fix', stiffness='1e10', points=AddConstantAndtransformTableInString(list_branch0,-1) ) #external_rest_shape='@../actuators/attach0/mm0'
     #robot.createObject('RestShapeSpringsForceField', external_rest_shape='@../actuators/attach1/mm1', stiffness='1e10', points=AddConstantAndtransformTableInString(list_branch1,-1), external_points=transformTableInString(range(len(list_branch1))) )
@@ -152,7 +151,7 @@ def createScene(rootNode):
 
 
     controllerNode = robot.createChild('controllerNode')
-    myController = rigidControl(controllerNode, "superCaMarche", [branch0, branch1, branch2, centerList],[tetraFF, mass], tetras, nodeFEM, transform)
+    myController = rigidControl(controllerNode, "superCaMarche", [branch0, branch1, branch2, centerList],[tetraFF, mass], tetras, nodeFEM, transform, 1)
 
 
     #rigidNode  = robot.getChild('Rigid')
