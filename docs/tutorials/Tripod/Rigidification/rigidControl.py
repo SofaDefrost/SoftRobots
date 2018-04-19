@@ -2,6 +2,7 @@ import Sofa
 from rigidification import *
 from math import sin,cos
 import os
+path = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
 path2 = os.path.dirname(os.path.abspath(__file__))+'/'
 
 class rigidControl(Sofa.PythonScriptController):
@@ -176,6 +177,24 @@ class rigidControl(Sofa.PythonScriptController):
         test = self.node.createObject('MappedMatrixForceFieldAndMass', template='Vec3d,Rigid', object1='@./FreeNodes/FreeNodes', object2='@./Rigid/RigidFrames', mappedForceField='@'+self.forceFields[0].getPathName(), mappedMass='@'+self.forceFields[1].getPathName())
         
         test.init();
+        
+        
+        
+        #########
+        # ---- visualization
+        #########
+        self.rigidNode.createObject('MeshSTLLoader', name='loader', filename=path+'servo_arm_assembly.stl', translation='-75 74 75', rotation='90 0 0')
+        visuArm0= self.rigidNode.createChild('visuArm0')
+        visuArm0.createObject('OglModel', name='arm0', position='@../loader.position', triangles='@../loader.triangles', translation=[0,-0,0], color='red')
+        visuArm0.createObject('RigidMapping', index='0')
+
+        visuArm1= self.rigidNode.createChild('visuArm1')
+        visuArm1.createObject('OglModel', name='arm1', position='@../loader.position', triangles='@../loader.triangles', translation=[0,-0,0], color='green')
+        visuArm1.createObject('RigidMapping', index='1')
+        
+        visuArm2= self.rigidNode.createChild('visuArm2')
+        visuArm2.createObject('OglModel', name='arm2', position='@../loader.position', triangles='@../loader.triangles', translation=[0,-0,0], color='white')
+        visuArm2.createObject('RigidMapping', index='2')       
 
         
         print '-------------'       
