@@ -4,28 +4,43 @@
     Components: TetrahedronFEMForceField, Constraints
 """       
 
-from stlib.physics.deformable import ElasticMaterialObject
+#from stlib.physics.deformable import ElasticMaterialObject
+from stlib.scene import Scene
 
+#def ElasticBody(parent):
+    #body = parent.createChild("ElasticBody")
 
-def ElasticBody(parent):
-    body = parent.createChild("ElasticBody")
+    #e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
+    #visual = body.createChild("Visual")
+    #visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
+    #visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
-    e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
-    visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
-    visual.createObject("OglModel", name="renderer", src="@loader")
+    #visual.createObject("BarycentricMapping", 
+                             #input=e.dofs.getLinkPath(), 
+                             #output=visual.renderer.getLinkPath())
 
-    visual.createObject("BarycentricMapping", 
-                             input=e.dofs.getLinkPath(), 
-                             output=visual.renderer.getLinkPath())
-
-    return body 
+    #return body 
 
 
 
 def createScene(rootNode):
-    rootNode.createObject("EulerImplicit")
-    rootNode.createObject("CGLinearSolver")
+    scene = Scene(rootNode)
+    scene.VisualStyle.displayFlags="showForceFields"
     
-    body = ElasticBody(rootNode)
+    elasticbody = rootNode.createChild("ElasticBody") 
+    elasticbody.createObject("EulerImplicit")
+    elasticbody.createObject("SparseLDLSolver")
+    elasticbody.createObject('GIDMeshLoader', name='loader', filename="data/mesh/tripod.gidmsh",rotation=[90,0,0])
+    elasticbody.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
+    elasticbody.createObject("MechanicalObject", name="dofs", showObject=True, showObjectScale=5.0)
+    elasticbody.createObject("UniformMass", totalMass='0.4')
+    elasticbody.createObject("TetrahedronFEMForceField",youngModulus='20000')
+    
+    visual = elasticbody.createChild("Visual")
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
+    visual.createObject("OglModel", name="renderer", fileMesh="data/mesh/tripod.stl", color=[1.0,1.0,1.0,0.5])
+    visual.createObject("BarycentricMapping")
+
+
+    
 

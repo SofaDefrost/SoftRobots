@@ -6,15 +6,16 @@
 #from tuto import Scene
 
 def createScene(rootNode):
-    rootNode.createObject("EulerImplicit")
-    rootNode.createObject("CGLinearSolver")
     
+    rootNode.findData('dt').value = 0.001
     visual = rootNode.createChild("Visual")
     visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
-    visual.createObject("OglModel", name="renderer", fileMesh="data/mesh/tripod.stl")
+    visual.createObject("OglModel", name="renderer", src='@loader', color=[1.0,1.0,1.0,0.5])
     
 
     elasticbody = rootNode.createChild("ElasticBody") 
+    elasticbody.createObject("EulerImplicit")
+    elasticbody.createObject("SparseLDLSolver")
     elasticbody.createObject("MechanicalObject", name="dofs",
                              position=visual.loader.position, 
                              showObject=True, showObjectScale=10.0)

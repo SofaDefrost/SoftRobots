@@ -25,9 +25,7 @@ def createScene(rootNode):
     scene = Scene(rootNode)
     scene.VisualStyle.displayFlags="showBehavior"
 
-    rootNode.createObject("EulerImplicit")
-    rootNode.createObject("CGLinearSolver")
-    
+   
     body = ElasticBody(rootNode)
 
     fix = FixingBox(rootNode, body.ElasticMaterialObject, translation=[1.0,0.0,0.0])
