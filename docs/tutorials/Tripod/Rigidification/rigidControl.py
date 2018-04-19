@@ -1,11 +1,13 @@
 import Sofa
 from rigidification import *
 from math import sin,cos
+import os
+path2 = os.path.dirname(os.path.abspath(__file__))+'/'
 
 class rigidControl(Sofa.PythonScriptController):
 
    ### Overloaded PythonScriptController callbacks
-    def __init__(self, controllerNode, name, listRigid, forceFields, mecaObjet, nodeFEM, TransformBaseFrame):
+    def __init__(self, controllerNode, name, listRigid, forceFields, mecaObjet, nodeFEM, TransformBaseFrame, inverse):
         # note: this member aliases the sofa component `name` data, so you can't
         # put anything in here (in this case, strings only)
         self.name=name
@@ -15,6 +17,7 @@ class rigidControl(Sofa.PythonScriptController):
         self.mecaObjet = mecaObjet
         self.nodeFEM = nodeFEM
         self.O_H_Frames= TransformBaseFrame
+        self.inverse= inverse
         
         
         if len(TransformBaseFrame)!=len(listRigid):
@@ -41,7 +44,7 @@ class rigidControl(Sofa.PythonScriptController):
         ###########
         ## - compute the indices pairs of the multimapping
         ###########
-        self.numNodes = self.mecaObjet.size
+        self.numNodes = len(self.mecaObjet.position)
         self.indexPairs = fillIndexPairs_oneRigid(self.numNodes, self.listRigid)
         
         
@@ -83,23 +86,27 @@ class rigidControl(Sofa.PythonScriptController):
         
         # INVERSE
         PI=3.14159265359;
-        rigidM0=self.rigidNode.createObject('SlidingActuator', direction='0 0 0 1 0 0', indices='0',  maxPositiveDisp='0.5', maxNegativeDisp='0.5', maxDispVariation='0.05')
-        rigidM0=self.rigidNode.createObject('SlidingActuator', direction=[0 ,0 ,0 ,cos(2*PI/3),-sin(2*PI/3) ,0], indices='1',  maxPositiveDisp='0.5', maxNegativeDisp='0.5', maxDispVariation='0.05')
-        rigidM0=self.rigidNode.createObject('SlidingActuator', direction=[0 ,0 ,0 ,cos(4*PI/3),-sin(4*PI/3) ,0], indices='2',  maxPositiveDisp='0.5', maxNegativeDisp='0.5', maxDispVariation='0.05')
-        #rigidM0=self.rigidNode.createObject('SlidingActuator', direction='0 1 0 0 0 0', indices='0')
-        #rigidM0=self.rigidNode.createObject('SlidingActuator', direction='1 0 0 0 0 0', indices='0')
+        if self.inverse:
+            self.rigidNode.createObject('SlidingActuator', direction='0 0 0 1 0 0', indices='0',  maxPositiveDisp='0.5', maxNegativeDisp='0.5', maxDispVariation='0.05')
+            self.rigidNode.createObject('SlidingActuator', direction=[0 ,0 ,0 ,cos(2*PI/3),-sin(2*PI/3) ,0], indices='1',  maxPositiveDisp='0.5', maxNegativeDisp='0.5', maxDispVariation='0.05')
+            self.rigidNode.createObject('SlidingActuator', direction=[0 ,0 ,0 ,cos(4*PI/3),-sin(4*PI/3) ,0], indices='2',  maxPositiveDisp='0.5', maxNegativeDisp='0.5', maxDispVariation='0.05')
+            #rigidM0=self.rigidNode.createObject('SlidingActuator', direction='0 1 0 0 0 0', indices='0')
+            #rigidM0=self.rigidNode.createObject('SlidingActuator', direction='1 0 0 0 0 0', indices='0')
+        else:
+            self.rigidNode.createObject('PythonScriptController', filename=path2+'TripodController.py', classname='controller')
         
         rigidMO=self.rigidNode.createObject('RestShapeSpringsForceField', template='Rigid', points=[0], angularStiffness='1e6', stiffness='1e8')
         rigidMO=self.rigidNode.createObject('RestShapeSpringsForceField', template='Rigid', points=[1,2], angularStiffness='1e6', stiffness='1e8')
-        
-        
+                
         ##########
         # mapping of effector point
         ##########
         self.effectorNode  = self.rigidNode.createChild('Effector')
         self.effectorNode.createObject('MechanicalObject', template='Vec3d', name="effector", position='0 0 10')
         self.effectorNode.createObject('RigidMapping',rigidIndexPerPoint='3')
-        self.effectorNode.createObject('PositionEffector', template='Vec3d', indices="0", effectorGoal="@../../../goal/goalMO.position", useDirections='1 1 1')        
+        if self.inverse:
+            self.effectorNode.createObject('PositionEffector', template='Vec3d', indices="0", effectorGoal="@../../../goal/goalMO.position", useDirections='1 1 1')        
+        
         ###########
         # ---- mapping of the rigidifiedNodes
         ###########
@@ -164,11 +171,12 @@ class rigidControl(Sofa.PythonScriptController):
         # ---- creation of the mappedMatrixForcefield
         ###########    
         
-        self.node.createObject('RequiredPlugin', name='ModelOrderReduction', pluginName='ModelOrderReduction')
+        #self.node.createObject('RequiredPlugin', name='ModelOrderReduction', pluginName='ModelOrderReduction')
         
         
-        self.node.createObject('MappedMatrixForceFieldAndMass', template='Vec3d,Rigid', object1='@./FreeNodes/FreeNodes', object2='@./Rigid/RigidFrames', mappedForceField='@'+self.forceFields[0].getPathName(), mappedMass='@'+self.forceFields[1].getPathName())
+        test = self.node.createObject('MappedMatrixForceFieldAndMass', template='Vec3d,Rigid', object1='@./FreeNodes/FreeNodes', object2='@./Rigid/RigidFrames', mappedForceField='@'+self.forceFields[0].getPathName(), mappedMass='@'+self.forceFields[1].getPathName())
         
+        test.init();
 
         
         print '-------------'       
