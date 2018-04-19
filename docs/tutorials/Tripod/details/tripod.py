@@ -25,7 +25,6 @@ from splib.scenegraph import get
 from stlib.scene import Node
 from stlib.components import addOrientedBoxRoi
 from stlib.solver import DefaultSolver
-from math import sin,cos
 from parts import ActuatedArm, ServoMotor, ElasticBody
 from softrobots.inverse.effectors import PositionEffector, EffectorGoal
 
