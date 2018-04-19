@@ -4,6 +4,8 @@
     Components: TetrahedronFEMForceField, Constraints
 """
 import Sofa
+from splib.numerics import RigidDof
+from splib.animation import animate
 from splib.constants import Key
 from stlib.scene import Scene
 from splib.numerics import sin,cos, to_radians
@@ -47,29 +49,39 @@ def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
         c = ActuatedArm(tripod, name=name,
                                        translation=translation, eulerRotation=eulerRotation,
                                        attachingTo=body.ElasticMaterialObject)
+
     return tripod
 
+def setupanimation(actuators, step, angularstep, factor):
+    for actuator in actuators:
+            rigid = RigidDof( actuator.dofs )
+            rigid.translate( rigid.forward * step * factor )
+            actuator.ServoMotor.angle += angularstep * factor
 
 class MyController(Sofa.PythonScriptController):
-    def __init__(self, node, servos):
+    def __init__(self, node, actuators):
         self.stepsize = 0.1
-        self.servos = servos
+        self.actuators = actuators
 
     def onKeyPressed(self, key):
         if key == Key.uparrow:
-            self.servos[0].angle += self.stepsize 
+            self.actuators[0].ServoMotor.angle += self.stepsize 
         elif key == Key.downarrow:            
-            self.servos[0].angle -= self.stepsize
+            self.actuators[0].ServoMotor.angle -= self.stepsize
 
         if key == Key.leftarrow:
-            self.servos[1].angle += self.stepsize 
+            self.actuators[1].ServoMotor.angle += self.stepsize 
         elif key == Key.rightarrow:            
-            self.servos[1].angle -= self.stepsize
+            self.actuators[1].ServoMotor.angle -= self.stepsize
 
         if key == Key.plus:
-            self.servos[1].angle += self.stepsize 
+            self.actuators[2].ServoMotor.angle += self.stepsize 
         elif key == Key.minus:            
-            self.servos[1].angle -= self.stepsize
+            self.actuators[2].ServoMotor.angle -= self.stepsize
+
+        if key == Key.space:
+            animate(setupanimation,{"actuators" : self.actuators, "step" : 0.13, 
+                                    "angularstep" : -0.12}, duration=0.2)    
 
 def createScene(rootNode):
     scene = Scene(rootNode)
@@ -77,11 +89,11 @@ def createScene(rootNode):
 
     model = scene.createChild("Model")
     
-    tripod = Tripod(model)
+    tripod = Tripod(model,radius=5.0)
 
-    MyController(rootNode, [tripod.ActuatedArm0.ServoMotor, 
-                            tripod.ActuatedArm1.ServoMotor, 
-                            tripod.ActuatedArm2.ServoMotor])
+    MyController(rootNode, [tripod.ActuatedArm0, 
+                            tripod.ActuatedArm1, 
+                            tripod.ActuatedArm2])
 
     simu = scene.createChild("SimulationPlan")
     simu.createObject("EulerImplicit")    
