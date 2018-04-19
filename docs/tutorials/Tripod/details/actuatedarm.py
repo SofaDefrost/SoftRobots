@@ -27,12 +27,12 @@ class ServoArm(object):
                                            size=1,
                                            template='Rigid',
                                            showObject=True,
-                                           showObjectScale=0.5)
+                                           showObjectScale=15)
 
         self.node.createObject('RigidRigidMapping', 
                           name="mapping", input=mappingInput)
 
-        visual = VisualModel(self.node, 'data/mesh/servo_arm_assembly.stl')
+        visual = VisualModel(self.node, 'data/mesh2/SG90_servoarm.stl')
         visual.createObject('RigidMapping', name="mapping")
         
 
@@ -75,8 +75,8 @@ class ActuatedArm(object):
     def addConstraint(self, position, translation, eulerRotation):
         constraint = self.node.createChild("Constraint")
         o = addOrientedBoxRoi(constraint, position=position,
-                                          translation=vec3.vadd(translation, [0.0,1.0,0.0]),
-                                          eulerRotation=eulerRotation, scale=[2.5,1,1])
+                                          translation=vec3.vadd(translation, [0.0,5.0,0.0]),
+                                          eulerRotation=eulerRotation, scale=[25,10,10])
 
         o.drawSize = 5
         constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
@@ -97,7 +97,7 @@ def createScene(rootNode):
     scene.VisualStyle.displayFlags="showBehavior"
 
     arm1 = ActuatedArm(scene, name="arm1", translation=[-2.0,0.0,0.0])
-
+    
     def myanimate(target, factor):
         target.angle = factor
         

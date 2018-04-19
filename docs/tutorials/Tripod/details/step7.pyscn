@@ -3,9 +3,12 @@ import Sofa
 from stlib.scene import Scene, ContactHeader
 from splib.numerics import sin,cos, to_radians
 from stlib.scene import Scene
+from splib.constants import Key
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.physics.rigid import Sphere
 from actuatedarm import ActuatedArm
+from math import floor
+
 
 def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
@@ -44,17 +47,49 @@ def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
                                        attachingTo=body.ElasticMaterialObject)
     return tripod
 
+class MyController(Sofa.PythonScriptController):
+    def __init__(self, node, actuators):
+        self.stepsize = 0.1
+        self.actuators = actuators
 
-def SerialPort(rootNode, serialport="/dev/ttyUSB0"):
-    rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True)
+    def onKeyPressed(self, key):
+        if key == Key.uparrow:
+            self.actuators[0].ServoMotor.angle += self.stepsize 
+        elif key == Key.downarrow:            
+            self.actuators[0].ServoMotor.angle -= self.stepsize
+
+        if key == Key.leftarrow:
+            self.actuators[1].ServoMotor.angle += self.stepsize 
+        elif key == Key.rightarrow:            
+            self.actuators[1].ServoMotor.angle -= self.stepsize
+
+        if key == Key.plus:
+            self.actuators[2].ServoMotor.angle += self.stepsize 
+        elif key == Key.minus:            
+            self.actuators[2].ServoMotor.angle -= self.stepsize
+
+        if key == Key.space:
+            animate(setupanimation,{"actuators" : self.actuators, "step" : 0.13, 
+                                    "angularstep" : -0.12}, duration=0.2)  
+
+def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
+    return rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True)
     
 class SerialPortController(Sofa.PythonScriptController):
     def __init__(self, node, inputs, serialport):
+        self.name = "serialportcontroller"
         self.servos = inputs
         self.serialport = serialport
+        self.serialport.sentData = [0.1,0.1,0.1]
 
-    def onAnimationEnd(self, dt):
-        print("On Animation. " + str(dt)) 
+    def onEndAnimationStep(self, dt):
+        angles = []
+        
+        for servo in self.servos:
+            angles.append( to_radians(servo.angle) )
+
+        print("Send the angles "+str(angles)) 
+        self.serialport.sentData = angles 
 
 def createScene(rootNode):
     scene = Scene(rootNode, plugins=["SoftRobots"])
@@ -67,10 +102,14 @@ def createScene(rootNode):
 
     tripod = Tripod(model)
 
-    serial = SerialPort(rootNode)
+    serial = SerialPortBridgeGeneric(rootNode)
     SerialPortController(rootNode, [tripod.ActuatedArm0.ServoMotor, 
                                     tripod.ActuatedArm1.ServoMotor,
                                     tripod.ActuatedArm2.ServoMotor], serial)
+
+    MyController(rootNode, [tripod.ActuatedArm0, 
+                            tripod.ActuatedArm1, 
+                            tripod.ActuatedArm2])
 
     simu = scene.createChild("SimulationPlan")
     simu.createObject("EulerImplicit")    

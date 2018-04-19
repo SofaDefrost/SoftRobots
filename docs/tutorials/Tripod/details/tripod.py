@@ -30,7 +30,7 @@ from softrobots.inverse.effectors import PositionEffector, EffectorGoal
 
 @SofaPrefab
 class Tripod(SofaObject):
-    def __init__(self, parentNode, numMotors=3, radius=4.6, angleShift=180, invertible=False):
+    def __init__(self, parentNode, numMotors=3, radius=60, angleShift=180, invertible=False):
         self.node = self.addBaseTripod(parentNode, numMotors, radius, angleShift)
         addSpringConstraint(self.node, numMotors)
 
@@ -61,8 +61,8 @@ def ActuatedArmWithConstraint(parentNode, name="ActuatedArm", position=[], trans
 
     constraint = Node(arm.node, "Constraint")
     o = addOrientedBoxRoi(constraint, position=position,
-                                         translation=vadd(translation, [0.0,1.0,0.0]),
-                                         eulerRotation=eulerRotation, scale=[2.5,1,1])
+                                         translation=vadd(translation, [0.0,27.0,0.0]),
+                                         eulerRotation=eulerRotation, scale=[55,10,20])
 
     o.drawSize = 5
     constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",

@@ -43,7 +43,7 @@ class ActuatedArm(object):
         self.node = Node(parent, name)
         r=Transform(translation, eulerRotation=eulerRotation)
         self.node.createObject("MechanicalObject", name="dofs", size=1, position=r.toSofaRepr(),
-                               template='Rigid', showObject=True, showObjectScale=0.5)
+                               template='Rigid', showObject=True, showObjectScale=15)
 
         self.servomotor = ServoMotor(self.node)
         self.servomotor.node.createObject("RigidRigidMapping", name="mapping")
@@ -82,7 +82,7 @@ class ServoArm(object):
             self.addVisualModel()
 
     def addVisualModel(self):
-        self.visualmodel = VisualModel(self.node, 'data/mesh/servo_arm_assembly.stl')
+        self.visualmodel = VisualModel(self.node, 'data/mesh2/SG90_servoarm.stl')
         self.visualmodel.node.createObject('RigidMapping', name="mapping")
         return self.visualmodel
 
@@ -93,7 +93,7 @@ class ElasticBody(object):
         self.createPrefab(self, eulerRotation=eulerRotation)
 
     def createPrefab(self, node, eulerRotation):
-        return ElasticMaterialObject.createPrefab(node, rotation=eulerRotation, volumeMeshFileName="data/mesh/tripod.gidmsh")
+        return ElasticMaterialObject.createPrefab(node, rotation=eulerRotation, translation=[0.0,29,0.0], volumeMeshFileName="data/mesh2/tripod_low.gidmsh")
 
     def addVisualModel(self):
         ElasticMaterialObject.addVisualModel(self)

@@ -12,7 +12,7 @@ from stlib.scene import Scene
 
     #e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
     #visual = body.createChild("Visual")
-    #visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
+    #visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl")    
     #visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
     #visual.createObject("BarycentricMapping", 
@@ -37,8 +37,8 @@ def createScene(rootNode):
     elasticbody.createObject("TetrahedronFEMForceField",youngModulus='20000')
     
     visual = elasticbody.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
-    visual.createObject("OglModel", name="renderer", fileMesh="data/mesh/tripod.stl", color=[1.0,1.0,1.0,0.5])
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl")    
+    visual.createObject("OglModel", name="renderer", color=[1.0,1.0,1.0,0.5])
     visual.createObject("BarycentricMapping")
 
 

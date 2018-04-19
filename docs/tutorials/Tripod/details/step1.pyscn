@@ -6,6 +6,6 @@
 """       
 def createScene(rootNode):
     visual = rootNode.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")    
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl")    
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 

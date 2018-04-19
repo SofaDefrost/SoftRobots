@@ -67,7 +67,7 @@ class ServoMotor(SofaObject):
         self.dofs = self.node.createObject("MechanicalObject", size=1,
                                           name="dofs",
                                           translation=translation, rotation=rotation, scale=scale,
-                                          template='Rigid', showObject=True, showObjectScale=0.5)
+                                          template='Rigid', showObject=True, showObjectScale=15)
 
         self.servowheel = ServoWheel(self.node)
         self.controller = KinematicMotorController(self.node, self.dofs, self.servowheel.dofs,
@@ -77,7 +77,7 @@ class ServoMotor(SofaObject):
             self.addVisualModel()
 
     def addVisualModel(self):
-        self.visualmodel = VisualModel(self.node, 'data/mesh/SG90_servo_with_base.stl')
+        self.visualmodel = VisualModel(self.node, 'data/mesh2/SG90_servomotor.stl')
         self.visualmodel.node.createObject('RigidMapping', name = "mapping")
 
 
@@ -85,7 +85,7 @@ class ServoWheel(SofaObject):
     def __init__(self, parentNode):
         self.node = Node(parentNode, "ServoWheel")
         self.dofs = self.node.createObject("MechanicalObject", size=1, template='Rigid',
-                                           showObject=True, showObjectScale=0.5, name="dofs")
+                                           showObject=True, showObjectScale=15, name="dofs")
 
 class KinematicMotorController(Sofa.PythonScriptController):
     """
@@ -104,6 +104,7 @@ class KinematicMotorController(Sofa.PythonScriptController):
         rigidtarget = RigidDof(self.target)
 
         rigidtarget.copyFrom( rigidparent )
+        #rigidtarget.translate([0.0,20.0,0.0])
         rigidtarget.rotateAround( rigidparent.left, angle)
 
     def bwdInitGraph(self, root):
