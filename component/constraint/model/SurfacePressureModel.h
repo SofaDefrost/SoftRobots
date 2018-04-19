@@ -62,7 +62,7 @@ using sofa::core::VecCoordId ;
  * This class contains common implementation of surface pressure constraints
 */
 template< class DataTypes >
-class SurfacePressureModel : virtual public SoftRobotsConstraint<DataTypes>
+class SOFA_SOFTROBOTS_API SurfacePressureModel : virtual public SoftRobotsConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SurfacePressureModel,DataTypes),
