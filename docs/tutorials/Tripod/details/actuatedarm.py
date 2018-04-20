@@ -6,7 +6,7 @@ from s90servo import ServoMotor
 
 @SofaPrefab
 class ServoArm(object):
-    def __init__(self, parent, mappingInput, name="ServoArm"):
+    def __init__(self, parent, mappingInput, name="ServoArm", indexInput=0):
         """ServoArm is a reusable sofa model of a servo arm for the S90 servo motor
 
            Parameters:
@@ -29,10 +29,10 @@ class ServoArm(object):
                                            showObject=True,
                                            showObjectScale=15)
 
-        self.node.createObject('RigidRigidMapping',
-                          name="mapping", input=mappingInput)
+        self.node.createObject('RigidRigidMapping', 
+                          name="mapping", input=mappingInput, index=indexInput)
 
-        visual = VisualModel(self.node, 'data/mesh2/SG90_servoarm.stl')
+        visual = VisualModel(self.node, 'data/mesh/servo_arm_assembly.stl')
         visual.createObject('RigidMapping', name="mapping")
 
 
