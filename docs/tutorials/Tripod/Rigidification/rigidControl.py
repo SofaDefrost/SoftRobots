@@ -2,7 +2,7 @@ import Sofa
 from rigidification import *
 from math import sin,cos
 import os
-path = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
+path = os.path.dirname(os.path.abspath(__file__))+'/../details/data/mesh/'
 path2 = os.path.dirname(os.path.abspath(__file__))+'/'
 
 class rigidControl(Sofa.PythonScriptController):
@@ -83,10 +83,14 @@ class rigidControl(Sofa.PythonScriptController):
         # INVERSE
         PI=3.14159265359;
         if self.inverse:
-            maxDisp=0.5
-            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator1", template='Rigid', direction='0 0 0 1 0 0', indices='0',  maxPositiveDisp=maxDisp, maxNegativeDisp=maxDisp, maxDispVariation='0.05')
-            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator2", template='Rigid', direction=[0 ,0 ,0 ,cos(2*PI/3),-sin(2*PI/3) ,0], indices='1',  maxPositiveDisp=maxDisp, maxNegativeDisp=maxDisp, maxDispVariation='0.05')
-            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator3", template='Rigid', direction=[0 ,0 ,0 ,cos(4*PI/3),-sin(4*PI/3) ,0], indices='2',  maxPositiveDisp=maxDisp, maxNegativeDisp=maxDisp, maxDispVariation='0.05')
+            maxPDisp=0.4
+            maxNDisp=0.6
+            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator1", template='Rigid', direction='0 0 0 1 0 0', indices='0',
+                                        maxPositiveDisp=maxPDisp, maxNegativeDisp=maxNDisp, maxDispVariation='0.05')
+            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator2", template='Rigid', direction=[0 ,0 ,0 ,cos(2*PI/3),-sin(2*PI/3) ,0], indices='1',
+                                        maxPositiveDisp=maxPDisp, maxNegativeDisp=maxNDisp, maxDispVariation='0.05')
+            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator3", template='Rigid', direction=[0 ,0 ,0 ,cos(4*PI/3),-sin(4*PI/3) ,0], indices='2',
+                                        maxPositiveDisp=maxPDisp, maxNegativeDisp=maxNDisp, maxDispVariation='0.05')
         else:
             self.rigidNode.createObject('PythonScriptController', filename=path2+'TripodController.py', classname='controller')
 
@@ -165,17 +169,17 @@ class rigidControl(Sofa.PythonScriptController):
         #########
         # ---- visualization
         #########
-        self.rigidNode.createObject('MeshSTLLoader', name='loader', filename=path+'servo_arm_assembly.stl', translation='-75 80 75', rotation='90 0 -3', scale="1")
+        self.rigidNode.createObject('MeshSTLLoader', name='loader', filename=path+'servo_arm_assembly.stl', rotation="170 0 0")
         visuArm0= self.rigidNode.createChild('visuArm0')
-        visuArm0.createObject('OglModel', name='arm0', position='@../loader.position', triangles='@../loader.triangles', translation=[0,-0,0],  scale="0.5", color='white')
+        visuArm0.createObject('OglModel', name='arm0', position='@../loader.position', triangles='@../loader.triangles', translation=[0,-0,0],  scale="10", color='white')
         visuArm0.createObject('RigidMapping', index='0')
 
         visuArm1= self.rigidNode.createChild('visuArm1')
-        visuArm1.createObject('OglModel', name='arm1', position='@../loader.position', triangles='@../loader.triangles', translation=[0,-0,0],  scale="0.5", color='white')
+        visuArm1.createObject('OglModel', name='arm1', position='@../loader.position', triangles='@../loader.triangles', translation=[0,-0,0],  scale="10", color='white')
         visuArm1.createObject('RigidMapping', index='1')
 
         visuArm2= self.rigidNode.createChild('visuArm2')
-        visuArm2.createObject('OglModel', name='arm2', position='@../loader.position', triangles='@../loader.triangles', translation=[0,-0,0],  scale="0.5", color='white')
+        visuArm2.createObject('OglModel', name='arm2', position='@../loader.position', triangles='@../loader.triangles', translation=[0,-0,0],  scale="10", color='white')
         visuArm2.createObject('RigidMapping', index='2')
 
         print '-------------'

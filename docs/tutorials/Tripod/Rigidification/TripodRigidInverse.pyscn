@@ -2,7 +2,8 @@ import Sofa
 from math import sin,cos,pi
 
 import os
-path = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
+path = os.path.dirname(os.path.abspath(__file__))+'/../details/data/mesh/'
+path3D = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
 from rigidControl import *
 
 def AddConstantAndtransformTableInString(Table, add):
@@ -41,25 +42,31 @@ def transformDoubleTableInSimpleTable(Table):
 
 
 
-#Units: cm and kg
+#Units: mm and kg
 def createScene(rootNode):
 	rootNode.createObject('RequiredPlugin', name='SoftRobots', printLog="false")
 	rootNode.createObject('RequiredPlugin', name='SofaPython', printLog="false")
-	rootNode.createObject('VisualStyle', displayFlags='showBehaviorModels showForceFields hideWireframe');
+	rootNode.createObject('VisualStyle', displayFlags='showBehaviorModels showForceFields hideWireframe showCollisionModels');
 
 	rootNode.findData('dt').value= 0.01;
-	rootNode.findData('gravity').value= '0. 0. 0';
+	rootNode.findData('gravity').value= '0. 0. -9180.';
 
 	rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765');
 	rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
-
+	# rootNode.createObject('OglGrid', size=100, nbSubdiv=10); # useful to check unit 
 
 	rootNode.createObject('FreeMotionAnimationLoop')
 
 	# Add a QPInverseProblemSolver to the scene if you need to solve inverse problem like the one that involved
 	# when manipulating the robots by specifying their effector's position instead of by direct control
 	# of the actuators parameters.
-	rootNode.createObject('QPInverseProblemSolver', printLog='1', epsilon='0.01')
+	rootNode.createObject('QPInverseProblemSolver', printLog='0', epsilon='0.01')
+
+	# # Add collision detection pipeline
+	# rootNode.createObject('CollisionPipeline', verbose="0")
+	# rootNode.createObject('BruteForceDetection', name="N2")
+	# rootNode.createObject('CollisionResponse', response="FrictionContact", responseParams="mu=0.")
+	# rootNode.createObject('LocalMinDistance', name="Proximity", alarmDistance="5", contactDistance="1")
 
 
 	##########################################
@@ -86,9 +93,9 @@ def createScene(rootNode):
 
 	nodeFEM = robot.createChild('nodeFEM')
 
-	loader=nodeFEM.createObject('GIDMeshLoader', name='loader', filename=path+'tripod1.msh', scale='10');
+	loader=nodeFEM.createObject('GIDMeshLoader', name='loader', filename=path3D+'tripod1.msh', scale='10');
 	loader.init()
-	loader2=nodeFEM.createObject('MeshVTKLoader', name='loader2', filename=path+'deformedMesh.vtu')
+	loader2=nodeFEM.createObject('MeshVTKLoader', name='loader2', filename=path3D+'deformedMesh.vtu')
 	loader2.init()
 	topo=nodeFEM.createObject('TetrahedronSetTopologyContainer', position='@loader2.position', tetrahedra='@loader2.tetrahedra' , name='container', createTriangleArray='1', checkConnexity='1');
 	topo.init()
@@ -120,10 +127,10 @@ def createScene(rootNode):
 	nodeFEM.createObject('TetrahedronSetGeometryAlgorithms');
 
 	tetras= nodeFEM.createObject('MechanicalObject', name='tetras',  position='@container.position', rest_position='@container.position');
-	mass = nodeFEM.createObject('UniformMass', totalmass='0.4');
-	tetraFF= nodeFEM.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='20000');
+	mass = nodeFEM.createObject('UniformMass', totalmass='0.1');
+	tetraFF= nodeFEM.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='1800');
 
-	y0=-38
+	y0=-40
 	x0=0;
 	z0=0
 	y1=cos(2*pi/3)*y0;
@@ -135,16 +142,49 @@ def createScene(rootNode):
 
 
 	###############################
+	## TRIPOD VISU
+	###############################
+	visual = nodeFEM.createChild("visual")
+	visual.createObject("OglModel", color=[1.0,1.0,1.0,0.5])
+	visual.createObject("BarycentricMapping")
+
+
+	# ###############################
+	# ## TRIPOD COLI
+	# ###############################
+	# collision = nodeFEM.createChild("collision")
+	# collision.createObject("MeshSTLLoader", name="loader", filename=path+"tripod.stl", scale='10', rotation="90 0 60", translation="0 0 15")
+	# collision.createObject("Mesh", src="@loader")
+	# collision.createObject("MechanicalObject")
+	# collision.createObject("Point")
+	# collision.createObject("Line")
+	# collision.createObject("Triangle")
+	# collision.createObject("BarycentricMapping")
+	#
+	#
+	# ###############################
+	# ## INTERACTION OBJECT
+	# ###############################
+	# sphere = rootNode.createChild("collision")
+	# sphere.createObject("EulerImplicit")
+	# sphere.createObject("CGLinearSolver")
+	# sphere.createObject("MechanicalObject", position="0. 0. 50.")
+	# sphere.createObject("Sphere", radius="10")
+	# sphere.createObject("UniformMass", mass="0.02")
+	# sphere.createObject("UncoupledConstraintCorrection")
+
+
+	###############################
 	## RIGID PART
 	###############################
 	controllerNode = robot.createChild('controllerNode')
 	myController = rigidControl(controllerNode, "superCaMarche", [branch0, branch1, branch2, centerList],[tetraFF, mass], tetras, nodeFEM, transform, 1)
 
 	visuServo = rootNode.createChild('VisuServo')
-	visuServo.createObject('MeshSTLLoader', name='loader', filename=path+'SG90_servo_with_base.stl', translation='-75 80 75', rotation='90 0 -3')
-	visuServo.createObject('OglModel', name='servo1', position='@loader.position', triangles='@loader.triangles', scale="0.5", translation=[0,y0,0], color='white')
-	visuServo.createObject('OglModel', name='servo2', position='@loader.position', triangles='@loader.triangles', scale="0.5", translation=[-x1,y1,0.], rotation=[0,0,120], color='white')
-	visuServo.createObject('OglModel', name='servo3', position='@loader.position', triangles='@loader.triangles', scale="0.5", translation=[-x2,y2,0.], rotation=[0,0,240], color='white')
+	visuServo.createObject('MeshSTLLoader', name='loader', filename=path+'SG90_servo_with_base.stl', rotation="90 0 0")
+	visuServo.createObject('OglModel', name='servo1', position='@loader.position', triangles='@loader.triangles', scale="10", translation=[0,y0,0], color='white')
+	visuServo.createObject('OglModel', name='servo2', position='@loader.position', triangles='@loader.triangles', scale="10", translation=[-x1,y1,0.], rotation=[0,0,120], color='white')
+	visuServo.createObject('OglModel', name='servo3', position='@loader.position', triangles='@loader.triangles', scale="10", translation=[-x2,y2,0.], rotation=[0,0,240], color='white')
 
 
 	return rootNode
