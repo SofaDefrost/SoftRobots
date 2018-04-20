@@ -88,7 +88,7 @@ function toggle(target) {
 <span class="co">&quot;&quot;&quot;</span>       
 <span class="kw">def</span> createScene(rootNode):
     visual <span class="op">=</span> rootNode.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)    
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/branch.stl&quot;</span>)    
     visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])</code></pre></div>
 </div>
 </div>
@@ -117,10 +117,9 @@ function toggle(target) {
 <span class="co">#from tuto import Scene</span>
 
 <span class="kw">def</span> createScene(rootNode):
-    
     rootNode.findData(<span class="st">&#39;dt&#39;</span>).value <span class="op">=</span> <span class="fl">0.001</span>
     visual <span class="op">=</span> rootNode.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)    
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/branch.stl&quot;</span>)    
     visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
     
 
@@ -153,42 +152,25 @@ function toggle(target) {
 <span class="co">    In step3 we are teaching the following concepts</span>
 <span class="co">    Components: TetrahedronFEMForceField, Constraints</span>
 <span class="co">&quot;&quot;&quot;</span>       
-
-<span class="co">#from stlib.physics.deformable import ElasticMaterialObject</span>
+<span class="im">from</span> stlib.physics.deformable <span class="im">import</span> ElasticMaterialObject
 <span class="im">from</span> stlib.scene <span class="im">import</span> Scene
 
-<span class="co">#def ElasticBody(parent):</span>
-    <span class="co">#body = parent.createChild(&quot;ElasticBody&quot;)</span>
-
-    <span class="co">#e = ElasticMaterialObject(body, volumeMeshFileName=&quot;data/mesh/tripod.gidmsh&quot;,rotation=[90,0,0])</span>
-    <span class="co">#visual = body.createChild(&quot;Visual&quot;)</span>
-    <span class="co">#visual.createObject(&quot;MeshSTLLoader&quot;, name=&quot;loader&quot;, filename=&quot;data/mesh/tripod.stl&quot;)    </span>
-    <span class="co">#visual.createObject(&quot;OglModel&quot;, name=&quot;renderer&quot;, src=&quot;@loader&quot;, color=[1.0,1.0,1.0,0.5])</span>
-
-    <span class="co">#visual.createObject(&quot;BarycentricMapping&quot;, </span>
-                             <span class="co">#input=e.dofs.getLinkPath(), </span>
-                             <span class="co">#output=visual.renderer.getLinkPath())</span>
-
-    <span class="co">#return body </span>
-
-
-
 <span class="kw">def</span> createScene(rootNode):
-    scene <span class="op">=</span> Scene(rootNode)
+    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">9810.0</span>,<span class="fl">0.0</span>])
     scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showForceFields&quot;</span>
     
     elasticbody <span class="op">=</span> rootNode.createChild(<span class="st">&quot;ElasticBody&quot;</span>) 
     elasticbody.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
     elasticbody.createObject(<span class="st">&quot;SparseLDLSolver&quot;</span>)
-    elasticbody.createObject(<span class="st">&#39;GIDMeshLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+    elasticbody.createObject(<span class="st">&#39;GIDMeshLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.gidmsh&quot;</span>)
     elasticbody.createObject(<span class="st">&#39;TetrahedronSetTopologyContainer&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, name<span class="op">=</span><span class="st">&#39;container&#39;</span>)
-    elasticbody.createObject(<span class="st">&quot;MechanicalObject&quot;</span>, name<span class="op">=</span><span class="st">&quot;dofs&quot;</span>, showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="fl">5.0</span>)
-    elasticbody.createObject(<span class="st">&quot;UniformMass&quot;</span>, totalMass<span class="op">=</span><span class="st">&#39;0.4&#39;</span>)
-    elasticbody.createObject(<span class="st">&quot;TetrahedronFEMForceField&quot;</span>,youngModulus<span class="op">=</span><span class="st">&#39;20000&#39;</span>)
+    elasticbody.createObject(<span class="st">&quot;MechanicalObject&quot;</span>, name<span class="op">=</span><span class="st">&quot;dofs&quot;</span>, showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="fl">5.0</span>, rotation<span class="op">=</span>[<span class="fl">90.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])
+    elasticbody.createObject(<span class="st">&quot;UniformMass&quot;</span>, totalMass<span class="op">=</span><span class="fl">0.032</span>)
+    elasticbody.createObject(<span class="st">&quot;TetrahedronFEMForceField&quot;</span>,youngModulus<span class="op">=</span><span class="dv">150</span>, poissonRatio<span class="op">=</span><span class="fl">0.45</span>)
     
     visual <span class="op">=</span> elasticbody.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)    
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/branch.stl&quot;</span>, translate<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">100.0</span>,<span class="fl">1.0</span>])    
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
     visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>)
 
 
@@ -221,10 +203,12 @@ function toggle(target) {
 <span class="kw">def</span> ElasticBody(parent):
     body <span class="op">=</span> parent.createChild(<span class="st">&quot;ElasticBody&quot;</span>)
 
-    e <span class="op">=</span> ElasticMaterialObject(body, volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh/tripod.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
-    visual <span class="op">=</span> body.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)    
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)
+    e <span class="op">=</span> ElasticMaterialObject(body, volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.gidmsh&quot;</span>,
+                              poissonRatio<span class="op">=</span><span class="fl">0.45</span>, youngModulus<span class="op">=</span><span class="dv">150</span>, totalMass<span class="op">=</span><span class="fl">0.032</span>,
+                              rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+    visual <span class="op">=</span> e.createChild(<span class="st">&quot;Visual&quot;</span>)
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/branch.stl&quot;</span>)    
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
 
     visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>, 
                              <span class="bu">input</span><span class="op">=</span>e.dofs.getLinkPath(), 
@@ -233,13 +217,13 @@ function toggle(target) {
     <span class="cf">return</span> body 
 
 <span class="kw">def</span> createScene(rootNode):
-    scene <span class="op">=</span> Scene(rootNode)
+    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">9810.0</span>,<span class="fl">0.0</span>])
     scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showBehavior&quot;</span>
 
    
     body <span class="op">=</span> ElasticBody(rootNode)
 
-    fix <span class="op">=</span> FixingBox(rootNode, body.ElasticMaterialObject, translation<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])
+    fix <span class="op">=</span> FixingBox(rootNode, body.ElasticMaterialObject, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], scale<span class="op">=</span>[<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>])
     fix.boxroi.drawBoxes<span class="op">=</span><span class="va">True</span></code></pre></div>
 </div>
 </div>
@@ -269,9 +253,11 @@ function toggle(target) {
 <span class="kw">def</span> ElasticBody(parent):
     body <span class="op">=</span> parent.createChild(<span class="st">&quot;ElasticBody&quot;</span>)
 
-    e <span class="op">=</span> ElasticMaterialObject(body, volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh/tripod.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+    e <span class="op">=</span> ElasticMaterialObject(body, volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.gidmsh&quot;</span>, 
+                              poissonRatio<span class="op">=</span><span class="fl">0.45</span>, youngModulus<span class="op">=</span><span class="dv">150</span>, totalMass<span class="op">=</span><span class="fl">0.032</span>,
+                              translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">27.0</span>,<span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
     visual <span class="op">=</span> body.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/branch.stl&quot;</span>, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">27.0</span>,<span class="fl">0.0</span>])
     visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
 
     visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>,
@@ -280,7 +266,7 @@ function toggle(target) {
     <span class="cf">return</span> body
 
 
-<span class="kw">def</span> Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="fl">4.5</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):
+<span class="kw">def</span> Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="dv">55</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):
     tripod <span class="op">=</span> parent.createChild(name)
     body <span class="op">=</span> ElasticBody(tripod)
     
@@ -344,9 +330,10 @@ function toggle(target) {
     body <span class="op">=</span> parent.createChild(<span class="st">&quot;ElasticBody&quot;</span>)
 
     e <span class="op">=</span> ElasticMaterialObject(body, 
-                              volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh/tripod.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+                              totalMass<span class="op">=</span><span class="fl">0.032</span>, poissonRatio<span class="op">=</span><span class="fl">0.45</span>, youngModulus<span class="op">=</span><span class="dv">150</span>, 
+                              volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>],  translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="dv">27</span>,<span class="fl">0.0</span>])
     visual <span class="op">=</span> body.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/branch.stl&quot;</span>, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="dv">27</span>,<span class="fl">0.0</span>])
     visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
 
     visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>,
@@ -358,7 +345,7 @@ function toggle(target) {
     <span class="cf">return</span> body
 
 
-<span class="kw">def</span> Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="fl">4.0</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):
+<span class="kw">def</span> Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="dv">55</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):
     tripod <span class="op">=</span> parent.createChild(name)
     body <span class="op">=</span> ElasticBody(tripod)
     
@@ -407,16 +394,16 @@ function toggle(target) {
             <span class="va">self</span>.actuators[<span class="dv">2</span>].ServoMotor.angle <span class="op">-=</span> <span class="va">self</span>.stepsize
 
         <span class="cf">if</span> key <span class="op">==</span> Key.space:
-            animate(setupanimation,{<span class="st">&quot;actuators&quot;</span> : <span class="va">self</span>.actuators, <span class="st">&quot;step&quot;</span> : <span class="fl">0.13</span>, 
-                                    <span class="co">&quot;angularstep&quot;</span> : <span class="op">-</span><span class="fl">0.12</span>}, duration<span class="op">=</span><span class="fl">0.2</span>)    
+            animate(setupanimation,{<span class="st">&quot;actuators&quot;</span> : <span class="va">self</span>.actuators, <span class="st">&quot;step&quot;</span> : <span class="fl">3.0</span>, 
+                                    <span class="co">&quot;angularstep&quot;</span> : <span class="op">-</span><span class="fl">0.14</span>}, duration<span class="op">=</span><span class="fl">0.2</span>)    
 
 <span class="kw">def</span> createScene(rootNode):
-    scene <span class="op">=</span> Scene(rootNode)
+    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="dv">9810</span>,<span class="fl">0.0</span>])
     scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showBehavior&quot;</span>
 
     model <span class="op">=</span> scene.createChild(<span class="st">&quot;Model&quot;</span>)
     
-    tripod <span class="op">=</span> Tripod(model,radius<span class="op">=</span><span class="fl">5.0</span>)
+    tripod <span class="op">=</span> Tripod(model)
 
     MyController(rootNode, [tripod.ActuatedArm0, 
                             tripod.ActuatedArm1, 
@@ -438,21 +425,28 @@ function toggle(target) {
 </pre>
 <div id="step6code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
+<span class="im">import</span> Sofa
+<span class="im">from</span> splib.debug <span class="im">import</span> DebugManager, drawText 
 <span class="im">from</span> stlib.scene <span class="im">import</span> Scene, ContactHeader
-<span class="im">from</span> splib.numerics <span class="im">import</span> sin,cos, to_radians
+<span class="im">from</span> splib.numerics <span class="im">import</span> sin,cos, to_radians, RigidDof
+<span class="im">from</span> splib.animation <span class="im">import</span> animate
 <span class="im">from</span> stlib.scene <span class="im">import</span> Scene
+<span class="im">from</span> splib.constants <span class="im">import</span> Key
 <span class="im">from</span> stlib.physics.deformable <span class="im">import</span> ElasticMaterialObject
 <span class="im">from</span> stlib.physics.rigid <span class="im">import</span> Sphere
 <span class="im">from</span> actuatedarm <span class="im">import</span> ActuatedArm
+<span class="im">from</span> math <span class="im">import</span> floor
+
 
 <span class="kw">def</span> ElasticBody(parent):
     body <span class="op">=</span> parent.createChild(<span class="st">&quot;ElasticBody&quot;</span>)
 
-    e <span class="op">=</span> ElasticMaterialObject(body, 
-                              volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh/tripod.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+    e <span class="op">=</span> ElasticMaterialObject(body,
+                              volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.gidmsh&quot;</span>,
+                              translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="dv">30</span>,<span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>], youngModulus<span class="op">=</span><span class="dv">500</span>, totalMass<span class="op">=</span><span class="fl">0.32</span>)
     visual <span class="op">=</span> body.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod2.stl&quot;</span>)
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
 
     visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>,
                              <span class="bu">input</span><span class="op">=</span>e.dofs.getLinkPath(),
@@ -462,11 +456,10 @@ function toggle(target) {
 
     <span class="cf">return</span> body
 
-
-<span class="kw">def</span> Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="fl">4.0</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):
+<span class="kw">def</span> Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="dv">55</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):
     tripod <span class="op">=</span> parent.createChild(name)
     body <span class="op">=</span> ElasticBody(tripod)
-    
+
     dist <span class="op">=</span> radius
     numstep <span class="op">=</span> numMotors
     <span class="cf">for</span> i <span class="op">in</span> <span class="bu">range</span>(<span class="dv">0</span>,numstep):
@@ -483,20 +476,98 @@ function toggle(target) {
                                        attachingTo<span class="op">=</span>body.ElasticMaterialObject)
     <span class="cf">return</span> tripod
 
+<span class="kw">def</span> setupanimation(actuators, step, angularstep, factor):
+    <span class="cf">for</span> actuator <span class="op">in</span> actuators:
+            rigid <span class="op">=</span> RigidDof( actuator.dofs )
+            rigid.translate( rigid.forward <span class="op">*</span> step <span class="op">*</span> factor )
+            actuator.ServoMotor.angle <span class="op">+=</span> angularstep <span class="op">*</span> factor
+
+<span class="kw">class</span> MyController(Sofa.PythonScriptController):
+    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, node, actuators, serialportctrl):
+        <span class="va">self</span>.stepsize <span class="op">=</span> <span class="fl">0.1</span>
+        <span class="va">self</span>.actuators <span class="op">=</span> actuators
+        <span class="va">self</span>.serialportctrl <span class="op">=</span> serialportctrl
+
+    <span class="kw">def</span> onKeyPressed(<span class="va">self</span>, key):
+        <span class="cf">if</span> key <span class="op">==</span> Key.uparrow:
+            <span class="va">self</span>.actuators[<span class="dv">0</span>].ServoMotor.angle <span class="op">+=</span> <span class="va">self</span>.stepsize
+        <span class="cf">elif</span> key <span class="op">==</span> Key.downarrow:
+            <span class="va">self</span>.actuators[<span class="dv">0</span>].ServoMotor.angle <span class="op">-=</span> <span class="va">self</span>.stepsize
+
+        <span class="cf">if</span> key <span class="op">==</span> Key.leftarrow:
+            <span class="va">self</span>.actuators[<span class="dv">1</span>].ServoMotor.angle <span class="op">+=</span> <span class="va">self</span>.stepsize
+        <span class="cf">elif</span> key <span class="op">==</span> Key.rightarrow:
+            <span class="va">self</span>.actuators[<span class="dv">1</span>].ServoMotor.angle <span class="op">-=</span> <span class="va">self</span>.stepsize
+
+        <span class="cf">if</span> key <span class="op">==</span> Key.plus:
+            <span class="va">self</span>.actuators[<span class="dv">2</span>].ServoMotor.angle <span class="op">+=</span> <span class="va">self</span>.stepsize
+        <span class="cf">elif</span> key <span class="op">==</span> Key.minus:
+            <span class="va">self</span>.actuators[<span class="dv">2</span>].ServoMotor.angle <span class="op">-=</span> <span class="va">self</span>.stepsize
+
+
+        <span class="cf">if</span> key <span class="op">==</span> Key.A <span class="op">and</span> <span class="va">self</span>.serialportctrl.state <span class="op">==</span> <span class="st">&quot;init&quot;</span>:
+            <span class="va">self</span>.serialportctrl.state <span class="op">=</span> <span class="st">&quot;no-comm&quot;</span>
+            animate(setupanimation,{<span class="st">&quot;actuators&quot;</span> : <span class="va">self</span>.actuators, <span class="st">&quot;step&quot;</span> : <span class="fl">3.0</span>,
+                                    <span class="co">&quot;angularstep&quot;</span> : <span class="op">-</span><span class="fl">0.145</span>}, duration<span class="op">=</span><span class="fl">0.2</span>)
+        <span class="cf">if</span> key <span class="op">==</span> Key.B <span class="op">and</span> <span class="va">self</span>.serialportctrl.state <span class="op">==</span> <span class="st">&quot;no-comm&quot;</span>:
+            <span class="va">self</span>.serialportctrl.state <span class="op">=</span> <span class="st">&quot;comm&quot;</span>
+
+<span class="kw">def</span> SerialPortBridgeGeneric(rootNode, serialport<span class="op">=</span><span class="st">&quot;/dev/ttyUSB0&quot;</span>):
+    <span class="cf">return</span> rootNode.createObject(<span class="st">&quot;SerialPortBridgeGeneric&quot;</span>, port<span class="op">=</span>serialport, baudRate<span class="op">=</span><span class="dv">115200</span>, size<span class="op">=</span><span class="dv">3</span>, listening<span class="op">=</span><span class="va">True</span>)
+
+<span class="kw">class</span> SerialPortController(Sofa.PythonScriptController):
+    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, node, inputs, serialport):
+        <span class="va">self</span>.name <span class="op">=</span> <span class="st">&quot;serialportcontroller&quot;</span>
+        <span class="va">self</span>.servos <span class="op">=</span> inputs
+        <span class="va">self</span>.serialport <span class="op">=</span> serialport
+        <span class="va">self</span>.serialport.sentData <span class="op">=</span> [<span class="dv">150</span>,<span class="dv">150</span>,<span class="dv">150</span>]
+        <span class="va">self</span>.state <span class="op">=</span> <span class="st">&quot;init&quot;</span>       
+
+  
+    <span class="kw">def</span> onEndAnimationStep(<span class="va">self</span>, dt):
+        <span class="cf">if</span> <span class="va">self</span>.state <span class="op">==</span> <span class="st">&quot;init&quot;</span>:
+            drawText(<span class="st">&quot;Press A once to got to final configuration&quot;</span>, <span class="dv">100</span>,<span class="dv">50</span>)
+            <span class="cf">return</span>
+
+        <span class="cf">if</span> <span class="va">self</span>.state <span class="op">==</span> <span class="st">&quot;no-comm&quot;</span>:
+            drawText(<span class="st">&quot;Press B once to start sending data&quot;</span>, <span class="dv">100</span>,<span class="dv">50</span>)
+            <span class="cf">return</span>
+
+        angles <span class="op">=</span> []
+
+        <span class="cf">for</span> servo <span class="op">in</span> <span class="va">self</span>.servos:
+            angleByte <span class="op">=</span> <span class="dv">90</span><span class="op">+</span>floor((servo.angle<span class="fl">+3.14</span><span class="op">/</span><span class="fl">2.0</span>)<span class="op">*</span><span class="dv">255</span><span class="op">/</span><span class="fl">3.14</span>) 
+            <span class="cf">if</span> angleByte <span class="op">&lt;</span> <span class="dv">60</span>:
+                angleByte <span class="op">=</span> <span class="dv">60</span>
+            <span class="cf">if</span> angleByte <span class="op">&gt;</span> <span class="dv">180</span>:
+                angleByte <span class="op">=</span> <span class="dv">180</span>
+ 
+            angles.append( angleByte )
+
+        <span class="va">self</span>.serialport.sentData <span class="op">=</span> angles
 
 <span class="kw">def</span> createScene(rootNode):
-    scene <span class="op">=</span> Scene(rootNode)
+    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">9810.0</span>,<span class="fl">0.0</span>], plugins<span class="op">=</span>[<span class="st">&quot;SoftRobots&quot;</span>])
     scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showBehavior&quot;</span>
-
+    DebugManager(rootNode)
     ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="fl">0.1</span>, contactDistance<span class="op">=</span><span class="fl">0.01</span>)
-    
+
     model <span class="op">=</span> scene.createChild(<span class="st">&quot;Model&quot;</span>)
     Sphere(model, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">2.0</span>,<span class="fl">0.0</span>])
 
     tripod <span class="op">=</span> Tripod(model)
 
+    serial <span class="op">=</span> SerialPortBridgeGeneric(rootNode)
+    serialportctrl <span class="op">=</span> SerialPortController(rootNode, [tripod.ActuatedArm0.ServoMotor,
+                                                     tripod.ActuatedArm1.ServoMotor,
+                                                     tripod.ActuatedArm2.ServoMotor], serial)
+
+    MyController(rootNode, [tripod.ActuatedArm0,
+                            tripod.ActuatedArm1,
+                            tripod.ActuatedArm2], serialportctrl)
+
     simu <span class="op">=</span> scene.createChild(<span class="st">&quot;SimulationPlan&quot;</span>)
-    simu.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)    
+    simu.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
     simu.createObject(<span class="st">&quot;CGLinearSolver&quot;</span>)
     simu.addChild(tripod.ActuatedArm0)
     simu.addChild(tripod.ActuatedArm1)
@@ -531,7 +602,7 @@ function toggle(target) {
                               volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh/tripod.gidmsh&quot;</span>,rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
     visual <span class="op">=</span> body.createChild(<span class="st">&quot;Visual&quot;</span>)
     visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/tripod.stl&quot;</span>)
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
 
     visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>,
                              <span class="bu">input</span><span class="op">=</span>e.dofs.getLinkPath(),
@@ -574,10 +645,6 @@ function toggle(target) {
 
     tripod <span class="op">=</span> Tripod(model)
 
-    <span class="co">#body.ElasticMaterialObject.createObject(&quot;EulerImplicit&quot;)</span>
-    <span class="co">#body.ElasticMaterialObject.createObject(&quot;SparseLDLSolver&quot;, name=&quot;solver&quot;)</span>
-    <span class="co">#body.ElasticMaterialObject.createObject(&#39;LinearSolverConstraintCorrection&#39;, solverName=&quot;solver&quot;)</span>
-
     simu <span class="op">=</span> scene.createChild(<span class="st">&quot;SimulationPlan&quot;</span>)
     simu.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)    
     simu.createObject(<span class="st">&quot;CGLinearSolver&quot;</span>)
@@ -595,7 +662,7 @@ function toggle(target) {
 </pre>
 <div id="step9code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> Sofa
-<span class="im">from</span> math <span class="im">import</span> sin,cos
+<span class="im">from</span> math <span class="im">import</span> sin,cos,pi
 
 <span class="im">import</span> os
 path <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va">__file__</span>))<span class="op">+</span><span class="st">&#39;/../mesh/&#39;</span>
@@ -608,8 +675,6 @@ path <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va">
         strOut <span class="op">=</span> strOut<span class="op">+</span> <span class="bu">str</span>(Table[p]<span class="op">+</span>add)<span class="op">+</span><span class="st">&#39; &#39;</span>
 
     <span class="cf">return</span> strOut
-
-
 
 <span class="kw">def</span> transformTableInString(Table):
     sizeT <span class="op">=</span>  <span class="bu">len</span>(Table)<span class="op">;</span>
@@ -641,8 +706,8 @@ path <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va">
 
 <span class="co">#Units: cm and kg</span>
 <span class="kw">def</span> createScene(rootNode):
-    rootNode.createObject(<span class="st">&#39;RequiredPlugin&#39;</span>, name<span class="op">=</span><span class="st">&#39;SoftRobots&#39;</span>)
-    rootNode.createObject(<span class="st">&#39;RequiredPlugin&#39;</span>, name<span class="op">=</span><span class="st">&#39;SofaPython&#39;</span>, pluginName<span class="op">=</span><span class="st">&#39;SofaPython&#39;</span>)
+    rootNode.createObject(<span class="st">&#39;RequiredPlugin&#39;</span>, name<span class="op">=</span><span class="st">&#39;SoftRobots&#39;</span>, printLog<span class="op">=</span><span class="st">&quot;false&quot;</span>)
+    rootNode.createObject(<span class="st">&#39;RequiredPlugin&#39;</span>, name<span class="op">=</span><span class="st">&#39;SofaPython&#39;</span>, printLog<span class="op">=</span><span class="st">&quot;false&quot;</span>)
     rootNode.createObject(<span class="st">&#39;VisualStyle&#39;</span>, displayFlags<span class="op">=</span><span class="st">&#39;showBehaviorModels showForceFields hideWireframe&#39;</span>)<span class="op">;</span>
 
     rootNode.findData(<span class="st">&#39;dt&#39;</span>).value<span class="op">=</span> <span class="fl">0.01</span><span class="op">;</span>
@@ -668,7 +733,7 @@ path <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va">
     goal.createObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="st">&#39;200&#39;</span>, threshold<span class="op">=</span><span class="st">&quot;1e-5&quot;</span>, tolerance<span class="op">=</span><span class="st">&quot;1e-5&quot;</span>)
     goal.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;goalMO&#39;</span>,
         showObject<span class="op">=</span><span class="st">&quot;1&quot;</span>,
-        showObjectScale<span class="op">=</span><span class="st">&quot;1&quot;</span>,
+        showObjectScale<span class="op">=</span><span class="st">&quot;3&quot;</span>,
         drawMode<span class="op">=</span><span class="st">&quot;1&quot;</span>,
         position <span class="op">=</span> <span class="st">&quot;0 0 32&quot;</span>)
     goal.createObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)
@@ -690,8 +755,6 @@ path <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va">
     loader2.init()
     topo<span class="op">=</span>nodeFEM.createObject(<span class="st">&#39;TetrahedronSetTopologyContainer&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader2.position&#39;</span>, tetrahedra<span class="op">=</span><span class="st">&#39;@loader2.tetrahedra&#39;</span> , name<span class="op">=</span><span class="st">&#39;container&#39;</span>, createTriangleArray<span class="op">=</span><span class="st">&#39;1&#39;</span>, checkConnexity<span class="op">=</span><span class="st">&#39;1&#39;</span>)<span class="op">;</span>
     topo.init()
-    <span class="co">#print test.position</span>
-
 
     <span class="co">### indices found with GID (begin at 1)</span>
     list_branch0<span class="op">=</span> [<span class="dv">509</span>, <span class="dv">534</span>,<span class="dv">556</span>,<span class="dv">573</span>,<span class="dv">592</span>,<span class="dv">603</span>,<span class="dv">504</span>,<span class="dv">532</span>,<span class="dv">555</span>,<span class="dv">571</span>,<span class="dv">591</span>, <span class="dv">601</span>]<span class="op">;</span>
@@ -711,12 +774,9 @@ path <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va">
     <span class="cf">for</span> i <span class="op">in</span> list_branch2:
         branch2 <span class="op">=</span> branch2<span class="op">+</span>[i<span class="dv">-1</span>]
 
-
-
     center <span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;SphereROI&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec3d&#39;</span>, centers<span class="op">=</span><span class="st">&#39;0 0 0&#39;</span>, radii<span class="op">=</span><span class="st">&#39;7&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, name<span class="op">=</span><span class="st">&#39;ROI&#39;</span>, computeTriangles<span class="op">=</span><span class="st">&#39;0&#39;</span>, computeEdges<span class="op">=</span><span class="st">&#39;0&#39;</span>)
     center.init()
     centerList <span class="op">=</span> transformDoubleTableInSimpleTable(center.indices)
-
 
     nodeFEM.createObject(<span class="st">&#39;TetrahedronSetTopologyModifier&#39;</span>)<span class="op">;</span>
     nodeFEM.createObject(<span class="st">&#39;TetrahedronSetTopologyAlgorithms&#39;</span>)<span class="op">;</span>
@@ -726,46 +786,28 @@ path <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va">
     mass <span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;UniformMass&#39;</span>, totalmass<span class="op">=</span><span class="st">&#39;0.4&#39;</span>)<span class="op">;</span>
     tetraFF<span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, poissonRatio<span class="op">=</span><span class="st">&#39;0.45&#39;</span>,  youngModulus<span class="op">=</span><span class="st">&#39;20000&#39;</span>)<span class="op">;</span>
 
-    <span class="co">#fix = nodeFEM.createObject(&#39;RestShapeSpringsForceField&#39;, name=&#39;fix&#39;, stiffness=&#39;1e10&#39;, points=AddConstantAndtransformTableInString(list_branch0,-1) ) #external_rest_shape=&#39;@../actuators/attach0/mm0&#39;</span>
-    <span class="co">#robot.createObject(&#39;RestShapeSpringsForceField&#39;, external_rest_shape=&#39;@../actuators/attach1/mm1&#39;, stiffness=&#39;1e10&#39;, points=AddConstantAndtransformTableInString(list_branch1,-1), external_points=transformTableInString(range(len(list_branch1))) )</span>
-    <span class="co">#robot.createObject(&#39;RestShapeSpringsForceField&#39;, external_rest_shape=&#39;@../actuators/attach2/mm2&#39;, stiffness=&#39;1e10&#39;, points=AddConstantAndtransformTableInString(list_branch2,-1), external_points=transformTableInString(range(len(list_branch2))) )</span>
-
-    <span class="co">#robot.createObject(&#39;BoxROI&#39;, name=&#39;boxROI&#39;, box=&quot;-30 80 70 30 140 130   -130 -100 70  -60  -20 130  130 -100 70  60  -20 130&quot;, drawBoxes=&#39;true&#39;);</span>
-    <span class="co">#robot.createObject(&#39;FixedConstraint&#39;, indices=&quot;@boxROI.indices&quot;);</span>
-
-    PI<span class="op">=</span><span class="fl">3.14159265359</span><span class="op">;</span>
-
-    y0 <span class="op">=</span> <span class="op">-</span><span class="dv">30</span>
+    y0<span class="op">=-</span><span class="dv">38</span>
     x0<span class="op">=</span><span class="dv">0</span><span class="op">;</span>
     z0<span class="op">=</span><span class="dv">0</span>
-    y1<span class="op">=</span>cos(<span class="dv">2</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">3</span>)<span class="op">*</span>y0<span class="op">;</span>
-    x1<span class="op">=</span>sin(<span class="dv">2</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">3</span>)<span class="op">*</span>y0<span class="op">;</span>
-    y2<span class="op">=</span>cos(<span class="dv">4</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">3</span>)<span class="op">*</span>y0<span class="op">;</span>
-    x2<span class="op">=</span>sin(<span class="dv">4</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">3</span>)<span class="op">*</span>y0<span class="op">;</span>
+    y1<span class="op">=</span>cos(<span class="dv">2</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">3</span>)<span class="op">*</span>y0<span class="op">;</span>
+    x1<span class="op">=</span>sin(<span class="dv">2</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">3</span>)<span class="op">*</span>y0<span class="op">;</span>
+    y2<span class="op">=</span>cos(<span class="dv">4</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">3</span>)<span class="op">*</span>y0<span class="op">;</span>
+    x2<span class="op">=</span>sin(<span class="dv">4</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">3</span>)<span class="op">*</span>y0<span class="op">;</span>
 
-    transform<span class="op">=</span> [ [x0,y0,z0,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>], [x1,y1,z0,<span class="dv">0</span>,<span class="dv">0</span>,sin(<span class="dv">4</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">6</span>),cos(<span class="dv">4</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">6</span>)],  [x2,y2,z0,<span class="dv">0</span>,<span class="dv">0</span>,sin(<span class="dv">2</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">6</span>),cos(<span class="dv">2</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">6</span>)], [<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>] ]
+    transform<span class="op">=</span> [ [x0,y0,z0,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>], [x1,y1,z0,<span class="dv">0</span>,<span class="dv">0</span>,sin(<span class="dv">4</span>.<span class="op">*</span>pi<span class="op">/</span><span class="dv">6</span>.),cos(<span class="dv">4</span>.<span class="op">*</span>pi<span class="op">/</span><span class="dv">6</span>.)],  [x2,y2,z0,<span class="dv">0</span>,<span class="dv">0</span>,sin(<span class="dv">2</span>.<span class="op">*</span>pi<span class="op">/</span><span class="dv">6</span>.),cos(<span class="dv">2</span><span class="op">*</span>pi<span class="op">/</span><span class="dv">6</span>.)], [<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>] ]
 
 
+    <span class="co">###############################</span>
+    <span class="co">## RIGID PART</span>
+    <span class="co">###############################</span>
     controllerNode <span class="op">=</span> robot.createChild(<span class="st">&#39;controllerNode&#39;</span>)
     myController <span class="op">=</span> rigidControl(controllerNode, <span class="st">&quot;superCaMarche&quot;</span>, [branch0, branch1, branch2, centerList],[tetraFF, mass], tetras, nodeFEM, transform, <span class="dv">1</span>)
 
-
-    <span class="co">#rigidNode  = robot.getChild(&#39;Rigid&#39;)</span>
-    <span class="co">#motors = rigidNode.createChild(&#39;Motors&#39;)</span>
-    <span class="co">#mo_motors =  motors.createObject(&#39;MechanicalObject&#39;, position=&#39;0 -20 0   0 -20 0   0 -20 0 &#39;)</span>
-    <span class="co">#motors.createObject(&#39;Point&#39;)</span>
-    <span class="co">#motors.createObject(&#39;RigidMapping&#39;, rigidIndexPerPoint= &#39;0 1 2&#39;)</span>
-
-
     visuServo <span class="op">=</span> rootNode.createChild(<span class="st">&#39;VisuServo&#39;</span>)
-    visuServo.createObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span>path<span class="op">+</span><span class="st">&#39;SG90_servo_with_base.stl&#39;</span>, translation<span class="op">=</span><span class="st">&#39;-75 74 75&#39;</span>, rotation<span class="op">=</span><span class="st">&#39;90 0 0&#39;</span>)
-    visuServo.createObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&#39;servo1&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, triangles<span class="op">=</span><span class="st">&#39;@loader.triangles&#39;</span>, translation<span class="op">=</span>[<span class="dv">0</span>,<span class="op">-</span><span class="dv">30</span>,<span class="dv">0</span>], color<span class="op">=</span><span class="st">&#39;red&#39;</span>)
-
-    visuServo.createObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&#39;servo2&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, triangles<span class="op">=</span><span class="st">&#39;@loader.triangles&#39;</span>, translation<span class="op">=</span>[<span class="dv">30</span><span class="op">*</span>sin(<span class="dv">2</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">3</span>), <span class="op">-</span><span class="dv">30</span><span class="op">*</span>cos(<span class="dv">2</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">3</span>),<span class="dv">0</span>], rotation<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">120</span> ], color<span class="op">=</span><span class="st">&#39;white&#39;</span>)
-
-    visuServo.createObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&#39;servo3&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, triangles<span class="op">=</span><span class="st">&#39;@loader.triangles&#39;</span>, translation<span class="op">=</span>[<span class="dv">30</span><span class="op">*</span>sin(<span class="dv">4</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">3</span>),<span class="op">-</span><span class="dv">30</span><span class="op">*</span>cos(<span class="dv">4</span><span class="op">*</span>PI<span class="op">/</span><span class="dv">3</span>),<span class="dv">0</span>], rotation<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">240</span> ], color<span class="op">=</span><span class="st">&#39;green&#39;</span>)
-
-
+    visuServo.createObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span>path<span class="op">+</span><span class="st">&#39;SG90_servo_with_base.stl&#39;</span>, translation<span class="op">=</span><span class="st">&#39;-75 80 75&#39;</span>, rotation<span class="op">=</span><span class="st">&#39;90 0 -3&#39;</span>)
+    visuServo.createObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&#39;servo1&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, triangles<span class="op">=</span><span class="st">&#39;@loader.triangles&#39;</span>, scale<span class="op">=</span><span class="st">&quot;0.5&quot;</span>, translation<span class="op">=</span>[<span class="dv">0</span>,y0,<span class="dv">0</span>], color<span class="op">=</span><span class="st">&#39;white&#39;</span>)
+    visuServo.createObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&#39;servo2&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, triangles<span class="op">=</span><span class="st">&#39;@loader.triangles&#39;</span>, scale<span class="op">=</span><span class="st">&quot;0.5&quot;</span>, translation<span class="op">=</span>[<span class="op">-</span>x1,y1,<span class="dv">0</span>.], rotation<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">120</span>], color<span class="op">=</span><span class="st">&#39;white&#39;</span>)
+    visuServo.createObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&#39;servo3&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, triangles<span class="op">=</span><span class="st">&#39;@loader.triangles&#39;</span>, scale<span class="op">=</span><span class="st">&quot;0.5&quot;</span>, translation<span class="op">=</span>[<span class="op">-</span>x2,y2,<span class="dv">0</span>.], rotation<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">240</span>], color<span class="op">=</span><span class="st">&#39;white&#39;</span>)
 
 
     <span class="cf">return</span> rootNode</code></pre></div>
