@@ -59,7 +59,7 @@ class ActuatedArm(object):
         r=Transform(translation, eulerRotation=eulerRotation)
 
         self.node.createObject("MechanicalObject", name="dofs", size=1, position=r.toSofaRepr(),
-                          template='Rigid', showObject=True, showObjectScale=0.5)
+                          template='Rigid', showObject=True, showObjectScale=15)
 
         servomotor = ServoMotor(self.node)
         servomotor.createObject("RigidRigidMapping", name="mapping")
@@ -75,8 +75,8 @@ class ActuatedArm(object):
     def addConstraint(self, position, translation, eulerRotation):
         constraint = self.node.createChild("Constraint")
         o = addOrientedBoxRoi(constraint, position=position,
-                                          translation=vec3.vadd(translation, [0.0,5.0,0.0]),
-                                          eulerRotation=eulerRotation, scale=[25,10,10])
+                                          translation=vec3.vadd(translation, [0.0,25.0,0.0]),
+                                          eulerRotation=eulerRotation, scale=[45,15,30])
 
         o.drawSize = 5
         constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",

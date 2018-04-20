@@ -3,42 +3,25 @@
     In step3 we are teaching the following concepts
     Components: TetrahedronFEMForceField, Constraints
 """       
-
-#from stlib.physics.deformable import ElasticMaterialObject
+from stlib.physics.deformable import ElasticMaterialObject
 from stlib.scene import Scene
 
-#def ElasticBody(parent):
-    #body = parent.createChild("ElasticBody")
-
-    #e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
-    #visual = body.createChild("Visual")
-    #visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl")    
-    #visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
-
-    #visual.createObject("BarycentricMapping", 
-                             #input=e.dofs.getLinkPath(), 
-                             #output=visual.renderer.getLinkPath())
-
-    #return body 
-
-
-
 def createScene(rootNode):
-    scene = Scene(rootNode)
+    scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])
     scene.VisualStyle.displayFlags="showForceFields"
     
     elasticbody = rootNode.createChild("ElasticBody") 
     elasticbody.createObject("EulerImplicit")
     elasticbody.createObject("SparseLDLSolver")
-    elasticbody.createObject('GIDMeshLoader', name='loader', filename="data/mesh/tripod.gidmsh",rotation=[90,0,0])
+    elasticbody.createObject('GIDMeshLoader', name='loader', filename="data/mesh2/tripod_mid.gidmsh")
     elasticbody.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
-    elasticbody.createObject("MechanicalObject", name="dofs", showObject=True, showObjectScale=5.0)
-    elasticbody.createObject("UniformMass", totalMass='0.4')
-    elasticbody.createObject("TetrahedronFEMForceField",youngModulus='20000')
+    elasticbody.createObject("MechanicalObject", name="dofs", showObject=True, showObjectScale=5.0, rotation=[90.0,0.0,0.0])
+    elasticbody.createObject("UniformMass", totalMass=0.032)
+    elasticbody.createObject("TetrahedronFEMForceField",youngModulus=150, poissonRatio=0.45)
     
     visual = elasticbody.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl")    
-    visual.createObject("OglModel", name="renderer", color=[1.0,1.0,1.0,0.5])
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl", translate=[1.0,100.0,1.0])    
+    visual.createObject("OglModel", src="@loader", name="renderer", color=[1.0,1.0,1.0,0.5])
     visual.createObject("BarycentricMapping")
 
 

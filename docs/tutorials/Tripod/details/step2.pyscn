@@ -6,7 +6,6 @@
 #from tuto import Scene
 
 def createScene(rootNode):
-    
     rootNode.findData('dt').value = 0.001
     visual = rootNode.createChild("Visual")
     visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl")    

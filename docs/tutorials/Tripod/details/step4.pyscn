@@ -10,8 +10,10 @@ from fixingbox import FixingBox
 def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
 
-    e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
-    visual = body.createChild("Visual")
+    e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
+                              poissonRatio=0.45, youngModulus=150, totalMass=0.032,
+                              rotation=[90,0,0])
+    visual = e.createChild("Visual")
     visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl")    
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
@@ -22,11 +24,11 @@ def ElasticBody(parent):
     return body 
 
 def createScene(rootNode):
-    scene = Scene(rootNode)
+    scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
    
     body = ElasticBody(rootNode)
 
-    fix = FixingBox(rootNode, body.ElasticMaterialObject, translation=[1.0,0.0,0.0])
+    fix = FixingBox(rootNode, body.ElasticMaterialObject, translation=[0.0,0.0,0.0], scale=[10,10,10])
     fix.boxroi.drawBoxes=True

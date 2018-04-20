@@ -11,9 +11,11 @@ from actuatedarm import ActuatedArm
 def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
 
-    e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh2/tripod_low.gidmsh", translation=[0.0,27.0,0.0], rotation=[90,0,0])
+    e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh2/tripod_mid.gidmsh", 
+                              poissonRatio=0.45, youngModulus=150, totalMass=0.032,
+                              translation=[0.0,27.0,0.0], rotation=[90,0,0])
     visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl", translation=[0.0,27.0,0.0])
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
     visual.createObject("BarycentricMapping",

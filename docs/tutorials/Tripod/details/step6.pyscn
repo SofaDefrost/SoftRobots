@@ -17,9 +17,10 @@ def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
 
     e = ElasticMaterialObject(body, 
-                              volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
+                              totalMass=0.032, poissonRatio=0.45, youngModulus=150, 
+                              volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",rotation=[90,0,0],  translation=[0.0,27,0.0])
     visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl", translation=[0.0,27,0.0])
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
     visual.createObject("BarycentricMapping",
@@ -31,7 +32,7 @@ def ElasticBody(parent):
     return body
 
 
-def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
+def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
     tripod = parent.createChild(name)
     body = ElasticBody(tripod)
     
@@ -80,16 +81,16 @@ class MyController(Sofa.PythonScriptController):
             self.actuators[2].ServoMotor.angle -= self.stepsize
 
         if key == Key.space:
-            animate(setupanimation,{"actuators" : self.actuators, "step" : 0.13, 
-                                    "angularstep" : -0.12}, duration=0.2)    
+            animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0, 
+                                    "angularstep" : -0.14}, duration=0.2)    
 
 def createScene(rootNode):
-    scene = Scene(rootNode)
+    scene = Scene(rootNode, gravity=[0.0,-9810,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
     model = scene.createChild("Model")
     
-    tripod = Tripod(model,radius=5.0)
+    tripod = Tripod(model)
 
     MyController(rootNode, [tripod.ActuatedArm0, 
                             tripod.ActuatedArm1, 

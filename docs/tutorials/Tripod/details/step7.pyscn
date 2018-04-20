@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import Sofa
+from splib.debug import DebugManager, drawText 
 from stlib.scene import Scene, ContactHeader
-from splib.numerics import sin,cos, to_radians
+from splib.numerics import sin,cos, to_radians, RigidDof
+from splib.animation import animate
 from stlib.scene import Scene
 from splib.constants import Key
 from stlib.physics.deformable import ElasticMaterialObject
@@ -13,10 +15,11 @@ from math import floor
 def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
 
-    e = ElasticMaterialObject(body, 
-                              volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
+    e = ElasticMaterialObject(body,
+                              volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
+                              translation=[0.0,30,0.0], rotation=[90,0,0], youngModulus=500, totalMass=0.32)
     visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod2.stl")
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
     visual.createObject("BarycentricMapping",
@@ -27,10 +30,10 @@ def ElasticBody(parent):
 
     return body
 
-def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
+def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
     tripod = parent.createChild(name)
     body = ElasticBody(tripod)
-    
+
     dist = radius
     numstep = numMotors
     for i in range(0,numstep):
@@ -47,72 +50,98 @@ def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
                                        attachingTo=body.ElasticMaterialObject)
     return tripod
 
+def setupanimation(actuators, step, angularstep, factor):
+    for actuator in actuators:
+            rigid = RigidDof( actuator.dofs )
+            rigid.translate( rigid.forward * step * factor )
+            actuator.ServoMotor.angle += angularstep * factor
+
 class MyController(Sofa.PythonScriptController):
-    def __init__(self, node, actuators):
+    def __init__(self, node, actuators, serialportctrl):
         self.stepsize = 0.1
         self.actuators = actuators
+        self.serialportctrl = serialportctrl
 
     def onKeyPressed(self, key):
         if key == Key.uparrow:
-            self.actuators[0].ServoMotor.angle += self.stepsize 
-        elif key == Key.downarrow:            
+            self.actuators[0].ServoMotor.angle += self.stepsize
+        elif key == Key.downarrow:
             self.actuators[0].ServoMotor.angle -= self.stepsize
 
         if key == Key.leftarrow:
-            self.actuators[1].ServoMotor.angle += self.stepsize 
-        elif key == Key.rightarrow:            
+            self.actuators[1].ServoMotor.angle += self.stepsize
+        elif key == Key.rightarrow:
             self.actuators[1].ServoMotor.angle -= self.stepsize
 
         if key == Key.plus:
-            self.actuators[2].ServoMotor.angle += self.stepsize 
-        elif key == Key.minus:            
+            self.actuators[2].ServoMotor.angle += self.stepsize
+        elif key == Key.minus:
             self.actuators[2].ServoMotor.angle -= self.stepsize
 
-        if key == Key.space:
-            animate(setupanimation,{"actuators" : self.actuators, "step" : 0.13, 
-                                    "angularstep" : -0.12}, duration=0.2)  
+
+        if key == Key.A and self.serialportctrl.state == "init":
+            self.serialportctrl.state = "no-comm"
+            animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
+                                    "angularstep" : -0.145}, duration=0.2)
+        if key == Key.B and self.serialportctrl.state == "no-comm":
+            self.serialportctrl.state = "comm"
 
 def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
     return rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True)
-    
+
 class SerialPortController(Sofa.PythonScriptController):
     def __init__(self, node, inputs, serialport):
         self.name = "serialportcontroller"
         self.servos = inputs
         self.serialport = serialport
-        self.serialport.sentData = [0.1,0.1,0.1]
+        self.serialport.sentData = [150,150,150]
+        self.state = "init"       
 
+  
     def onEndAnimationStep(self, dt):
-        angles = []
-        
-        for servo in self.servos:
-            angles.append( to_radians(servo.angle) )
+        if self.state == "init":
+            drawText("Press A once to got to final configuration", 100,50)
+            return
 
-        print("Send the angles "+str(angles)) 
-        self.serialport.sentData = angles 
+        if self.state == "no-comm":
+            drawText("Press B once to start sending data", 100,50)
+            return
+
+        angles = []
+
+        for servo in self.servos:
+            angleByte = 90+floor((servo.angle+3.14/2.0)*255/3.14) 
+            if angleByte < 60:
+                angleByte = 60
+            if angleByte > 180:
+                angleByte = 180
+ 
+            angles.append( angleByte )
+
+        self.serialport.sentData = angles
 
 def createScene(rootNode):
-    scene = Scene(rootNode, plugins=["SoftRobots"])
+    scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0], plugins=["SoftRobots"])
     scene.VisualStyle.displayFlags="showBehavior"
-
+    DebugManager(rootNode)
     ContactHeader(rootNode, alarmDistance=0.1, contactDistance=0.01)
-    
+
     model = scene.createChild("Model")
     Sphere(model, translation=[0.0,2.0,0.0])
 
     tripod = Tripod(model)
 
     serial = SerialPortBridgeGeneric(rootNode)
-    SerialPortController(rootNode, [tripod.ActuatedArm0.ServoMotor, 
-                                    tripod.ActuatedArm1.ServoMotor,
-                                    tripod.ActuatedArm2.ServoMotor], serial)
+    serialportctrl = SerialPortController(rootNode, [tripod.ActuatedArm0.ServoMotor,
+                                                     tripod.ActuatedArm1.ServoMotor,
+                                                     tripod.ActuatedArm2.ServoMotor], serial)
 
-    MyController(rootNode, [tripod.ActuatedArm0, 
-                            tripod.ActuatedArm1, 
-                            tripod.ActuatedArm2])
+    MyController(rootNode, [tripod.ActuatedArm0,
+                            tripod.ActuatedArm1,
+                            tripod.ActuatedArm2], serialportctrl)
 
     simu = scene.createChild("SimulationPlan")
-    simu.createObject("EulerImplicit")    
+    simu.createObject("EulerImplicit")
     simu.createObject("CGLinearSolver")
     simu.addChild(tripod.ActuatedArm0)
     simu.addChild(tripod.ActuatedArm1)
