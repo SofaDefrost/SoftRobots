@@ -15,21 +15,26 @@ def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
 
     e = ElasticMaterialObject(body, 
-                              volumeMeshFileName="data/mesh/tripod.gidmsh",rotation=[90,0,0])
+                              volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
+                              translation=[0,27,0], rotation=[90,0,0],
+                              youngModulus=150, poissonRatio=0.045, totalMass=0.032)
     visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod.stl")
+
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", 
+                        translation=[0,27,0], rotation=[90,0,0])
+
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
     visual.createObject("BarycentricMapping",
                              input=e.dofs.getLinkPath(),
                              output=visual.renderer.getLinkPath())
 
-    e.addCollisionModel(collisionMesh="data/mesh/tripod.stl")
+    e.addCollisionModel(collisionMesh="data/mesh2/tripod_low.stl", translation=[0,27,0], rotation=[90,0,0])
 
     return body
 
 
-def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
+def Tripod(parent, name="Tripod", radius=55.0, numMotors=3, angleShift=180.0):
     tripod = parent.createChild(name)
     body = ElasticBody(tripod)
     
@@ -51,13 +56,13 @@ def Tripod(parent, name="Tripod", radius=4.0, numMotors=3, angleShift=180.0):
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode)
+    scene = Scene(rootNode, gravity=[0,-9810,0])
     scene.VisualStyle.displayFlags="showBehavior"
 
-    ContactHeader(rootNode, alarmDistance=0.1, contactDistance=0.01)
+    ContactHeader(rootNode, alarmDistance=10, contactDistance=2)
     
     model = scene.createChild("Model")
-    Sphere(model, translation=[0.0,2.0,0.0])
+    Sphere(model, translation=[0.0,40.0,0.0], uniformScale=10, totalMass=0.05)
 
     tripod = Tripod(model)
 

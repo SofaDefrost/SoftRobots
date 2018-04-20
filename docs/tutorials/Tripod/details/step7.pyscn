@@ -18,15 +18,17 @@ def ElasticBody(parent):
     e = ElasticMaterialObject(body,
                               volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
                               translation=[0.0,30,0.0], rotation=[90,0,0], youngModulus=500, totalMass=0.32)
+
     visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod2.stl")
-    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")
+    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5], rotation=[90,0,0], translation=[0,30,0])
 
     visual.createObject("BarycentricMapping",
                              input=e.dofs.getLinkPath(),
                              output=visual.renderer.getLinkPath())
 
-    e.addCollisionModel(collisionMesh="data/mesh/tripod.stl")
+    e.addCollisionModel(collisionMesh="data/mesh2/tripod_low.stl", 
+                        translation=[0.0,30,0.0], rotation=[90,0,0])
 
     return body
 
@@ -96,7 +98,6 @@ class SerialPortController(Sofa.PythonScriptController):
         self.serialport = serialport
         self.serialport.sentData = [150,150,150]
         self.state = "init"       
-
   
     def onEndAnimationStep(self, dt):
         if self.state == "init":
@@ -124,11 +125,9 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0], plugins=["SoftRobots"])
     scene.VisualStyle.displayFlags="showBehavior"
     DebugManager(rootNode)
-    ContactHeader(rootNode, alarmDistance=0.1, contactDistance=0.01)
-
+    
     model = scene.createChild("Model")
-    Sphere(model, translation=[0.0,2.0,0.0])
-
+    
     tripod = Tripod(model)
 
     serial = SerialPortBridgeGeneric(rootNode)

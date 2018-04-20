@@ -20,7 +20,7 @@ def createScene(rootNode):
     elasticbody.createObject("TetrahedronFEMForceField",youngModulus=150, poissonRatio=0.45)
     
     visual = elasticbody.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl", translate=[1.0,100.0,1.0])    
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", rotation=[90,0,0])    
     visual.createObject("OglModel", src="@loader", name="renderer", color=[1.0,1.0,1.0,0.5])
     visual.createObject("BarycentricMapping")
 

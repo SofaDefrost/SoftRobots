@@ -15,7 +15,8 @@ def ElasticBody(parent):
                               poissonRatio=0.45, youngModulus=150, totalMass=0.032,
                               translation=[0.0,27.0,0.0], rotation=[90,0,0])
     visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl", translation=[0.0,27.0,0.0])
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", rotation=[90,0,0], 
+                        translation=[0.0,27.0,0.0])
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 
     visual.createObject("BarycentricMapping",
@@ -50,5 +51,11 @@ def createScene(rootNode):
     scene = Scene(rootNode)
     scene.VisualStyle.displayFlags="showBehavior"
 
-    Tripod(rootNode)
+    tripod = Tripod(rootNode)
 
+    simu = scene.createChild("SimulationPlan")
+    simu.createObject("EulerImplicit")
+    simu.createObject("CGLinearSolver")
+    simu.addChild(tripod.ActuatedArm0)
+    simu.addChild(tripod.ActuatedArm1)
+    simu.addChild(tripod.ActuatedArm2)

@@ -8,7 +8,7 @@
 def createScene(rootNode):
     rootNode.findData('dt').value = 0.001
     visual = rootNode.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/branch.stl")    
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")    
     visual.createObject("OglModel", name="renderer", src='@loader', color=[1.0,1.0,1.0,0.5])
     
 
@@ -20,5 +20,5 @@ def createScene(rootNode):
                              showObject=True, showObjectScale=10.0)
     elasticbody.createObject("UniformMass")
 
-    elasticbody.createObject("IdentityMapping", input=elasticbody.dofs.getLinkPath(), output=visual.renderer.getLinkPath())
+    elasticbody.createObject("BarycentricMapping")
 
