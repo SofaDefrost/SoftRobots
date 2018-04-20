@@ -62,7 +62,7 @@ def createScene(rootNode):
     ContactHeader(rootNode, alarmDistance=10, contactDistance=2)
     
     model = scene.createChild("Model")
-    Sphere(model, translation=[0.0,40.0,0.0], uniformScale=10, totalMass=0.05)
+    Sphere(model, translation=[0.0,40.0,0.0], uniformScale=10, totalMass=0.01)
 
     tripod = Tripod(model)
 
