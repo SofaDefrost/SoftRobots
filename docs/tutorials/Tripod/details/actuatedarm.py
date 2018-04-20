@@ -3,6 +3,24 @@ from splib.objectmodel import *
 from stlib.visuals import VisualModel
 from stlib.components import addOrientedBoxRoi
 from s90servo import ServoMotor
+import Sofa
+
+displayBoxROI_indices = 0
+
+class visuBBoxValue(Sofa.PythonScriptController):
+    def __init__(self, node, bbox):
+        
+        self.node=node
+        self.bbox = bbox
+        
+        
+    def onBeginAnimationStep(self, dt):
+        
+        print 'index for bbox '
+        print self.node.getObject('BoxROI').name
+        print self.node.getObject('BoxROI').indices
+
+
 
 @SofaPrefab
 class ServoArm(object):
@@ -76,17 +94,25 @@ class ActuatedArm(object):
         constraint = self.node.createChild("Constraint")
         o = addOrientedBoxRoi(constraint, position=position,
                                           translation=vec3.vadd(translation, [0.0,25.0,0.0]),
-                                          eulerRotation=eulerRotation, scale=[45,15,30])
+                                          eulerRotation=eulerRotation, scale=[45,15,10])
 
         o.drawSize = 5
-        constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
+        t= constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
                                                         translation=translation, rotation=eulerRotation, inverse=True )
+        
+        if (displayBoxROI_indices):
+            visuBBoxValue(constraint, o)
+        
 
         constraint.createObject("MechanicalObject", name="dofs",
                                                 template="Vec3d", position="@TransformEngine.output_position",
                                                 showObject=True, showObjectScale=10.0)
 
         constraint.createObject('RigidMapping', name="mapping", input=self.node.ServoMotor.ServoWheel.dofs, output="@./")
+        
+
+        
+
         return constraint
 
 def createScene(rootNode):
