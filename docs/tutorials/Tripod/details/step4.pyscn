@@ -27,7 +27,6 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
-   
     body = ElasticBody(rootNode)
 
     fix = FixingBox(rootNode, body.ElasticMaterialObject, translation=[0.0,0.0,0.0], scale=[10,10,10])

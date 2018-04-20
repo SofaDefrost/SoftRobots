@@ -4,7 +4,7 @@
     Components: TetrahedronFEMForceField, Constraints
 """
 from splib.numerics import sin,cos, to_radians, RigidDof
-from stlib.scene import Scene
+from stlib.scene import Scene, Interaction
 from stlib.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 
@@ -41,8 +41,8 @@ def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
         translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
 
         c = ActuatedArm(tripod, name=name,
-                                       translation=translation, eulerRotation=eulerRotation,
-                                       attachingTo=body.ElasticMaterialObject)
+                        translation=translation, eulerRotation=eulerRotation,
+                        attachingTo=body.ElasticMaterialObject)
 
     return tripod
 
@@ -53,9 +53,6 @@ def createScene(rootNode):
 
     tripod = Tripod(rootNode)
 
-    simu = scene.createChild("SimulationPlan")
-    simu.createObject("EulerImplicit")
-    simu.createObject("CGLinearSolver")
-    simu.addChild(tripod.ActuatedArm0)
-    simu.addChild(tripod.ActuatedArm1)
-    simu.addChild(tripod.ActuatedArm2)
+    Interaction(rootNode, targets=[tripod.ActuatedArm0,
+                                   tripod.ActuatedArm1,
+                                   tripod.ActuatedArm2])

@@ -1,75 +1,34 @@
 # -*- coding: utf-8 -*-
 """
-    In step3 we are teaching the following concepts
-    Components: TetrahedronFEMForceField, Constraints
-"""
+    In step8 we are showing how to add collision detection
+    and contact management in our project.
 
-from stlib.scene import Scene, ContactHeader
+    The important component to see in the graph are:
+    - the ones added by the addContact function
+    - the one in the "Collision" part of the tripod object
+    - the one in the "Collision" part of the Sphere object
+"""
+from stlib.scene import Scene, Interaction
 from splib.numerics import sin,cos, to_radians
-from stlib.scene import Scene
-from stlib.physics.deformable import ElasticMaterialObject
 from stlib.physics.rigid import Sphere
 from actuatedarm import ActuatedArm
-
-def ElasticBody(parent):
-    body = parent.createChild("ElasticBody")
-
-    e = ElasticMaterialObject(body, 
-                              volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
-                              translation=[0,27,0], rotation=[90,0,0],
-                              youngModulus=150, poissonRatio=0.045, totalMass=0.032)
-    visual = body.createChild("Visual")
-
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", 
-                        translation=[0,27,0], rotation=[90,0,0])
-
-    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
-
-    visual.createObject("BarycentricMapping",
-                             input=e.dofs.getLinkPath(),
-                             output=visual.renderer.getLinkPath())
-
-    e.addCollisionModel(collisionMesh="data/mesh2/tripod_low.stl", translation=[0,27,0], rotation=[90,0,0])
-
-    return body
-
-
-def Tripod(parent, name="Tripod", radius=55.0, numMotors=3, angleShift=180.0):
-    tripod = parent.createChild(name)
-    body = ElasticBody(tripod)
-    
-    dist = radius
-    numstep = numMotors
-    for i in range(0,numstep):
-        name = "ActuatedArm"+str(i)
-        fi = float(i)
-        fnumstep = float(numstep)
-        angle = fi*360/fnumstep
-        angle2 = fi*360/fnumstep+angleShift
-        eulerRotation = [0,angle,0]
-        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
-
-        c = ActuatedArm(tripod, name=name,
-                                       translation=translation, eulerRotation=eulerRotation,
-                                       attachingTo=body.ElasticMaterialObject)
-    return tripod
-
+from tripod import Tripod
 
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0,-9810,0])
     scene.VisualStyle.displayFlags="showBehavior"
 
-    ContactHeader(rootNode, alarmDistance=10, contactDistance=2)
-    
+    scene.addContact(alarmDistance=10,
+                     contactDistance=2)
+
     model = scene.createChild("Model")
-    Sphere(model, translation=[0.0,40.0,0.0], uniformScale=10, totalMass=0.01)
+    Sphere(model, translation=[0.0,40.0,0.0],
+                  uniformScale=10,
+                  totalMass=0.01)
 
     tripod = Tripod(model)
 
-    simu = scene.createChild("SimulationPlan")
-    simu.createObject("EulerImplicit")    
-    simu.createObject("CGLinearSolver")
-    simu.addChild(tripod.ActuatedArm0)
-    simu.addChild(tripod.ActuatedArm1)
-    simu.addChild(tripod.ActuatedArm2)
+    Interaction(rootNode, [tripod.ActuatedArm0,
+                           tripod.ActuatedArm1,
+                           tripod.ActuatedArm2])
 

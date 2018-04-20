@@ -5,23 +5,6 @@ from stlib.components import addOrientedBoxRoi
 from s90servo import ServoMotor
 import Sofa
 
-displayBoxROI_indices = 0
-
-class visuBBoxValue(Sofa.PythonScriptController):
-    def __init__(self, node, bbox):
-        
-        self.node=node
-        self.bbox = bbox
-        
-        
-    def onBeginAnimationStep(self, dt):
-        
-        print 'index for bbox '
-        print self.node.getObject('BoxROI').name
-        print self.node.getObject('BoxROI').indices
-
-
-
 @SofaPrefab
 class ServoArm(object):
     def __init__(self, parent, mappingInput, name="ServoArm", indexInput=0):
@@ -47,10 +30,10 @@ class ServoArm(object):
                                            showObject=True,
                                            showObjectScale=15)
 
-        self.node.createObject('RigidRigidMapping', 
+        self.node.createObject('RigidRigidMapping',
                           name="mapping", input=mappingInput, index=indexInput)
 
-        visual = VisualModel(self.node, 'data/mesh/servo_arm_assembly.stl')
+        visual = VisualModel(self.node, 'data/mesh2/SG90_servoarm.stl')
         visual.createObject('RigidMapping', name="mapping")
 
 
@@ -99,19 +82,19 @@ class ActuatedArm(object):
         o.drawSize = 5
         t= constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
                                                         translation=translation, rotation=eulerRotation, inverse=True )
-        
+
         if (displayBoxROI_indices):
             visuBBoxValue(constraint, o)
-        
+
 
         constraint.createObject("MechanicalObject", name="dofs",
                                                 template="Vec3d", position="@TransformEngine.output_position",
                                                 showObject=True, showObjectScale=10.0)
 
         constraint.createObject('RigidMapping', name="mapping", input=self.node.ServoMotor.ServoWheel.dofs, output="@./")
-        
 
-        
+
+
 
         return constraint
 
@@ -123,7 +106,7 @@ def createScene(rootNode):
     scene.VisualStyle.displayFlags="showBehavior"
 
     arm1 = ActuatedArm(scene, name="arm1", translation=[-2.0,0.0,0.0])
-    
+
     def myanimate(target, factor):
         target.angle = factor
 

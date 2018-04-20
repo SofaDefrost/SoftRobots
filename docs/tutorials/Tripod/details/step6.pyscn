@@ -7,61 +7,9 @@ import Sofa
 from splib.numerics import RigidDof
 from splib.animation import animate
 from splib.constants import Key
-from stlib.scene import Scene
-from splib.numerics import sin,cos, to_radians
-from stlib.scene import Scene
-from stlib.physics.deformable import ElasticMaterialObject
-from actuatedarm import ActuatedArm
+from stlib.scene import Scene, Interaction
 
-export = 0
-
-
-
-def ElasticBody(parent):
-    body = parent.createChild("ElasticBody")
-
-    e = ElasticMaterialObject(body, 
-                              totalMass=0.032, poissonRatio=0.45, youngModulus=150, 
-                              volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",rotation=[90,0,0],  translation=[0.0,27,0.0])
-    
-
-    visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", 
-                        rotation=[90,0,0], translation=[0.0,27,0.0])
-    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
-
-    visual.createObject("BarycentricMapping",
-                             input=e.dofs.getLinkPath(),
-                             output=visual.renderer.getLinkPath())
-
-    e.addCollisionModel(collisionMesh="data/mesh/tripod.stl")
-    
-    if (export):
-        e.createObject('VTKExporter', filename='TripodDeformed', exportAtEnd='1', tetras='1') 
-
-    return body
-
-
-def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
-    tripod = parent.createChild(name)
-    body = ElasticBody(tripod)
-    
-    dist = radius
-    numstep = numMotors
-    for i in range(0,numstep):
-        name = "ActuatedArm"+str(i)
-        fi = float(i)
-        fnumstep = float(numstep)
-        angle = fi*360/fnumstep
-        angle2 = fi*360/fnumstep+angleShift
-        eulerRotation = [0,angle,0]
-        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
-
-        c = ActuatedArm(tripod, name=name,
-                                       translation=translation, eulerRotation=eulerRotation,
-                                       attachingTo=body.ElasticMaterialObject)
-
-    return tripod
+from tripod import Tripod
 
 def setupanimation(actuators, step, angularstep, factor):
     for actuator in actuators:
@@ -76,39 +24,35 @@ class MyController(Sofa.PythonScriptController):
 
     def onKeyPressed(self, key):
         if key == Key.uparrow:
-            self.actuators[0].ServoMotor.angle += self.stepsize 
-        elif key == Key.downarrow:            
+            self.actuators[0].ServoMotor.angle += self.stepsize
+        elif key == Key.downarrow:
             self.actuators[0].ServoMotor.angle -= self.stepsize
 
         if key == Key.leftarrow:
-            self.actuators[1].ServoMotor.angle += self.stepsize 
-        elif key == Key.rightarrow:            
+            self.actuators[1].ServoMotor.angle += self.stepsize
+        elif key == Key.rightarrow:
             self.actuators[1].ServoMotor.angle -= self.stepsize
 
         if key == Key.plus:
-            self.actuators[2].ServoMotor.angle += self.stepsize 
-        elif key == Key.minus:            
+            self.actuators[2].ServoMotor.angle += self.stepsize
+        elif key == Key.minus:
             self.actuators[2].ServoMotor.angle -= self.stepsize
 
         if key == Key.space:
-            animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0, 
-                                    "angularstep" : -0.14}, duration=0.2)    
+            animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
+                                    "angularstep" : -0.14}, duration=0.2)
 
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-9810,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
-    model = scene.createChild("Model")    
+    model = scene.createChild("Model")
     tripod = Tripod(model)
 
-    MyController(rootNode, [tripod.ActuatedArm0, 
-                            tripod.ActuatedArm1, 
+    MyController(rootNode, [tripod.ActuatedArm0,
+                            tripod.ActuatedArm1,
                             tripod.ActuatedArm2])
 
-    simu = scene.createChild("SimulationPlan")
-    simu.createObject("EulerImplicit")    
-    simu.createObject("CGLinearSolver")
-    simu.addChild(tripod.ActuatedArm0)
-    simu.addChild(tripod.ActuatedArm1)
-    simu.addChild(tripod.ActuatedArm2)
-
+    Interaction(rootNode, targets=[tripod.ActuatedArm0,
+                                   tripod.ActuatedArm1,
+                                   tripod.ActuatedArm2])

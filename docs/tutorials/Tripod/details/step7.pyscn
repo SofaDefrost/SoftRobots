@@ -1,55 +1,13 @@
 # -*- coding: utf-8 -*-
 import Sofa
 from splib.debug import DebugManager, drawText 
-from stlib.scene import Scene, ContactHeader
+from stlib.scene import Scene, Interaction
 from splib.numerics import sin,cos, to_radians, RigidDof
 from splib.animation import animate
 from stlib.scene import Scene
 from splib.constants import Key
-from stlib.physics.deformable import ElasticMaterialObject
-from stlib.physics.rigid import Sphere
-from actuatedarm import ActuatedArm
-from math import floor
-
-def ElasticBody(parent):
-    body = parent.createChild("ElasticBody")
-
-    e = ElasticMaterialObject(body,
-                              volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
-                              translation=[0.0,30,0.0], rotation=[90,0,0], youngModulus=150, poissonRatio=0.032, totalMass=0.032)
-
-    visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")
-    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5], rotation=[90,0,0], translation=[0,30,0])
-
-    visual.createObject("BarycentricMapping",
-                             input=e.dofs.getLinkPath(),
-                             output=visual.renderer.getLinkPath())
-
-    e.addCollisionModel(collisionMesh="data/mesh2/tripod_low.stl", 
-                        translation=[0.0,30,0.0], rotation=[90,0,0])
-
-    return body
-
-def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
-    tripod = parent.createChild(name)
-    body = ElasticBody(tripod)
-
-    dist = radius
-    numstep = numMotors
-    for i in range(0,numstep):
-        name = "ActuatedArm"+str(i)
-        fi = float(i)
-        fnumstep = float(numstep)
-        angle = fi*360/fnumstep
-        angle2 = fi*360/fnumstep+angleShift
-        eulerRotation = [0,angle,0]
-        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
-
-        c = ActuatedArm(tripod, name=name,
-                                       translation=translation, eulerRotation=eulerRotation,
-                                       attachingTo=body.ElasticMaterialObject)
-    return tripod
+from math import floor, pi
+from tripod import Tripod 
 
 def setupanimation(actuators, step, angularstep, factor):
     for actuator in actuators:
@@ -110,7 +68,7 @@ class SerialPortController(Sofa.PythonScriptController):
         angles = []
 
         for servo in self.servos:
-            angleByte = 90+floor((servo.angle+3.14/2.0)*255/3.14) 
+            angleByte = 90+floor((servo.angle+pi/2.0)*255/pi) 
             if angleByte < 60:
                 angleByte = 60
             if angleByte > 180:
@@ -137,10 +95,7 @@ def createScene(rootNode):
                             tripod.ActuatedArm1,
                             tripod.ActuatedArm2], serialportctrl)
 
-    simu = scene.createChild("Interaction")
-    simu.createObject("EulerImplicit")    
-    simu.createObject("CGLinearSolver")
-    simu.addChild(tripod.ActuatedArm0)
-    simu.addChild(tripod.ActuatedArm1)
-    simu.addChild(tripod.ActuatedArm2)
+    Interaction(rootNode, [tripod.ActuatedArm0,
+                           tripod.ActuatedArm1,
+                           tripod.ActuatedArm2])
 

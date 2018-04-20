@@ -1,0 +1,44 @@
+from splib.numerics import sin,cos, to_radians, RigidDof
+from stlib.physics.deformable import ElasticMaterialObject
+from actuatedarm import ActuatedArm
+
+def ElasticBody(parent):
+    body = parent.createChild("ElasticBody")
+
+    e = ElasticMaterialObject(body,
+                              volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
+                              translation=[0.0,30,0.0], rotation=[90,0,0], youngModulus=150, poissonRatio=0.45, totalMass=0.032)
+
+    visual = body.createChild("Visual")
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")
+    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5], rotation=[90,0,0], translation=[0,30,0])
+
+    visual.createObject("BarycentricMapping",
+                             input=e.dofs.getLinkPath(),
+                             output=visual.renderer.getLinkPath())
+
+    e.addCollisionModel(collisionMesh="data/mesh2/tripod_low.stl", 
+                        translation=[0.0,30,0.0], rotation=[90,0,0])
+
+    return body
+
+def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
+    tripod = parent.createChild(name)
+    body = ElasticBody(tripod)
+
+    dist = radius
+    numstep = numMotors
+    for i in range(0,numstep):
+        name = "ActuatedArm"+str(i)
+        fi = float(i)
+        fnumstep = float(numstep)
+        angle = fi*360/fnumstep
+        angle2 = fi*360/fnumstep+angleShift
+        eulerRotation = [0,angle,0]
+        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
+
+        c = ActuatedArm(tripod, name=name,
+                                       translation=translation, eulerRotation=eulerRotation,
+                                       attachingTo=body.ElasticMaterialObject)
+    return tripod
+
