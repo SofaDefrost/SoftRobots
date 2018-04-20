@@ -29,12 +29,12 @@ class ServoArm(object):
                                            showObject=True,
                                            showObjectScale=15)
 
-        self.node.createObject('RigidRigidMapping', 
+        self.node.createObject('RigidRigidMapping',
                           name="mapping", input=mappingInput)
 
         visual = VisualModel(self.node, 'data/mesh2/SG90_servoarm.stl')
         visual.createObject('RigidMapping', name="mapping")
-        
+
 
 @SofaPrefab
 class ActuatedArm(object):
@@ -42,22 +42,22 @@ class ActuatedArm(object):
            Parameters:
              - translation the position in space of the structure
              - eulerRotation the orientation of the structure
-             - attachingTo (MechanicalObject)    a rest shape forcefield will constraint the object 
-                                                 to follow arm position   
+             - attachingTo (MechanicalObject)    a rest shape forcefield will constraint the object
+                                                 to follow arm position
            Structure:
            Node : {
                 name : "ActuatedArm"
                 MechanicalObject     // Rigid position of the motor
-                ServoMotor           // The s90 servo motor with it actuated wheel
+                ServoMotor           // The s90 servo motor with its actuated wheel
                 ServoArm             // The actuation arm connected to ServoMotor.ServoWheel
             }
     """
-    def __init__(self, parent, name="ActuatedArm", 
+    def __init__(self, parent, name="ActuatedArm",
                        translation=[0.0,0.0,0.0], eulerRotation=[0.0,0.0,0.0], attachingTo=None):
-        
+
         self.node = parent.createChild(name)
         r=Transform(translation, eulerRotation=eulerRotation)
-        
+
         self.node.createObject("MechanicalObject", name="dofs", size=1, position=r.toSofaRepr(),
                           template='Rigid', showObject=True, showObjectScale=0.5)
 
@@ -70,8 +70,8 @@ class ActuatedArm(object):
             attachingTo.createObject('RestShapeSpringsForceField',
                                      points = constraint.BoxROI.getData("indices"),
                                      external_rest_shape = constraint.dofs,
-                                     stiffness='1e12')  
-            
+                                     stiffness='1e12')
+
     def addConstraint(self, position, translation, eulerRotation):
         constraint = self.node.createChild("Constraint")
         o = addOrientedBoxRoi(constraint, position=position,
@@ -100,7 +100,5 @@ def createScene(rootNode):
     
     def myanimate(target, factor):
         target.angle = factor
-        
-    animate(myanimate, {"target" : arm1.ServoMotor}, duration=0.5, mode="pingpong" )    
-                
 
+    animate(myanimate, {"target" : arm1.ServoMotor}, duration=0.5, mode="pingpong" )
