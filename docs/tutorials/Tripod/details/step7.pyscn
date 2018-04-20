@@ -11,13 +11,12 @@ from stlib.physics.rigid import Sphere
 from actuatedarm import ActuatedArm
 from math import floor
 
-
 def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
 
     e = ElasticMaterialObject(body,
                               volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
-                              translation=[0.0,30,0.0], rotation=[90,0,0], youngModulus=500, totalMass=0.32)
+                              translation=[0.0,30,0.0], rotation=[90,0,0], youngModulus=150, poissonRatio=0.032, totalMass=0.032)
 
     visual = body.createChild("Visual")
     visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")
@@ -126,8 +125,7 @@ def createScene(rootNode):
     scene.VisualStyle.displayFlags="showBehavior"
     DebugManager(rootNode)
     
-    model = scene.createChild("Model")
-    
+    model = scene.createChild("Model")    
     tripod = Tripod(model)
 
     serial = SerialPortBridgeGeneric(rootNode)
@@ -139,8 +137,8 @@ def createScene(rootNode):
                             tripod.ActuatedArm1,
                             tripod.ActuatedArm2], serialportctrl)
 
-    simu = scene.createChild("SimulationPlan")
-    simu.createObject("EulerImplicit")
+    simu = scene.createChild("Interaction")
+    simu.createObject("EulerImplicit")    
     simu.createObject("CGLinearSolver")
     simu.addChild(tripod.ActuatedArm0)
     simu.addChild(tripod.ActuatedArm1)
