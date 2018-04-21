@@ -7,17 +7,19 @@ def ElasticBody(parent):
 
     e = ElasticMaterialObject(body,
                               volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
-                              translation=[0.0,30,0.0], rotation=[90,0,0], youngModulus=150, poissonRatio=0.45, totalMass=0.032)
+                              translation=[0.0,30,0.0], rotation=[90,0,0],
+                              poissonRatio=0.45, totalMass=0.032)
 
     visual = body.createChild("Visual")
     visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")
-    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5], rotation=[90,0,0], translation=[0,30,0])
+    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5],
+                        rotation=[90,0,0], translation=[0,30,0])
 
     visual.createObject("BarycentricMapping",
                              input=e.dofs.getLinkPath(),
                              output=visual.renderer.getLinkPath())
 
-    e.addCollisionModel(collisionMesh="data/mesh2/tripod_low.stl", 
+    e.addCollisionModel(collisionMesh="data/mesh2/tripod_low.stl",
                         translation=[0.0,30,0.0], rotation=[90,0,0])
 
     return body

@@ -1,29 +1,36 @@
 # -*- coding: utf-8 -*-
 """
-    In step2 we are teaching the basic concepts of Sofa that are:
-    Components: MechanicaObject, UniformMass, (rester vague: EulerImplicit, CGLinearSolver)
-"""       
+Step 2:
+We are now introducing basic mechanical modeling, the new components brings
+time integration and mechanical object object to the scene .
+"""
 from stlib.scene import Scene
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])    
-    scene.dt = 0.001
-    
-    visual = rootNode.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")    
-    visual.createObject("OglModel", name="renderer", src='@loader', color=[1.0,1.0,1.0,0.5])
-    
+    ## Set the gravity
+    scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])
 
-    elasticbody = rootNode.createChild("ElasticBody") 
+    ## Set the timestep in seconds
+    scene.dt = 0.001
+
+    ## The Visual object from step 1
+    visual = rootNode.createChild("Visual")
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")
+    visual.createObject("OglModel", name="renderer", src='@loader', color=[1.0,1.0,1.0,0.5])
+
+    ## Basic mechanical modelling
+    elasticbody = rootNode.createChild("ElasticBody")
     elasticbody.createObject("EulerImplicit")
     elasticbody.createObject("SparseLDLSolver")
     elasticbody.createObject("MechanicalObject", name="dofs",
-                             position=visual.loader.position, 
-                             showObject=True, showObjectScale=5.0, 
+                             position=visual.loader.position,
+                             showObject=True, showObjectScale=5.0,
                              rotation=[90.0,0.0,0.0])
     elasticbody.createObject("UniformMass")
 
-    elasticbody.createObject("IdentityMapping", 
-                             input=elasticbody.dofs.getLinkPath(), 
+    ## A mapping apply the deformation computed on the mechanical model (the input parameter)
+    ## to the visual model (the output parameter).
+    elasticbody.createObject("IdentityMapping",
+                             input=elasticbody.dofs.getLinkPath(),
                              output=visual.renderer.getLinkPath())
 

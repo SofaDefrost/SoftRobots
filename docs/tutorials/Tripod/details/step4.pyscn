@@ -1,33 +1,46 @@
 # -*- coding: utf-8 -*-
 """
-    In step3 we are teaching the following concepts
-    Components: TetrahedronFEMForceField, Constraints
-"""       
+Step 4:
+In this step we introduce the fact that we can make reusable bloc of sofa using functions.
+In the following those reusable will be called "prefabs".
+
+"""
 from stlib.scene import Scene
+
+## Import a prefab that implements an ElasticMaterialObject
 from stlib.physics.deformable import ElasticMaterialObject
+
+## One prefab to fix a part of the object to be stay at rest position.
 from fixingbox import FixingBox
 
+## This function contains something similar to the previous step but using prefab
+## instead of creating each components.
 def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
 
     e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
                               poissonRatio=0.45, youngModulus=150, totalMass=0.032,
                               rotation=[90,0,0])
+
     visual = e.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", rotation=[90,0,0])    
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", rotation=[90,0,0])
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
-
-    visual.createObject("BarycentricMapping", 
-                             input=e.dofs.getLinkPath(), 
+    visual.createObject("BarycentricMapping",
+                             input=e.dofs.getLinkPath(),
                              output=visual.renderer.getLinkPath())
+    return body
 
-    return body 
 
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
+    ## Instanciate the prefab into the graph
     body = ElasticBody(rootNode)
 
+    ## Instanciate the fixing prefab into the graph constraining the mechanical object from
+    ## the 'body' node.
     fix = FixingBox(rootNode, body.ElasticMaterialObject, translation=[0.0,0.0,0.0], scale=[10,10,10])
+
+    ## Change the property of the boxroi so we can see the constraint area.
     fix.boxroi.drawBoxes=True

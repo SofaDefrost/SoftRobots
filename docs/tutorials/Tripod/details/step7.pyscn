@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import Sofa
-from splib.debug import DebugManager, drawText 
+from splib.debug import DebugManager, drawText
 from stlib.scene import Scene, Interaction
 from splib.numerics import sin,cos, to_radians, RigidDof
 from splib.animation import animate
 from stlib.scene import Scene
 from splib.constants import Key
 from math import floor, pi
-from tripod import Tripod 
+from tripod import Tripod
 
 def setupanimation(actuators, step, angularstep, factor):
     for actuator in actuators:
@@ -54,8 +54,8 @@ class SerialPortController(Sofa.PythonScriptController):
         self.servos = inputs
         self.serialport = serialport
         self.serialport.sentData = [150,150,150]
-        self.state = "init"       
-  
+        self.state = "init"
+
     def onEndAnimationStep(self, dt):
         if self.state == "init":
             drawText("Press A once to got to final configuration", 100,50)
@@ -68,12 +68,12 @@ class SerialPortController(Sofa.PythonScriptController):
         angles = []
 
         for servo in self.servos:
-            angleByte = 90+floor((servo.angle+pi/2.0)*255/pi) 
+            angleByte = 90+floor((servo.angle+pi/2.0)*255/pi)
             if angleByte < 60:
                 angleByte = 60
             if angleByte > 180:
                 angleByte = 180
- 
+
             angles.append( angleByte )
 
         self.serialport.sentData = angles
@@ -82,8 +82,8 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0], plugins=["SoftRobots"])
     scene.VisualStyle.displayFlags="showBehavior"
     DebugManager(rootNode)
-    
-    model = scene.createChild("Model")    
+
+    model = scene.createChild("Model")
     tripod = Tripod(model)
 
     serial = SerialPortBridgeGeneric(rootNode)

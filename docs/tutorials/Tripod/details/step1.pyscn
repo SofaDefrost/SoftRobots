@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-    In this step we are teaching the basic concept of Sofa that are:
-    Concepts: SceneGraph, Node, Components, Data and data links, 
-    GUI: Scenegraph view, 3d view, animate button, double click on to get the data,  
-"""       
+Step 1:
+In this step we are teaching the basic concept of Sofa that are:
+SceneGraph, Node, Components, Data and data links, Scenegraph view, 3d view,
+animate button, double click on to get the data,
+"""
 def createScene(rootNode):
     visual = rootNode.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", rotation=[90,0,0])    
+    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", rotation=[90,0,0])
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
 

@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+""" ActuatedArm for the tripod robot.
+
+    This model is part of the SoftRobot toolkit available at:
+        https://github.com/SofaDefrost/SoftRobots
+
+    Available prefab:
+        - ActuatedArm
+        - ServoArm
+"""
 from splib.numerics import Transform, vec3
 from splib.objectmodel import *
 from stlib.visuals import VisualModel
@@ -13,6 +23,7 @@ class ServoArm(object):
            Parameters:
                 parent:        node where the ServoArm will be attached
                 mappingInput:  the rigid mechanical object that will control the orientation of the servo arm
+                indexInput (int)
 
            Structure:
            Node : {
@@ -77,15 +88,11 @@ class ActuatedArm(object):
         constraint = self.node.createChild("Constraint")
         o = addOrientedBoxRoi(constraint, position=position,
                                           translation=vec3.vadd(translation, [0.0,25.0,0.0]),
-                                          eulerRotation=eulerRotation, scale=[45,15,10])
+                                          eulerRotation=eulerRotation, scale=[45,15,30])
 
         o.drawSize = 5
         t= constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
                                                         translation=translation, rotation=eulerRotation, inverse=True )
-
-        if (displayBoxROI_indices):
-            visuBBoxValue(constraint, o)
-
 
         constraint.createObject("MechanicalObject", name="dofs",
                                                 template="Vec3d", position="@TransformEngine.output_position",
@@ -110,4 +117,5 @@ def createScene(rootNode):
     def myanimate(target, factor):
         target.angle = factor
 
-    animate(myanimate, {"target" : arm1.ServoMotor}, duration=0.5, mode="pingpong" )
+    animate(myanimate, {"target" : arm1.ServoMotor},
+                        duration=0.5, mode="pingpong" )

@@ -28,31 +28,31 @@ class ServoMotor(SofaObject):
 
     The prefab ServoMotor is composed of:
     - a visual model
-    - a mechanical model composed two rigids. One rigid is for the motor body 
+    - a mechanical model composed two rigids. One rigid is for the motor body
       while the other is implementing the servo rotating wheel.
-    - a KinematicMotorController to compute from an input angle the new orientation of the 
-      servo wheel according to its parent frame. 
+    - a KinematicMotorController to compute from an input angle the new orientation of the
+      servo wheel according to its parent frame.
 
     The prefab has the following parameters:
-    - translation       to change default location of the servo (default [0.0,0.0,0.0]) 
+    - translation       to change default location of the servo (default [0.0,0.0,0.0])
     - rotation          to change default rotation of the servo (default [0.0,0.0,0.0,1])
     - scale             to change default scale of the servo (default 1)
     - doAddVisualModel  to control wether a visual model is added (default True)
-    
+
     The prefab have the following property:
     - angle     use this to specify the angle of rotation of the servo motor
-    
+
     Example of use in a Sofa scene:
-            
+
     def createScene(root):
         ...
         servo = ServoMotor(root)
 
-        ## Direct access to the components
-        servo.node.angle = 1.0  
+        ## Direct access to the components
+        servo.node.angle = 1.0
         servo.dofs.showObjects = False
 
-        ## Indirect access to the components
+        ## Indirect access to the components
         get(servo.node, "dofs.showObjects").value = False
         get(servo.node, "servowheel.dofs.showObjects").value = False
     """
@@ -104,7 +104,6 @@ class KinematicMotorController(Sofa.PythonScriptController):
         rigidtarget = RigidDof(self.target)
 
         rigidtarget.copyFrom( rigidparent )
-        #rigidtarget.translate([0.0,20.0,0.0])
         rigidtarget.rotateAround( rigidparent.left, angle)
 
     def bwdInitGraph(self, root):

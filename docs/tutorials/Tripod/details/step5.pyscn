@@ -1,34 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-    In step3 we are teaching the following concepts
-    Components: TetrahedronFEMForceField, Constraints
+Step 5: Adding the actuatedarms prefab.
+This prefab is defining the servo motor, the servo arm and the constraint that attache the
+end of the arm to the deformable object.
 """
 from splib.numerics import sin,cos, to_radians, RigidDof
 from stlib.scene import Scene, Interaction
-from stlib.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
+from tripod import ElasticBody
 
-def ElasticBody(parent):
-    body = parent.createChild("ElasticBody")
-
-    e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh2/tripod_mid.gidmsh", 
-                              poissonRatio=0.45, youngModulus=150, totalMass=0.032,
-                              translation=[0.0,27.0,0.0], rotation=[90,0,0])
-    visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", rotation=[90,0,0], 
-                        translation=[0.0,27.0,0.0])
-    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
-
-    visual.createObject("BarycentricMapping",
-                             input=e.dofs.getLinkPath(),
-                             output=visual.renderer.getLinkPath())
-    return body
-
-
+## Let's define a Tripod Prefab now,
 def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
     tripod = parent.createChild(name)
+
+    ## It is using the ElasticBody we made in the previous step.
     body = ElasticBody(tripod)
-    
+
+    ## We put actuated arm at different location using a formulat
     dist = radius
     numstep = numMotors
     for i in range(0,numstep):

@@ -8,11 +8,28 @@
     - the one in the "Collision" part of the tripod object
     - the one in the "Collision" part of the Sphere object
 """
+import Sofa
+from splib.constants import Key
 from stlib.scene import Scene, Interaction
-from splib.numerics import sin,cos, to_radians
 from stlib.physics.rigid import Sphere
-from actuatedarm import ActuatedArm
 from tripod import Tripod
+from tripodcontroller import MyController
+
+class JumpController(Sofa.PythonScriptController):
+    """Press Z/Q to play with the ball"""
+    def __init__(self, node, actuators):
+        self.actuators = actuators
+
+    def onKeyPressed(self, key):
+        apos = None
+        if key == Key.Z:
+            apos = -3.14/4
+        if key == Key.Q:
+            apos = -3.14/3
+
+        if apos != None:
+            for actuator in self.actuators:
+                actuator.ServoMotor.angle = apos
 
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0,-9810,0])
@@ -27,6 +44,14 @@ def createScene(rootNode):
                   totalMass=0.01)
 
     tripod = Tripod(model)
+
+    MyController(rootNode, [tripod.ActuatedArm0,
+                            tripod.ActuatedArm1,
+                            tripod.ActuatedArm2])
+
+    JumpController(rootNode, [tripod.ActuatedArm0,
+                              tripod.ActuatedArm1,
+                              tripod.ActuatedArm2])
 
     Interaction(rootNode, [tripod.ActuatedArm0,
                            tripod.ActuatedArm1,

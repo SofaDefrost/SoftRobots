@@ -1,15 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Step 6: We are adding controller.
-The controller will connect user actions to specific behavior.
-"""
 import Sofa
 from splib.numerics import RigidDof
 from splib.animation import animate
 from splib.constants import Key
-from stlib.scene import Scene, Interaction
-
-from tripod import Tripod
 
 def setupanimation(actuators, step, angularstep, factor):
     """This functions is called repeatidely in an animation.
@@ -51,18 +43,3 @@ class MyController(Sofa.PythonScriptController):
         if key == Key.A:
             animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
                                     "angularstep" : -0.14}, duration=0.2)
-
-def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0,-9810,0.0])
-    scene.VisualStyle.displayFlags="showBehavior"
-
-    model = scene.createChild("Model")
-    tripod = Tripod(model)
-
-    MyController(rootNode, [tripod.ActuatedArm0,
-                            tripod.ActuatedArm1,
-                            tripod.ActuatedArm2])
-
-    Interaction(rootNode, targets=[tripod.ActuatedArm0,
-                                   tripod.ActuatedArm1,
-                                   tripod.ActuatedArm2])
