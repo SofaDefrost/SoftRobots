@@ -9,6 +9,8 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])
     scene.dt = 0.001
 
+    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
+
     ## Mechanical modelling is done through 'forcefields'
     ## It is possible to visualize the "forcefields" by doing
     scene.VisualStyle.displayFlags="showForceFields"

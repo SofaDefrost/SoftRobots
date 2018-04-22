@@ -13,6 +13,8 @@ def createScene(rootNode):
     ## Set the timestep in seconds
     scene.dt = 0.001
 
+    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
+
     ## The Visual object from step 1
     visual = rootNode.createChild("Visual")
     visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")

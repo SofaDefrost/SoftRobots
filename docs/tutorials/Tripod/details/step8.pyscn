@@ -35,6 +35,8 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0,-9810,0])
     scene.VisualStyle.displayFlags="showBehavior"
 
+    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
+
     scene.addContact(alarmDistance=10,
                      contactDistance=2)
 

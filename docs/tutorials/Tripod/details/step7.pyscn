@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import Sofa
-#from splib.debug import DebugManager, drawText
 from stlib.scene import Scene, Interaction
 from splib.numerics import sin,cos, to_radians, RigidDof
 from splib.animation import animate
@@ -81,7 +80,8 @@ class SerialPortController(Sofa.PythonScriptController):
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0], plugins=["SoftRobots"])
     scene.VisualStyle.displayFlags="showBehavior"
-    #DebugManager(rootNode)
+
+    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
 
     model = scene.createChild("Model")
     tripod = Tripod(model)
