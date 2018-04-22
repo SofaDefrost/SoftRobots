@@ -30,9 +30,19 @@ The robot we are going to simulate and controlled is acutated by three servo mot
 
 ![](images/tripodPhoto.jpg){width=25%}
 
+Once a scene is loaded in Sofa you can now click on the [Animate] button in the Sofa GUI and start interacting
+in the 3D window. When your cursor have clicked on the 3D window you can control the
+simulation to manipulate the gripper or interact by pressing CTRL+keys
+
+Note that with MacOS, you may have to use *cmd* instead of *ctrl*.
 
 ### Step 1: Making a simple scene with Sofa
 
+Sofa is loading the description of the simulation from *pyscn* files. The content of these file is in fact standard python code with 
+at least one function named *createScene* taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa
+to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode".
+
+A very simple scene may look like:
 <pre>
 <a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
@@ -63,6 +73,8 @@ The robot we are going to simulate and controlled is acutated by three servo mot
 
 ### Step 2: Adding mechanical objects
 
+We will now add a deformable object to a scene. To do that we first need to define a place that will hold the degree of freedom, this place
+is called a *MechanicalObject* as in the following scene: 
 <pre>
 <a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
@@ -85,6 +97,14 @@ The robot we are going to simulate and controlled is acutated by three servo mot
 
 
 ### Step 3: Modelling deformable material
+To implement a mechanical behavior the MechanicalObject must be connected to one or multiple ForceFields. These Forcefieds are in charge 
+of computing the internal forces that will guide the deformation of the computation. There exists a lot of different mechanical behavior and it is important to understand the one that approximates the behavior of the real object your want to simulate.In particular, it is important to know how soft or stiff the material is, if it has an elastic or more complex 
+behaviour (Hyperelastic, plastic, etc...). In our case, the real material is silicon which we will approximate 
+with an elastic deformation law and simulate using the Finite Element Method (..autolink::General::FEM). In sofa, 
+the ..autolink::STLIB::ElasticMaterialObject from *stlib.physics.deformable* provides a ready to use prefabricated object
+to easily add such an object in your scene. Nevertheless, before using this prefabricated object let's try to build 
+our own based on a corotational Finite Element Method with a tetrahedral volumetric representation of the shape. In our case 
+we are using a tetrahedral mesh stored in a "gidmesh" file. 
 
 <pre>
 <a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
@@ -97,6 +117,10 @@ The robot we are going to simulate and controlled is acutated by three servo mot
 ```
 </div>
 </div>
+
+If you run the the scene you can see the tetrahedral mesh with blue-ish element. To control the visualization
+of this computation mesh you can either check the "ForceFields" option within the *View* panel in the runSofa GUI
+or, as we did, change the displayFlags property of the ..autolink::Sofa::VisualStyle. 
 
 ####<i>At this step you should be able to:</i>
 
@@ -132,6 +156,9 @@ The robot we are going to simulate and controlled is acutated by three servo mot
 
 ### Step 5: Adding actuators
 
+It is now time to add the actuators that will deform the elastic shape. This is done by using a prefabricated object 
+from actuatedarm.py. 
+
 <pre>
 <a href="details/step5.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
@@ -159,8 +186,25 @@ The robot we are going to simulate and controlled is acutated by three servo mot
 
 ### Step 6: Adding controllers
 
-Controllers allow to implement custom behavior and user interaction in python. In this step we are adding such a controller 
-name MyController. This implemented behavior is that the ServoMotor angles when the user is pressing keys up, down, left, right, + and -.  When the user is pressing the spacebar an animation is started that moves the robots from its a flat configuration to one that match the ones of the fabricated robot. 
+The servo motors have a default angular position. To interactively change this default position we will add a dedicated object called a *Controller*. Controllers allow to implement custom behavior and end-user interaction directly using python. 
+
+In this step we are adding such a controller. 
+
+The controller is implementing:
+
+ - CTRL+Key A to move the servo motors from their initial shape to their physical position 
+
+ - CTRL+key up to increase the angle for servo 0
+
+ - CTRL+key down to decrease change the angle for servo 0
+
+ - CTRL+Key left to increase the angle for servo 1 
+
+ - CTRL+Key right to decrease the angle for servo 1 
+
+ - CTRL+Key plus to increase the angle for servo 2
+
+ - CTRL+Key minus to decrease the angle for servo 2
 
 <pre>
 <a href="details/step6.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
@@ -175,6 +219,25 @@ name MyController. This implemented behavior is that the ServoMotor angles when 
 </div>
 
 ### Step 7: Connecting to the  physical world. 
+It is now time to connect our simulated robot to the real one. To do that we need to add two things. The first one,  *SerialPortBridgeGeneric*, is a component to handle the communication throught the USB/Serial port, the second one, *SerialPortController*,  is reading the angle from the servo motor's data field to actually send them to the communication layer.
+
+The controller in the scene are now implementing:
+
+ - CTRL+Key A to move the servo motors from their initial shape to their physical position
+
+ - CTRL+Key B to start sending data to the real robot
+
+ - CTRL+key up to increase the angle for servo 0
+
+ - CTRL+key down to decrease change the angle for servo 0
+
+ - CTRL+Key left to increase the angle for servo 1 
+
+ - CTRL+Key right to decrease the angle for servo 1 
+
+ - CTRL+Key plus to increase the angle for servo 2
+
+ - CTRL+Key minus to decrease the angle for servo 2
 
 <pre>
 <a href="details/step7.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
@@ -190,7 +253,34 @@ name MyController. This implemented behavior is that the ServoMotor angles when 
 
 
 ### Step 8: Adding collision
-In this step we are adding a rigid Sphere object falling on the robots. By default there is no collision so we need to specifically activate that by adding 'Contact' to the existing scene. 
+
+By default Sofa doesn't handle collision as they are very expensive to compute. To activate collisions you need to define specially
+the geometries for which collions are checked and how they are handled. In this step we are adding a rigid Sphere object falling on the robots. By default there is no collision so we need to specifically activate that by adding 'Contact' to the existing scene. 
+
+A new controller, called JumpController*, is also added to change rapidely the servo motors angles so the robots can plays with the 
+falling ball.
+
+The controller in the scene are now implementing:
+
+ - CTRL+Key A to move the servo motors to their physical position 
+
+ - CTRL+Key Q to move the servo motors to an intermediate angle position
+
+ - CTRL+Key Z to move the servo motors to an high angular position
+
+ - CTRL+Key  to start sending data to the real robot
+
+ - CTRL+key up to increase the angle for servo 0
+
+ - CTRL+key down to decrease change the angle for servo 0
+
+ - CTRL+Key left to increase the angle for servo 1 
+
+ - CTRL+Key right to decrease the angle for servo 1 
+
+ - CTRL+Key plus to increase the angle for servo 2
+
+ - CTRL+Key minus to decrease the angle for servo 2
 
 <pre>
 <a href="details/step8.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
