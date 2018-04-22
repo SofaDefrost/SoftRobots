@@ -41,6 +41,7 @@ class MyController(Sofa.PythonScriptController):
             self.serialportctrl.state = "no-comm"
             animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
                                     "angularstep" : -0.145}, duration=0.2)
+
         if key == Key.B and self.serialportctrl.state == "no-comm":
             self.serialportctrl.state = "comm"
 
@@ -57,13 +58,11 @@ class SerialPortController(Sofa.PythonScriptController):
 
     def onEndAnimationStep(self, dt):
         if self.state == "init":
-            drawText("Press A once to got to final configuration", 100,50)
             return
 
         if self.state == "no-comm":
-            drawText("Press B once to start sending data", 100,50)
             return
-
+        
         angles = []
 
         for servo in self.servos:
