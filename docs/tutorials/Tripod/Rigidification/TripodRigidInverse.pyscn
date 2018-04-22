@@ -3,7 +3,7 @@ from math import sin,cos,pi
 
 import os
 path = os.path.dirname(os.path.abspath(__file__))+'/../details/data/mesh/'
-path3D = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
+path3D = os.path.dirname(os.path.abspath(__file__))+'/../details/data/mesh2/'
 from rigidControl import *
 
 def AddConstantAndtransformTableInString(Table, add):

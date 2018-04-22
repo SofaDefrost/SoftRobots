@@ -3,7 +3,7 @@ from math import sin,cos,pi
 
 import os
 path = os.path.dirname(os.path.abspath(__file__))+'/../details/data/mesh/'
-path3D = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
+path3D = os.path.dirname(os.path.abspath(__file__))+'/../details/data/mesh2/'
 from rigidControl import *
 
 def AddConstantAndtransformTableInString(Table, add):
@@ -87,7 +87,7 @@ def createScene(rootNode):
 
 
 
-    center = nodeFEM.createObject('SphereROI', template='Vec3d', centers='0 0 0', radii='5', position='@loader.postion', name='ROI', computeTriangles='0', computeEdges='0')
+    center = nodeFEM.createObject('SphereROI', template='Vec3d', centers='0 0 0', radii='5', position='@loader.position', name='ROI', computeTriangles='0', computeEdges='0')
     center.init()
     centerList = transformDoubleTableInSimpleTable(center.indices)
 
