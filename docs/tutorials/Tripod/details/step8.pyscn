@@ -19,6 +19,7 @@ class JumpController(Sofa.PythonScriptController):
     """Press Z/Q to play with the ball"""
     def __init__(self, node, actuators):
         self.actuators = actuators
+        self.name = "JumpController"
 
     def onKeyPressed(self, key):
         apos = None

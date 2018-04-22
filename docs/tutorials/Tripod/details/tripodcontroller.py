@@ -21,6 +21,7 @@ class MyController(Sofa.PythonScriptController):
          they are occupying in the real robot.
     """
     def __init__(self, node, actuators):
+        self.name = "TripodController"
         self.stepsize = 0.1
         self.actuators = actuators
 
