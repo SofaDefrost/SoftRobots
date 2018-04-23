@@ -36,7 +36,7 @@ def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode)
+    scene = Scene(rootNode, gravity=[0.0,-9810,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
     scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
