@@ -140,6 +140,8 @@ public:
     /////////////// Inherited from BaseObject //////////////////////
     virtual void init() override;
     virtual void reinit() override;
+
+	virtual void draw(const VisualParams* vparams) override;
     ///////////////////////////////////////////////////////////////
 
 
@@ -173,6 +175,8 @@ protected:
 
     double m_displacement;
     double m_force;
+	double m_imposedValue;
+	std::string m_type;
 
 };
 

@@ -203,7 +203,7 @@ void SlidingModel<DataTypes>::initDatas()
     }
 
     d_displacement.setValue(0.0);
-    d_force.setValue(0.0);
+    d_force.setValue(1.0);
 }
 
 

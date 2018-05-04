@@ -132,8 +132,10 @@ void SlidingConstraintActuator<DataTypes>::getConstraintResolution(const Constra
     SOFA_UNUSED(cParam);
 
     double imposed_value=d_value.getValue()[d_valueIndex.getValue()];
+	m_imposedValue = imposed_value;
+	m_type = d_valueType.getValue().getSelectedItem();
 	
-    if(d_valueType.getValue().getSelectedItem() == "displacement") // displacement
+    if(m_type == "displacement") // displacement
     {
         if(d_maxDispVariation.isSet())
         {
@@ -144,30 +146,47 @@ void SlidingConstraintActuator<DataTypes>::getConstraintResolution(const Constra
             if(imposed_value < displacement && imposed_value-displacement<-d_maxDispVariation.getValue())
                 imposed_value = displacement-d_maxDispVariation.getValue();
         }
-
-
-        SlidingDisplacementConstraintResolution *cr = new SlidingDisplacementConstraintResolution(imposed_value, &m_force);
+		SlidingDisplacementConstraintResolution *cr = new SlidingDisplacementConstraintResolution(imposed_value, &m_force);
         resTab[offset++] =cr;
-        d_displacement.setValue(imposed_value);
-        d_force.setValue(m_force);
+       
     }
-    else if (d_valueType.getValue().getSelectedItem() == "force") // force
+    else if (m_type == "force") // force
     {
         SlidingForceConstraintResolution *cr = new SlidingForceConstraintResolution(imposed_value, &m_displacement);
         resTab[offset++] =cr;
-        d_force.setValue(imposed_value);
-        d_displacement.setValue(m_displacement);
+        
     }
 	else // stiffness
 	{
 		double imposed_stiffness = d_stiffness.getValue();
+
+	
 		SlidingStiffnessConstraintResolution *cr = new SlidingStiffnessConstraintResolution(imposed_value, imposed_stiffness, &m_displacement, &m_force);
 		resTab[offset++] = cr;
-		d_displacement.setValue(m_displacement);
-		d_force.setValue(m_force);
 	}
 }
 
+template<class DataTypes>
+void SlidingConstraintActuator<DataTypes>::draw(const VisualParams* vparams)
+{
+	if (m_type == "displacement")
+	{
+		d_displacement.setValue(m_imposedValue);
+		d_force.setValue(m_force);
+	}
+	else if (m_type == "force")
+	{
+		d_force.setValue(m_imposedValue);
+		d_displacement.setValue(m_displacement);
+	}
+	else
+	{
+		d_displacement.setValue(m_displacement);
+		d_force.setValue(m_force);
+	}
+	std::cout << "compliance in draw = " << (m_displacement - m_imposedValue) / m_force << std::endl;
+
+}
 
 } // namespace constraintset
 

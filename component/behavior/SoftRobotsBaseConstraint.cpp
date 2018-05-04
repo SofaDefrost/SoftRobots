@@ -125,6 +125,7 @@ void SoftRobotsBaseConstraint::storeResults(vector<double>& lambda, vector<doubl
 {
     SOFA_UNUSED(lambda);
     SOFA_UNUSED(delta);
+	std::cout << "Store results in SoftRobotsBaseConstraint name =" << this->name << std::endl;
 }
 
 void SoftRobotsBaseConstraint::storeResults(vector<double> &delta)
