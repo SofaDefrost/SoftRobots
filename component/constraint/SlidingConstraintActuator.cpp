@@ -137,7 +137,7 @@ void SlidingStiffnessConstraintResolution::init(int line, double** w, double * l
 void SlidingStiffnessConstraintResolution::resolution(int line, double**, double* d, double* lambda, double* dfree)
 {
 	SOFA_UNUSED(dfree);
-	std::cout << "Denominator: " << abs(m_imposedStiffness*m_wActuatorActuator - 1) << " \t\t";
+	// TODO MISK remove std::cout << "Denominator: " << abs(m_imposedStiffness*m_wActuatorActuator - 1) << " \t\t";
 	//std::cout << "NeutPos: " << m_imposedNeutralPosition << "\t Waa" << m_wActuatorActuator << 
 	if (abs(m_imposedStiffness*m_wActuatorActuator - 1) < STIFFNESS_CONSTRAINT_TOLERANCE)
 	{
@@ -151,8 +151,8 @@ void SlidingStiffnessConstraintResolution::resolution(int line, double**, double
 		d[line] += m_wActuatorActuator*(lambda[line] - lastLambda);
 	}
 	storeForceAndDisplacement(line, d, lambda);
-	std::cout << "Lambda: " << lambda[line] << "\tDelta: " << d[line] << "\t";
-	std::cout << "Compliance: " << (d[line]-m_imposedNeutralPosition) / lambda[line] << std::endl;
+	// TODO MISK remove std::cout << "Lambda: " << lambda[line] << "\tDelta: " << d[line] << "\t";
+	// TODO MISK remove std::cout << "Compliance: " << (d[line]-m_imposedNeutralPosition) / lambda[line] << std::endl;
 }
 
 
@@ -161,7 +161,7 @@ void SlidingStiffnessConstraintResolution::storeForceAndDisplacement(int line, d
 	*m_displacement = d[line];
 	*m_force = lambda[line];
 
-	std::cout << "Compliance in storeForceAndDisplacement: " << (d[line] - m_imposedNeutralPosition) / lambda[line] << std::endl;
+	// TODO MISK remove std::cout << "Compliance in storeForceAndDisplacement: " << (d[line] - m_imposedNeutralPosition) / lambda[line] << std::endl;
 
 }
 

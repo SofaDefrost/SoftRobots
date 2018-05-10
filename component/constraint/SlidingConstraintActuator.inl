@@ -184,8 +184,7 @@ void SlidingConstraintActuator<DataTypes>::draw(const VisualParams* vparams)
 		d_displacement.setValue(m_displacement);
 		d_force.setValue(m_force);
 	}
-	std::cout << "compliance in draw = " << (m_displacement - m_imposedValue) / m_force << std::endl;
-
+	
 }
 
 } // namespace constraintset
