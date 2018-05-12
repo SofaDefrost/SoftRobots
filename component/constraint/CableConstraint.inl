@@ -57,14 +57,16 @@ CableConstraint<DataTypes>::CableConstraint(MechanicalState* object)
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
+    , d_valueType(initData(&d_valueType, OptionsGroup(3,"displacement","force"), "valueType",
                                           "displacement = the contstraint will impose the displacement provided in data d_inputValue[d_iputIndex] \n"
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
-                                          "If unspecified, the default value is displacement"))
+										  "stiffness = the constraint will impose a stiffness (centered around a given displacement). The displacement should be in d_inputValue[d_inputIndex]\n"
+										  "If unspecified, the default value is displacement"))
 {
     d_value.setGroup("Input");
     d_valueIndex.setGroup("Input");
     d_valueType.setGroup("Input");
+	d_stiffness.setGroup("Input");
 }
 
 
@@ -82,11 +84,13 @@ CableConstraint<DataTypes>::CableConstraint()
     , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
                                           "displacement = the contstraint will impose the displacement provided in data d_inputValue[d_iputIndex] \n"
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
-                                          "If unspecified, the default value is displacement"))
+										  "stiffness = the constraint will impose a stiffness (centered around a given displacement). The displacement should be in d_inputValue[d_inputIndex]\n"
+										  "If unspecified, the default value is displacement"))
 {
     d_value.setGroup("Input");
     d_valueIndex.setGroup("Input");
     d_valueType.setGroup("Input");
+	d_stiffness.setGroup("Input");
 }
 
 template<class DataTypes>
@@ -130,8 +134,10 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
     SOFA_UNUSED(cParam);
 
     double imposed_value=d_value.getValue()[d_valueIndex.getValue()];
+	m_imposedValue = imposed_value;
+	m_type = d_valueType.getValue().getSelectedItem();
 
-    if(d_valueType.getValue().getSelectedItem() == "displacement") // displacement
+    if(m_type == "displacement") // displacement
     {
         if(d_maxDispVariation.isSet())
         {
@@ -146,18 +152,42 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
 
         CableDisplacementConstraintResolution *cr=  new CableDisplacementConstraintResolution(imposed_value, &m_force);
         resTab[offset++] =cr;
-        d_cableLength.setValue(d_cableInitialLength.getValue()-imposed_value);
-        d_displacement.setValue(imposed_value);
-        d_force.setValue(m_force);
     }
-    else // force
+    else if (m_type == "force") // force
     {
         CableForceConstraintResolution *cr=  new CableForceConstraintResolution(imposed_value, &m_displacement);
         resTab[offset++] =cr;
-        d_cableLength.setValue(d_cableInitialLength.getValue()-d_displacement.getValue());
-        d_force.setValue(imposed_value);
-        d_displacement.setValue(m_displacement);
     }
+	else // stiffness
+	{
+		double imposed_stiffness = d_stiffness.getValue();
+		CableStiffnessConstraintResolution *cr = new CableStiffnessConstraintResolution(imposed_value, imposed_stiffness, &m_displacement, &m_force);
+		resTab[offset++] = cr;
+	}
+}
+
+template<class DataTypes>
+void CableConstraint<DataTypes>::draw(const VisualParams* vparams)
+{
+	if (m_type == "displacement")
+	{
+		d_cableLength.setValue(d_cableInitialLength.getValue() - m_imposed_value);
+		d_displacement.setValue(m_imposedValue);
+		d_force.setValue(m_force);
+	}
+	else if (m_type == "force")
+	{
+		d_cableLength.setValue(d_cableInitialLength.getValue() - m_displacement);
+		d_force.setValue(m_imposedValue);
+		d_displacement.setValue(m_displacement);
+	}
+	else
+	{
+		d_cableLength.setValue(d_cableInitialLength.getValue() - m_displacement);
+		d_displacement.setValue(m_displacement);
+		d_force.setValue(m_force);
+	}
+
 }
 
 

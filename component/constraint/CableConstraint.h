@@ -94,7 +94,27 @@ protected:
 
 };
 
+class CableStiffnessConstraintResolution : public ConstraintResolution
+{
+public:
+	CableStiffnessConstraintResolution(double& imposedNeutralPosition, double& imposedStiffness, double* displacement, double* force);
+	
+	//////////////////// Inherited from ConstraintResolution ////////////////////
+	virtual void init(int line, double** w, double *force) override;
+	virtual void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+	/////////////////////////////////////////////////////////////////////////////
 
+protected:
+
+	void storeForceAndDisplacement(int line, double* d, double* lambda);
+
+	double      m_wActuatorActuator;
+	double      m_imposedStiffness;
+	double		m_imposedNeutralPosition;
+	double*		m_force;
+	double*     m_displacement;
+
+};
 
 
 /**
@@ -157,11 +177,15 @@ protected:
     Data<helper::OptionsGroup>          d_valueType;
                                         // displacement = the constraint will impose the displacement provided in data d_inputValue[d_iputIndex]
                                         // force = the constraint will impose the force provided in data d_inputValue[d_iputIndex]
+										// stiffness = the constraint will impose a stiffness. The provided data is a neutral position and a stiffness. 
+	Data<double>						d_stiffness;
 
     void internalInit();
 
     double m_displacement;
     double m_force;
+	double m_imposedValue;
+	std::string m_type;
 
 };
 

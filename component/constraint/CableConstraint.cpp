@@ -33,6 +33,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#define STIFFNESS_CONSTRAINT_TOLERANCE 1E-4
+
 namespace sofa
 {
 
@@ -126,6 +128,48 @@ void CableForceConstraintResolution::storeDisplacement(int line,  double* d)
     *m_displacement = d[line];
 }
 
+//------------- Stiffness Constraint -----------
+CableStiffnessConstraintResolution::CableStiffnessConstraintResolution(double& imposedNeutralPosition, double& imposedStiffness, double* displacement, double* force)
+	: m_imposedNeutralPosition(imposedNeutralPosition)
+	, m_imposedStiffness(imposedStiffness)
+	, m_displacement(displacement)
+	, m_force(force)
+{}
+
+void CableStiffnessConstraintResolution::init(int line, double** w, double * lambda)
+{
+	SOFA_UNUSED(lambda);
+
+	m_wActuatorActuator = w[line][line];
+}
+
+void CableStiffnessConstraintResolution::resolution(int line, double**, double* d, double* lambda, double* dfree)
+{
+	SOFA_UNUSED(dfree);
+
+	if (abs(m_imposedStiffness*m_wActuatorActuator - 1) < STIFFNESS_CONSTRAINT_TOLERANCE)
+	{
+		// TODO MISK msg_warning() << "Commanded stiffness matches natural stiffness. Stiffness constraint is not imposed (no force was added).";
+		std::cout << "Commanded stiffness matches natural stiffness. Stiffness constraint is not imposed." << std::endl;
+	}
+	else
+	{
+		double lastLambda = lambda[line];
+		lambda[line] = m_imposedStiffness*(m_wActuatorActuator*lastLambda + m_imposedNeutralPosition - d[line]) / (m_wActuatorActuator*m_imposedStiffness - 1);
+		if (lambda[line] < 0.0)
+			lambda[line] = 0.0;
+		d[line] += m_wActuatorActuator*(lambda[line] - lastLambda);
+	}
+	storeForceAndDisplacement(line, d, lambda);
+}
+
+
+void CableStiffnessConstraintResolution::storeForceAndDisplacement(int line, double* d, double* lambda)
+{
+	*m_displacement = d[line];
+	*m_force = lambda[line];
+
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
