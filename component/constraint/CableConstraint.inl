@@ -57,11 +57,13 @@ CableConstraint<DataTypes>::CableConstraint(MechanicalState* object)
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(3,"displacement","force"), "valueType",
+    , d_valueType(initData(&d_valueType, OptionsGroup(3,"displacement","force","stiffness"), "valueType",
                                           "displacement = the contstraint will impose the displacement provided in data d_inputValue[d_iputIndex] \n"
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
 										  "stiffness = the constraint will impose a stiffness (centered around a given displacement). The displacement should be in d_inputValue[d_inputIndex]\n"
 										  "If unspecified, the default value is displacement"))
+
+	, d_stiffness(initData(&d_stiffness, (double) 0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
 {
     d_value.setGroup("Input");
     d_valueIndex.setGroup("Input");
@@ -81,11 +83,13 @@ CableConstraint<DataTypes>::CableConstraint()
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
-                                          "displacement = the contstraint will impose the displacement provided in data d_inputValue[d_iputIndex] \n"
-                                          "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
-										  "stiffness = the constraint will impose a stiffness (centered around a given displacement). The displacement should be in d_inputValue[d_inputIndex]\n"
-										  "If unspecified, the default value is displacement"))
+	, d_valueType(initData(&d_valueType, OptionsGroup(3, "displacement", "force", "stiffness"), "valueType",
+		"displacement = the contstraint will impose the displacement provided in data d_inputValue[d_iputIndex] \n"
+		"force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
+		"stiffness = the constraint will impose a stiffness (centered around a given displacement). The displacement should be in d_inputValue[d_inputIndex]\n"
+		"If unspecified, the default value is displacement"))
+
+	, d_stiffness(initData(&d_stiffness, (double)0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
 {
     d_value.setGroup("Input");
     d_valueIndex.setGroup("Input");
