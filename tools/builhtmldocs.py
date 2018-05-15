@@ -13,6 +13,7 @@ import ntpath
 import json
 import re
 import urllib2
+import io
 
 sofaext=['.scn', ".pyscn", ".psl"]
 
@@ -42,8 +43,8 @@ def doAutoFile(aFile, outFile):
     fo.close()
 
 def replaceStringInFile(aFile, outFile, aDictionary):
-        f = open(aFile, "rt")
-        fo = open(outFile, "w")
+        f = io.open(aFile, "rt",encoding='utf8',errors="ignore")
+        fo = io.open(outFile, "w",encoding='utf8')
 
         lineno=1
         for line in f:
