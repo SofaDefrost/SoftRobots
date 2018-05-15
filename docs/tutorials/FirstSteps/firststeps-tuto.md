@@ -12,8 +12,8 @@ function toggle(target) {
 </script>
 
 ## First steps with Sofa & SoftRobots
-Welcome in Sofa and the SoftRobots plugins. This tutorial is aimed at people
-that have never use Sofa and aims at quickly give them the basis of scene modelling with Sofa.
+Welcome in Sofa and the SoftRobots plugins. This tutorial is intended for people
+who have never used Sofa, and aims at providing them quickly with the basis of scene modelling with Sofa.
 
 This tutorial describes how to set-up a simulation environment, a scene, using ..autolink::Sofa and how to use the
 ..autolink::STLIB plugin to add simulated elements.
@@ -22,18 +22,26 @@ Tutorials prequisites:
 
 - installed ..autolink::Sofa with the ..autolink::STLIB.
 
-- you have basic knowledge of the ..autolink::General::Python programming language. If not you can go to ..autolink::General::PythonTutorials.
+- you have basic knowledge of the ..autolink::General::Python programming language. If not, you can go to ..autolink::General::PythonTutorials.
 
-### Step 1: Setting up simple scene
+### Step 1: Loading a scene on Sofa
 
-Sofa is loading the description of the simulation from *pyscn* files. The content of these file is in fact standard python code with
+Sofa is loading the description of the simulation from *pyscn* files. Sofa is started with the command **runSofa** in the terminal.  
+To run a file *MyScene.pyscn*, use the command **cd** to go to the file directory, and then type **runSofa MyScene.pyscn**.  
+In order to interact with the robot - that is, to be able to send data to it, one way is to start Sofa with administrator rights, using the command **sudo**:  
+**sudo PATH\_TO\_BUILD\_DIRECTORY/bin/runSofa PATH\_TO\_SCENE/MyScene.pyscn**  
+
+
+### Step 2: Setting up a simple scene
+
+The content of the *pyscn*  simulation files is in fact standard python code with
 at least one function named *createScene* taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa
-to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode".
+to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (example of node: gripper), with parent/child relationship (example of gripper's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode".
 
 Making a very simple scene:
 <div>
 <pre>
-<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
+<a href="details/step0.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
 <a href="myproject/firststeps.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step1code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
@@ -63,20 +71,51 @@ def createScene(rootNode):
 </div>
 </div>
 
-####<i>At this step you should be able to:</i>
+#####Remarks
+- The main node (rootNode) in this scene has four children: Floor, Cube (the two pbjects present in the scene), and MainHeader (adding gravity as the main force exercised on the objects) and ContactHeader (stating how a contact beween the objects is handled).
+<!-- c'est juste ? -->
+- Each object has several parameters and ### <!-- à compléter -->
 
-- Load a scene in sofa 'firststeps.pyscn' in runSofa with the -i option and open it in your text editor.
+####<i>Exploring the scene</i>
 
-- Understand that the '-i' allows there to automatically reload the file when there is changes.
+- All scene codes can be modified: right click anywhere in the *Graph* panel of the Sofa GUI, and click on *Open file in editor* in the dropdown menu. The modififations need to be saved ('Save' button) before reloading the scene. 
 
-- Add a visual object in the scene
+- In order to reload the scene (after each modification of the code), press Ctrl+R or select File \> Reload in the menu bar.
 
-- Move the object in the scene
+- To automatically reload the file when there are changes, add the option '-i' when loading the scene in the terminal: **runSofa firststeps.pyscn -i**.
 
-- Be able to visualize in the GUI the different properties of sofa object
+- In order to vizualize the properties of the objects directly from the GUI, double-click on the wanted item in the *Graph* panel to open the corresponding settings window. The properties can also be modified directly from this window (click on the 'Update' button to reload the scene with the new parameters afterwards).
+
+You can try the following manipulations, in order to get familiar with Sofa environment:  
+(Click on the text to Show/Hide the solution)
+
+<div>
+<pre>
+<a href="javascript:void" onclick="toggle('step1exo');"> <img src="../../images/icons/play.png" width="16px"/>Change the position of the cube from Sofa GUI</a>
+</pre>
+<div id='step1exo' class='hide'>
+In the 'Graph' panel on the left, unroll the 'Cube' Menu and double-click on 'MechanicalObject mstate'.  
+In the window that appears, go to the 'Transformation'tab: the line 'translation' allows you to move the object in the scene.
+</div>
+<a href="javascript:void" onclick="toggle('step1exo2');"> <img src="../../images/icons/play.png" width="16px"/>Change the color of the cube, directly in the code</a>
+</pre>
+<div id='step1exo2' class='hide'>
+After having opened the code file, add the *color* argument to the *cube* function.  
+The function become **Cube(rootNode, translation=[0.0,0.0,0.0], uniformScale=20.0, color=[0.0,0.0,1.0])**.  
+The color vector is defined by percentages of [Red,Green,Blue].  
+Don't forget to save and reload the scene.
+</div>
+</div>
+<!-- à tester -->
 
 
 ### Step 2: Make a template to reuse the object you made
+
+Though creating an object like the Cube of Step1 is rather quick, it can be interesting to build a template for when several instances of an object are needed.  
+Imagine that the expected scene is the following one:  
+![](step2screen.png){width=50%}
+<!-- à vérifier -->
+All cubes are similar in size, only their color and position differ from one another. In order to build that rapidly, the same *Cube()* tamplate can be used several times with a variable parameter *c*, allowing to modify both the translation and the color of each cube by only changing *c*. A loop taking *c* as a parameter allows to generate the multiple instances of the template.
 
 <div>
 <pre>
@@ -93,6 +132,7 @@ from stlib.physics.rigid import ..autolink::STLIB::Cube
 
 def createScene(rootNode):
     """This is my first scene"""
+<!-- IL FAUT ENLEVER LES MECHANICAL OBJECTS ICI & PQUOI EST-CE QUE LES CUBES TOMBENT MEME SI ON ENLEVE GRAVITY-->
     ..autolink::STLIB::MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
     ..autolink::STLIB::ContactHeader(rootNode, alarmDistance=2, contactDistance=1)
 
@@ -114,10 +154,7 @@ def createScene(rootNode):
 ```
 </div>
 
-####<i>At this step you should be able to:</i>
-
-- Be able to make a template made with several components and create multiple instance of this template.
-
+By clicking on the [Animate] button here, nothing changes on the scene. In order to make the cube fall on the Floor, as it would be expected for real cubes, Mechanical objects are needed.
 
 ### Step 3: Add mechanical objects.
 
@@ -160,4 +197,5 @@ def createScene(rootNode):
 ```
 </div>
 
+<!-- REPLACE STEP1 BY STEP0, STEP3 A TESTER PUISQUE BEUGUE SUR LA SIMU -->
 

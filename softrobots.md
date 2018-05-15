@@ -1,7 +1,7 @@
 ![](docs/images/pluginimage.png){width=100%}
 
 > SoftRobots is a plugin made by the Defrost research team for the open source simulation framework called Sofa.
-The plugin adds functionnalities to Sofa to ease the modeling, the simulation and the control of soft-robots.
+The plugin adds functionalities to Sofa to ease the modeling, the simulation and the control of soft-robots.
 This plugin is provided as-is under the LGPL Licence.
 
 Tutorials:

@@ -14,35 +14,33 @@ function toggle(target) {
 
 ## Simulating a soft robot
 This tutorial describes how to set-up a simulation environment, a scene, using ..autolink::Sofa and how to use the
-..autolink::SoftRobots plugin to model a virtual soft robot driven by servo motors. Once modeled in Sofa the robot can be simulated and controlled.
+..autolink::SoftRobots plugin to model a virtual soft robot driven by servo motors. Once modeled in Sofa, the robot can be simulated and controlled.
 
 Tutorials prequisites:
 
-- installed ..autolink::Sofa with the ..autolink::STLIB and
+- you have installed ..autolink::Sofa with the ..autolink::STLIB and
 ..autolink::SoftRobots plugins.
 
 - you have basic knowledge of the ..autolink::General::Python programming language. If this is not the case you can go to ..autolink::General::PythonTutorials.
 
-- you have basic knowledge of making scenes with Sofa. If not, please complete the ..autolink::SoftRobots::Docs::FirstStep tutorial first.
+- you know how to run Sofa, and how to open a scene with it. If not, please complete the ..autolink::SoftRobots::Docs::FirstStep tutorial first.
+<!-- ici on envoie vers un tuto, ou la première partie de la doc ? -->
 
 
 The robot we are going to simulate and controlled is acutated by three servo motors connected to a deformable material. 
 
 ![](images/tripodPhoto.jpg){width=25%}
 
-Once a scene is loaded in Sofa you can now click on the [Animate] button in the Sofa GUI and start interacting
-in the 3D window. When your cursor have clicked on the 3D window you can control the
-simulation to manipulate the gripper or interact by pressing CTRL+keys
+Once a scene is loaded in Sofa, you can click on the [Animate] button in the Sofa GUI and start interacting in the 3D window. Once you have clicked anywhere on the 3D window, you can control the simulation to manipulate the robot, or interact with it by pressing CTRL+keys
+<!-- ça, je trouve pas ça super clair, surtout puisqu'on n'a pas encore lancé de simu avec le robot -->
 
 Note that with MacOS, you may have to use *cmd* instead of *ctrl*.
 
 ### Step 1: Making a simple scene with Sofa
 
-Sofa is loading the description of the simulation from *pyscn* files. The content of these file is in fact standard python code with 
-at least one function named *createScene* taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa
-to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode".
+Sofa is loading the description of the simulation from *pyscn* files. The content of these files is in fact standard python code with at least one function named *createScene* taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (example of node: Tripod), with parent/child relationship (ex: the node Tripod includes a child node 'ElasticBody' related to the silicone piece of the robot). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode".
 
-A very simple scene may look like:
+A very simple scene may look like this:
 <pre>
 <a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
@@ -55,21 +53,24 @@ A very simple scene may look like:
 </div>
 </div>
 
-####<i>At this step you should be able to:</i>
+####<i> Exploring the scene </i>
+<!-- Formerly   ####<i>At this step you should be able to:</i> -->
 
-- Load a scene in sofa with the -i option and open the scene in your text editor.
+- All scene codes can be modified: right click anywhere in the *Graph* panel of the Sofa GUI, and click on *Open file in editor* in the dropdown menu. The modififations need to be saved ('Save' button) before reloading the scene. 
 
-- Understand that the '-i' allows there to automatically reload the file when there is changes.
+- In order to reload the scene (after each modification of the code), press Ctrl+R or select File \> Reload in the menu bar.
 
-- Add a visual object in the scene
+- To automatically reload the file when there are changes, add the option '-i' after the files's name when loading the scene in the terminal.
 
-- Move the object in the scene
+- In order to vizualize the properties of the objects directly from the GUI, double-click on the wanted item in the *Graph* panel to open the corresponding settings window. The properties can also be modified directly from this window (click on the 'Update' button to reload the scene with the new parameters afterwards).
 
-- Be able to visualize in the GUI the different properties of sofa objects
+- The child 'Visual' of the scene (the only one in this very simple scene) is responsible for the graphic display of the object (here the silicone piece). For more information on vector graphics, see <!-- lien vers la doc -->. 
+Add a visual object to the scene.
+<!-- transformer en petit exo ? -->
 
-- Know how to change object properties (data)
+- Move the object in the scene <!-- transformer en petit exo ? -->
 
-- Know how to connect the properties from two different object with a link. 
+- Know how to connect the properties from two different object with a link. <!-- ??? -->
 
 ### Step 2: Adding mechanical objects
 
