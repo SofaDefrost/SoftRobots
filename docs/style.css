@@ -95,7 +95,9 @@ div div, section section /* Nested sections */
     margin-left: 2em; /* This will increasingly indent nested header sections */
     }
 
-p {}
+p {
+    text-align: justify;
+}
 
 blockquote
     { 
@@ -460,3 +462,16 @@ div.show { display: inherit; }
         display:none;
         }
     }
+
+img.centered {
+    width:200px;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto }
+
+
+figcaption {
+    text-align: center;
+    font-size: 70%
+}
