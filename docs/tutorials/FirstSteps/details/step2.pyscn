@@ -12,14 +12,11 @@ def createScene(rootNode):
 
     Floor(rootNode,
           translation=[0.0,-160.0,0.0],
-          uniformScale=5.0,
           isAStaticObject=True)
 
-    for c in range(10):
-        Cube(rootNode,
-             translation=[-200+c*50,0.0,0.0],
-             color=[c/10.0,c*0.7/10.0,0.9],
-             uniformScale=20.0)
+    Cube(rootNode,
+          translation=[0.0,0.0,0.0],
+          uniformScale=20.0)
 
 
     return rootNode
