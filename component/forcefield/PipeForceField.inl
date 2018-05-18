@@ -44,8 +44,6 @@ using sofa::helper::WriteAccessor ;
 #include <string>
 using std::string ;
 
-
-
 #include <fstream>
 using std::filebuf ;
 
@@ -122,29 +120,39 @@ template<typename DataTypes>
 void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
                                                const MultiMatrixAccessor* matrix)
 {
-    sout << "Entering addKToMatrix" << sendl;
-
-
-    if (d_barycentricMapping.get() == NULL ) {serr << "Mapping is missing. AddKToMatrix not computed" << sendl; return;}
-    else                                      sout << "Got mapping" << sendl;
-    if (d_mappedForceField.get() == NULL )   {serr << "MappedFF is missing. AddKToMatrix not computed" << sendl; return;}
-    else                                      sout << "Got mappedFF" << sendl;
+    if (d_barycentricMapping.get() == NULL )
+    {
+        msg_error() << "Mapping is missing. AddKToMatrix not computed";
+        return;
+    }
+    if (d_mappedForceField.get() == NULL )
+    {
+        msg_error() << "MappedFF is missing. AddKToMatrix not computed";
+        return;
+    }
 
 
     //Get the jacobian matrix from the BarycentricMapping
     const CompressedRowSparseMatrix<_3_3_Matrix_Type>* J;
     J = dynamic_cast<const CompressedRowSparseMatrix<_3_3_Matrix_Type> *> (d_barycentricMapping.get()->getJ() );
 
-    if (J == NULL ) {serr << "Jacobian matrix from Mapping is missing. AddKToMatrix not computed" << sendl; return;}
-    else             sout << "Got Jacobian matrix from Mapping" << sendl;
+    if (J == NULL )
+    {
+        msg_error() << "Jacobian matrix from Mapping is missing. AddKToMatrix not computed";
+        return;
+    }
 
 
     //Get the stiffness matrix from the mapped ForceField
     CompressedRowSparseMatrix< _3_3_Matrix_Type >* mappedFFMatrix = new CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
     BaseMechanicalState* springState = d_mappedForceField.get()->getContext()->getMechanicalState();
 
-    if (springState == NULL ) {serr << "Mstate from mappedFF is missing. AddKToMatrix not computed" << sendl; delete mappedFFMatrix; return;}
-    else                 sout << "Got mstate matrix from mappedFF" << sendl;
+    if (springState == NULL )
+    {
+        msg_error() << "Mstate from mappedFF is missing. AddKToMatrix not computed";
+        delete mappedFFMatrix;
+        return;
+    }
 
     DefaultMultiMatrixAccessor* mappedFFMatrixAccessor = new DefaultMultiMatrixAccessor;
     mappedFFMatrixAccessor->addMechanicalState(springState);
@@ -185,8 +193,6 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
     delete K;
     delete mappedFFMatrix;
     delete mappedFFMatrixAccessor;
-
-    sout << "exit addKToMatrix" << sendl;
 }
 
 

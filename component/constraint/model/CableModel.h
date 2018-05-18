@@ -157,6 +157,7 @@ private:
     using SoftRobotsConstraint<DataTypes>::m_deltaMax ;
     using SoftRobotsConstraint<DataTypes>::m_lambdaMax ;
     using SoftRobotsConstraint<DataTypes>::addAlias ;
+    using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 };
 

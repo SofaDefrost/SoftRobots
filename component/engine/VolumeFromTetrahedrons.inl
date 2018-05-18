@@ -45,6 +45,7 @@ namespace component
 namespace engine
 {
 
+using sofa::core::objectmodel::ComponentState;
 using helper::ReadAccessor;
 using helper::vector;
 using sofa::core::ConstVecCoordId;
@@ -74,6 +75,8 @@ VolumeFromTetrahedrons<DataTypes>::~VolumeFromTetrahedrons()
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid;
+
     addInput(&d_positions);
     addInput(&d_tetras);
     addInput(&d_hexas);
@@ -86,7 +89,7 @@ void VolumeFromTetrahedrons<DataTypes>::init()
 
         if(m_state == nullptr)
         {
-            msg_warning(this) << "No positions given by the user and no mechanical state found in the context. Abort.";
+            msg_error() << "No positions given by the user and no mechanical state found in the context. The component is deactivated.";
             return;
         }
 
@@ -97,6 +100,8 @@ void VolumeFromTetrahedrons<DataTypes>::init()
     initTopology();
     checkTopology();
     updateVolume();
+
+    m_componentstate = ComponentState::Valid;
 }
 
 
@@ -104,6 +109,9 @@ void VolumeFromTetrahedrons<DataTypes>::init()
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::reinit()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     updateVolume();
 }
 
@@ -120,7 +128,7 @@ void VolumeFromTetrahedrons<DataTypes>::initTopology()
         d_hexas.setValue(m_topology->getHexas());
 
     if(!d_hexas.isSet() && !d_tetras.isSet() && !m_topology)
-        msg_warning(this) << "No tetras or hexas given by the user and no topology context. Abort";
+        msg_warning() << "No tetras or hexas given by the user and no topology context. Abort";
 }
 
 
@@ -137,11 +145,11 @@ void VolumeFromTetrahedrons<DataTypes>::checkTopology()
     for(int i=0;i<nbTetras;i++){
         for(int j=0;j<4;j++){
             if( tetras[i][j] < 0 )
-                msg_error(this) << "tetras[" << i << "]["<< j << "]="<< tetras[i][j]
+                msg_error() << "tetras[" << i << "]["<< j << "]="<< tetras[i][j]
                               <<". is too small regarding positions size of(" << positions.size() << ")" ;
 
             if( tetras[i][j] >= positions.size() )
-                msg_error(this) << "tetras[" << i << "]["<< j << "]="<< tetras[i][j]
+                msg_error() << "tetras[" << i << "]["<< j << "]="<< tetras[i][j]
                               <<". is too large regarding positions size of(" << positions.size() << ")" ;
         }
     }
@@ -152,12 +160,12 @@ void VolumeFromTetrahedrons<DataTypes>::checkTopology()
     for(int i=0;i<nbHexas;i++){
         for(int j=0;j<6;j++){
             if( hexas[i][j] < 0 )
-                msg_error(this) << "hexas [" <<i << "][" << j << "]=" << hexas[i][j]
+                msg_error() << "hexas [" <<i << "][" << j << "]=" << hexas[i][j]
                               << " is too small regarding positions size of("
                               << positions.size() << ")" ;
 
             if( hexas[i][j] >= positions.size() )
-                msg_error(this) << "hexas [" <<i << "][" << j << "]=" << hexas[i][j]
+                msg_error() << "hexas [" <<i << "][" << j << "]=" << hexas[i][j]
                               << " is too large regarding positions size of("
                               << positions.size() << ")" ;
         }
@@ -169,6 +177,9 @@ void VolumeFromTetrahedrons<DataTypes>::checkTopology()
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::update()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if(m_state && d_doUpdate.getValue())
     {
         ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
@@ -257,6 +268,9 @@ SReal VolumeFromTetrahedrons<DataTypes>::getElementVolume(const Hexa& hexa)
 template<class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::handleEvent(Event *event)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if (AnimateBeginEvent::checkEventType(event))
     {
         setDirtyValue();

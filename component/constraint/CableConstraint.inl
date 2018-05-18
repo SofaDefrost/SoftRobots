@@ -44,6 +44,7 @@ namespace component
 namespace constraintset
 {
 
+using sofa::core::objectmodel::ComponentState;
 using sofa::helper::WriteAccessor;
 
 template<class DataTypes>
@@ -110,16 +111,18 @@ void CableConstraint<DataTypes>::reinit()
 template<class DataTypes>
 void CableConstraint<DataTypes>::internalInit()
 {
-    // check for errors in the initialization
     if(d_value.getValue().size()==0)
     {
-        WriteAccessor<Data<vector<Real>>> inputValue = d_value;
-        inputValue.resize(1,0.);
+        WriteAccessor<Data<vector<Real>>> value = d_value;
+        value.resize(1,0.);
     }
 
+    // check for errors in the initialization
     if(d_value.getValue().size()<d_valueIndex.getValue())
-        serr<<"bad size of inputValue ="<< d_value.getValue().size()<<"  or wrong value for inputIndex = "<<d_valueIndex.getValue()<<sendl;
-
+    {
+        msg_warning() << "Bad size for data value (size="<< d_value.getValue().size()<<"), or wrong value for data valueIndex (valueIndex="<<d_valueIndex.getValue()<<"). Set default valueIndex=0.";
+        d_valueIndex.setValue(0);
+    }
 }
 
 template<class DataTypes>
@@ -127,6 +130,9 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
                                                          std::vector<ConstraintResolution*>& resTab,
                                                          unsigned int& offset)
 {
+//    if(this->m_componentstate != ComponentState::Valid)
+//            return ;
+
     SOFA_UNUSED(cParam);
 
     double imposed_value=d_value.getValue()[d_valueIndex.getValue()];

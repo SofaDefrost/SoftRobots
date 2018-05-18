@@ -49,6 +49,7 @@ namespace component
 namespace constraintset
 {
 
+using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
 using sofa::helper::vector;
 using core::ConstVecCoordId;
@@ -141,17 +142,24 @@ SurfacePressureModel<DataTypes>::~SurfacePressureModel()
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid;
     SoftRobotsConstraint<DataTypes>::init();
 
     if(m_state==nullptr)
+    {
         msg_error(this) << "There is no mechanical state associated with this node. "
                            "The object is then deactivated. "
                            "To remove this error message, fix your scene possibly by "
                            "adding a MechanicalObject." ;
+        return;
+    }
 
     if(m_state->read(VecCoordId::position())==nullptr)
+    {
         msg_error(this) << "There is no position vector in the MechanicalState. "
                              "The object is deactivated. " ;
+        return;
+    }
 
     /// Check that the triangles and quads datafield contain something, otherwise get context
     /// topology
@@ -161,10 +169,13 @@ void SurfacePressureModel<DataTypes>::init()
         BaseMeshTopology* topology = getContext()->getMeshTopology();
 
         if(topology==nullptr)
+        {
             msg_error(this) << "There is no topology state associated with this node. "
                                "To remove this error message, fix your scene possibly by "
                                "adding a Topology in the parent node or by giving a list of triangles"
                                "indices or a list of quads indices as nodes parameters ." ;
+            return;
+        }
 
         d_triangles.setValue(topology->getTriangles());
         d_quads.setValue(topology->getQuads());
@@ -214,12 +225,17 @@ void SurfacePressureModel<DataTypes>::init()
     Real volume = getCavityVolume(positions.ref());
     d_initialCavityVolume.setValue(volume);
     d_cavityVolume.setValue(volume);
+
+    m_componentstate = ComponentState::Valid;
 }
 
 
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::reset()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     d_cavityVolume.setValue(d_initialCavityVolume.getValue());
 }
 
@@ -273,6 +289,9 @@ void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintPar
                                                                 const DataVecCoord &xfree,
                                                                 const DataVecDeriv &vfree)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(vfree);
 
@@ -286,6 +305,9 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
                                                                unsigned int &columnIndex,
                                                                const DataVecCoord &x)
 {
+//    if(m_componentstate != ComponentState::Valid)
+//            return ;
+
     SOFA_UNUSED(cParams);
 
     m_columnId = columnIndex;
@@ -338,6 +360,9 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::draw(const VisualParams* vparams)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if (m_visualization) drawValue(vparams);
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 

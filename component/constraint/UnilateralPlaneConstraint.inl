@@ -46,6 +46,7 @@ namespace component
 namespace constraintset
 {
 
+using sofa::core::objectmodel::ComponentState;
 using sofa::core::VecCoordId;
 using sofa::core::ConstVecCoordId ;
 using sofa::helper::WriteAccessor ;
@@ -91,20 +92,28 @@ UnilateralPlaneConstraint<DataTypes>::~UnilateralPlaneConstraint()
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid;
     Inherit::init();
 
     if(mstate == nullptr)
-        msg_error(this) << "There is no mechanical state associated with this node. "
+    {
+        msg_error(this) << "There is no mechanical state associated with this node. Component deactivated."
                            "To remove this error message, fix your scene possibly by "
                            "adding a MechanicalObject." ;
+        return;
+    }
 
     checkIndicesRegardingState();
+    m_componentstate = ComponentState::Valid;
 }
 
 
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::reinit()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     checkIndicesRegardingState();
 }
 
@@ -130,6 +139,9 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const core::Con
                                                                   unsigned int &cIndex,
                                                                  const DataVecCoord &x)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(x);
 
@@ -164,6 +176,9 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintViolation(const core::Co
                                                                    const DataVecCoord &xfree,
                                                                    const DataVecDeriv &vfree)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(vfree);
 
@@ -187,6 +202,9 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintResolution(const Constra
                                                                    std::vector<core::behavior::ConstraintResolution*>& resTab,
                                                                    unsigned int& offset)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     SOFA_UNUSED(cParams);
 
     resTab[offset] = new UnilateralPlaneConstraintResolution(1);
@@ -197,6 +215,8 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintResolution(const Constra
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
 
     if (!vparams->displayFlags().getShowCollisionModels())
         return;
