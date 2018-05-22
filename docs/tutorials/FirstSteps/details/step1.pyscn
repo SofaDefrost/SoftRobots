@@ -7,7 +7,7 @@ def createScene(rootNode):
     """This is my first scene"""
     MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
     ContactHeader(rootNode, alarmDistance=15, contactDistance=10)
-  
+
     ShowGrid(rootNode)
 
     Floor(rootNode,

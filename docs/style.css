@@ -464,8 +464,6 @@ div.show { display: inherit; }
     }
 
 img.centered {
-    width:200px;
-    height: auto;
     display: block;
     margin-left: auto;
     margin-right: auto }

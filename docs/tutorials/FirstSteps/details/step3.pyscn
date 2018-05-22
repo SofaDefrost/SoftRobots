@@ -1,4 +1,4 @@
-from stlib.scene import MainHeader
+from stlib.scene import MainHeader, ContactHeader
 from stlib.visuals import ShowGrid
 from stlib.solver import DefaultSolver
 from stlib.physics.rigid import Floor
@@ -8,12 +8,9 @@ def createScene(rootNode):
 
 	# A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
 	MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+	ContactHeader(rootNode, alarmDistance=10, contactDistance=5)
 
 	cube = rootNode.createChild("Cube")
-
-	# Constants
-	translation = [0.0,0.0,0.0]
-	rotation = [0.0,0.0,0.0]
 
 	### Mechanical model
 
@@ -25,8 +22,8 @@ def createScene(rootNode):
 	cube.createObject('MechanicalObject', name="DOF", template="Rigid", translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
 	cube.createObject('UniformMass', name="mass", mass=[totalMass, volume, inertiaMatrix[:]])
 
-	# The following line defines the material behaviour when submitted to constraints; it is not necessary here, as no interaction between objects has been defined
-	#cube.createObject('UncoupledConstraintCorrection')
+	# Material behaviour when submitted to constraints
+	cube.createObject('UncoupledConstraintCorrection')
 
 	### Time integration and solver
 
@@ -42,12 +39,42 @@ def createScene(rootNode):
 	# Building a correspondance between the mechanical and the graphical representation
 	visual.createObject('RigidMapping')
 
+	### Collision Object for the Cube
+
+	collision = cube.createChild("Cube Collision Model")
+	collision.createObject('MeshObjLoader', name="loader", filename="mesh/smCube27.obj", triangulate="true", scale=20.0)
+
+	collision.createObject('Mesh', src="@loader")
+	collision.createObject('MechanicalObject')
+
+	collision.createObject('Triangle')
+	collision.createObject('Line')
+	collision.createObject('Point')
+
+	collision.createObject('RigidMapping')
+
+
 	########################################
 	### Adding the Floor for more fun ;) ###
-	Floor(rootNode,
-          translation=[0.0,-160.0,0.0],
+	floor = Floor(rootNode,
+		  name="Floor",
+          translation=[0.0,-300.0,0.0],
           uniformScale=5.0,
           isAStaticObject=True)
+
+	ContactHeader(floor, alarmDistance=10, contactDistance=5)
+
+#	Fcollision = ffloor.createChild("Floor Collision Model")
+#	Fcollision.createObject('MeshObjLoader', name="loader", filename="mesh/floor.obj", triangulate="true", scale=20.0)
+
+#	Fcollision.createObject('Mesh', src="@loader")
+#	Fcollision.createObject('MechanicalObject')
+
+#	Fcollision.createObject('Triangle')
+#	Fcollision.createObject('Line')
+#	Fcollision.createObject('Point')
+
+#	Fcollision.createObject('RigidMapping')
 
 
 	return rootNode
