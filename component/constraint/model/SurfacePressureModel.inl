@@ -305,8 +305,8 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
                                                                unsigned int &columnIndex,
                                                                const DataVecCoord &x)
 {
-//    if(m_componentstate != ComponentState::Valid)
-//            return ;
+    if(m_componentstate != ComponentState::Valid)
+            return ;
 
     SOFA_UNUSED(cParams);
 
