@@ -47,6 +47,7 @@ namespace constraintset
 namespace _surfacepressureconstraint_
 {
 
+using sofa::core::objectmodel::ComponentState ;
 using sofa::helper::WriteAccessor ;
 using sofa::defaulttype::Vec3d;
 using sofa::helper::vector ;
@@ -165,8 +166,8 @@ template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
                                                                    unsigned int& offset)
 {
-//    if(m_componentstate != ComponentState::Valid)
-//            return ;
+    if(m_componentstate != ComponentState::Valid)
+            return ;
 
     double imposed_value = d_value.getValue()[d_valueIndex.getValue()];
     m_displayedValue = d_value.getValue()[d_valueIndex.getValue()];

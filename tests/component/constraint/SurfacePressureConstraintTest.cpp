@@ -59,7 +59,7 @@ namespace sofa {
     struct SurfacePressureConstraintTest : public Sofa_test<typename _DataTypes::Real>, SurfacePressureConstraint<_DataTypes>
     {
 
-//        using SurfacePressureConstraint<_DataTypes>::m_componentstate;
+        using SurfacePressureConstraint<_DataTypes>::m_componentstate;
 
         simulation::Node::SPtr m_root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
         simulation::Simulation* m_simulation;          ///< created by the constructor an re-used in the tests
@@ -107,7 +107,7 @@ namespace sofa {
             MatrixDeriv& column = *columns.beginEdit();
             columns.endEdit();
 
-//            m_componentstate = ComponentState::Valid;
+            m_componentstate = ComponentState::Valid;
             this->buildConstraintMatrix(cparams, columns, columnsIndex, x);
 
             MatrixDeriv columnExpected;
