@@ -30,7 +30,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#define STIFFNESS_CONSTRAINT_TOLERANCE 1E-2
+#define STIFFNESS_CONSTRAINT_TOLERANCE 1E-4
 
 namespace sofa
 {
@@ -137,8 +137,8 @@ void SlidingStiffnessConstraintResolution::init(int line, double** w, double * l
 void SlidingStiffnessConstraintResolution::resolution(int line, double**, double* d, double* lambda, double* dfree)
 {
 	SOFA_UNUSED(dfree);
-	// TODO MISK remove std::cout << "Denominator: " << abs(m_imposedStiffness*m_wActuatorActuator - 1) << " \t\t";
-	//std::cout << "NeutPos: " << m_imposedNeutralPosition << "\t Waa" << m_wActuatorActuator << 
+	std::cout << "Waa: " << m_wActuatorActuator << std::endl;
+	
 	if (abs(m_imposedStiffness*m_wActuatorActuator - 1) < STIFFNESS_CONSTRAINT_TOLERANCE)
 	{
 		// TODO MISK msg_warning() << "Commanded stiffness matches natural stiffness. Stiffness constraint is not imposed (no force was added).";
@@ -151,8 +151,6 @@ void SlidingStiffnessConstraintResolution::resolution(int line, double**, double
 		d[line] += m_wActuatorActuator*(lambda[line] - lastLambda);
 	}
 	storeForceAndDisplacement(line, d, lambda);
-	// TODO MISK remove std::cout << "Lambda: " << lambda[line] << "\tDelta: " << d[line] << "\t";
-	// TODO MISK remove std::cout << "Compliance: " << (d[line]-m_imposedNeutralPosition) / lambda[line] << std::endl;
 }
 
 
@@ -160,8 +158,6 @@ void SlidingStiffnessConstraintResolution::storeForceAndDisplacement(int line, d
 {
 	*m_displacement = d[line];
 	*m_force = lambda[line];
-
-	// TODO MISK remove std::cout << "Compliance in storeForceAndDisplacement: " << (d[line] - m_imposedNeutralPosition) / lambda[line] << std::endl;
 
 }
 

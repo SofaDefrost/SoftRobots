@@ -141,26 +141,22 @@ void SlidingConstraintActuator<DataTypes>::getConstraintResolution(const Constra
         {
             double displacement = d_displacement.getValue();
             if(imposed_value > displacement && imposed_value-displacement>d_maxDispVariation.getValue())
-                imposed_value = displacement+d_maxDispVariation.getValue();
+                m_imposedValue = displacement+d_maxDispVariation.getValue();
 
             if(imposed_value < displacement && imposed_value-displacement<-d_maxDispVariation.getValue())
-                imposed_value = displacement-d_maxDispVariation.getValue();
+				m_imposedValue = displacement-d_maxDispVariation.getValue();
         }
 		SlidingDisplacementConstraintResolution *cr = new SlidingDisplacementConstraintResolution(imposed_value, &m_force);
-        resTab[offset++] =cr;
-       
+        resTab[offset++] =cr;       
     }
     else if (m_type == "force") // force
     {
         SlidingForceConstraintResolution *cr = new SlidingForceConstraintResolution(imposed_value, &m_displacement);
-        resTab[offset++] =cr;
-        
+        resTab[offset++] =cr;        
     }
 	else // stiffness
 	{
-		double imposed_stiffness = d_stiffness.getValue();
-
-	
+		double imposed_stiffness = d_stiffness.getValue();	
 		SlidingStiffnessConstraintResolution *cr = new SlidingStiffnessConstraintResolution(imposed_value, imposed_stiffness, &m_displacement, &m_force);
 		resTab[offset++] = cr;
 	}

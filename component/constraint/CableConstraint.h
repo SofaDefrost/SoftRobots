@@ -149,6 +149,9 @@ public:
     /////////////// Inherited from BaseObject //////////////////////
     virtual void init() override;
     virtual void reinit() override;
+
+	virtual void draw(const VisualParams* vparams) override; // MISK hack for data updating -> should restore the cable model draw function
+
     ///////////////////////////////////////////////////////////////
 
 

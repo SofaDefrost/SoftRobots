@@ -175,7 +175,7 @@ void CableConstraint<DataTypes>::draw(const VisualParams* vparams)
 {
 	if (m_type == "displacement")
 	{
-		d_cableLength.setValue(d_cableInitialLength.getValue() - m_imposed_value);
+		d_cableLength.setValue(d_cableInitialLength.getValue() - m_imposedValue);
 		d_displacement.setValue(m_imposedValue);
 		d_force.setValue(m_force);
 	}

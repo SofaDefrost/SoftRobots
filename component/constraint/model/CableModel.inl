@@ -331,8 +331,11 @@ SReal CableModel<DataTypes>::getCableLength(const VecCoord &positions)
 
 
 template<class DataTypes>
-void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &cMatrix, unsigned int &cIndex, const DataVecCoord &x)
+void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &cMatrix, unsigned int &cIndex, const DataVecCoord &/*xfree*/)
 {
+
+	ReadAccessor<Data<VecCoord> > positions = *m_state->read(core::ConstVecCoordId::position());
+	const DataVecCoord &x = positions.ref();
     SOFA_UNUSED(cParams);
 
     m_columnIndex = cIndex;
@@ -345,9 +348,10 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
     {
 
         if ( d_hasPullPoint.getValue()){
+			
             Deriv direction = d_pullPoint.getValue() - x.getValue()[d_indices.getValue()[0]];
             direction.normalize();
-            rowIterator.setCol(d_indices.getValue()[0],  direction);
+			rowIterator.setCol(d_indices.getValue()[0],  direction);
         }
         else
         {
