@@ -85,8 +85,8 @@ protected:
 class SlidingStiffnessConstraintResolution : public ConstraintResolution
 {
 public:
-	SlidingStiffnessConstraintResolution(double& imposedNeutralPosition, double& imposedStiffness, double* displacement, double* force);
-
+	SlidingStiffnessConstraintResolution(double& imposedNeutralPosition, double& imposedStiffness, double* displacement, double* force, double& neutralEffectorPosition, double* neutralActuatorPosition, double* Wea, double* Waa);
+	// TEST
 
 	//////////////////// Inherited from ConstraintResolution ////////////////////
 	virtual void init(int line, double** w, double *force) override;
@@ -99,7 +99,12 @@ protected:
 
 	double      m_wActuatorActuator;
 	double      m_imposedStiffness;
-	double		m_imposedNeutralPosition;
+	double		m_imposedBiasForce; // TEST (should be m_imposedNeutralPosition)
+	double		m_wEffectorActuator; // TEST
+	double		m_neutralEffectorPosition; // TEST
+	double*		m_neutralActuatorPosition;
+	double*		m_Wea;
+	double*		m_Waa;
 	double*		m_force;
 	double*     m_displacement;
 
@@ -149,6 +154,8 @@ public:
     virtual void getConstraintResolution(const core::ConstraintParams *cParam,
                                          std::vector<ConstraintResolution*>& resTab,
                                          unsigned int& offset) override;
+
+	virtual void getConstraintViolation(const ConstraintParams* cParams, BaseVector *resV, const DataVecCoord &xfree, const DataVecDeriv &vfree) override;
     ////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -160,6 +167,11 @@ public:
     using SlidingModel<DataTypes>::d_force ;
     using SlidingModel<DataTypes>::d_displacement ;
     ///////////////////////////////////////////////////////////////////////////
+
+	Data<double>						d_neutralEffectorPosition; // TEST
+	Data<double>						d_neutralActuatorPosition;
+	Data<double>						d_Wea;
+	Data<double>						d_Waa;
 
 protected:
     //Input data
@@ -176,6 +188,10 @@ protected:
     double m_displacement;
     double m_force;
 	double m_imposedValue;
+	double m_neutralEffectorPosition;
+	double m_neutralActuatorPosition;
+	double m_Wea;
+	double m_Waa;
 	std::string m_type;
 
 };

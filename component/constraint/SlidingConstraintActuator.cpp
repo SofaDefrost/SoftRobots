@@ -104,11 +104,12 @@ void SlidingForceConstraintResolution::init(int line, double** w, double * lambd
 void SlidingForceConstraintResolution::resolution(int line, double**, double* d, double* lambda, double* dfree)
 {
     SOFA_UNUSED(dfree);
-    SOFA_UNUSED(d);
-    SOFA_UNUSED(line);
+    //SOFA_UNUSED(d);
+    //SOFA_UNUSED(line);
 
-
+	double lastLambda = lambda[line];
     lambda[line] = m_imposedForce;
+	d[line] += m_wActuatorActuator * (lambda[line] - lastLambda);
     storeDisplacement(line, d);
 }
 
@@ -120,25 +121,39 @@ void SlidingForceConstraintResolution::storeDisplacement(int line,  double* d)
 
 
 //------------- Stiffness Constraint -----------
-SlidingStiffnessConstraintResolution::SlidingStiffnessConstraintResolution(double& imposedNeutralPosition, double& imposedStiffness, double* displacement, double* force)
-	: m_imposedNeutralPosition(imposedNeutralPosition)
+SlidingStiffnessConstraintResolution::SlidingStiffnessConstraintResolution(double& imposedBiasForce, double& imposedStiffness, double* displacement, double* force, double& neutralEffectorPosition, double* neutralActuatorPosition, double* Wea, double* Waa)
+	: m_imposedBiasForce(imposedBiasForce) // TEST
 	, m_imposedStiffness(imposedStiffness)
 	, m_displacement(displacement)
-	, m_force(force)	
+	, m_force(force)
+	, m_neutralEffectorPosition(neutralEffectorPosition)
+	, m_neutralActuatorPosition(neutralActuatorPosition)
+	, m_Wea(Wea)
+	, m_Waa(Waa)
 {}
 
 void SlidingStiffnessConstraintResolution::init(int line, double** w, double * lambda)
 {
 	SOFA_UNUSED(lambda);
-
+	int otherLine = 0; // TEST
+	if (line == 0) // TEST
+		otherLine = 1; // TEST
 	m_wActuatorActuator = w[line][line];
+	m_wEffectorActuator = w[otherLine][line]; // TEST
+
 }
 
-void SlidingStiffnessConstraintResolution::resolution(int line, double**, double* d, double* lambda, double* dfree)
+void SlidingStiffnessConstraintResolution::resolution(int line, double** w, double* d, double* lambda, double* dfree)
 {
-	SOFA_UNUSED(dfree);
-	std::cout << "Waa: " << m_wActuatorActuator << std::endl;
-	
+	// TEST SOFA_UNUSED(dfree);
+	int otherLine = 0;
+	if (line == 0) // TEST
+		otherLine = 1;
+	//*m_neutralEffectorPosition = m_wEffectorActuator*m_imposedBiasForce + dfree[otherLine]; // TEST
+	//*m_neutralActuatorPosition = m_wActuatorActuator*m_imposedBiasForce + dfree[line]; // TEST
+	//*m_Wea = m_wEffectorActuator;
+	//*m_Waa = m_wActuatorActuator;
+	//double m_imposedNeutralPosition = *m_neutralActuatorPosition - m_imposedBiasForce / m_imposedStiffness; // TEST
 	if (abs(m_imposedStiffness*m_wActuatorActuator - 1) < STIFFNESS_CONSTRAINT_TOLERANCE)
 	{
 		// TODO MISK msg_warning() << "Commanded stiffness matches natural stiffness. Stiffness constraint is not imposed (no force was added).";
@@ -146,10 +161,39 @@ void SlidingStiffnessConstraintResolution::resolution(int line, double**, double
 	}
 	else
 	{
-		double lastLambda = lambda[line];
-		lambda[line] = m_imposedStiffness*(m_wActuatorActuator*lastLambda + m_imposedNeutralPosition - d[line]) / (m_wActuatorActuator*m_imposedStiffness - 1);
-		d[line] += m_wActuatorActuator*(lambda[line] - lastLambda);
+		//double lastLambda = lambda[line];
+		//lambda[line] = m_imposedStiffness*(m_wActuatorActuator*lastLambda + m_imposedNeutralPosition - d[line]) / (m_wActuatorActuator*m_imposedStiffness - 1);
+		//d[line] += m_wActuatorActuator*(lambda[line] - lastLambda);
+
+		double d0 = w[line][otherLine] * lambda[otherLine];// +dfree[line];
+		double lambda_buf = m_imposedStiffness / (1 - m_imposedStiffness*m_wActuatorActuator) *d0;
+		lambda[line] = lambda_buf;
+		d[line] = m_wActuatorActuator * lambda_buf + d0 + dfree[line];
+
+		//double dLambda = (lambda[line] - m_imposedStiffness*d[line]) / (m_imposedStiffness*m_wActuatorActuator - 1);
+		//lambda[line] += dLambda;
+		//d[line] += m_wActuatorActuator*dLambda;
 	}
+	double Wee = w[otherLine][otherLine];
+	double Wea = w[otherLine][line];
+	double Wae = w[line][otherLine];
+	double Waa = w[line][line];
+	//lambda[line] += (-dfree[otherLine] + m_neutralEffectorPosition) / w[otherLine][line];
+	lambda[line] += -dfree[line] / w[line][line];
+
+	double delta_e = w[otherLine][otherLine] * lambda[otherLine] + w[otherLine][line] * lambda[line] +dfree[otherLine];
+	double K_e = lambda[otherLine] / (delta_e- m_neutralEffectorPosition);
+	
+	double W_e_expected = Wee + Wea*(1 / ((1 / m_imposedStiffness) - Waa))*Wae;
+	 
+	double delta_e_expected = W_e_expected *lambda[otherLine] + m_neutralEffectorPosition;
+
+	//lambda[line] += (delta_e_expected - delta_e) / w[otherLine][line]; 
+	d[line] = w[line][otherLine] * lambda[otherLine] + w[line][line] * lambda[line] + dfree[line];
+
+
+
+	std::cout << K_e << "\t" << 1/W_e_expected << std::endl;
 	storeForceAndDisplacement(line, d, lambda);
 }
 

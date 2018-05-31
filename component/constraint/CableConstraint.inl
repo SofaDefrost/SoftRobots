@@ -64,11 +64,15 @@ CableConstraint<DataTypes>::CableConstraint(MechanicalState* object)
 										  "If unspecified, the default value is displacement"))
 
 	, d_stiffness(initData(&d_stiffness, (double) 0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
+	, d_neutralEffectorPosition(initData(&d_neutralEffectorPosition, (double)0, "neutralEffectorPosition", "FOR TESTING MISK"))
+	, d_neutralActuatorPosition(initData(&d_neutralActuatorPosition, (double)0, "neutralActuatorPosition", "FOR TESTING MISK"))
 {
     d_value.setGroup("Input");
     d_valueIndex.setGroup("Input");
     d_valueType.setGroup("Input");
 	d_stiffness.setGroup("Input");
+	d_neutralEffectorPosition.setGroup("Output"); // TEST
+	d_neutralActuatorPosition.setGroup("Output");
 }
 
 
@@ -90,11 +94,15 @@ CableConstraint<DataTypes>::CableConstraint()
 		"If unspecified, the default value is displacement"))
 
 	, d_stiffness(initData(&d_stiffness, (double)0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
+	, d_neutralEffectorPosition(initData(&d_neutralEffectorPosition, (double)0, "neutralEffectorPosition", "FOR TESTING MISK"))
+	, d_neutralActuatorPosition(initData(&d_neutralActuatorPosition, (double)0, "neutralActuatorPosition", "FOR TESTING MISK"))
 {
-    d_value.setGroup("Input");
-    d_valueIndex.setGroup("Input");
-    d_valueType.setGroup("Input");
+	d_value.setGroup("Input");
+	d_valueIndex.setGroup("Input");
+	d_valueType.setGroup("Input");
 	d_stiffness.setGroup("Input");
+	d_neutralEffectorPosition.setGroup("Output"); // TEST
+	d_neutralActuatorPosition.setGroup("Output");
 }
 
 template<class DataTypes>
@@ -165,7 +173,7 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
 	else // stiffness
 	{
 		double imposed_stiffness = d_stiffness.getValue();
-		CableStiffnessConstraintResolution *cr = new CableStiffnessConstraintResolution(imposed_value, imposed_stiffness, &m_displacement, &m_force);
+		CableStiffnessConstraintResolution *cr = new CableStiffnessConstraintResolution(imposed_value, imposed_stiffness, &m_displacement, &m_force, &m_neutralEffectorPosition, &m_neutralActuatorPosition); // TEST
 		resTab[offset++] = cr;
 	}
 }
@@ -190,6 +198,8 @@ void CableConstraint<DataTypes>::draw(const VisualParams* vparams)
 		d_cableLength.setValue(d_cableInitialLength.getValue() - m_displacement);
 		d_displacement.setValue(m_displacement);
 		d_force.setValue(m_force);
+		d_neutralEffectorPosition.setValue(m_neutralEffectorPosition);
+		d_neutralActuatorPosition.setValue(m_neutralActuatorPosition);
 	}
 
 }

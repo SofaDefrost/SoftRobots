@@ -97,7 +97,7 @@ protected:
 class CableStiffnessConstraintResolution : public ConstraintResolution
 {
 public:
-	CableStiffnessConstraintResolution(double& imposedNeutralPosition, double& imposedStiffness, double* displacement, double* force);
+	CableStiffnessConstraintResolution(double& imposedNeutralPosition, double& imposedStiffness, double* displacement, double* force, double* neutralEffectorPosition, double* neutralActuatorPosition); // TEST
 	
 	//////////////////// Inherited from ConstraintResolution ////////////////////
 	virtual void init(int line, double** w, double *force) override;
@@ -110,7 +110,11 @@ protected:
 
 	double      m_wActuatorActuator;
 	double      m_imposedStiffness;
-	double		m_imposedNeutralPosition;
+	double		m_imposedBiasForce; // TEST (should be m_imposedNeutralPosition)
+	double		m_wEffectorActuator; // TEST
+	double*		m_neutralEffectorPosition; // TEST
+	double*		m_neutralActuatorPosition;
+	//double		m_imposedNeutralPosition; instead of m_imposedBiasForce
 	double*		m_force;
 	double*     m_displacement;
 
@@ -173,6 +177,8 @@ public:
     using CableModel<DataTypes>::d_displacement ;
     ///////////////////////////////////////////////////////////////////////////
 
+	Data<double>						d_neutralEffectorPosition; // TEST
+	Data<double>						d_neutralActuatorPosition;
 protected:
     //Input data
     Data<helper::vector< Real > >       d_value;
@@ -188,6 +194,9 @@ protected:
     double m_displacement;
     double m_force;
 	double m_imposedValue;
+
+	double m_neutralEffectorPosition;
+	double m_neutralActuatorPosition;
 	std::string m_type;
 
 };

@@ -124,7 +124,8 @@ private:
     void initDatas();
 
     void checkIndicesRegardingState();
-    
+
+protected:
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring m_state in the current lookup context.

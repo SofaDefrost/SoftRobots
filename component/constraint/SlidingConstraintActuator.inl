@@ -59,11 +59,19 @@ SlidingConstraintActuator<DataTypes>::SlidingConstraintActuator(MechanicalState*
 										  "stiffness = the constraint will impose a stiffness (centered around a given displacement). The displacement should be in d_inputValue[d_inputIndex]\n"
                                           "If unspecified, the default value is displacement"))
 	, d_stiffness(initData(&d_stiffness, (double) 0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
+	, d_neutralEffectorPosition(initData(&d_neutralEffectorPosition, (double) 0, "neutralEffectorPosition", "FOR TESTING MISK"))
+	, d_neutralActuatorPosition(initData(&d_neutralActuatorPosition, (double)0, "neutralActuatorPosition", "FOR TESTING MISK"))
+	, d_Wea (initData(&d_Wea, 0.0, "Wea", "Wea"))
+	, d_Waa(initData(&d_Waa, 0.0, "Waa", "Waa"))
 {
-    d_value.setGroup("Input");
-    d_valueIndex.setGroup("Input");
-    d_valueType.setGroup("Input");
+	d_value.setGroup("Input");
+	d_valueIndex.setGroup("Input");
+	d_valueType.setGroup("Input");
 	d_stiffness.setGroup("Input");
+	d_neutralEffectorPosition.setGroup("Input");
+	d_neutralActuatorPosition.setGroup("Input");
+	d_Wea.setGroup("Output");
+	d_Waa.setGroup("Output");
 }
 
 
@@ -83,12 +91,20 @@ SlidingConstraintActuator<DataTypes>::SlidingConstraintActuator()
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
 										  "stiffness = the constraint will impose a stiffness (centered around a given displacement). The displacement should be in d_inputValue[d_inputIndex]\n"
                                           "If unspecified, the default value is displacement"))
-		, d_stiffness(initData(&d_stiffness, (double) 0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
+	, d_stiffness(initData(&d_stiffness, (double) 0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
+	, d_neutralEffectorPosition(initData(&d_neutralEffectorPosition, (double) 0, "neutralEffectorPosition", "FOR TESTING MISK"))
+	, d_neutralActuatorPosition(initData(&d_neutralActuatorPosition, (double)0, "neutralActuatorPosition", "FOR TESTING MISK"))
+	, d_Wea(initData(&d_Wea, 0.0, "Wea", "Wea"))
+	, d_Waa(initData(&d_Waa, 0.0, "Waa", "Waa"))
 {
-    d_value.setGroup("Input");
-    d_valueIndex.setGroup("Input");
-    d_valueType.setGroup("Input");
+	d_value.setGroup("Input");
+	d_valueIndex.setGroup("Input");
+	d_valueType.setGroup("Input");
 	d_stiffness.setGroup("Input");
+	d_neutralEffectorPosition.setGroup("Input");
+	d_neutralActuatorPosition.setGroup("Input");
+	d_Wea.setGroup("Output");
+	d_Waa.setGroup("Output");
 }
 
 template<class DataTypes>
@@ -157,10 +173,43 @@ void SlidingConstraintActuator<DataTypes>::getConstraintResolution(const Constra
 	else // stiffness
 	{
 		double imposed_stiffness = d_stiffness.getValue();	
-		SlidingStiffnessConstraintResolution *cr = new SlidingStiffnessConstraintResolution(imposed_value, imposed_stiffness, &m_displacement, &m_force);
+		double neutralEffectorPosition = d_neutralEffectorPosition.getValue();
+		SlidingStiffnessConstraintResolution *cr = new SlidingStiffnessConstraintResolution(imposed_value, imposed_stiffness, &m_displacement, &m_force, neutralEffectorPosition, &m_neutralActuatorPosition, &m_Wea, &m_Waa);
 		resTab[offset++] = cr;
 	}
 }
+
+
+
+template<class DataTypes>
+void SlidingConstraintActuator<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, BaseVector *resV, const DataVecCoord &xfree, const DataVecDeriv &vfree)
+{
+	SOFA_UNUSED(cParams);
+	SOFA_UNUSED(vfree);
+	const VecCoord      &positions = xfree.getValue();
+	const VecCoord      &restPositions = this->m_state->read(core::ConstVecCoordId::restPosition())->getValue();
+	const SetIndexArray &indices = d_indices.getValue();
+	const Deriv         &direction = d_direction.getValue();
+
+	// Projection of the global displacement along the direction (normalized) of the actuation
+	Deriv v;
+	computeViolation(v, restPositions[indices[0]], positions[indices[0]]);
+	const int N = Deriv::total_size;
+	double n = -this->d_neutralActuatorPosition.getValue();
+
+	for (unsigned int i = 0; i<N; i++) {
+		n += v[i] * direction[i];
+	}
+
+
+
+	//double n = v[0]*direction[0] + v[1]*direction[1] + v[2]*direction[2];
+
+	if (indices.size())
+		resV->set(m_columnIndex, n);
+}
+
+
 
 template<class DataTypes>
 void SlidingConstraintActuator<DataTypes>::draw(const VisualParams* vparams)
@@ -179,6 +228,10 @@ void SlidingConstraintActuator<DataTypes>::draw(const VisualParams* vparams)
 	{
 		d_displacement.setValue(m_displacement);
 		d_force.setValue(m_force);
+		//d_neutralEffectorPosition.setValue(m_neutralEffectorPosition);
+		//d_neutralActuatorPosition.setValue(m_neutralActuatorPosition);
+		d_Wea.setValue(m_Wea);
+		d_Waa.setValue(m_Waa);
 	}
 	
 }
