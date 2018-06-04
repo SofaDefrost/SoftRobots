@@ -48,6 +48,7 @@ namespace component
 namespace constraintset
 {
 
+using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
 using sofa::defaulttype::BaseVector;
 using sofa::helper::ReadAccessor;
@@ -200,6 +201,7 @@ CableModel<DataTypes>::~CableModel()
 template<class DataTypes>
 void CableModel<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid;
     SoftRobotsConstraint<DataTypes>::init();
 
     if(d_indexDeprecated.isSet())
@@ -208,22 +210,32 @@ void CableModel<DataTypes>::init()
                              "'index' should be replaced by the field 'indices'." ;
 
     if(m_state==nullptr)
+    {
         msg_error(this) << "There is no mechanical state associated with this node. "
                            "The object is then deactivated. "
                            "To remove this error message, fix your scene possibly by "
                            "adding a MechanicalObject." ;
+        return;
+    }
 
     if(m_state->read(VecCoordId::position())==nullptr)
+    {
         msg_error(this) << "There is no position vector in the MechanicalState. "
                              "The object is deactivated. " ;
+        return;
+    }
 
     internalInit();
+    m_componentstate = ComponentState::Valid;
 }
 
 
 template<class DataTypes>
 void CableModel<DataTypes>::bwdInit()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     // The initial length of the cable is computed in bwdInit so the mapping (if there is any)
     // will be considered
     VecCoord positions = (*m_state->read(VecCoordId::position())).getValue();
@@ -239,6 +251,9 @@ void CableModel<DataTypes>::bwdInit()
 template<class DataTypes>
 void CableModel<DataTypes>::reinit()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     internalInit();
 }
 
@@ -246,6 +261,9 @@ void CableModel<DataTypes>::reinit()
 template<class DataTypes>
 void CableModel<DataTypes>::reset()
 {
+    if(m_componentstate != ComponentState::Valid)
+        return ;
+
     VecCoord positions = (*m_state->read(VecCoordId::position())).getValue();
     Real cableLength = getCableLength(positions);
     d_cableLength.setValue(cableLength);
@@ -333,6 +351,9 @@ SReal CableModel<DataTypes>::getCableLength(const VecCoord &positions)
 template<class DataTypes>
 void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &cMatrix, unsigned int &cIndex, const DataVecCoord &x)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     SOFA_UNUSED(cParams);
 
     m_columnIndex = cIndex;
@@ -437,6 +458,9 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 template<class DataTypes>
 void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, BaseVector *resV, const DataVecCoord &xfree, const DataVecDeriv &vfree)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(vfree);
     const VecCoord& positions =  xfree.getValue();
@@ -467,6 +491,9 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 template<class DataTypes>
 void CableModel<DataTypes>::draw(const VisualParams* vparams)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     drawLinesBetweenPoints(vparams);

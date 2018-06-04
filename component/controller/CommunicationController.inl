@@ -255,7 +255,7 @@ template<class DataTypes>
 void CommunicationController<DataTypes>::checkDataSize(const unsigned int& nbDataFieldReceived)
 {
     if(nbDataFieldReceived!=d_nbDataField.getValue())
-        msg_warning(this) << "Something wrong with the size of data received. Please check template.";
+        msg_warning() << "Something wrong with the size of data received. Please check template.";
 }
 
 
@@ -274,7 +274,7 @@ void CommunicationController<DataTypes>::sendData()
 
     bool status = m_socket->send(message);
     if(!status)
-        msg_warning(this) << "Problem with communication";
+        msg_warning() << "Problem with communication";
 }
 
 
@@ -310,7 +310,7 @@ void CommunicationController<DataTypes>::receiveData()
 		delete[] messageChar;
     }
     else
-        msg_warning(this) << "Problem with communication";
+        msg_warning() << "Problem with communication";
 }
 
 
