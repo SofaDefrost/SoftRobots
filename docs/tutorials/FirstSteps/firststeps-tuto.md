@@ -11,7 +11,6 @@ function toggle(target) {
 }
 </script>
 
-<!-- dégager les ContactHeader sauf dernière étape -->
 
 ## First steps with Sofa & SoftRobots
 Welcome to Sofa and the SoftRobots plugins. This tutorial is intended for people
@@ -139,7 +138,8 @@ Don't forget to save and reload the scene.
 - Understand the necessity for a collision management model
 
 
-Both the Cube and the Floor objects used in Step 2 are actually built-in objects called *prefabs*. In the following steps, a deeper insight into Sofa's object modeling is provided. The next two steps aim at receating the *prefab* Cube used in Step 2. (For a more dynamic scene, the Floor prefab is still present.) 
+Both the Cube and the Floor objects used in Step 2 are actually built-in objects called *prefabs*. In the following steps, a deeper insight into Sofa's object modeling is provided. The next two steps aim at receating the *prefab* Cube used in Step 2. (For a more dynamic scene, the Floor prefab is still present.)  
+The child node Cube is defined with the function `node.createChild()`.  
 First of all, a mechanical model of the object is built. For the purpose of simulation, the object is discretized in space: it is divided into small volumes connected together by points (called nodes).  
 The aim of the simulation is to compute, at each time step, the next position and velocity of each of these nodes, based on the forces they are subjected to.  
 Each of these points represents a degree of freedom (DOF) of the object. All the positions and velocities of these points are stored in what is called the *MechanicalObject*.
@@ -245,7 +245,8 @@ In order to make objects interact with each other, a *collision* model is requir
 cube.createObject('UncoupledConstraintCorrection')
 ```
 
-The constraints of the collision apply on the surface on the Cube. As it is decomposed into tetrahedral solid elements, the surface elements are either triangles, lines or points. They represent the degrees of freedom of the collision model. The surface mesh is described based on the one used in the Visual model.  
+The constraints of the collision apply on the surface on the Cube. As it is decomposed into tetrahedral solid elements, the surface elements are either triangles, lines or points. They represent the degrees of freedom of the collision model. The surface mesh is described based on the one used in the Visual model. 
+In addition to a collision model, it is necessary to describe the rules  of collision detection, and how they are handled when they occur. This is what the `ContactHeader` object is doing. As the rules apply for all the objects in the scene, it is positionned in the rootNode. Here the rules are as follows: potential collisions are looked for within an `AlarmDistance` radius from the objet. If a collision situation is detected, the collision model computes the behaviour of the objects, which are stopped at a `ContactDistance` from each other.  
 Finally, in order to map those collision DOFs with those of the mechanical model, a `RigidMapping` is used here as well.  
 
 <div>
@@ -266,6 +267,9 @@ def createScene(rootNode):
 
   # A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
   MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+
+  #Collision handling built-in function (already used in Step 1)
+  ContactHeader(rootNode, alarmDistance=10, contactDistance=5)
 
   cube = rootNode.createChild("Cube")
 
@@ -340,7 +344,8 @@ def createScene(rootNode):
 
 ####<i>Remarks</i>
 - The code that was built in the last two steps in order to implement the Cube model constitutes the `Cube()` prefab. Such prefab objects allow great time savings, and a lighter code.  
-- The function `ContactHeader` used for the Floor collision model is composed of the same elements as the Cube collision model that was built in this step, grouped in one function.  
+- The same collision model is also implemented by default in the Floor prefab.  
+- By zooming in the simulation window (scroll the mouse wheel), a small gap can be observed between the cube and the floor: it corresponds to the `ContactDistance` at which the cube is stoppped from the floor. Because the time is discretized, it is important not to assign too small a value to the `AlarmDistance`; otherwise the risk is that, from an instant to the next one that is computed, the objects have already entered collision, in which case the collision wouldn't be computed correctly.
 
 ### Step 4: Use *prefabs* to quickly model more complex scenes
 <!-- CUBE CODE: plugins/STLIB/python/stlib/physics/rigid/rigidobject.py -->

@@ -8,6 +8,8 @@ def createScene(rootNode):
 
 	# A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
 	MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+
+    #Collision built-in function (already used in Step 1)
 	ContactHeader(rootNode, alarmDistance=10, contactDistance=5)
 
 	cube = rootNode.createChild("Cube")
@@ -62,19 +64,6 @@ def createScene(rootNode):
           uniformScale=5.0,
           isAStaticObject=True)
 
-	ContactHeader(floor, alarmDistance=10, contactDistance=5)
-
-#	Fcollision = ffloor.createChild("Floor Collision Model")
-#	Fcollision.createObject('MeshObjLoader', name="loader", filename="mesh/floor.obj", triangulate="true", scale=20.0)
-
-#	Fcollision.createObject('Mesh', src="@loader")
-#	Fcollision.createObject('MechanicalObject')
-
-#	Fcollision.createObject('Triangle')
-#	Fcollision.createObject('Line')
-#	Fcollision.createObject('Point')
-
-#	Fcollision.createObject('RigidMapping')
-
+	
 
 	return rootNode
