@@ -45,8 +45,8 @@ using core::ConstraintParams;
 
 /////////////////// PositionEffectorPassiveConstraintResolution ///////////////////////////////////////
 UnilateralPlaneConstraintResolution::UnilateralPlaneConstraintResolution(const unsigned int _nbLines)
+: ConstraintResolution(_nbLines)
 {
-    nbLines = _nbLines;
 }
 
 void UnilateralPlaneConstraintResolution::init(int line, double**w, double*force)
