@@ -47,6 +47,7 @@ namespace constraintset
 namespace _surfacepressureconstraint_
 {
 
+using sofa::core::objectmodel::ComponentState ;
 using sofa::helper::WriteAccessor ;
 using sofa::defaulttype::Vec3d;
 using sofa::helper::vector ;
@@ -144,15 +145,18 @@ void SurfacePressureConstraint<DataTypes>::reset()
 template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::initData()
 {
-    // check for errors in the initialization
     if(d_value.getValue().size()==0)
     {
-        WriteAccessor<Data<vector<Real>>> inputValue = d_value;
-        inputValue.resize(1,0.);
+        WriteAccessor<Data<vector<Real>>> value = d_value;
+        value.resize(1,0.);
     }
 
+    // check for errors in the initialization
     if(d_value.getValue().size()<d_valueIndex.getValue())
-        msg_error(this) <<"bad size of inputValue ="<< d_value.getValue().size()<<"  or wrong value for inputIndex = "<<d_valueIndex.getValue();
+    {
+        msg_warning() <<"Bad size for data value (size="<< d_value.getValue().size()<<"), or wrong value for data valueIndex (valueIndex="<<d_valueIndex.getValue()<<"). Set default valueIndex=0.";
+        d_valueIndex.setValue(0);
+    }
     else
         m_displayedValue = d_value.getValue()[d_valueIndex.getValue()];
 }
@@ -162,6 +166,9 @@ template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
                                                                    unsigned int& offset)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     double imposed_value = d_value.getValue()[d_valueIndex.getValue()];
     m_displayedValue = d_value.getValue()[d_valueIndex.getValue()];
 

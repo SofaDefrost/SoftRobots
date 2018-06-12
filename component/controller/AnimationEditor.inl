@@ -34,7 +34,6 @@
 
 #ifdef SOFA_WITH_OPENGL
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/system/glut.h>
 using sofa::helper::gl::glVertexT;
 #endif
 
@@ -64,6 +63,8 @@ namespace controller
 
 namespace _animationeditor_
 {
+
+using sofa::core::objectmodel::ComponentState;
 
 using sofa::core::objectmodel::KeypressedEvent;
 using sofa::simulation::AnimateBeginEvent;
@@ -116,6 +117,8 @@ AnimationEditor<DataTypes>::~AnimationEditor()
 template<class DataTypes>
 void AnimationEditor<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid;
+
     m_keyFramesID.clear();
 
     if(d_maxKeyFrame.getValue()<=0)
@@ -124,23 +127,26 @@ void AnimationEditor<DataTypes>::init()
     m_state = dynamic_cast<MechanicalState<DataTypes>*>(getContext()->getMechanicalState());
     if(m_state == nullptr)
     {
-        msg_warning() <<"This component needs a mechanical state in its context with the correct template. Abort.";
+        msg_error() <<"This component needs a mechanical state in its context with the correct template. Abort.";
         return;
     }
-    else //Store initial state
-    {
-        m_keyFramesID.push_back(0);
-        m_animation.resize(1,m_state->read(core::ConstVecCoordId::position())->getValue());
-    }
+
+    m_keyFramesID.push_back(0);
+    m_animation.resize(1,m_state->read(core::ConstVecCoordId::position())->getValue());
 
     if(d_load.getValue())
         loadAnimation();
+
+    m_componentstate = ComponentState::Valid;
 }
 
 
 template<class DataTypes>
 void AnimationEditor<DataTypes>::reinit()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if(d_maxKeyFrame.getValue()<=0)
         d_maxKeyFrame.setValue(1);
 
@@ -165,6 +171,9 @@ void AnimationEditor<DataTypes>::bwdInit(){}
 template<class DataTypes>
 void AnimationEditor<DataTypes>::reset()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     d_cursor.setValue(0);
     m_isFrameDirty = true;
     m_time = 0.;
@@ -175,12 +184,6 @@ void AnimationEditor<DataTypes>::reset()
 template<class DataTypes>
 void AnimationEditor<DataTypes>::loadAnimation()
 {
-    if(m_state == nullptr)
-    {
-        msg_warning() <<"Failed to fetch a mechanical state, abort.";
-        return;
-    }
-
     ifstream file;
     file.open(d_filename.getValue(), ifstream::in);
     if (file.is_open())
@@ -268,12 +271,6 @@ void AnimationEditor<DataTypes>::loadAnimation()
 template<class DataTypes>
 void AnimationEditor<DataTypes>::saveAnimation()
 {
-    if(m_state == nullptr)
-    {
-        msg_warning() <<"Failed to fetch a mechanical state, abort.";
-        return;
-    }
-
     msg_info() <<"Saved animation of "<<m_animation.size()<<" frames in "<<d_filename.getValue();
     ofstream file;
     file.open(d_filename.getValue());
@@ -307,11 +304,8 @@ void AnimationEditor<DataTypes>::saveAnimation()
 template<class DataTypes>
 void AnimationEditor<DataTypes>::onBeginAnimationStep(const double dt)
 {
-    if(m_state == nullptr)
-    {
-        msg_warning() <<"Failed to fetch a mechanical state, abort.";
-        return;
-    }
+    if(m_componentstate != ComponentState::Valid)
+            return ;
 
     if(d_dx.isSet())
     {
@@ -357,6 +351,9 @@ void AnimationEditor<DataTypes>::onEndAnimationStep(const double dt)
 template<class DataTypes>
 void AnimationEditor<DataTypes>::handleEvent(Event *event)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if(!d_dx.isSet())
     {
         if (KeypressedEvent* keyEvent = dynamic_cast<KeypressedEvent*>(event))
@@ -748,6 +745,9 @@ void AnimationEditor<DataTypes>::updateAnimationWithInterpolation(const int star
 template<class DataTypes>
 void AnimationEditor<DataTypes>::draw(const VisualParams* vparams)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if(!d_drawTimeline.getValue()) return;
 
 #ifdef SOFA_WITH_DACCORD
@@ -759,27 +759,6 @@ void AnimationEditor<DataTypes>::draw(const VisualParams* vparams)
 #ifdef SOFA_WITH_OPENGL
     glDisable(GL_LIGHTING);
     int ratio = round(vparams->viewport()[2]/d_maxKeyFrame.getValue());
-
-
-    //////////////////////////////VALUES/////////////////////////////
-//    string min = "0";
-//    string max = std::to_string(d_maxKeyFrame.getValue());
-//    string cursor = std::to_string(d_cursor.getValue());
-//    const char* value= min.c_str();
-//    vparams->drawTool()->writeOverlayText(ratio-1,vparams->viewport()[3]/12*11+5 //Coordinate
-//            ,10                                                                  //Size
-//            ,Vec4f(0.6,0.6,0.6,1.)                                               //Color
-//            ,min.c_str());                                                       //Text
-//    vparams->drawTool()->writeOverlayText(d_maxKeyFrame.getValue()*ratio,vparams->viewport()[3]/12*11+5
-//            ,10
-//            ,Vec4f(0.6,0.,0.,1.)
-//            ,max.c_str());
-//    vparams->drawTool()->writeOverlayText(d_cursor.getValue()*ratio+10,vparams->viewport()[3]/10*9-25
-//            ,10
-//            ,Vec4f(0.8,0.8,0.8,1.)
-//            ,cursor.c_str());
-    ///////////////////////////////////////////////////////////////////
-
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();

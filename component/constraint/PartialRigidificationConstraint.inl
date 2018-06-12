@@ -121,7 +121,7 @@ void PartialRigidificationConstraint<DataTypes>::getConstraintResolution(std::ve
 {
     resTab[offset] = new PartialRigidificationConstraintResolution6Dof();
 
-    // indicates the size of the block on which the constraint resoluation works
+    // Indicates the size of the block on which the constraint resoluation works
     offset += 6;
 }
 

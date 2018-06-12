@@ -63,7 +63,7 @@ using sofa::core::VecCoordId ;
  * This class contains common implementation of cable constraints
 */
 template< class DataTypes >
-class CableModel : virtual public SoftRobotsConstraint<DataTypes>
+class SOFA_SOFTROBOTS_API CableModel : virtual public SoftRobotsConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(CableModel,DataTypes),
@@ -135,16 +135,6 @@ protected:
 
     SReal getCableLength(const VecCoord &positions);
 
-private:
-    void internalInit();
-
-    void checkIndicesRegardingState();
-    void initActuatedPoints();
-
-    void drawPullPoint(const VisualParams* vparams);
-    void drawPoints(const VisualParams* vparams);
-    void drawLinesBetweenPoints(const VisualParams* vparams);
-
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring m_state in the current lookup context.
@@ -157,7 +147,18 @@ private:
     using SoftRobotsConstraint<DataTypes>::m_deltaMax ;
     using SoftRobotsConstraint<DataTypes>::m_lambdaMax ;
     using SoftRobotsConstraint<DataTypes>::addAlias ;
+    using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
+
+private:
+    void internalInit();
+
+    void checkIndicesRegardingState();
+    void initActuatedPoints();
+
+    void drawPullPoint(const VisualParams* vparams);
+    void drawPoints(const VisualParams* vparams);
+    void drawLinesBetweenPoints(const VisualParams* vparams);
 };
 
 // Declares template as extern to avoid the code generation of the template for

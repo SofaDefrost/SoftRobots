@@ -45,6 +45,7 @@ namespace component
 namespace engine
 {
 
+using sofa::core::objectmodel::ComponentState;
 using helper::ReadAccessor;
 using helper::WriteAccessor;
 using helper::vector;
@@ -76,22 +77,34 @@ CenterOfMass<DataTypes>::~CenterOfMass()
 template <class DataTypes>
 void CenterOfMass<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid;
+
     m_state = dynamic_cast<MechanicalState*>(getContext()->getMechanicalState());
     m_mass  = dynamic_cast<Mass*>(getContext()->getMass());
 
     if(m_state == nullptr)
-        msg_warning(this) << "No mechanical state found in the context. The component can not work.";
+    {
+        msg_error() << "No mechanical state found in the context. The component is deactivated.";
+        return;
+    }
 
     if(m_mass == nullptr)
-        msg_warning(this) << "No mass found in the context. The component can not work.";
+    {
+        msg_error() << "No mass found in the context. The component is deactivated.";
+        return;
+    }
 
     computeCenterOfMass();
+    m_componentstate = ComponentState::Valid;
 }
 
 
 template <class DataTypes>
 void CenterOfMass<DataTypes>::reinit()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     computeCenterOfMass();
 }
 
@@ -99,11 +112,11 @@ void CenterOfMass<DataTypes>::reinit()
 template <class DataTypes>
 void CenterOfMass<DataTypes>::update()
 {
-    if(m_state)
-    {
-        cleanDirty();
-        computeCenterOfMass();
-    }
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
+    cleanDirty();
+    computeCenterOfMass();
 }
 
 
@@ -129,6 +142,9 @@ void CenterOfMass<DataTypes>::computeCenterOfMass()
 template<class DataTypes>
 void CenterOfMass<DataTypes>::handleEvent(Event *event)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if (AnimateBeginEvent::checkEventType(event))
     {
         setDirtyValue();
@@ -140,6 +156,9 @@ void CenterOfMass<DataTypes>::handleEvent(Event *event)
 template<class DataTypes>
 void CenterOfMass<DataTypes>::draw(const VisualParams *vparams)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     vector<Vector3> points;
     points.push_back(d_centerOfMass.getValue());
     if(d_visualization.getValue())
