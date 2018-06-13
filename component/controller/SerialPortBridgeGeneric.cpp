@@ -86,6 +86,10 @@ void SerialPortBridgeGeneric::init()
 {
     checkConnection();
 
+    // To remove before v19.0 of the plugin
+    if(d_precise.getValue())
+        msg_warning() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
+
     // Initial value sent to the robot
     //[245, 0 .. 0]
     if(d_precise.getValue())  m_packetOut.resize(d_size.getValue()*2+1);
