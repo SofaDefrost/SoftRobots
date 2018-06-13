@@ -64,11 +64,12 @@ int SerialPortBridgeGenericClass = core::RegisterObject("Send data (ex: force, d
 SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     : d_port(initData(&d_port, "port", "Serial port name"))
     , d_baudRate(initData(&d_baudRate, "baudRate", "Transmission speed"))
-    , d_packetOut(initData(&d_packetOut, "sentData", "Data to send"))
-    , d_packetIn(initData(&d_packetIn, "receivedData", "Data received"))
+    , d_packetOut(initData(&d_packetOut, "sentData", "Data to send: the value 245 will be set at the beginning of the sent data as a header,\n"
+                           "enabling to implement a header research in the 'receiving' code, for synchronization purposes."))
+    , d_packetIn(initData(&d_packetIn, "receivedData", "Data received: vector of unsigned char, each entry should be an integer between 0 and 244."))
     , d_size(initData(&d_size,(int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
                                             "Will return a warning if sentData size does not match this value."))
-    , d_precise(initData(&d_precise,false,"precise","If true, will send the data in the format [MSB,LSB]*2*size"))
+    , d_precise(initData(&d_precise,false,"precise","If true, will send the data in the format [245,[MSB,LSB]*2*size,246]"))
     , d_splitPacket(initData(&d_splitPacket,false,"splitPacket","If true, will split the packet in two for lower error rate (only in precise mode)"))
     , d_redundancy(initData(&d_redundancy,1,"redundancy","Each packet will be send that number of times (1=default)"))
     , d_doReceive(initData(&d_doReceive,false,"receive","If true, will read from serial port (timeOut = 10ms)"))
@@ -142,14 +143,14 @@ void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
 
 void SerialPortBridgeGeneric::sendPacketPrecise()
 {
-    //[245, [MSB,LSB]*size*2]
+    //[245, [MSB,LSB]*size*2, 246]
     int packetlength=d_size.getValue();
     m_packetOut.resize(packetlength*2+1);
 
-    m_packetOut[0] = (unsigned char)245; //first half
+    m_packetOut[0] = (unsigned char)245;
     for (int i=0; i<packetlength; i++)
     {
-        int value = d_packetOut.getValue()[i]*1000; //conversion from meter to millimeter
+        int value = d_packetOut.getValue()[i];
         unsigned char LSB = value&0xFF;
         unsigned char MSB = value>>8&0xFF;
         m_packetOut[i*2+1]=MSB;
