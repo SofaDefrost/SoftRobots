@@ -335,6 +335,21 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
     d_cavityVolume.setValue(getCavityVolume(position.ref()));
 }
 
+
+
+template<class DataTypes>
+void SurfacePressureModel<DataTypes>::storeResults(helper::vector<double> &lambda, helper::vector<double> &delta)
+{
+    SOFA_UNUSED(delta);
+    if (this->d_isForceField.getValue())
+        m_lambda += lambda[m_columnId];
+
+    ReadAccessor<Data<VecCoord> > positions = *m_state->read(VecCoordId::position());
+    d_cavityVolume.setValue(getCavityVolume(positions.ref()));
+
+}
+
+
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::draw(const VisualParams* vparams)
 {

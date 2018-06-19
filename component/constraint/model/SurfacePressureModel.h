@@ -97,7 +97,7 @@ public:
     virtual void draw(const VisualParams* vparams) override;
     /////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////// Inherited from Actuator //////////////////////
+    ////////////////////////// Inherited from Constraint //////////////////////
     virtual void getConstraintViolation(const ConstraintParams* cParams,
                                         BaseVector *resV,
                                         const DataVecCoord &xfree,
@@ -108,6 +108,9 @@ public:
                                        unsigned int &cIndex,
                                        const DataVecCoord &x) override;
     /////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////// Inherited from SoftRobotBaseConstraints //////////////////////
+    virtual void storeResults(helper::vector<double> &lambda, helper::vector<double> &delta);
 
 protected:
     Data<helper::vector<Triangle> >     d_triangles;
@@ -125,6 +128,8 @@ protected:
     unsigned int                m_columnId;
     int                         m_columnIndex;
     bool                        m_hasCableSlidingPoint;
+
+    Real                        m_lambda;
 
 
 protected:
