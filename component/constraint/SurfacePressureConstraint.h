@@ -84,6 +84,27 @@ protected:
     double*     m_volumeGrowth;
 };
 
+////////// This constraint resolution solve the general gas equation at a constant temperature...
+////////// PV=nRT = cte
+
+class IdealGasLawConstraintResolution : public ConstraintResolution
+{
+public:
+    IdealGasLawConstraintResolution(const double& imposedPressureVolumeProduct,const double& initVolume,const double &refPressure, double* pressure, double* volumeGrowth);
+
+    //////////////////// Inherited from ConstraintResolution ///////////////////
+    virtual void init(int line, double** w, double *force) override;
+    virtual void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+    /////////////////////////////////////////////////////////////////////////////
+
+protected:
+    double      m_wActuatorActuator;
+    double*     m_pressure;
+    double*     m_volumeGrowth;
+    double      m_imposedPressureVolumeProduct;
+    double      m_initVolume;
+    double      m_pressureRef; // reference pressure (use for Boyle Mariott model)
+};
 
 /**
  * This component constrains a model by applying pressure on surfaces (for exemple cavities).
@@ -139,7 +160,9 @@ protected:
     Data<unsigned int>                      d_valueIndex;
     Data<helper::OptionsGroup>              d_valueType;
     Data<bool>                              d_visualization;
+    Data<Real>                              d_referencePressure;
 
+    double                                  m_pressure;
     double                                  m_volumeGrowth;
     vector<Real>                            m_initialValue;
 

@@ -57,15 +57,16 @@ template<class DataTypes>
 SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState* object)
     : Inherit(object)
     , d_value(initData(&d_value, "value",
-                                "List of choices for volume growth or pressure to impose.\n"))
+                       "List of choices of value to impose:  pressure, volume growth or product between volume and pressure (Boyle Mariotte).\n"))
 
     , d_valueIndex(initData(&d_valueIndex, (unsigned int) 0, "valueIndex",
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"pressure","volumeGrowth"), "valueType",
+    , d_valueType(initData(&d_valueType, OptionsGroup(3,"pressure","volumeGrowth","boyleMariotte"), "valueType",
                                           "volumeGrowth = the contstraint will impose the volume growth provided in data d_inputValue[d_iputIndex] \n"
-                                          "force = the contstraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
+                                          "pressure = the contstraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
+                                           "boyleMariotte = the product Pressure x volume = constant( the cavity is close)  d_inputValue[d_iputIndex] is the initial Pressure x volume \n"
                                           "If unspecified, the default value is pressure"))
 
     , d_visualization(initData(&d_visualization, false, "visualization",
@@ -91,16 +92,22 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint()
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified, the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"pressure","volumeGrowth"), "valueType",
-                                          "volumeGrowth = the contstraint will impose the volume growth provided in data d_inputValue[d_iputIndex] \n"
-                                          "force = the constraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
-                                          "If unspecified, the default value is pressure"))
+    , d_valueType(initData(&d_valueType, OptionsGroup(3,"pressure","volumeGrowth","boyleMariotte"), "valueType",
+                           "volumeGrowth = the contstraint will impose the volume growth provided in data d_inputValue[d_iputIndex] \n"
+                           "pressure = the contstraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
+                            "boyleMariotte = the product Pressure x volume = constant( the cavity is close)  d_inputValue[d_iputIndex] is the initial Pressure x volume \n"
+                           "If unspecified, the default value is pressure"))
 
     , d_visualization(initData(&d_visualization, false, "visualization",
-                               "Visualization of the value (either pressure or volume growth depending on the selection). \n"
+                               "Visualization of the value: either pressure (for option pressure and BoyleMariotte) or volume growth depending on the selection. \n"
                                "If unspecified, the default value is {false}"))
 
-    , m_volumeGrowth(0.)
+    , d_referencePressure(initData(&d_referencePressure, (Real) 1.0, "referencePressure",
+                                   "Reference pressure: corresponds to the atmospheric pressure in the Boyle Mariott case \n"
+                                   "It could be useful to create a depressure inside the cavity while in Boyle Mariott P > 0 \n"
+                                   "P = lambda + referencePressure, so lambda could be negative"))
+
+    , m_volumeGrowth(0.0)
 {
     d_value.setGroup("Input");
     d_valueIndex.setGroup("Input");
@@ -177,9 +184,15 @@ void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<C
         VolumeGrowthConstraintResolution *cr=  new VolumeGrowthConstraintResolution(imposed_value);
         resTab[offset++] =cr;
     }
-    else // pressure
+    else if(d_valueType.getValue().getSelectedItem() == "pressure")
     {
         SurfacePressureConstraintResolution *cr=  new SurfacePressureConstraintResolution(imposed_value, &m_volumeGrowth);
+        resTab[offset++] = cr;
+    }
+    else
+    {
+        std::cout<<"cavity Volume = "<< d_initialCavityVolume.getValue()<<std::endl;
+        IdealGasLawConstraintResolution *cr=  new IdealGasLawConstraintResolution(imposed_value, d_initialCavityVolume.getValue() ,d_referencePressure.getValue(), &m_pressure, &m_volumeGrowth);
         resTab[offset++] = cr;
     }
 }

@@ -1,0 +1,63 @@
+#from stlib.scene import MainHeader, ContactHeader
+#from stlib.physics.rigid import Floor
+#from stlib.physics.deformable import ElasticMaterialObject
+import Sofa
+import SofaPython
+import os
+path = os.path.dirname(os.path.abspath(__file__))+'/'
+
+dt = 0.01
+
+            
+    
+
+def createScene(rootNode):
+    rootNode.createObject('RequiredPlugin', pluginName='SoftRobots');
+    rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe', bbox=[-0.1,-0.1,-1.3,0.1,0.2,0.3] );
+    
+    
+    rootNode.findData('dt').value= dt;
+
+    # SOLVERS
+    rootNode.createObject('FreeMotionAnimationLoop')
+    rootNode.createObject('GenericConstraintSolver', maxIterations="500", tolerance='1e-10', printLog='1')
+    rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765');
+    rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
+
+
+    
+    motion = rootNode.createChild('ImposedMotion')
+    motion.createObject('MeshObjLoader', name='loader', filename=path+"mesh/cube.obj", triangulate="true")
+    motion.createObject("Mesh", name="maillage", src='@loader')             
+    motion.createObject('MechanicalObject', name='imposedPos', translation='0 0 0.0', showObject='0', showObjectScale='0.5', showIndices='0', showIndicesScale='0.05', template='Vec3d')
+    
+
+    
+    CubeNode = rootNode.createChild('CubeNode')    
+    CubeNode.createObject('EulerImplicit', firstOrder='0', rayleighStiffness='0.0', rayleighMass='0.0')
+    CubeNode.createObject('PCGLinearSolver', preconditioners='solver')
+    CubeNode.createObject('SparseLDLSolver', name='solver', template='CompressedRowSparseMatrix3d')
+    CubeNode.createObject('GenericConstraintCorrection', solverName='solver')
+    
+    CubeNode.createObject('MeshObjLoader', name='loader', filename=path+"mesh/cube.obj", triangulate="true")
+    
+    CubeNode.createObject("Mesh", name="maillage", src='@loader')             
+    CubeNode.createObject('MechanicalObject', showObject='0', showObjectScale='0.5', showIndices='0', showIndicesScale='0.05', template='Vec3d')
+    
+    CubeNode.createObject('RestShapeSpringsForceField', points='1 2 5 6', external_points='1 2 5 6',  stiffness='10', external_rest_shape='@../ImposedMotion/imposedPos', drawSpring='1')
+    
+    
+    # Here, we impose PV = 8
+    # to over pressure
+    CubeNode.createObject('SurfacePressureConstraint', template='Vec3d', triangles='@maillage.triangles', value="10.0", valueType="boyleMariotte", referencePressure='1.0')
+   
+    
+    CubeNode.createObject('BoxROI', name='roi', box= '-1.1 -1.1 -1.1 1.1 1.1 -0.9'  , drawBoxes='true')
+    
+    CubeNode.createObject('FixedConstraint', indices='@roi.indices')
+    
+    CubeNode.createObject('BoxROI', name='roi2', box= '-1.1 -1.1 0.9 1.1 1.1 1.1'  , drawBoxes='false')
+    CubeNode.createObject('PartialFixedConstraint', indices='@roi2.indices', fixedDirections='1 1 0')
+    
+    return rootNode    
+    

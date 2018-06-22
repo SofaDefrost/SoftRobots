@@ -103,6 +103,70 @@ void VolumeGrowthConstraintResolution::resolution(int line, double** w, double* 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////// IdealGasLawConstraintResolution ///////////////////////////////////////
+
+IdealGasLawConstraintResolution::IdealGasLawConstraintResolution(const double& imposedPressureVolumeProduct, const double& initVolume, const double &refPressure, double* pressure, double* volumeGrowth)
+    : ConstraintResolution()
+{
+    nbLines = 1;
+    m_imposedPressureVolumeProduct = imposedPressureVolumeProduct;
+    m_initVolume = initVolume;
+    m_pressure = pressure;
+    m_volumeGrowth = volumeGrowth;
+    m_pressureRef = refPressure; //athmosphere pressure
+}
+
+void IdealGasLawConstraintResolution::init(int line, double**w, double*force)
+{
+    SOFA_UNUSED(force);
+
+    m_wActuatorActuator = w[line][line];
+}
+
+void IdealGasLawConstraintResolution::resolution(int line, double** w, double* d, double* lambda, double* dfree)
+{
+    SOFA_UNUSED(dfree);
+    SOFA_UNUSED(w);
+
+    double d0 = d[line]-m_wActuatorActuator*lambda[line];
+    double pressure;
+
+    std::cout<<" d0 ="<<d0<<std::endl;
+    std::cout<<" m_initVolume = "<<m_initVolume <<std::endl;
+    std::cout<<" m_imposedPressureVolumeProduct = "<<m_imposedPressureVolumeProduct<<std::endl;
+
+
+
+    // we want that the results fulfill (three) equations:
+    // (d[line]+m_initVolume) * pressure = imposedPressureVolumeProduct;
+    // d[line] = m_wActuatorActuator * lambda[line] + d0
+    // pressure = lambda + m_pressureRef (m_pressureRef corresponds to the athmosphere pressure)
+
+    // so m_wActuatorActuator*lambda[line]^2  + (m_initVolume+ d0)*lambda[line] - m_imposedPressureVolumeProduct = 0
+
+    double delta= (m_initVolume+ d0 - m_wActuatorActuator*m_pressureRef)*(m_initVolume+ d0 - m_wActuatorActuator*m_pressureRef) //b^2
+            + 4* m_wActuatorActuator*m_imposedPressureVolumeProduct ; //-4ac
+
+    if (delta<0){
+        std::cout<<"no solution for Ideal Gas"<<std::endl;
+        pressure = m_pressureRef;
+
+    }
+    else if (delta == 0)
+    {
+        std::cout<<" delta == 0...."<<std::endl;
+        pressure = -(m_initVolume+ d0- m_wActuatorActuator*m_pressureRef)/m_wActuatorActuator;
+    }
+    else
+    {   // we chose the positive solution...
+        pressure= (-(m_initVolume+ d0- m_wActuatorActuator*m_pressureRef) + sqrt(delta))/(2*m_wActuatorActuator);
+    }
+    lambda[line] = pressure - m_pressureRef;
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 ///////////////////////////////////////// FACTORY //////////////////////////////////////////////////
 // Registering the component
