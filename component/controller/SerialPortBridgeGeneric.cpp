@@ -95,14 +95,9 @@ void SerialPortBridgeGeneric::init()
         m_packetOut[i] = (unsigned char)0;
     if (d_redundancy.getValue()<1)
     {
-        msg_warning(this) <<"No valid number of packets set in Redundancy, set automatically to 1";
+        msg_warning() <<"No valid number of packets set in Redundancy, set automatically to 1";
         d_redundancy.setValue(1);
     }
-
-    // Vector to void*
-    //void* packetPtr = new unsigned char[m_packetOut.size() * sizeof(m_packetOut)];
-    //memcpy (packetPtr, m_packetOut.data(), m_packetOut.size() * sizeof(m_packetOut));
-    //TODO : the two previous lines were currently useless -> Finish implementation using them or remove them definitely
 }
 
 
@@ -111,9 +106,9 @@ void SerialPortBridgeGeneric::checkConnection()
     int status = m_serial.Open(d_port.getValue().c_str() , d_baudRate.getValue());
 
     if (status!=1)
-        msg_warning(this) <<"No serial port found";
+        msg_warning() <<"No serial port found";
     else
-        msg_info(this) <<"Serial port found";
+        msg_info() <<"Serial port found";
 }
 
 
@@ -151,7 +146,7 @@ void SerialPortBridgeGeneric::sendPacketPrecise()
     int packetlength=d_size.getValue();
     m_packetOut.resize(packetlength*2+1);
 
-    m_packetOut[0] = (unsigned char)245;        //first half
+    m_packetOut[0] = (unsigned char)245; //first half
     for (int i=0; i<packetlength; i++)
     {
         int value = d_packetOut.getValue()[i]*1000; //conversion from meter to millimeter
@@ -219,11 +214,11 @@ void SerialPortBridgeGeneric::receivePacket()
 void SerialPortBridgeGeneric::checkData()
 {
     if(!d_size.isSet())
-        msg_warning(this) <<"Size not set.";
+        msg_warning() <<"Size not set.";
 
     if((int)d_packetOut.getValue().size()!=d_size.getValue())
     {
-        msg_warning(this) <<"The user specified a size for sentData, size="<<d_size.getValue()
+        msg_warning() <<"The user specified a size for sentData, size="<<d_size.getValue()
                           <<" but sentData.size="<<d_packetOut.getValue().size()<<"."
                           <<" To remove this warning you can either change the value of 'size' or 'sentData'."
                           <<" Make sure it corresponds to what the arduino card is expecting.";

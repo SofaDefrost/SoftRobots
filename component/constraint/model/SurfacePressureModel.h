@@ -62,7 +62,7 @@ using sofa::core::VecCoordId ;
  * This class contains common implementation of surface pressure constraints
 */
 template< class DataTypes >
-class SurfacePressureModel : virtual public SoftRobotsConstraint<DataTypes>
+class SOFA_SOFTROBOTS_API SurfacePressureModel : virtual public SoftRobotsConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SurfacePressureModel,DataTypes),
@@ -135,11 +135,6 @@ protected:
     void drawLines(const VisualParams* vparams, float red, float green, float blue);
     std::string getValueString(Real pressure);
 
-private:
-
-    void drawValue(const core::visual::VisualParams* vparams);
-    void computeEdges();
-
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring m_state in the current lookup context.
@@ -148,7 +143,13 @@ private:
     using SoftRobotsConstraint<DataTypes>::m_state ;
     using SoftRobotsConstraint<DataTypes>::getContext ;
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
+    using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
+
+private:
+
+    void drawValue(const core::visual::VisualParams* vparams);
+    void computeEdges();
 };
 
 // Declares template as extern to avoid the code generation of the template for

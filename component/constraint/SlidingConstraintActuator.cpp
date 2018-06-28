@@ -48,7 +48,8 @@ using namespace sofa::core;
 
 //----------- Displacement constraint --------------
 SlidingDisplacementConstraintResolution::SlidingDisplacementConstraintResolution(double& imposedDisplacement, double* force)
-    : m_imposedDisplacement(imposedDisplacement)
+    : ConstraintResolution(1)
+	, m_imposedDisplacement(imposedDisplacement)
     , m_force(force)
 { }
 
@@ -83,7 +84,8 @@ void SlidingDisplacementConstraintResolution::storeForce(int line,  double* lamb
 
 //--------------- Force constraint -------------
 SlidingForceConstraintResolution::SlidingForceConstraintResolution(double& imposedForce, double *displacement)
-    : m_imposedForce(imposedForce)
+	: ConstraintResolution(1)
+	, m_imposedForce(imposedForce)
     , m_displacement(displacement)
 { }
 
@@ -122,7 +124,8 @@ void SlidingForceConstraintResolution::storeDisplacement(int line,  double* d)
 
 //------------- Stiffness Constraint -----------
 SlidingStiffnessConstraintResolution::SlidingStiffnessConstraintResolution(double& imposedBiasForce, double& imposedStiffness, double* displacement, double* force, double& neutralEffectorPosition, double* neutralActuatorPosition, double* Wea, double* Waa)
-	: m_imposedBiasForce(imposedBiasForce) // TEST
+	: ConstraintResolution(1)
+	, m_imposedBiasForce(imposedBiasForce) // TEST
 	, m_imposedStiffness(imposedStiffness)
 	, m_displacement(displacement)
 	, m_force(force)

@@ -149,6 +149,7 @@ protected:
     using SurfacePressureModel<DataTypes>::m_displayedValue ;
     using SurfacePressureModel<DataTypes>::m_columnId;
     using SurfacePressureModel<DataTypes>::m_visualization;
+    using SoftRobotsConstraint<DataTypes>::m_componentstate;
     ////////////////////////////////////////////////////////////////////////////
 
 private:

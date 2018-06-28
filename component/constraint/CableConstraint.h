@@ -175,6 +175,7 @@ public:
     using CableModel<DataTypes>::d_maxDispVariation ;
     using CableModel<DataTypes>::d_force ;
     using CableModel<DataTypes>::d_displacement ;
+    using CableModel<DataTypes>::m_componentstate ;
     ///////////////////////////////////////////////////////////////////////////
 
 	Data<double>						d_neutralEffectorPosition; // TEST

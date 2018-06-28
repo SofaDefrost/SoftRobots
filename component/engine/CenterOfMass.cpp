@@ -27,11 +27,11 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "initSoftRobots.h"
-#include <sofa/core/ObjectFactory.h>
+#define SOFA_COMPONENT_ENGINE_CENTEROFMASS_CPP
 
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+#include "CenterOfMass.inl"
+#include <sofa/core/ObjectFactory.h>
+#include <SofaEngine/config.h>
 
 namespace sofa
 {
@@ -39,70 +39,34 @@ namespace sofa
 namespace component
 {
 
-extern "C" {
-    SOFA_SOFTROBOTS_API void initExternalModule();
-    SOFA_SOFTROBOTS_API const char* getModuleName();
-    SOFA_SOFTROBOTS_API const char* getModuleVersion();
-    SOFA_SOFTROBOTS_API const char* getModuleLicense();
-    SOFA_SOFTROBOTS_API const char* getModuleDescription();
-    SOFA_SOFTROBOTS_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{    
-    static bool first = true;
-    if (first)
-    {
-        /// Automatically load the SoftRobots.Inverse plugin if available.
-        if( !PluginManager::getInstance().findPlugin("SoftRobots.Inverse").empty() )
-        {
-            PluginManager::getInstance().loadPlugin("SoftRobots.Inverse") ;
-        }
-
-        first = false;
-    }
-}
-
-const char* getModuleName()
+namespace engine
 {
-    return "SoftRobots";
-}
 
-const char* getModuleVersion()
-{
-    return "1.0";
-}
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+using core::RegisterObject;
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+SOFA_DECL_CLASS(CenterOfMass)
 
-const char* getModuleDescription()
-{
-    return "The plugin allows to control soft robots";
-}
+int CenterOfMassClass = RegisterObject("This class computes the center of mass of the object in its context.")
+#ifdef SOFA_WITH_DOUBLE
+        .add< CenterOfMass<Vec3dTypes> >(true)
+#endif
+#ifdef SOFA_WITH_FLOAT
+        .add< CenterOfMass<Vec3fTypes> >()
+#endif
+        ;
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
+#ifdef SOFA_WITH_FLOAT
+template class SOFA_SOFTROBOTS_API CenterOfMass<Vec3fTypes>;
+#endif
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_SOFTROBOTS_API CenterOfMass<Vec3dTypes>;
+#endif
 
-}
+} // namespace constraintset
 
-}
+} // namespace component
 
-SOFA_LINK_CLASS(AnimationEditor)
-SOFA_LINK_CLASS(DataVariationLimiter)
-SOFA_LINK_CLASS(PartialRigidificationConstraint)
-SOFA_LINK_CLASS(PartialRigidificationForceField)
-SOFA_LINK_CLASS(PREquivalentStiffnessForceField)
-SOFA_LINK_CLASS(SurfacePressureConstraint)
-SOFA_LINK_CLASS(SerialPortBridgeGeneric)
-SOFA_LINK_CLASS(InteractiveControl)
-SOFA_LINK_CLASS(UnilateralPlaneConstraint)
-SOFA_LINK_CLASS(VolumeFromTriangles)
-SOFA_LINK_CLASS(VolumeFromTetrahedrons)
+} // namespace sofa
 

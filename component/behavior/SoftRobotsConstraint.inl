@@ -99,8 +99,26 @@ void SoftRobotsConstraint<DataTypes>::buildConstraintMatrix(const ConstraintPara
     if (cParams)
     {
         buildConstraintMatrix(cParams, *cId[m_state].write(), cIndex, *cParams->readX(m_state));
-//        buildConstraintMatrix(cParams, *cId[m_state].write(), cIndex, m_state->read(core::ConstVecCoordId::position())->getValue());
     }
+}
+
+
+template<class DataTypes>
+void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda)
+{
+    if (cParams)
+    {
+        storeLambda(cParams, *res[m_state].write(), *cParams->readJ(m_state), lambda);
+    }
+}
+
+
+template<class DataTypes>
+void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& result, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda)
+{
+    auto res = sofa::helper::write(result, cParams);
+    const MatrixDeriv& j = jacobian.getValue(cParams);
+    j.multTransposeBaseVector(res, lambda ); // lambda is a vector of scalar value so block size is one.
 }
 
 
