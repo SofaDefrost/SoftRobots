@@ -118,6 +118,11 @@ protected:
     Data<Real>                          d_cavityVolume;
     Data<bool>                          d_flipNormal;
 
+    Data<double>                        d_pressure;
+    Data<double>                        d_volumeGrowth;
+
+    Data<Real>                          d_maxVolumeGrowthVariation;
+
     bool                                m_visualization{false};
     Data<Real>                          d_showVisuScale;
 

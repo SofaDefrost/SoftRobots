@@ -84,16 +84,32 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                                "If a positive pressure acts like a depressurization, try to set \n"
                                "flipNormal to true."))
 
+    , d_pressure(initData(&d_pressure, (double) 0, "pressure",
+                             "Output pressure."))
+
+    , d_volumeGrowth(initData(&d_volumeGrowth, (double) 0, "volumeGrowth",
+                             "Output volume growth."))
+
+    , d_maxVolumeGrowthVariation(initData(&d_maxVolumeGrowthVariation, (Real) 0, "maxVolumeGrowthVariation",
+                             "Maximum volume growth variation allowed for actuation. If no value is set by user, no \n"
+                             "maximum will be considered. NB: this value has a dependancy with the time step \n"
+                             "(volume/dt) in the dynamic case."))
+
     , d_showVisuScale(initData(&d_showVisuScale, (Real) 0.1, "showVisuScale",
                                "Scale for visualization. If unspecified the default value is {0.1}"))
 {
-    d_triangles.setGroup("Vector");
-    d_quads.setGroup("Vector");
-
     d_showVisuScale.setGroup("Visualization");
 
     d_cavityVolume.setReadOnly(true);
     d_initialCavityVolume.setReadOnly(true);
+
+    d_pressure.setGroup("Vector");
+    d_volumeGrowth.setGroup("Vector");
+
+    d_pressure.setReadOnly(true);
+    d_volumeGrowth.setReadOnly(true);
+
+    d_maxVolumeGrowthVariation.setGroup("Input");
 }
 
 
@@ -121,17 +137,33 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel()
                                "If a positive pressure acts like a depressurization, try to set \n"
                                "flipNormal to true."))
 
+    , d_pressure(initData(&d_pressure, (double) 0, "pressure",
+                             "Output pressure."))
+
+    , d_volumeGrowth(initData(&d_volumeGrowth, (double) 0, "volumeGrowth",
+                             "Output volume growth."))
+
+    , d_maxVolumeGrowthVariation(initData(&d_maxVolumeGrowthVariation, (Real) 0, "maxVolumeGrowthVariation",
+                             "Maximum volume growth variation allowed for actuation. If no value is set by user, no \n"
+                             "maximum will be considered. NB: this value has a dependancy with the time step \n"
+                             "(volume/dt) in the dynamic case."))
+
     , d_showVisuScale(initData(&d_showVisuScale, (Real) 0.1, "showVisuScale",
                                "Scale for visualization. If unspecified the default value is {0.1}"))
 
 {
-    d_triangles.setGroup("Vector");
-    d_quads.setGroup("Vector");
-
     d_showVisuScale.setGroup("Visualization");
 
     d_cavityVolume.setReadOnly(true);
     d_initialCavityVolume.setReadOnly(true);
+
+    d_pressure.setGroup("Vector");
+    d_volumeGrowth.setGroup("Vector");
+
+    d_pressure.setReadOnly(true);
+    d_volumeGrowth.setReadOnly(true);
+
+    d_maxVolumeGrowthVariation.setGroup("Input");
 }
 
 template<class DataTypes>

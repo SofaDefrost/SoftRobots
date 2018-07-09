@@ -72,6 +72,7 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState*
                                "Visualization of the value (either pressure or volume growth depending on the selection). \n"
                                "If unspecified, the default value is {false}"))
 
+    , m_pressure(0.)
     , m_volumeGrowth(0.)
 {
     d_value.setGroup("Input");
@@ -100,6 +101,7 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint()
                                "Visualization of the value (either pressure or volume growth depending on the selection). \n"
                                "If unspecified, the default value is {false}"))
 
+    , m_pressure(0.)
     , m_volumeGrowth(0.)
 {
     d_value.setGroup("Input");
@@ -174,13 +176,27 @@ void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<C
 
     if(d_valueType.getValue().getSelectedItem() == "volumeGrowth")
     {
-        VolumeGrowthConstraintResolution *cr=  new VolumeGrowthConstraintResolution(imposed_value);
+        if(d_maxVolumeGrowthVariation.isSet())
+        {
+            double volumeGrowth = d_volumeGrowth.getValue();
+            if(imposed_value > volumeGrowth && imposed_value-volumeGrowth>d_maxVolumeGrowthVariation.getValue())
+                imposed_value = volumeGrowth+d_maxVolumeGrowthVariation.getValue();
+
+            if(imposed_value < volumeGrowth && imposed_value-volumeGrowth<-d_maxVolumeGrowthVariation.getValue())
+                imposed_value = volumeGrowth-d_maxVolumeGrowthVariation.getValue();
+        }
+
+        VolumeGrowthConstraintResolution *cr=  new VolumeGrowthConstraintResolution(imposed_value, &m_pressure);
         resTab[offset++] =cr;
+        d_volumeGrowth.setValue(imposed_value);
+        d_pressure.setValue(m_pressure);
     }
     else // pressure
     {
         SurfacePressureConstraintResolution *cr=  new SurfacePressureConstraintResolution(imposed_value, &m_volumeGrowth);
         resTab[offset++] = cr;
+        d_pressure.setValue(imposed_value);
+        d_volumeGrowth.setValue(m_volumeGrowth);
     }
 }
 
