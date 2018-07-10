@@ -72,11 +72,6 @@ template<class DataTypes1, class DataTypes2>
 void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const MechanicalParams* mparams,
                                                                            const MultiMatrixAccessor* matrix)
 {
-
-    if(f_printLog.getValue())
-        sout << "entering addKToMatrix" << sendl;
-
-
     MultiMatrixAccessor::MatrixRef mat11 = matrix->getMatrix(mstate1);
     MultiMatrixAccessor::MatrixRef mat22 = matrix->getMatrix(mstate2);
     MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(mstate1, mstate2);
@@ -85,18 +80,11 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     const helper::vector<BaseMatrix*>* J0J1 = d_subsetMultiMapping.get()->getJs();
 
     if(J0J1 == NULL)
-        serr<<" WARNING J0J1 null";
-    else
-    {
-        std::cout<<" J0J1 ok"<<std::endl;
-        std::cout<<" J0 = "<<std::endl;
-        std::cout<<(*J0J1)[0] <<std::endl;
-    }
-
+        dmsg_warning()<<"J0J1 null";
 
     if (J0J1->size() != 2)
     {
-        serr << "subsetMultiMapping doesn't have 2 output mechanical states. This is not handled in PartialRigidification. AddKToMatrix not computed " << sendl;
+        msg_error() << "SubsetMultiMapping does not have two output mechanical states. This is not handled in PartialRigidification. AddKToMatrix not computed.";
         return;
     }
     CompressedRowSparseMatrix<_3_3_Matrix_Type>* J0;
@@ -110,16 +98,16 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     Jr = dynamic_cast<const CompressedRowSparseMatrix<_3_6_Matrix_Type> *> (d_rigidMapping.get()->getJ() );
 
     if(J0 == NULL) {
-        serr << "J0 null" << sendl;
+        dmsg_error() << "J0 null";
     }
     if(J1 == NULL) {
-        serr << "J1 null" << sendl;
+        dmsg_error() << "J1 null";
     }
     if(Jr == NULL) {
-        serr << "Jr null" << sendl;
+        dmsg_error() << "Jr null";
     }
     if((J0 == NULL) || (J1 == NULL)  || (Jr == NULL) ) {
-        serr << "a jacobian matrix from Mapping is missing. AddKToMatrix not computed" << sendl;
+        msg_error() << "A jacobian matrix from Mapping is missing. AddKToMatrix not computed";
         return;
     }
 
@@ -236,10 +224,6 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     delete K;
     delete mappedFFMatrix;
     delete mappedFFMatrixAccessor;
-
-    if(f_printLog.getValue())
-        sout << "exit addKToMatrix" << sendl;
-
 }
 
 template<class DataTypes1, class DataTypes2>
@@ -264,21 +248,6 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::testBuildJacobian(
     //--
 
     d_mappedForceField.get()->addKToMatrix(mparams, mappedFFMatrixAccessor);
-
-    // CompressedRowSparseMatrix<_3_6_Matrix_Type> J1Jr ;
-    // CompressedRowSparseMatrix<_3_3_Matrix_Type> J0tK ;
-    // CompressedRowSparseMatrix<_3_3_Matrix_Type> J0tKJ0 ;
-    // CompressedRowSparseMatrix<_3_6_Matrix_Type> J0tKJ1Jr ;
-    // CompressedRowSparseMatrix<_6_6_Matrix_Type> JrtJ1tKJ1Jr ;
-    // CompressedRowSparseMatrix<_6_3_Matrix_Type> JrtJ1tK ;
-    // CompressedRowSparseMatrix<_6_3_Matrix_Type> JrtJ1tKJ0 ;
-
-    //--Warning K set but unused : TODO clean or refactorize
-
-    //CompressedRowSparseMatrix<_3_3_Matrix_Type>* K ;
-    //K = dynamic_cast<CompressedRowSparseMatrix<_3_3_Matrix_Type>*>(r.matrix);
-
-    //--
 
     sofa::core::State<DataTypes1> * state = dynamic_cast<sofa::core::State<DataTypes1> *>(mstate);
     unsigned int stateSize = mstate->getSize();

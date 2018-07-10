@@ -118,6 +118,11 @@ protected:
     Data<Real>                          d_cavityVolume;
     Data<bool>                          d_flipNormal;
 
+    Data<double>                        d_pressure;
+    Data<double>                        d_volumeGrowth;
+
+    Data<Real>                          d_maxVolumeGrowthVariation;
+
     bool                                m_visualization{false};
     Data<Real>                          d_showVisuScale;
 
@@ -135,11 +140,6 @@ protected:
     void drawLines(const VisualParams* vparams, float red, float green, float blue);
     std::string getValueString(Real pressure);
 
-private:
-
-    void drawValue(const core::visual::VisualParams* vparams);
-    void computeEdges();
-
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring m_state in the current lookup context.
@@ -148,7 +148,13 @@ private:
     using SoftRobotsConstraint<DataTypes>::m_state ;
     using SoftRobotsConstraint<DataTypes>::getContext ;
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
+    using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
+
+private:
+
+    void drawValue(const core::visual::VisualParams* vparams);
+    void computeEdges();
 };
 
 // Declares template as extern to avoid the code generation of the template for

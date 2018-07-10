@@ -31,6 +31,8 @@
 #include <SofaTest/Sofa_test.h>
 
 #include "../../../component/constraint/SurfacePressureConstraint.h"
+using sofa::component::constraintset::SurfacePressureConstraint;
+
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/Locale.h>
@@ -49,15 +51,18 @@ using std::string;
 using std::fabs;
 using std::stof;
 
+using sofa::core::objectmodel::ComponentState;
+
 namespace sofa {
 
     template <typename _DataTypes>
-    struct SurfacePressureConstraintTest : public Sofa_test<typename _DataTypes::Real>, sofa::component::constraintset::SurfacePressureConstraint<_DataTypes>
+    struct SurfacePressureConstraintTest : public Sofa_test<typename _DataTypes::Real>, SurfacePressureConstraint<_DataTypes>
     {
+
+        using SurfacePressureConstraint<_DataTypes>::m_componentstate;
 
         simulation::Node::SPtr m_root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
         simulation::Simulation* m_simulation;          ///< created by the constructor an re-used in the tests
-
 
         typedef _DataTypes DataTypes;
         typedef typename DataTypes::Deriv Deriv;
@@ -102,6 +107,7 @@ namespace sofa {
             MatrixDeriv& column = *columns.beginEdit();
             columns.endEdit();
 
+            m_componentstate = ComponentState::Valid;
             this->buildConstraintMatrix(cparams, columns, columnsIndex, x);
 
             MatrixDeriv columnExpected;

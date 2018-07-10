@@ -144,6 +144,7 @@ private :
     /// otherwise any access to the base::attribute would require
     /// the "this->" approach.
     using ForceField<DataTypes>::getContext ;
+    using ForceField<DataTypes>::m_componentstate;
     ////////////////////////////////////////////////////////////////////////////
 };
 
