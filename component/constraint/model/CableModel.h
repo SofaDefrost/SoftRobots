@@ -31,9 +31,6 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
 #define SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
 
-#include <sofa/core/behavior/Constraint.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 #include "../../behavior/SoftRobotsConstraint.h"
@@ -135,16 +132,6 @@ protected:
 
     SReal getCableLength(const VecCoord &positions);
 
-private:
-    void internalInit();
-
-    void checkIndicesRegardingState();
-    void initActuatedPoints();
-
-    void drawPullPoint(const VisualParams* vparams);
-    void drawPoints(const VisualParams* vparams);
-    void drawLinesBetweenPoints(const VisualParams* vparams);
-
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     /// Bring m_state in the current lookup context.
@@ -157,7 +144,18 @@ private:
     using SoftRobotsConstraint<DataTypes>::m_deltaMax ;
     using SoftRobotsConstraint<DataTypes>::m_lambdaMax ;
     using SoftRobotsConstraint<DataTypes>::addAlias ;
+    using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
+
+private:
+    void internalInit();
+
+    void checkIndicesRegardingState();
+    void initActuatedPoints();
+
+    void drawPullPoint(const VisualParams* vparams);
+    void drawPoints(const VisualParams* vparams);
+    void drawLinesBetweenPoints(const VisualParams* vparams);
 };
 
 // Declares template as extern to avoid the code generation of the template for

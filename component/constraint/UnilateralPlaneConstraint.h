@@ -145,6 +145,7 @@ private:
     /// otherwise any access to the base::attribute would require
     /// the "this->" approach.
     using Constraint<DataTypes>::mstate ;
+    using Constraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 };
 

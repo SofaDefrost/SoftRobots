@@ -30,6 +30,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_SOFTROBOTSCONSTRAINT_H
 #define SOFA_CORE_BEHAVIOR_SOFTROBOTSCONSTRAINT_H
 
+#include <sofa/core/behavior/MechanicalState.h>
 #include "SoftRobotsBaseConstraint.h"
 
 #include "../initSoftRobots.h"
@@ -133,6 +134,8 @@ public:
                                        const DataVecCoord &x) = 0;
 
 
+    virtual void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
+
 
 protected:
     Data<Real> d_endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
@@ -141,6 +144,9 @@ protected:
     virtual ~SoftRobotsConstraint();
 
     MechanicalState<DataTypes> *m_state; ///< Associated mechanical state
+
+private:
+    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda);
 };
 
 // Force template specialization for the most common sofa float related type.

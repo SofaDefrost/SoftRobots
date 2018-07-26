@@ -46,7 +46,9 @@ using namespace sofa::helper;
 //////////////////////// DEFINITIONS //////////////////////////////////////////////////////////////
 
 /////////////////// PartialRigidificationConstraintResolution6Dof /////////////////////////////////
-PartialRigidificationConstraintResolution6Dof::PartialRigidificationConstraintResolution6Dof() {
+PartialRigidificationConstraintResolution6Dof::PartialRigidificationConstraintResolution6Dof()
+    : ConstraintResolution(6)
+{
 }
 
 void PartialRigidificationConstraintResolution6Dof::init(int line, double** w, double *force)

@@ -50,8 +50,8 @@ using namespace sofa::helper;
 using namespace sofa::core;
 
 SurfacePressureConstraintResolution::SurfacePressureConstraintResolution(const double& imposedPressure, double *volumeGrowth)
+    : ConstraintResolution(1)
 {
-    nbLines = 1;
     m_imposedPressure = imposedPressure;
     m_volumeGrowth = volumeGrowth;
 }
@@ -79,10 +79,11 @@ void SurfacePressureConstraintResolution::resolution(int line, double** w, doubl
 
 /////////////////////////////////// VolumeGrowthConstraintResolution ///////////////////////////////////////
 
-VolumeGrowthConstraintResolution::VolumeGrowthConstraintResolution(const double& imposedVolumeGrowth)
+VolumeGrowthConstraintResolution::VolumeGrowthConstraintResolution(const double& imposedVolumeGrowth, double *pressure)
+    : ConstraintResolution(1)
 {
-    nbLines = 1;
     m_imposedVolumeGrowth = imposedVolumeGrowth;
+    m_pressure = pressure;
 }
 
 void VolumeGrowthConstraintResolution::init(int line, double**w, double*force)
@@ -99,6 +100,8 @@ void VolumeGrowthConstraintResolution::resolution(int line, double** w, double* 
 
     // da=Waa*(lambda_a) + Sum Wai * lambda_i  = m_imposedVolumeGrowth
     lambda[line] -= (d[line]-m_imposedVolumeGrowth) / m_wActuatorActuator ;
+
+    *m_pressure = lambda[line];
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////

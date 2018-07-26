@@ -45,6 +45,7 @@ namespace component
 namespace engine
 {
 
+using sofa::core::objectmodel::ComponentState;
 using helper::ReadAccessor;
 using helper::vector;
 using sofa::core::ConstVecCoordId;
@@ -73,6 +74,8 @@ VolumeFromTriangles<DataTypes>::~VolumeFromTriangles()
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid;
+
     addInput(&d_positions);
     addInput(&d_triangles);
     addInput(&d_quads);
@@ -84,7 +87,10 @@ void VolumeFromTriangles<DataTypes>::init()
         m_state = dynamic_cast<MechanicalState*>(getContext()->getMechanicalState());
 
         if(m_state == nullptr)
-            msg_warning(this) << "No positions given by the user and no mechanical state found in the context.";
+        {
+            msg_error() << "No positions given by the user and no mechanical state found in the context. The component is deactivated.";
+            return;
+        }
 
         ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
         d_positions.setValue(positions.ref());
@@ -93,12 +99,17 @@ void VolumeFromTriangles<DataTypes>::init()
     initTopology();
     checkTopology();
     updateVolume();
+
+    m_componentstate = ComponentState::Valid;
 }
 
 
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::reinit()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     updateVolume();
 }
 
@@ -115,7 +126,7 @@ void VolumeFromTriangles<DataTypes>::initTopology()
         d_quads.setValue(m_topology->getQuads());
 
     if(!d_quads.isSet() && !d_triangles.isSet() && !m_topology)
-        msg_warning(this) << "No quads or triangles given by the user and no topology context";
+        msg_warning() << "No quads or triangles given by the user and no topology context";
 }
 
 
@@ -132,11 +143,11 @@ void VolumeFromTriangles<DataTypes>::checkTopology()
     for(int i=0;i<nbTriangles;i++){
         for(int j=0;j<3;j++){
             if( triangles[i][j] < 0 )
-                msg_error(this) << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
+                msg_error() << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
                               <<". is too small regarding positions size of(" << positions.size() << ")" ;
 
             if( triangles[i][j] >= positions.size() )
-                msg_error(this) << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
+                msg_error() << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
                               <<". is too large regarding positions size of(" << positions.size() << ")" ;
         }
     }
@@ -147,12 +158,12 @@ void VolumeFromTriangles<DataTypes>::checkTopology()
     for(int i=0;i<nbQuads;i++){
         for(int j=0;j<4;j++){
             if( quads[i][j] < 0 )
-                msg_error(this) << "quads [" <<i << "][" << j << "]=" << quads[i][j]
+                msg_error() << "quads [" <<i << "][" << j << "]=" << quads[i][j]
                               << " is too small regarding positions size of("
                               << positions.size() << ")" ;
 
             if( quads[i][j] >= positions.size() )
-                msg_error(this) << "quads [" <<i << "][" << j << "]=" << quads[i][j]
+                msg_error() << "quads [" <<i << "][" << j << "]=" << quads[i][j]
                               << " is too large regarding positions size of("
                               << positions.size() << ")" ;
         }
@@ -163,6 +174,9 @@ void VolumeFromTriangles<DataTypes>::checkTopology()
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::update()
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if(m_state && d_doUpdate.getValue())
     {
         ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
@@ -218,6 +232,9 @@ void VolumeFromTriangles<DataTypes>::updateVolume()
 template<class DataTypes>
 void VolumeFromTriangles<DataTypes>::handleEvent(Event *event)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if (AnimateBeginEvent::checkEventType(event))
     {
         setDirtyValue();
