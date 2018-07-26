@@ -66,8 +66,9 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     , d_baudRate(initData(&d_baudRate, "baudRate", "Transmission speed"))
     , d_packetOut(initData(&d_packetOut, "sentData", "Data to send"))
     , d_packetIn(initData(&d_packetIn, "receivedData", "Data received"))
-    , d_size(initData(&d_size,(int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
+    , d_sizeOut(initData(&d_sizeOut,(int)0,"sizeOut","Size of the arrow to send. Use to check sentData size. \n"
                                             "Will return a warning if sentData size does not match this value."))
+	, d_sizeIn(initData(&d_sizeIn, (int)0, "sizeIn", "Size of the array to receive."))
     , d_precise(initData(&d_precise,false,"precise","If true, will send the data in the format [MSB,LSB]*2*size"))
     , d_splitPacket(initData(&d_splitPacket,false,"splitPacket","If true, will split the packet in two for lower error rate (only in precise mode)"))
     , d_redundancy(initData(&d_redundancy,1,"redundancy","Each packet will be send that number of times (1=default)"))
@@ -87,8 +88,8 @@ void SerialPortBridgeGeneric::init()
 
     // Initial value sent to the robot
     //[245, 0 .. 0]
-    if(d_precise.getValue())  m_packetOut.resize(d_size.getValue()*2+1);
-    else                      m_packetOut.resize(d_size.getValue()+1);
+    if(d_precise.getValue())  m_packetOut.resize(d_sizeOut.getValue()*2+1);
+    else                      m_packetOut.resize(d_sizeOut.getValue()+1);
 
     m_packetOut[0] = (unsigned char)245;
     for (int i=1; i<(int)m_packetOut.size(); i++)
@@ -143,7 +144,7 @@ void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
 void SerialPortBridgeGeneric::sendPacketPrecise()
 {
     //[245, [MSB,LSB]*size*2]
-    int packetlength=d_size.getValue();
+    int packetlength=d_sizeOut.getValue();
     m_packetOut.resize(packetlength*2+1);
 
     m_packetOut[0] = (unsigned char)245; //first half
@@ -172,10 +173,10 @@ void SerialPortBridgeGeneric::sendPacketPrecise()
 void SerialPortBridgeGeneric::sendPacket()
 {
     //[245, d_packet]
-    m_packetOut.resize(d_size.getValue()+1);
+    m_packetOut.resize(d_sizeOut.getValue()+1);
 
     m_packetOut[0] = (unsigned char)245;
-    for (int i=0; i<d_size.getValue(); i++)
+    for (int i=0; i<d_sizeOut.getValue(); i++)
         m_packetOut[i+1] = (unsigned char)d_packetOut.getValue()[i];
 
     // Vector to void*
@@ -192,7 +193,7 @@ void SerialPortBridgeGeneric::receivePacket()
 {
     WriteAccessor<Data<helper::vector<unsigned char>>> packetIn = d_packetIn;
 
-    int nbData = 1;
+    int nbData = d_sizeIn.getValue();
     packetIn.clear();
     packetIn.resize(nbData);
 
@@ -213,16 +214,16 @@ void SerialPortBridgeGeneric::receivePacket()
 
 void SerialPortBridgeGeneric::checkData()
 {
-    if(!d_size.isSet())
+    if(!d_sizeOut.isSet())
         msg_warning() <<"Size not set.";
 
-    if((int)d_packetOut.getValue().size()!=d_size.getValue())
+    if((int)d_packetOut.getValue().size()!=d_sizeOut.getValue())
     {
-        msg_warning() <<"The user specified a size for sentData, size="<<d_size.getValue()
+        msg_warning() <<"The user specified a size for sentData, size="<<d_sizeOut.getValue()
                           <<" but sentData.size="<<d_packetOut.getValue().size()<<"."
                           <<" To remove this warning you can either change the value of 'size' or 'sentData'."
                           <<" Make sure it corresponds to what the arduino card is expecting.";
-        d_size.setValue(d_packetOut.getValue().size());
+        d_sizeOut.setValue(d_packetOut.getValue().size());
     }
 }
 
