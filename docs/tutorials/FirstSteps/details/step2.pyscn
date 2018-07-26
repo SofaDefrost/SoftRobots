@@ -32,7 +32,7 @@ def createScene(rootNode):
 
 	### Visual Object of the Cube
 
-	visual = cube.createChild("Cube Visual")
+	visual = cube.createChild("CubeVisual")
 	# Graphic model based on a mesh
 	visual.createObject('OglModel', name="Visual", fileMesh="mesh/smCube27.obj", color=[0.1,0.0,1.0], scale=20.0)
 	# Building a correspondance between the mechanical and the graphical representation
