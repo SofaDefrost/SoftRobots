@@ -1,100 +1,70 @@
 # -*- coding: utf-8 -*-
+"""
+    In Step 7 we are showing how to add collision detection
+    and contact management in our project.
+
+    The important component to see in the graph are:
+    - the ones added by the addContact function
+    - the one in the "Collision" part of the tripod object
+    - the one in the "Collision" part of the Sphere object
+"""
 import Sofa
-from stlib.scene import Scene, Interaction
-from splib.numerics import sin,cos, to_radians, RigidDof
-from splib.animation import animate
-from stlib.scene import Scene
 from splib.constants import Key
-from math import floor, pi
-from tripod import Tripod
+from stlib.scene import Scene, Interaction, ContactHeader
+from stlib.physics.rigid import Sphere
+#from tripod import Tripod
+from tripod import TripodCollision
+from tripodcontroller import MyController
 
-def setupanimation(actuators, step, angularstep, factor):
-    for actuator in actuators:
-            rigid = RigidDof( actuator.dofs )
-            rigid.translate( rigid.forward * step * factor )
-            actuator.ServoMotor.angle += angularstep * factor
-
-class MyController(Sofa.PythonScriptController):
-    def __init__(self, node, actuators, serialportctrl):
-        self.stepsize = 0.1
+class JumpController(Sofa.PythonScriptController):
+    """Press Z/Q to play with the ball"""
+    def __init__(self, node, actuators):
         self.actuators = actuators
-        self.serialportctrl = serialportctrl
+        self.name = "JumpController"
 
     def onKeyPressed(self, key):
-        if key == Key.uparrow:
-            self.actuators[0].ServoMotor.angle += self.stepsize
-        elif key == Key.downarrow:
-            self.actuators[0].ServoMotor.angle -= self.stepsize
+        apos = None
+        if key == Key.Z:
+            apos = -3.14/4
+        if key == Key.Q:
+            apos = -3.14/3
 
-        if key == Key.leftarrow:
-            self.actuators[1].ServoMotor.angle += self.stepsize
-        elif key == Key.rightarrow:
-            self.actuators[1].ServoMotor.angle -= self.stepsize
-
-        if key == Key.plus:
-            self.actuators[2].ServoMotor.angle += self.stepsize
-        elif key == Key.minus:
-            self.actuators[2].ServoMotor.angle -= self.stepsize
-
-
-        if key == Key.A and self.serialportctrl.state == "init":
-            self.serialportctrl.state = "no-comm"
-            animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
-                                    "angularstep" : -0.145}, duration=0.2)
-
-        if key == Key.B and self.serialportctrl.state == "no-comm":
-            self.serialportctrl.state = "comm"
-
-def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
-    return rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True)
-
-class SerialPortController(Sofa.PythonScriptController):
-    def __init__(self, node, inputs, serialport):
-        self.name = "serialportcontroller"
-        self.servos = inputs
-        self.serialport = serialport
-        self.serialport.sentData = [150,150,150]
-        self.state = "init"
-
-    def onEndAnimationStep(self, dt):
-        if self.state == "init":
-            return
-
-        if self.state == "no-comm":
-            return
-        
-        angles = []
-
-        for servo in self.servos:
-            angleByte = 90+floor((servo.angle+pi/2.0)*255/pi)
-            if angleByte < 60:
-                angleByte = 60
-            if angleByte > 180:
-                angleByte = 180
-
-            angles.append( angleByte )
-
-        self.serialport.sentData = angles
+        if apos != None:
+            for actuator in self.actuators:
+                actuator.ServoMotor.angle = apos
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0], plugins=["SoftRobots"])
+    scene = Scene(rootNode, gravity=[0,-9810,0])
     scene.VisualStyle.displayFlags="showBehavior"
 
     scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
 
+    # Adding contact handling
+    scene.addContact(alarmDistance=5,
+                     contactDistance=2)
+
     model = scene.createChild("Model")
-    tripod = Tripod(model)
+    Sphere(model, translation=[0.0,40.0,0.0],
+                  uniformScale=10,
+                  totalMass=0.0015)
 
-    serial = SerialPortBridgeGeneric(rootNode)
-    serialportctrl = SerialPortController(rootNode, [tripod.ActuatedArm0.ServoMotor,
-                                                     tripod.ActuatedArm1.ServoMotor,
-                                                     tripod.ActuatedArm2.ServoMotor], serial)
+    ## The new tripod prefab with the collision model on the top of the servomotors is implemented in the prefab TripodCollision in tripod.py and doesn't work yet
 
-    MyController(rootNode, [tripod.ActuatedArm0,
-                            tripod.ActuatedArm1,
-                            tripod.ActuatedArm2], serialportctrl)
+    #tripod = Tripod(model)
+    MyTripod = TripodCollision(model)
+    # Problem with the collisions
+    #tous les 'tripod' changes en 'MyTripod'
+    # The regular controller that is being used for the last 2 steps
+    MyController(rootNode, [MyTripod.ActuatedArm0,
+                            MyTripod.ActuatedArm1,
+                            MyTripod.ActuatedArm2])
 
-    Interaction(rootNode, [tripod.ActuatedArm0,
-                           tripod.ActuatedArm1,
-                           tripod.ActuatedArm2])
+    # The additionnal controller that add two predefined positions for the three servomotors
+    JumpController(rootNode, [MyTripod.ActuatedArm0,
+                              MyTripod.ActuatedArm1,
+                              MyTripod.ActuatedArm2])
+
+    Interaction(rootNode, [MyTripod.ActuatedArm0,
+                           MyTripod.ActuatedArm1,
+                           MyTripod.ActuatedArm2])
 

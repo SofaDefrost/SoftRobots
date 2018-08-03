@@ -1,6 +1,8 @@
 from splib.numerics import sin,cos, to_radians, RigidDof
 from stlib.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
+## ajout ci-dessous
+from stlib.physics.collision import CollisionMesh
 
 def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
@@ -19,8 +21,11 @@ def ElasticBody(parent):
                              input=e.dofs.getLinkPath(),
                              output=visual.renderer.getLinkPath())
 
-    e.addCollisionModel(collisionMesh="data/mesh2/tripod_low.stl",
-                        translation=[0.0,30,0.0], rotation=[90,0,0])
+    # j ai modifie la fonction de collision so I could add a collisionGroup
+    #e.addCollisionModel(collisionMesh="data/mesh2/tripod_low.stl",
+    #                    translation=[0.0,30,0.0], rotation=[90,0,0])
+    CollisionMesh(e,
+         surfaceMeshFileName="data/mesh2/tripod_low.stl", name="silicone", translation=[0.0,30,0.0], rotation=[90,0,0], collisionGroup=1)
 
     return body
 
@@ -44,3 +49,28 @@ def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
                                        attachingTo=body.ElasticMaterialObject)
     return tripod
 
+## Mon bricolage a partir d ici
+def TripodCollision(parent, name="Tripod+Collision", radius=55, numMotors=3, angleShift=180.0):
+    tripod = parent.createChild(name)
+    body = ElasticBody(tripod)
+
+    dist = radius
+    numstep = numMotors
+    for i in range(0,numstep):
+        name = "ActuatedArm"+str(i)
+        fi = float(i)
+        fnumstep = float(numstep)
+        angle = fi*360/fnumstep
+        angle2 = fi*360/fnumstep+angleShift
+        eulerRotation = [0,angle,0]
+        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
+
+        c = ActuatedArm(tripod, name=name,
+                                       translation=translation, eulerRotation=eulerRotation,
+                                       attachingTo=body.ElasticMaterialObject)
+        translationServoTops=[dist*sin(to_radians(angle2)), -0.0, dist*cos(to_radians(angle2))+55.0]
+        CollisionMesh(c.ServoMotor,
+                 surfaceMeshFileName="data/mesh2/servo_collision.stl",
+                 name="TopServo"+str(i), rotation=eulerRotation, translation=translationServoTops, collisionGroup=1, mappingType='RigidMapping')
+
+    return tripod

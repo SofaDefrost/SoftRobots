@@ -1,48 +1,47 @@
 # -*- coding: utf-8 -*-
 """
-Step 4:
-In this step we introduce the fact that we can make reusable bloc of sofa using functions.
-In the following those reusable will be called "prefabs".
-
+Step 4: Adding the ActuatedArm prefab.
+This prefab is defining the servomotor, the servo-arm and the constraint that attaches the end of the arm to the deformable object.
 """
-from stlib.scene import Scene
+from splib.numerics import sin,cos, to_radians, RigidDof
+from stlib.scene import Scene, Interaction
+from actuatedarm import ActuatedArm
+from tripod import ElasticBody
 
-## Import a prefab that implements an ElasticMaterialObject
-from stlib.physics.deformable import ElasticMaterialObject
+## Let's define a Tripod prefab now, that we can later call in the createScene function
+def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
+    tripod = parent.createChild(name)
 
-## One prefab to fix a part of the object to be stay at rest position.
-from fixingbox import FixingBox
+    ## It is using the ElasticBody that was made in the previous step, and that has also been included in the tripod.py script.
+    body = ElasticBody(tripod)
 
-## This function contains something similar to the previous step but using prefab
-## instead of creating each components.
-def ElasticBody(parent):
-    body = parent.createChild("ElasticBody")
+    ## The actuated arms are positionned around the silicone piece using a loop structure
+    dist = radius
+    numstep = numMotors
+    for i in range(0,numstep):
+        name = "ActuatedArm"+str(i)
+        fi = float(i)
+        fnumstep = float(numstep)
+        angle = fi*360/fnumstep
+        angle2 = fi*360/fnumstep+angleShift
+        eulerRotation = [0,angle,0]
+        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
 
-    e = ElasticMaterialObject(body, volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
-                              poissonRatio=0.45, youngModulus=150, totalMass=0.032,
-                              rotation=[90,0,0])
+        c = ActuatedArm(tripod, name=name,
+                        translation=translation, eulerRotation=eulerRotation,
+                        attachingTo=body.ElasticMaterialObject)
 
-    visual = e.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl", rotation=[90,0,0])
-    visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0,1.0,1.0,0.5])
-    visual.createObject("BarycentricMapping",
-                             input=e.dofs.getLinkPath(),
-                             output=visual.renderer.getLinkPath())
-    return body
+    return tripod
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])
+    scene = Scene(rootNode, gravity=[0.0,-981.0,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
     scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
 
-    ## Instanciate the prefab into the graph
-    body = ElasticBody(rootNode)
+    tripod = Tripod(rootNode)
 
-    ## Instanciate the fixing prefab into the graph constraining the mechanical object from
-    ## the 'body' node.
-    fix = FixingBox(rootNode, body.ElasticMaterialObject, translation=[0.0,0.0,0.0], scale=[10,10,10])
-
-    ## Change the property of the boxroi so we can see the constraint area.
-    fix.boxroi.drawBoxes=True
+    Interaction(rootNode, targets=[tripod.ActuatedArm0,
+                                   tripod.ActuatedArm1,
+                                   tripod.ActuatedArm2])

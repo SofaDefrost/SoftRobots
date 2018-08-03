@@ -1,36 +1,24 @@
 # -*- coding: utf-8 -*-
-"""
-Step 6: We are adding controller.
-The controller will connect user actions to specific behavior.
-"""
 import Sofa
-from splib.numerics import RigidDof
-from splib.animation import animate
-from splib.constants import Key
 from stlib.scene import Scene, Interaction
-
+from splib.numerics import sin,cos, to_radians, RigidDof
+from splib.animation import animate
+from stlib.scene import Scene
+from splib.constants import Key
+from math import floor, pi
 from tripod import Tripod
 
 def setupanimation(actuators, step, angularstep, factor):
-    """This functions is called repeatidely in an animation.
-       It moves the actuators by translating & rotating them according to the factor
-       value.
-    """
     for actuator in actuators:
             rigid = RigidDof( actuator.dofs )
             rigid.translate( rigid.forward * step * factor )
             actuator.ServoMotor.angle += angularstep * factor
 
 class MyController(Sofa.PythonScriptController):
-    """This controller has two role:
-       - if user press up/left/right/down/plus/minus the servo motor angle
-         is changed.
-       - if user press A an animation is started to move the motor to the physical position
-         they are occupying in the real robot.
-    """
-    def __init__(self, node, actuators):
+    def __init__(self, node, actuators, serialportctrl):
         self.stepsize = 0.1
         self.actuators = actuators
+        self.serialportctrl = serialportctrl
 
     def onKeyPressed(self, key):
         if key == Key.uparrow:
@@ -48,23 +36,77 @@ class MyController(Sofa.PythonScriptController):
         elif key == Key.minus:
             self.actuators[2].ServoMotor.angle -= self.stepsize
 
-        if key == Key.A:
+
+        if key == Key.A and self.serialportctrl.state == "init":
+            self.serialportctrl.state = "no-comm"
             animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
-                                    "angularstep" : -0.14}, duration=0.2)
+                                    "angularstep" : -0.145}, duration=0.2)
+
+        # Inclusion of the keystroke to start data sending = establishing communication ('comm')
+        if key == Key.B and self.serialportctrl.state == "no-comm":
+            self.serialportctrl.state = "comm"
+
+## Description of how the communication is handled
+def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
+    return rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True)
+
+## Data sending controller
+class SerialPortController(Sofa.PythonScriptController):
+    def __init__(self, node, inputs, serialport):
+        self.name = "serialportcontroller"
+        self.servos = inputs
+        self.serialport = serialport
+        self.serialport.sentData = [150,150,150]
+        self.state = "init"
+
+    def onEndAnimationStep(self, dt):
+        # data sending if the robot is initializing or in the no-communication sate
+        if self.state == "init":
+            return
+
+        if self.state == "no-comm":
+            return
+        
+        # vector storing the simulated servomotors' angular position
+        angles = []
+
+        for servo in self.servos:
+            #conversion of the angle values from radians to degrees
+            angleByte = 90+floor((servo.angle+pi/2.0)*255/pi)
+
+            #limitation of the angular position's command
+            if angleByte < 60:
+                angleByte = 60
+            if angleByte > 180:
+                angleByte = 180
+
+            # Filling the list of the 3 angle values
+            angles.append( angleByte )
+
+        # The controller board of the real robot receives `angles` values
+        self.serialport.sentData = angles
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0,-9810,0.0])
+    scene = Scene(rootNode, gravity=[0.0,-981.0,0.0], plugins=["SoftRobots"])
     scene.VisualStyle.displayFlags="showBehavior"
 
-    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")    
+    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
 
     model = scene.createChild("Model")
     tripod = Tripod(model)
 
+    serial = SerialPortBridgeGeneric(rootNode)
+
+    # The real robot receives data from the 3 actuators
+    serialportctrl = SerialPortController(rootNode, [tripod.ActuatedArm0.ServoMotor,
+                                                     tripod.ActuatedArm1.ServoMotor,
+                                                     tripod.ActuatedArm2.ServoMotor], serial)
+    # The simulation's control with keystrokes is still available
     MyController(rootNode, [tripod.ActuatedArm0,
                             tripod.ActuatedArm1,
-                            tripod.ActuatedArm2])
+                            tripod.ActuatedArm2], serialportctrl)
 
-    Interaction(rootNode, targets=[tripod.ActuatedArm0,
-                                   tripod.ActuatedArm1,
-                                   tripod.ActuatedArm2])
+    Interaction(rootNode, [tripod.ActuatedArm0,
+                           tripod.ActuatedArm1,
+                           tripod.ActuatedArm2])
+

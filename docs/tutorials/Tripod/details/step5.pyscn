@@ -1,47 +1,69 @@
 # -*- coding: utf-8 -*-
 """
-Step 5: Adding the actuatedarms prefab.
-This prefab is defining the servo motor, the servo arm and the constraint that attache the
-end of the arm to the deformable object.
+Step 5: Adding a controller.
+The controller will connect user actions to the simulated behaviour.
 """
-from splib.numerics import sin,cos, to_radians, RigidDof
+import Sofa
+from splib.numerics import RigidDof
+from splib.animation import animate
+from splib.constants import Key
 from stlib.scene import Scene, Interaction
-from actuatedarm import ActuatedArm
-from tripod import ElasticBody
 
-## Let's define a Tripod Prefab now,
-def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
-    tripod = parent.createChild(name)
+from tripod import Tripod
 
-    ## It is using the ElasticBody we made in the previous step.
-    body = ElasticBody(tripod)
+def setupanimation(actuators, step, angularstep, factor):
+    """This function is called repeatidely in an animation.
+       It moves the actuators by translating & rotating them according to the factor
+       value.
+    """
+    for actuator in actuators:
+            rigid = RigidDof( actuator.dofs )
+            rigid.translate( rigid.forward * step * factor )
+            actuator.ServoMotor.angle += angularstep * factor
 
-    ## We put actuated arm at different location using a formulat
-    dist = radius
-    numstep = numMotors
-    for i in range(0,numstep):
-        name = "ActuatedArm"+str(i)
-        fi = float(i)
-        fnumstep = float(numstep)
-        angle = fi*360/fnumstep
-        angle2 = fi*360/fnumstep+angleShift
-        eulerRotation = [0,angle,0]
-        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
+class MyController(Sofa.PythonScriptController):
+    """This controller has two roles:
+       - if the user presses up/left/right/down/plus/minus, the servomotor angle
+         is changed.
+       - if thr user presses A, an animation is started to move the servomotor to the initial position
+         of the real robot.
+    """
+    def __init__(self, node, actuators):
+        self.stepsize = 0.1
+        self.actuators = actuators
 
-        c = ActuatedArm(tripod, name=name,
-                        translation=translation, eulerRotation=eulerRotation,
-                        attachingTo=body.ElasticMaterialObject)
+    def onKeyPressed(self, key):
+        if key == Key.uparrow:
+            self.actuators[0].ServoMotor.angle += self.stepsize
+        elif key == Key.downarrow:
+            self.actuators[0].ServoMotor.angle -= self.stepsize
 
-    return tripod
+        if key == Key.leftarrow:
+            self.actuators[1].ServoMotor.angle += self.stepsize
+        elif key == Key.rightarrow:
+            self.actuators[1].ServoMotor.angle -= self.stepsize
 
+        if key == Key.plus:
+            self.actuators[2].ServoMotor.angle += self.stepsize
+        elif key == Key.minus:
+            self.actuators[2].ServoMotor.angle -= self.stepsize
+
+        if key == Key.A:
+            animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
+                                    "angularstep" : -0.14}, duration=0.2)
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0,-9810,0.0])
+    scene = Scene(rootNode, gravity=[0.0,-981.0,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
-    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
+    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")    
 
-    tripod = Tripod(rootNode)
+    model = scene.createChild("Model")
+    tripod = Tripod(model)
+
+    MyController(rootNode, [tripod.ActuatedArm0,
+                            tripod.ActuatedArm1,
+                            tripod.ActuatedArm2])
 
     Interaction(rootNode, targets=[tripod.ActuatedArm0,
                                    tripod.ActuatedArm1,

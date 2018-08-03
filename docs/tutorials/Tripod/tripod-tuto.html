@@ -61,150 +61,204 @@ function toggle(target) {
 }
 </script>
 <h2 id="simulating-a-soft-robot">Simulating a soft robot</h2>
-<p>This tutorial describes how to set-up a simulation environment, a scene, using <a href="https://www.sofa-framework.org/">Sofa</a> and how to use the <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin to model a virtual soft robot driven by servo motors. Once modeled in Sofa the robot can be simulated and controlled.</p>
-<p>Tutorials prequisites:</p>
+<!-- This tutorial describes how to set up the simulation environment for a soft robot, using <a href="https://www.sofa-framework.org/">Sofa</a> and the
+<a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin to model a virtual soft robot driven by servo motors. Once modeled in Sofa, the robot can be simulated and controlled. -->
+<p>This tutorial describes how to use <a href="https://www.sofa-framework.org/">Sofa</a> and the <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin in order to simulate a soft robot. <!-- Real-time simulation of Soft Robots --> The first part is dedicated to the set up of the simulation environment and the modelling of a virtual soft robot. Then, the tutorial deals with the control of the real robot associated with the simulation.<br />
+Once completed, the knowledge acquired from this tutorial on the robot called &quot;Tripod&quot; can be applied to other soft robots, thanks to the high modularity of Sofa.</p>
+<p>Tutorial prequisites:</p>
 <ul>
-<li><p>installed <a href="https://www.sofa-framework.org/">Sofa</a> with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> and <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugins.</p></li>
+<li><p>you have installed <a href="https://www.sofa-framework.org/">Sofa</a> with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> and <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugins.</p></li>
 <li><p>you have basic knowledge of the <a href="https://www.python.org/">Python</a> programming language. If this is not the case you can go to <a href="https://www.python.org/">Python</a>Tutorials.</p></li>
-<li><p>you have basic knowledge of making scenes with Sofa. If not, please complete the <a href="../FirstSteps/firststeps-tuto.html">FirstStep</a> tutorial first.</p></li>
+<li><p>you have basic knowledge of scene modelling with Sofa. If not, please complete the <a href="../FirstSteps/firststeps-tuto.html">FirstStep</a> tutorial first. <!-- lien inactif ou qui renvoie vers ce même tuto --></p></li>
 </ul>
-<p>The robot we are going to simulate and controlled is acutated by three servo motors connected to a deformable material.</p>
-<div class="figure">
-<img src="images/tripodPhoto.jpg" style="width:25.0%" />
-
-</div>
-<p>Once a scene is loaded in Sofa you can now click on the [Animate] button in the Sofa GUI and start interacting in the 3D window. When your cursor have clicked on the 3D window you can control the simulation to manipulate the gripper or interact by pressing CTRL+keys</p>
+<p>The robot &quot;Tripod&quot; considered here (see Figure 1 below) is actuated by three servomotors connected to a deformable silicone material. Each of them controls the deformation of one 'arm' of the silicone piece. By combining the effects of the three servomotors, is is possible to control the shape of the whole deformable part, which benefits from a theoritically infinite number of degrees of freedom.</p>
+<!-- ![](images/tripodPhoto.jpg){width=35%} -->
+<figure>
+<img class="centered" src="images/tripodPhoto.jpg" alt="" width="300px"/>
+<figcaption>
+Figure 1: Photo of the Tipod robot.
+</figcaption>
+</figure>
+<p>Reminder of Sofa's GUI:</p>
+<p>Once a scene is loaded in Sofa, you can click on the [<em>Animate</em>] button in the Sofa GUI to start the simulation. Once you have clicked anywhere on the 3D window, interactions are possible with the model on the 3D window and with the robot: depending on what was programmed, you can control the simulation to manipulate the robot, or interact with it by pressing CTRL+keys.</p>
 <p>Note that with MacOS, you may have to use <em>cmd</em> instead of <em>ctrl</em>.</p>
-<h3 id="step-1-making-a-simple-scene-with-sofa">Step 1: Making a simple scene with Sofa</h3>
-<p>Sofa is loading the description of the simulation from <em>pyscn</em> files. The content of these file is in fact standard python code with at least one function named <em>createScene</em> taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called &quot;rootNode&quot;.</p>
-A very simple scene may look like:
+<p>Moreover, please note that, in order to send data to the robot, it can be necessary to have administrator rights.</p>
+<!-- former Steps 1 & 2 blended together since already discussed in firststep-tuto-->
+<h3 id="step-1-building-the-mechanical-model-for-the-soft-part-its-visual-model">Step 1: Building the Mechanical model for the soft part &amp; its Visual model</h3>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to"><i>At the end of this step, you will be able to:</i></h4>
+<ul>
+<li>Build the mechanical model of the silicone piece of the robot</li>
+<li>Build the corresponding visual object</li>
+<li>Use meshes for the mechanical description of a soft object</li>
+</ul>
+<h4 id="reminders-of-the-first-steps-tutorial"><i>Reminders of the First Steps tutorial </i></h4>
+<ul>
+<li>All the objects simulated in a scene are described in nodes attached to the main node <em>rootNode</em>. For this robot, there will be different objects, including one for the silicone piece (<em>ElasticBody</em>). Each of them is defined with the function <code>node.createChild()</code>.</li>
+<li>In order to automatically reload the scene when changes are made, run the scene with the <code>-i</code> option.</li>
+<li>The properties of any object can be accessed by double-clicking on it in the <em>Graph</em> panel of the Sofa GUI.</li>
+<li>By right-clicking in the <em>Graph</em> panel, the code file can be opened (<em>Open file in editor</em> in the dropdown menu)</li>
+</ul>
+<p>The first two steps aim at modelling the deformable silicone piece of the robot. The objects composing it are added one by one with the function <code>node.createObject()</code>. Just like in the First Steps tutorial, a mechanical model of the piece is first created, called <em>ElasticBody</em>. As the silicone piece is soft and can be deformed through constraints, it is necessary to describe its entire volume (and not only its center of gravity as it is usually done for rigid objects). Based on its shape, it is discretized: here it is decomposed into tetrahedral elements, linking all the points - or nodes - of the volume. This discretization produces the following types of elements: tetrahedrons, triangles, lines, and points. These elements are listed into a <em>MechanicalObject</em> named &quot;dofs&quot;. The mesh file describing the discretization into tetrahedral elements is &quot;tripod_mid.stl&quot;. The data provided by the meshes must be organized and stored into different data fields (one for the positions of the nodes, one for the triangular elements, ...) before Sofa uses them for computation. This formatting is done by means of code blocks called <em>loaders</em>. The loader used here, <code>MeshSTLLoader</code> is designed for <code>STL</code> files.<br />
+The mass distribution of the piece is implemented, as well as a time integration scheme (implicit Euler method) and a solver (here the quick resolution method using the LDL matrix decomposition).<br />
+Then, a Visual model of the piece is built, using the same mesh file as for the mechanical model. Because it was decided (for the sake of simplicity) to use the same meshing for both models, the loader is introduced in the rootNode.<br />
+Finally, the two representations are linked together by a mapping, which allows to adapt the visual model to the deformations of the mechanical model of the soft piece. As the same mesh is used for both the mechanical and the visual model, the mapping is simply mirroring the mechanical model to adapt the visual one. This is why we use an <em>IdentityMapping</em> here.</p>
+The resulting simulation looks like this: <!-- arranger la simu pour que ça tombe vers le bas ! -->
 <pre>
-<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step1code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step1code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step1code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
 <span class="co">&quot;&quot;&quot;</span>
 <span class="co">Step 1:</span>
-<span class="co">In this step we are teaching the basic concept of Sofa that are:</span>
-<span class="co">SceneGraph, Node, Components, Data and data links, Scenegraph view, 3d view,</span>
-<span class="co">animate button, double click on to get the data,</span>
-<span class="co">&quot;&quot;&quot;</span>
-<span class="kw">def</span> createScene(rootNode):
-    visual <span class="op">=</span> rootNode.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.stl&quot;</span>, rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh2/blueprint.stl&quot;</span>)</code></pre></div>
-</div>
-</div>
-<h4 id="at-this-step-you-should-be-able-to"><i>At this step you should be able to:</i></h4>
-<ul>
-<li><p>Load a scene in sofa with the -i option and open the scene in your text editor.</p></li>
-<li><p>Understand that the '-i' allows there to automatically reload the file when there is changes.</p></li>
-<li><p>Add a visual object in the scene</p></li>
-<li><p>Move the object in the scene</p></li>
-<li><p>Be able to visualize in the GUI the different properties of sofa objects</p></li>
-<li><p>Know how to change object properties (data)</p></li>
-<li><p>Know how to connect the properties from two different object with a link.</p></li>
-</ul>
-<h3 id="step-2-adding-mechanical-objects">Step 2: Adding mechanical objects</h3>
-We will now add a deformable object to a scene. To do that we first need to define a place that will hold the degree of freedom, this place is called a <em>MechanicalObject</em> as in the following scene:
-<pre>
-<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step2code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
-</pre>
-<div id="step2code" class="hide">
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
-<span class="co">&quot;&quot;&quot;</span>
-<span class="co">Step 2:</span>
-<span class="co">We are now introducing basic mechanical modeling, the new components brings</span>
-<span class="co">time integration and mechanical object object to the scene .</span>
+<span class="co">We are introducing basic mechanical modeling, the new components bring</span>
+<span class="co">time integration and a mechanical object to the scene .</span>
 <span class="co">&quot;&quot;&quot;</span>
 <span class="im">from</span> stlib.scene <span class="im">import</span> Scene
 
 <span class="kw">def</span> createScene(rootNode):
-    <span class="co">## Set the gravity</span>
-    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">9810.0</span>,<span class="fl">0.0</span>])
+    <span class="co">## Setting the gravity, assuming the length unit is in centimeters</span>
+    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])
 
-    <span class="co">## Set the timestep in seconds</span>
+    <span class="co">## Setting the timestep in seconds</span>
     scene.dt <span class="op">=</span> <span class="fl">0.001</span>
 
+    <span class="co">## Graphic modelling of the legends associated to the servomotors</span>
     scene.createObject(<span class="st">&quot;OglModel&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh2/blueprint.stl&quot;</span>)
 
-    <span class="co">## The Visual object from step 1</span>
-    visual <span class="op">=</span> rootNode.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.stl&quot;</span>)
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
+    <span class="co">## Tool to load the mesh file of the silicone piece. It will be used for both the mechnical and the visual models.</span>
+    rootNode.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.stl&quot;</span>)
 
-    <span class="co">## Basic mechanical modelling</span>
+    <span class="co">## Basic mechanical modelling of the silicone piece</span>
     elasticbody <span class="op">=</span> rootNode.createChild(<span class="st">&quot;ElasticBody&quot;</span>)
-    elasticbody.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
-    elasticbody.createObject(<span class="st">&quot;SparseLDLSolver&quot;</span>)
     elasticbody.createObject(<span class="st">&quot;MechanicalObject&quot;</span>, name<span class="op">=</span><span class="st">&quot;dofs&quot;</span>,
-                             position<span class="op">=</span>visual.loader.position,
+                             position<span class="op">=</span>rootNode.loader.position,
                              showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="fl">5.0</span>,
                              rotation<span class="op">=</span>[<span class="fl">90.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])
     elasticbody.createObject(<span class="st">&quot;UniformMass&quot;</span>)
 
-    <span class="co">## A mapping apply the deformation computed on the mechanical model (the input parameter)</span>
+    elasticbody.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
+    elasticbody.createObject(<span class="st">&quot;SparseLDLSolver&quot;</span>)
+
+    <span class="co">## Visual object</span>
+    visual <span class="op">=</span> rootNode.createChild(<span class="st">&quot;Visual&quot;</span>)
+    <span class="co"># The mesh used for the Visual object is the same as the one for the MechanicalObject, and has been introduced in the rootNode</span>
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, 
+        src<span class="op">=</span><span class="st">&#39;@../loader&#39;</span>, 
+        color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
+
+    <span class="co">## A mapping applies the deformations computed on the mechanical model (the input parameter)</span>
     <span class="co">## to the visual model (the output parameter).</span>
     elasticbody.createObject(<span class="st">&quot;IdentityMapping&quot;</span>,
                              <span class="bu">input</span><span class="op">=</span>elasticbody.dofs.getLinkPath(),
                              output<span class="op">=</span>visual.renderer.getLinkPath())</code></pre></div>
 </div>
 </div>
-<h4 id="at-this-step-you-should-be-able-to-1"><i>At this step you should be able to:</i></h4>
+<h4 id="exploring-the-scene"><i> Exploring the scene </i></h4>
+<!-- For more information on vector graphics, see -> lien vers la doc -->
 <ul>
-<li><p>Add a MechanicalObject</p></li>
-<li><p>Add an UniformMass to this MechanicalObject</p></li>
-<li><p>Visualize different properties of a MechanicalObject</p></li>
+<li>Try to orient the object differently on the 3D window by modifying its properties. Step 1 of the First Steps tutorial can be used as a guideline.</li>
+<li>In the <em>View</em> panel of Sofa GUI, by enabling the <em>Options</em>, you can see the discretization of the silicone piece into tetrahedral elements.</li>
+<li>Identify the white squares, each representing one point (one degree of freedom) of the MechanicalObject, on which the deformations are computed.</li>
 </ul>
-<h3 id="step-3-modelling-deformable-material">Step 3: Modelling deformable material</h3>
-<p>To implement a mechanical behavior the MechanicalObject must be connected to one or multiple ForceFields. These Forcefieds are in charge of computing the internal forces that will guide the deformation of the computation. There exists a lot of different mechanical behavior and it is important to understand the one that approximates the behavior of the real object your want to simulate.In particular, it is important to know how soft or stiff the material is, if it has an elastic or more complex behaviour (Hyperelastic, plastic, etc...). In our case, the real material is silicon which we will approximate with an elastic deformation law and simulate using the Finite Element Method (<a href="https://en.wikipedia.org/wiki/Finite_element_method">FEM</a>). In sofa, the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a> from <em>stlib.physics.deformable</em> provides a ready to use prefabricated object to easily add such an object in your scene. Nevertheless, before using this prefabricated object let's try to build our own based on a corotational Finite Element Method with a tetrahedral volumetric representation of the shape. In our case we are using a tetrahedral mesh stored in a &quot;gidmesh&quot; file.</p>
+<h4 id="remarks"><i>Remarks</i></h4>
+<ul>
+<li>Sofa implements default length and time units, as well as a default gravity force. The user defines his own time and space scale by defining the constants of the model. Here, the gravity of our simulation is defined such as the length unit is in centimeters; and the time unit chosen is the second, which means that the timestep is of one millisecond.</li>
+<li>There is a graphic modelling in the scene to display the legends associated with the servomotors (see Figure 2 below), that are described in the file <code>blueprint.stl</code>.
+<figure>
+<img class="centered" src="images/blueprint.jpg" alt="" width="200px"/>
+<figcaption>
+Figure 2: Legends of the servomotors' positions, as described in the file <code>blueprint.stl</code>.
+</figcaption>
+</figure></li>
+</ul>
+<h3 id="step-2-modelling-the-possible-deformations-of-the-soft-material">Step 2: Modelling the possible deformations of the soft material</h3>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to-1"><i>At the end of this step, you will be able to:</i></h4>
+<ul>
+<li>Build an elastic deformation model based on the Finite Element Method</li>
+<li>Understand what a <em>ForceField</em> is</li>
+</ul>
+<p>Unlike the rigid objects modelled in the FistSteps tutorial, the silicone piece is deformable, and as such, requires additionnal components describing the behavior of the material when it is submitted to mechanical constraints.<br />
+In order to implement the deformation behaviour, the MechanicalObject must be connected to one or multiple <em>ForceFields</em>. These Forcefieds are in charge of computing the internal forces that will guide the deformation of the soft piece. Many different mechanical behaviors exist and it is important to understand the one that best approximates the behavior of the real object. In particular, it is important to know how soft or stiff the material is, as well as if it has an elastic behaviour or a more complex one (hyperelastic, plastic, etc...). In our case, it has been chosen to implement a law of elastic deformation, modelled using the Finite Element Method (<a href="https://en.wikipedia.org/wiki/Finite_element_method">FEM</a>). Its parameters are the Young modulus, and the Poisson ratio.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">elasticbody.createObject(<span class="st">&quot;TetrahedronFEMForceField&quot;</span>, youngModulus<span class="op">=</span><span class="dv">900</span>, poissonRatio<span class="op">=</span><span class="fl">0.45</span>) </code></pre></div>
+<p>In sofa, the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a> from <em>stlib.physics.deformable</em> provides a ready to use prefabricated object to easily add such an object in our scene. It defines the whole mechanical model of a deformable elastic object.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">ElasticMaterialObject.createPrefab(node,
+                                    volumeMeshFileName, 
+                                    name, 
+                                    rotation, 
+                                    translation, 
+                                    surfaceColor, 
+                                    poissonRatio, 
+                                    youngModulus, 
+                                    totalMass, 
+                                    solver)</code></pre></div>
+<p>However, before using this prefabricated object, let's first build our own, based on a corotational Finite Element Method with a tetrahedral volumetric representation of the shape. The mesh <code>tripod_mid.gidmsh</code> used to store the shape of the deformable object was built with the GiD mesh generator. Starting from the model obtained in the last step, the parameters of the elastic deformation are added to the silicone piece with a <code>ForceField</code> component.</p>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step3code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step2code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
-<div id="step3code" class="hide">
+<div id="step2code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
 <span class="co">&quot;&quot;&quot;</span>
-<span class="co">Step 3: Introduce elastic material modeling</span>
+<span class="co">Step 2: Introducing elastic material modelling</span>
 <span class="co">&quot;&quot;&quot;</span>
 <span class="im">from</span> stlib.physics.deformable <span class="im">import</span> ElasticMaterialObject
 <span class="im">from</span> stlib.scene <span class="im">import</span> Scene
 
 <span class="kw">def</span> createScene(rootNode):
     scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">9810.0</span>,<span class="fl">0.0</span>])
+
     scene.dt <span class="op">=</span> <span class="fl">0.001</span>
 
+    <span class="co">## Graphic modelling of the legends associated to the servomotors</span>
     scene.createObject(<span class="st">&quot;OglModel&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh2/blueprint.stl&quot;</span>)
 
-    <span class="co">## Mechanical modelling is done through &#39;forcefields&#39;</span>
-    <span class="co">## It is possible to visualize the &quot;forcefields&quot; by doing</span>
-    scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showForceFields&quot;</span>
 
-
-    <span class="co">## To simulate elastic object we need:</span>
-    <span class="co">## a deformation law (here linear elasticity)</span>
-    <span class="co">## a solving method (here FEM)</span>
-    <span class="co">## as we are using FEM we need a space discretization (here tetrahedron)</span>
+    <span class="co">## To simulate an elastic object, we need:</span>
+    <span class="co">## - a deformation law (here linear elasticity)</span>
+    <span class="co">## - a solving method (here FEM)</span>
+    <span class="co">## - as we are using FEM we need a space discretization (here tetrahedron)</span>
     elasticbody <span class="op">=</span> rootNode.createChild(<span class="st">&quot;ElasticBody&quot;</span>)
+
+    <span class="co"># Specific loader for the mechanical model</span>
+    elasticbody.createObject(<span class="st">&#39;GIDMeshLoader&#39;</span>, 
+                              name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, 
+                              filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_high.gidmsh&quot;</span>)
+    elasticbody.createObject(<span class="st">&#39;TetrahedronSetTopologyContainer&#39;</span>, 
+                              src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, 
+                              name<span class="op">=</span><span class="st">&#39;container&#39;</span>)
+    elasticbody.createObject(<span class="st">&quot;MechanicalObject&quot;</span>, 
+                              name<span class="op">=</span><span class="st">&quot;dofs&quot;</span>, 
+                              position<span class="op">=</span>elasticbody.loader.position, 
+                              rotation<span class="op">=</span>[<span class="fl">90.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],
+                              showObject<span class="op">=</span><span class="va">True</span>, 
+                              showObjectScale<span class="op">=</span><span class="fl">5.0</span>)
+    elasticbody.createObject(<span class="st">&quot;UniformMass&quot;</span>, totalMass<span class="op">=</span><span class="fl">0.032</span>)
+
     elasticbody.createObject(<span class="st">&quot;EulerImplicit&quot;</span>)
     elasticbody.createObject(<span class="st">&quot;SparseLDLSolver&quot;</span>)
-    elasticbody.createObject(<span class="st">&#39;GIDMeshLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.gidmsh&quot;</span>)
-    elasticbody.createObject(<span class="st">&#39;TetrahedronSetTopologyContainer&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, name<span class="op">=</span><span class="st">&#39;container&#39;</span>)
-    elasticbody.createObject(<span class="st">&quot;MechanicalObject&quot;</span>, name<span class="op">=</span><span class="st">&quot;dofs&quot;</span>, rotation<span class="op">=</span>[<span class="fl">90.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],
-                             showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="fl">5.0</span>)
-    elasticbody.createObject(<span class="st">&quot;UniformMass&quot;</span>, totalMass<span class="op">=</span><span class="fl">0.032</span>)
-    elasticbody.createObject(<span class="st">&quot;TetrahedronFEMForceField&quot;</span>, youngModulus<span class="op">=</span><span class="dv">150</span>, poissonRatio<span class="op">=</span><span class="fl">0.45</span>)
 
-    <span class="co">## We are still using a visual model that connects the mesh with</span>
+    <span class="co"># ForceField components</span>
+    elasticbody.createObject(<span class="st">&quot;TetrahedronFEMForceField&quot;</span>, 
+                              youngModulus<span class="op">=</span><span class="dv">900</span>, 
+                              poissonRatio<span class="op">=</span><span class="fl">0.45</span>)
+    <span class="co"># It is possible to visualize the &quot;forcefields&quot; by doing</span>
+    scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showForceFields&quot;</span>
+
+    <span class="co">## Visual model</span>
     visual <span class="op">=</span> elasticbody.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.stl&quot;</span>, rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
+    
+    <span class="co"># Specific loader for the visual model</span>
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, 
+                         name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, 
+                         filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.stl&quot;</span>, 
+                         rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, 
+                         src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, 
+                         name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, 
+                         color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
 
     visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>,
                         <span class="bu">input</span><span class="op">=</span>elasticbody.dofs.getLinkPath(),
@@ -212,48 +266,62 @@ We will now add a deformable object to a scene. To do that we first need to defi
 </code></pre></div>
 </div>
 </div>
-<p>If you run the the scene you can see the tetrahedral mesh with blue-ish element. To control the visualization of this computation mesh you can either check the &quot;ForceFields&quot; option within the <em>View</em> panel in the runSofa GUI or, as we did, change the displayFlags property of the ..autolink::Sofa::VisualStyle.</p>
-<h4 id="at-this-step-you-should-be-able-to-2"><i>At this step you should be able to:</i></h4>
+<h4 id="exploring-the-scene-1"><i>Exploring the scene</i></h4>
 <ul>
-<li><p>Understand what a ForceField is</p></li>
-<li><p>Use the TetrahedronFEMForceField that provide elastic material behavior based on Finite Element Method</p></li>
-<li><p>Understand how to make a reusable component with function or class.</p></li>
-<li><p>Understand how to search in the automatically generated documentation.</p></li>
+<li>By starting the scene, the tetrahedral mesh with blue-ish elements appears. To control the visualization of this computation mesh, you can either check the &quot;ForceFields&quot; option within the <em>View</em> panel in the runSofa GUI or, as done here in the code, change the displayFlags property of the ..autolink::Sofa::VisualStyle.</li>
+<li>Up to now, an elastic material has been modelled. It is subjected to the gravity force, and it follows an elastic law when it is deformed. Thus, once the scene is started ([<em>Animate</em>] button), the silicone piece 'falls' on the 3D window.</li>
+<li>The links proposed in the tutorial are shortcuts to the automatically generated documentation of the plugin that you can see here: <a href="https://stlib.readthedocs.io/en/latest/"> Readthedocs for STLIB </a>. It contains a description of the templates that have been desingned in the STLIB plugin and helps when designing a scene.</li>
 </ul>
-<h3 id="step-4-adding-externals-constraints">Step 4: Adding externals constraints</h3>
+<h3 id="step-3-adding-externals-constraints">Step 3: Adding externals constraints</h3>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to-2"><i>At the end of this step, you will be able to:</i></h4>
+<ul>
+<li>Add constraints on specific areas through the use of the Fixing Box ROI prefab</li>
+<li>Understand how the Fixing Box is implemented</li>
+<li>Build functions to bring together all the components of an object</li>
+</ul>
+<p>In this step, the prefab <em>FixingBox</em> is described, that allows to fix the position of some areas of a physical object in space. (ROI stands for Region Of Interest.) It will be used in this step to prevent the falling of the silicone piece under gravity, by constraining the position of its central part. The prefab object is called via the following function:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">FixingBox(ParentNode, ApplyTo, translation, scale)</code></pre></div>
+<p>In parallel, in order to lighten the code and ease the reading, the introduction of a function <code class="sourceCode python">ElasticBody(parent)</code> is proposed in this step, bringing together all the components of the silicone piece model. This function also uses the prefab <code>ElasticMaterialObject</code>, that implements the mechanical model of an elastic material (including a mesh loader, mass definition, time integration and solver tools, and the description of the Force Fields).<br />
+Such a function is defined at the beginning of the scene, and can be called as often as wished in the description of the scene (i.e. in the function <code class="sourceCode python">createScene(rootNode)</code>).</p>
 <pre>
-<a href="details/step4.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step4code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step3code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
-<div id="step4code" class="hide">
+<div id="step3code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
 <span class="co">&quot;&quot;&quot;</span>
-<span class="co">Step 4:</span>
-<span class="co">In this step we introduce the fact that we can make reusable bloc of sofa using functions.</span>
-<span class="co">In the following those reusable will be called &quot;prefabs&quot;.</span>
+<span class="co">Step 3:</span>
+<span class="co">In this step, the use of code blocks using functions is introduced, as reusable elements of the code.</span>
 
 <span class="co">&quot;&quot;&quot;</span>
 <span class="im">from</span> stlib.scene <span class="im">import</span> Scene
-
-<span class="co">## Import a prefab that implements an ElasticMaterialObject</span>
+<span class="co"># A prefab that implements an ElasticMaterialObject</span>
 <span class="im">from</span> stlib.physics.deformable <span class="im">import</span> ElasticMaterialObject
-
-<span class="co">## One prefab to fix a part of the object to be stay at rest position.</span>
+<span class="co"># A prefab to fix some part of an object at its rest position.</span>
 <span class="im">from</span> fixingbox <span class="im">import</span> FixingBox
 
-<span class="co">## This function contains something similar to the previous step but using prefab</span>
-<span class="co">## instead of creating each components.</span>
+<span class="co">## This function includes the whole mechanical model of the silicone piece, as written in the previous step, except that the prefab ElasticMaterialObject is used, instead of creating each component.</span>
 <span class="kw">def</span> ElasticBody(parent):
     body <span class="op">=</span> parent.createChild(<span class="st">&quot;ElasticBody&quot;</span>)
 
-    e <span class="op">=</span> ElasticMaterialObject(body, volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.gidmsh&quot;</span>,
-                              poissonRatio<span class="op">=</span><span class="fl">0.45</span>, youngModulus<span class="op">=</span><span class="dv">150</span>, totalMass<span class="op">=</span><span class="fl">0.032</span>,
-                              rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+    <span class="co"># prefab ElasticMaterialObject implementing the whole mechanical and visual model of the silicone piece</span>
+    e <span class="op">=</span> ElasticMaterialObject(body, 
+                                volumeMeshFileName<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.gidmsh&quot;</span>,
+                                poissonRatio<span class="op">=</span><span class="fl">0.45</span>, 
+                                youngModulus<span class="op">=</span><span class="dv">800</span>, 
+                                totalMass<span class="op">=</span><span class="fl">0.032</span>,
+                                rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
 
     visual <span class="op">=</span> e.createChild(<span class="st">&quot;Visual&quot;</span>)
-    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.stl&quot;</span>, rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
-    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
+    visual.createObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, 
+                         name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, 
+                         filename<span class="op">=</span><span class="st">&quot;data/mesh2/tripod_mid.stl&quot;</span>, 
+                         rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>])
+    visual.createObject(<span class="st">&quot;OglModel&quot;</span>, 
+                         name<span class="op">=</span><span class="st">&quot;renderer&quot;</span>, 
+                         src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>, 
+                         color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>])
     visual.createObject(<span class="st">&quot;BarycentricMapping&quot;</span>,
                              <span class="bu">input</span><span class="op">=</span>e.dofs.getLinkPath(),
                              output<span class="op">=</span>visual.renderer.getLinkPath())
@@ -261,55 +329,83 @@ We will now add a deformable object to a scene. To do that we first need to defi
 
 
 <span class="kw">def</span> createScene(rootNode):
-    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">9810.0</span>,<span class="fl">0.0</span>])
+    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])
     scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showBehavior&quot;</span>
 
     scene.createObject(<span class="st">&quot;OglModel&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh2/blueprint.stl&quot;</span>)
 
-    <span class="co">## Instanciate the prefab into the graph</span>
+    <span class="co">## Instanciating the prefab into the graph</span>
     body <span class="op">=</span> ElasticBody(rootNode)
 
-    <span class="co">## Instanciate the fixing prefab into the graph constraining the mechanical object from</span>
-    <span class="co">## the &#39;body&#39; node.</span>
-    fix <span class="op">=</span> FixingBox(rootNode, body.ElasticMaterialObject, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], scale<span class="op">=</span>[<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>])
+    <span class="co">## Instanciating the FixingBox prefab into the graph, constraining the mechanical object of the ElasticBody.</span>
+    fix <span class="op">=</span> FixingBox(rootNode, 
+                    body.ElasticMaterialObject, 
+                    translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],  
+                    scale<span class="op">=</span>[<span class="dv">30</span>,<span class="dv">30</span>,<span class="dv">30</span>])
 
-    <span class="co">## Change the property of the boxroi so we can see the constraint area.</span>
+    <span class="co"># Changing the property of the Box ROI so that the constraint area appears on screen.</span>
     fix.boxroi.drawBoxes<span class="op">=</span><span class="va">True</span></code></pre></div>
 </div>
 </div>
-<h4 id="at-this-step-you-should-be-able-to-3"><i>At this step you should be able to:</i></h4>
+<h4 id="exploring-the-scene-2"><i>Exploring the scene</i></h4>
 <ul>
-<li><p>Understand what is a BoxROI</p></li>
-<li><p>Understand how this Fixing Box ROI is implemented using a RestShapeSpringForceField</p></li>
-<li><p>Change the location of the box to constraint a specific location</p></li>
+<li>The constraint implemented by the FixingBox <em>prefab</em>, named <code>RestShapeSpringForceField</code>, applies in fact elastic spring forces on the points of the mechanical object (the degrees of freedom) included in the FixingBox, to bring them back to their resting position whenever a modification is computed (due to gravity forces for example). The stiffness of these 'springs' is set at a very high level, which produces immediate correction of any change in position: the constrained points cannot move anymore.</li>
+<li>The box can be moved anywhere to constraint another area. For example, the translation <code class="sourceCode python">[<span class="fl">30.0</span>,<span class="fl">0.0</span>,<span class="fl">30.0</span>]</code> allows to constraint the end of the arm connected to servo 2.</li>
+<li>By clicking on the [<em>Animate</em>] button, it can be observed that the FixingBox indeed prevents the silicone piece to fall under gravity force. The unconstrained tips of the piece, however, experience a light bending.</li>
+<li>It is possible to deform the silicone piece with the mouse, by pressing <em>Maj</em> while left-clicking on the piece, then dragging the mouse. This can be used to observe how elastic the material is. By changing the value of the Young modulus, you can compare the rendering of the simulated piece with the real one (for example, test values from 10 to 2000 for the Young modulus after having manipulated the silicone piece on the real robot a bit, to get an idea of its elasticity).</li>
 </ul>
-<h3 id="step-5-adding-actuators">Step 5: Adding actuators</h3>
-<p>It is now time to add the actuators that will deform the elastic shape. This is done by using a prefabricated object from actuatedarm.py.</p>
+<h3 id="step-4-adding-actuators">Step 4: Adding actuators</h3>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to-3"><i>At the end of this step, you will be able to:</i></h4>
+<ul>
+<li>Add prefabs for the actuators of the deformable piece</li>
+<li>Position them according to the real robot positionning</li>
+<li>Understand the structure of the prefabs modelling the S90 servomotors and the associated servo-arms used on the Tripod robot: <em>ServoMotor</em>, <em>ServoArm</em> and the prefab <em>ActuatedArm</em> that brings the first two together.</li>
+<li>Understand another graph structure for the objects of the scene, by introducing the object <em>Interaction</em>.</li>
+</ul>
+<p>It is now time to add the actuators that will deform the elastic piece. On the real robot, this is done by 3 servomotors actuating servo-arms attached to the silicone piece. On Sofa, two prefabricated objects have been implemented and brought together in a third one named ActuatedArm. The two elements composing it can be seen on figure 3 below. The prefabs are described in a python file, that contains all the elements of the model of the object. They are imported at the beginning of the code file of the scene, and can then be used in the scene. The lines to import the ServoArm and the ActuatedArm prefab are the following:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> actuatedarm <span class="im">import</span> ActuatedArm
+<span class="im">from</span> tripod <span class="im">import</span> ElasticBody</code></pre></div>
+<p><code>actuatedarm</code> and <code>tripod</code> (as well as <code>s90servo</code> that is used in the <code>actuatedarm</code> file) are the names of the python scripts that describe the prefabs. They are located in the folder 'details' of the Tripod tutorial (same folder as the scripts for the separate steps of the tutorial).</p>
+<figure>
+<img class="centered" src="images/servomotor_arm.png" alt="" width="350px"/>
+<figcaption>
+Figure 3: Display of the servomotor (left) from <em>SG90servomotor.stl</em> and servo-arm (right) from <em>SG90servoarm.stl</em>.
+</figcaption>
+</figure>
+<p>The prefab ActuatedArm is building up the ensemble composed of a servomotor and a servo-arm, and includes a Fixing Box situated at the tip of the servo-arm, that attaches the silicone piece to the servo-arm.</p>
+<pre class="pyhton"><code>ActuatedArm(parent, name, translation, eulerRotation, attachingTo)</code></pre>
+<p>It uses the prefabs ServoMotor and ServoArm, that are described as rigid objects and implemented in the files <em>s90servo.py</em> and <em>actuatedarm.py</em> respectively. By opening those files, you will see that the prefabs are actually defined as classes. At the end of the file, you can find a small scene in the function <code>createScene()</code> that provides an example of use of the prefab.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">ServoMotor(parent, translation, rotation, scale, doAddVisualModel)
+
+ServoArm(parent, mappingInput, name)
+<span class="co"># The mappingInput corresponds to the rigid mechanical object that will control the orientation of the servo-arm, in our case it will be the ServoWheel prefab (see &#39;Exploring the scene&#39; for more details)</span></code></pre></div>
+<p>The mechanical model of the ServoMotor and the ServoArm is described in their prefab, but it doesn't include a time integration scheme nor a solver. In the previous steps, these were added in the object's node. However, in this step, a different organization is proposed: the mechanical &amp; visual models of the objects are created on one side, grouped in a node called Tripod; and a node 'Interaction' is built on the other side, that implements time integration and a solving tool, and links them to their corresponding object. This linking is done thanks to the object <em>Interaction</em> from the file <code>interaction.py</code> located in <em>STLIB/python/stlib/scene</em>, that is also imported at the beginning of the code file.<br />
+Just like for the ElasticBody, a function <code>Tripod()</code> is introduced, now that all the pieces of the robot have been modelled:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius, numMotors, angleShift)</code></pre></div>
 <pre>
-<a href="details/step5.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step5code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="details/step4.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step4code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
-<div id="step5code" class="hide">
+<div id="step4code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
 <span class="co">&quot;&quot;&quot;</span>
-<span class="co">Step 5: Adding the actuatedarms prefab.</span>
-<span class="co">This prefab is defining the servo motor, the servo arm and the constraint that attache the</span>
-<span class="co">end of the arm to the deformable object.</span>
+<span class="co">Step 4: Adding the ActuatedArm prefab.</span>
+<span class="co">This prefab is defining the servomotor, the servo-arm and the constraint that attaches the end of the arm to the deformable object.</span>
 <span class="co">&quot;&quot;&quot;</span>
 <span class="im">from</span> splib.numerics <span class="im">import</span> sin,cos, to_radians, RigidDof
 <span class="im">from</span> stlib.scene <span class="im">import</span> Scene, Interaction
 <span class="im">from</span> actuatedarm <span class="im">import</span> ActuatedArm
 <span class="im">from</span> tripod <span class="im">import</span> ElasticBody
 
-<span class="co">## Let&#39;s define a Tripod Prefab now,</span>
+<span class="co">## Let&#39;s define a Tripod prefab now, that we can later call in the createScene function</span>
 <span class="kw">def</span> Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="dv">55</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):
     tripod <span class="op">=</span> parent.createChild(name)
 
-    <span class="co">## It is using the ElasticBody we made in the previous step.</span>
+    <span class="co">## It is using the ElasticBody that was made in the previous step, and that has also been included in the tripod.py script.</span>
     body <span class="op">=</span> ElasticBody(tripod)
 
-    <span class="co">## We put actuated arm at different location using a formulat</span>
+    <span class="co">## The actuated arms are positionned around the silicone piece using a loop structure</span>
     dist <span class="op">=</span> radius
     numstep <span class="op">=</span> numMotors
     <span class="cf">for</span> i <span class="op">in</span> <span class="bu">range</span>(<span class="dv">0</span>,numstep):
@@ -329,7 +425,7 @@ We will now add a deformable object to a scene. To do that we first need to defi
 
 
 <span class="kw">def</span> createScene(rootNode):
-    scene <span class="op">=</span> Scene(rootNode)
+    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])
     scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showBehavior&quot;</span>
 
     scene.createObject(<span class="st">&quot;OglModel&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh2/blueprint.stl&quot;</span>)
@@ -341,37 +437,82 @@ We will now add a deformable object to a scene. To do that we first need to defi
                                    tripod.ActuatedArm2])</code></pre></div>
 </div>
 </div>
-<h4 id="at-this-step-you-should-be-able-to-4"><i>At this step you should be able to:</i></h4>
+<h4 id="exploring-the-scene-3"><i>Exploring the scene</i></h4>
 <ul>
-<li><p>Explore the actuatedarm.py &amp; s90servo.py which define the actuators.</p></li>
-<li><p>Explore the Info panel of a component and observe that the prefab have self documentation &amp; specific properties</p></li>
-<li><p>Understand the structure of the actuatedarm prefabricated object.</p></li>
-<li><p>Understand how the ServoMotor &amp; ServoWheel are interoperating</p></li>
-<li><p>Change the initial configuration of the actuatedarm so they constrain a different part of the model</p></li>
+<li>Explore the <em>Info</em> panel in the window that appears when double-clicking on the different components: you can observe that the prefab objects propose some documentation and a description of specific properties</li>
+<li>Explore the hierarchy of the nodes in the <em>Graph</em> panel, to observe the structure of the ActuatedArm prefab. More particularily, in the ServoMotor prefab of each ActuatedArm, a ServoWheel prefab can be seen. It represents the capability - or degree of freedom - of the servo-arm to rotate around the motor shaft. It is implemented in the file <em>s90servo.py</em> and composed of a Rigid MechanicalObject, on which the rotations are applied, and then transferred to the ServoArm on which the ServoWheel is attached.</li>
+<li>My modifying the <code>EulerRotation</code> and <code>translation</code> parameters of the ActuatedArm instances, try to constrain different parts of the model.</li>
 </ul>
-<h3 id="step-6-adding-controllers">Step 6: Adding controllers</h3>
-<p>The servo motors have a default angular position. To interactively change this default position we will add a dedicated object called a <em>Controller</em>. Controllers allow to implement custom behavior and end-user interaction directly using python.</p>
-<p>In this step we are adding such a controller.</p>
-<p>The controller is implementing:</p>
+<h4 id="remarks-1"><i>Remarks</i></h4>
 <ul>
-<li><p>CTRL+Key A to move the servo motors from their initial shape to their physical position</p></li>
-<li><p>CTRL+key up to increase the angle for servo 0</p></li>
-<li><p>CTRL+key down to decrease change the angle for servo 0</p></li>
-<li><p>CTRL+Key left to increase the angle for servo 1</p></li>
-<li><p>CTRL+Key right to decrease the angle for servo 1</p></li>
-<li><p>CTRL+Key plus to increase the angle for servo 2</p></li>
-<li><p>CTRL+Key minus to decrease the angle for servo 2</p></li>
+<li>Different solvers have been used so far: SparseLDLSolver for the former steps, and here, the CGLinearSolver (using the Conjugate Gradient method) introduced in the <em>Interaction</em> object. The difference in the results of the simulation, depending on the solver used is negligible in the scenes presented in this tutorial.</li>
+<li>However, the solving methods sometimes have properties that allow particular manipulations of the objects in the scene. By using the CGLinearSolver for the servomotors, it is possible to move the servomotor base in the simulation window by holding the <em>Shift</em> key while left-clicking on the servo base to drag it. This shows the connection with the silicone piece, that follows the mouvement, like it would with the real robot.</li>
+<li>Note that the same <em>Shift + Click-and-drag</em> manipulation isn't possible on the servo-arm alone. Indeed, since the arm is constrained by the servomotor, trying to move it away from the servomotor would produce a conflict situation and the system would diverge.</li>
 </ul>
+<h3 id="step-5-adding-controllers">Step 5: Adding controllers</h3>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to-4"><i>At the end of this step, you will be able to:</i></h4>
+<ul>
+<li>Implement a controller for interactive change of the servomotors angular position with keyboard keys</li>
+<li>Define an animation function, that acts on the actuators by translating &amp; rotating them</li>
+</ul>
+<p>The servomotors have a default angular position, that corresponds to an angle of 180°. To interactively change this default position, a dedicated object will be added, called a <em>Controller</em>. Controllers allow to implement custom behavior and end-user interaction directly, using python.</p>
+<p>In this step we are adding such a controller, in order to be able to control the position of each servo-arm with keyboard keys. On the real robot, the initial position considered is the one when the silicone piece is laying flat, which means that the servomotors are at an angle of 90°.<br />
+The keys involved in the control and the effect they trigger are described below:<br />
+The following combinations allow to control the angular position of the servomotors, separately: <!-- see table  without word wrap for clearer view --></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Keyboard keys<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></th>
+<th align="center">Effect on angle</th>
+<th align="center">For Servo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/></td>
+<td align="center">Increase</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/></td>
+<td align="center">Decrease</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/></td>
+<td align="center">Increase</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/></td>
+<td align="center">Decrease</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/></td>
+<td align="center">Increase</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/></td>
+<td align="center">Decrease</td>
+<td align="center">2</td>
+</tr>
+</tbody>
+</table>
+<p>Sofa allows a default animation management: this is what was being used up to now. In this step, we want to add a more specific animation that updates the scene at each timestep, depending on the keys pressed by the user. The control of this animation is done thanks to a <em>PythonScriptController</em> that is added in our scene file. It uses the function (or <em>method</em>) <code>onKeyPressed()</code> that is included in Sofa by default and that triggers an action if a designated key is pressed. The controller is implemented such as, after each key press, the designated servomotor moves from a <code>stepsize</code> value of <em>0.1</em> rad (that is a little less than 6°) by changing the value of the attribute <code>ServoMotor.angle</code>.<br />
+Moreover, another animation is added in the function <code>setupanimation(actuators, step, angularstep, factor)</code>, in order to move with one keystroke the three servomotors from their default angular position to the initial position of the real robot. It is triggered by the following keystroke: <img class="centered" src="../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/> The animation is implemented, using the function <code>animate(cb, params,duration)</code> from the STLIB plugin, and the function <code>setupanimation(actuators, step, angularstep, factor)</code>. The <code>animate</code> function calls <code>setupanimation</code> and provides the structure of the animation: a small variation of the parameters (<code>step</code> value) is computed each time that the <code>steupanimation</code> function is called; the <code>animate</code> function is a recursive function, that calls itself over and over again, as long as the <code>duration</code> value hasn't been reached.<br />
+The controller is added as another node in the scene.</p>
 <pre>
-<a href="details/step6.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step6code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="details/step5.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step5code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
-<div id="step6code" class="hide">
+<div id="step5code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
 <span class="co">&quot;&quot;&quot;</span>
-<span class="co">Step 6: We are adding controller.</span>
-<span class="co">The controller will connect user actions to specific behavior.</span>
+<span class="co">Step 5: Adding a controller.</span>
+<span class="co">The controller will connect user actions to the simulated behaviour.</span>
 <span class="co">&quot;&quot;&quot;</span>
 <span class="im">import</span> Sofa
 <span class="im">from</span> splib.numerics <span class="im">import</span> RigidDof
@@ -382,7 +523,7 @@ We will now add a deformable object to a scene. To do that we first need to defi
 <span class="im">from</span> tripod <span class="im">import</span> Tripod
 
 <span class="kw">def</span> setupanimation(actuators, step, angularstep, factor):
-    <span class="co">&quot;&quot;&quot;This functions is called repeatidely in an animation.</span>
+    <span class="co">&quot;&quot;&quot;This function is called repeatidely in an animation.</span>
 <span class="co">       It moves the actuators by translating &amp; rotating them according to the factor</span>
 <span class="co">       value.</span>
 <span class="co">    &quot;&quot;&quot;</span>
@@ -392,11 +533,11 @@ We will now add a deformable object to a scene. To do that we first need to defi
             actuator.ServoMotor.angle <span class="op">+=</span> angularstep <span class="op">*</span> factor
 
 <span class="kw">class</span> MyController(Sofa.PythonScriptController):
-    <span class="co">&quot;&quot;&quot;This controller has two role:</span>
-<span class="co">       - if user press up/left/right/down/plus/minus the servo motor angle</span>
+    <span class="co">&quot;&quot;&quot;This controller has two roles:</span>
+<span class="co">       - if the user presses up/left/right/down/plus/minus, the servomotor angle</span>
 <span class="co">         is changed.</span>
-<span class="co">       - if user press A an animation is started to move the motor to the physical position</span>
-<span class="co">         they are occupying in the real robot.</span>
+<span class="co">       - if thr user presses A, an animation is started to move the servomotor to the initial position</span>
+<span class="co">         of the real robot.</span>
 <span class="co">    &quot;&quot;&quot;</span>
     <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, node, actuators):
         <span class="va">self</span>.stepsize <span class="op">=</span> <span class="fl">0.1</span>
@@ -423,7 +564,7 @@ We will now add a deformable object to a scene. To do that we first need to defi
                                     <span class="co">&quot;angularstep&quot;</span> : <span class="op">-</span><span class="fl">0.14</span>}, duration<span class="op">=</span><span class="fl">0.2</span>)
 
 <span class="kw">def</span> createScene(rootNode):
-    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="dv">9810</span>,<span class="fl">0.0</span>])
+    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])
     scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showBehavior&quot;</span>
 
     scene.createObject(<span class="st">&quot;OglModel&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh2/blueprint.stl&quot;</span>)    
@@ -440,23 +581,80 @@ We will now add a deformable object to a scene. To do that we first need to defi
                                    tripod.ActuatedArm2])</code></pre></div>
 </div>
 </div>
-<h3 id="step-7-connecting-to-the-physical-world.">Step 7: Connecting to the physical world.</h3>
-<p>It is now time to connect our simulated robot to the real one. To do that we need to add two things. The first one, <em>SerialPortBridgeGeneric</em>, is a component to handle the communication throught the USB/Serial port, the second one, <em>SerialPortController</em>, is reading the angle from the servo motor's data field to actually send them to the communication layer.</p>
-<p>The controller in the scene are now implementing:</p>
+<h4 id="exploring-the-scene-4"><i>Exploring the scene</i></h4>
 <ul>
-<li><p>CTRL+Key A to move the servo motors from their initial shape to their physical position</p></li>
-<li><p>CTRL+Key B to start sending data to the real robot</p></li>
-<li><p>CTRL+key up to increase the angle for servo 0</p></li>
-<li><p>CTRL+key down to decrease change the angle for servo 0</p></li>
-<li><p>CTRL+Key left to increase the angle for servo 1</p></li>
-<li><p>CTRL+Key right to decrease the angle for servo 1</p></li>
-<li><p>CTRL+Key plus to increase the angle for servo 2</p></li>
-<li><p>CTRL+Key minus to decrease the angle for servo 2</p></li>
+<li>After clicking on the [<em>Animate</em>] button, and then anywhere in the simulation window, use the defined keystrokes to deform the silicone shape by controlling the angular position of the servomotors.</li>
+<li>Try to implement a different animation, modifying the initial position of the angular position of the servomotors.</li>
 </ul>
+<h4 id="remark"><i>Remark</i></h4>
+<p>When the scene is loaded and animated, it can be interesting to display the execution time's distribution between the different components of the simulation. For that purpose, activate the <em>Log Time</em> option in the <em>Stats</em> panel of the simulation window. The steps duration statistics appear then in the terminal window. A screenshot of it can be seen below:</p>
+<figure>
+<img class="centered" src="images/StepsDurationStats.png" alt="" width="800px"/>
+<figcaption>
+Figure 4: Steps Duration Statistics, as seen in the terminal window with which the tutorial was run
+</figcaption>
+</figure>
+<p>The most time consuming process - and thus the one requiring the greatest computing resources - is related to the computation of the Mechanical behaviour, with more than half of the resources allocated to the <em>solving</em> tools. This highlights the complexity of the system and explains why the mesh cannot be endlessly tightened: the simulation would take a great amount of time to compute, too much for any real time application.</p>
+<h3 id="step-6-connecting-to-the-physical-robot">Step 6: Connecting to the physical robot</h3>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to-5"><i>At the end of this step, you will be able to:</i></h4>
+<ul>
+<li>Connect the simulated robot to the real one.</li>
+<li>Directly control the angular position of ther real servomotors by actuating the simulated ones.</li>
+</ul>
+<p>It is now time to connect our simulated robot to the real one. This requires the addition of two elements. The first one, <em>SerialPortBridgeGeneric</em>, is a component that defines how the communication through the USB/Serial port is handled; it is an object of the rootNode.<br />
+The second one, <em>SerialPortController</em>, is another Controller, reading the angular position of the simulated servomotors (in one of their data field) and sends them via the USB communication cable. The angular position of the simulated servomotors is stored in <code>actuators[i].ServoMotor.angle</code> in radian, and is transfered to the field <code>serialport.sentData</code> of the controller board.<br />
+Because the data are now sent to the real robot, it is necessary to implement a limitation of the possible angular positions to be reached: between 60 and 180 degrees. Any angle outside this interval is limited to the interval's extrem value instead.</p>
+<p>The keystrokes implemented are the same as for the previous steps, adding one to start sending data to the robot.</p>
+<ul>
+<li>Keystroke to start sending data to the real robot: <img class="centered" src="../../images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/></li>
+<li>Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/></li>
+<li>Keystrokes to control the angular position of each servomotor:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Keyboard keys</th>
+<th align="center">Effect on angle</th>
+<th align="center">For Servo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/></td>
+<td align="center">Increase</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/></td>
+<td align="center">Decrease</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/></td>
+<td align="center">Increase</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/></td>
+<td align="center">Decrease</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/></td>
+<td align="center">Increase</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/></td>
+<td align="center">Decrease</td>
+<td align="center">2</td>
+</tr>
+</tbody>
+</table>
 <pre>
-<a href="details/step7.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step7code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="details/step6.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step6code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step6code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
@@ -503,12 +701,15 @@ We will now add a deformable object to a scene. To do that we first need to defi
             animate(setupanimation,{<span class="st">&quot;actuators&quot;</span> : <span class="va">self</span>.actuators, <span class="st">&quot;step&quot;</span> : <span class="fl">3.0</span>,
                                     <span class="co">&quot;angularstep&quot;</span> : <span class="op">-</span><span class="fl">0.145</span>}, duration<span class="op">=</span><span class="fl">0.2</span>)
 
+        <span class="co"># Inclusion of the keystroke to start data sending = establishing communication (&#39;comm&#39;)</span>
         <span class="cf">if</span> key <span class="op">==</span> Key.B <span class="op">and</span> <span class="va">self</span>.serialportctrl.state <span class="op">==</span> <span class="st">&quot;no-comm&quot;</span>:
             <span class="va">self</span>.serialportctrl.state <span class="op">=</span> <span class="st">&quot;comm&quot;</span>
 
+<span class="co">## Description of how the communication is handled</span>
 <span class="kw">def</span> SerialPortBridgeGeneric(rootNode, serialport<span class="op">=</span><span class="st">&quot;/dev/ttyUSB0&quot;</span>):
     <span class="cf">return</span> rootNode.createObject(<span class="st">&quot;SerialPortBridgeGeneric&quot;</span>, port<span class="op">=</span>serialport, baudRate<span class="op">=</span><span class="dv">115200</span>, size<span class="op">=</span><span class="dv">3</span>, listening<span class="op">=</span><span class="va">True</span>)
 
+<span class="co">## Data sending controller</span>
 <span class="kw">class</span> SerialPortController(Sofa.PythonScriptController):
     <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, node, inputs, serialport):
         <span class="va">self</span>.name <span class="op">=</span> <span class="st">&quot;serialportcontroller&quot;</span>
@@ -518,27 +719,34 @@ We will now add a deformable object to a scene. To do that we first need to defi
         <span class="va">self</span>.state <span class="op">=</span> <span class="st">&quot;init&quot;</span>
 
     <span class="kw">def</span> onEndAnimationStep(<span class="va">self</span>, dt):
+        <span class="co"># data sending if the robot is initializing or in the no-communication sate</span>
         <span class="cf">if</span> <span class="va">self</span>.state <span class="op">==</span> <span class="st">&quot;init&quot;</span>:
             <span class="cf">return</span>
 
         <span class="cf">if</span> <span class="va">self</span>.state <span class="op">==</span> <span class="st">&quot;no-comm&quot;</span>:
             <span class="cf">return</span>
         
+        <span class="co"># vector storing the simulated servomotors&#39; angular position</span>
         angles <span class="op">=</span> []
 
         <span class="cf">for</span> servo <span class="op">in</span> <span class="va">self</span>.servos:
+            <span class="co">#conversion of the angle values from radians to degrees</span>
             angleByte <span class="op">=</span> <span class="dv">90</span><span class="op">+</span>floor((servo.angle<span class="op">+</span>pi<span class="op">/</span><span class="fl">2.0</span>)<span class="op">*</span><span class="dv">255</span><span class="op">/</span>pi)
+
+            <span class="co">#limitation of the angular position&#39;s command</span>
             <span class="cf">if</span> angleByte <span class="op">&lt;</span> <span class="dv">60</span>:
                 angleByte <span class="op">=</span> <span class="dv">60</span>
             <span class="cf">if</span> angleByte <span class="op">&gt;</span> <span class="dv">180</span>:
                 angleByte <span class="op">=</span> <span class="dv">180</span>
 
+            <span class="co"># Filling the list of the 3 angle values</span>
             angles.append( angleByte )
 
+        <span class="co"># The controller board of the real robot receives `angles` values</span>
         <span class="va">self</span>.serialport.sentData <span class="op">=</span> angles
 
 <span class="kw">def</span> createScene(rootNode):
-    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">9810.0</span>,<span class="fl">0.0</span>], plugins<span class="op">=</span>[<span class="st">&quot;SoftRobots&quot;</span>])
+    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>], plugins<span class="op">=</span>[<span class="st">&quot;SoftRobots&quot;</span>])
     scene.VisualStyle.displayFlags<span class="op">=</span><span class="st">&quot;showBehavior&quot;</span>
 
     scene.createObject(<span class="st">&quot;OglModel&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh2/blueprint.stl&quot;</span>)
@@ -547,10 +755,12 @@ We will now add a deformable object to a scene. To do that we first need to defi
     tripod <span class="op">=</span> Tripod(model)
 
     serial <span class="op">=</span> SerialPortBridgeGeneric(rootNode)
+
+    <span class="co"># The real robot receives data from the 3 actuators</span>
     serialportctrl <span class="op">=</span> SerialPortController(rootNode, [tripod.ActuatedArm0.ServoMotor,
                                                      tripod.ActuatedArm1.ServoMotor,
                                                      tripod.ActuatedArm2.ServoMotor], serial)
-
+    <span class="co"># The simulation&#39;s control with keystrokes is still available</span>
     MyController(rootNode, [tripod.ActuatedArm0,
                             tripod.ActuatedArm1,
                             tripod.ActuatedArm2], serialportctrl)
@@ -560,31 +770,77 @@ We will now add a deformable object to a scene. To do that we first need to defi
                            tripod.ActuatedArm2])</code></pre></div>
 </div>
 </div>
-<h3 id="step-8-adding-collision">Step 8: Adding collision</h3>
-<p>By default Sofa doesn't handle collision as they are very expensive to compute. To activate collisions you need to define specially the geometries for which collions are checked and how they are handled. In this step we are adding a rigid Sphere object falling on the robots. By default there is no collision so we need to specifically activate that by adding 'Contact' to the existing scene.</p>
-<p>A new controller, called JumpController*, is also added to change rapidely the servo motors angles so the robots can plays with the falling ball.</p>
-<p>The controller in the scene are now implementing:</p>
+<h4 id="exploring-the-scene-5"><i>Exploring the scene</i></h4>
 <ul>
-<li><p>CTRL+Key A to move the servo motors to their physical position</p></li>
-<li><p>CTRL+Key Q to move the servo motors to an intermediate angle position</p></li>
-<li><p>CTRL+Key Z to move the servo motors to an high angular position</p></li>
-<li><p>CTRL+Key to start sending data to the real robot</p></li>
-<li><p>CTRL+key up to increase the angle for servo 0</p></li>
-<li><p>CTRL+key down to decrease change the angle for servo 0</p></li>
-<li><p>CTRL+Key left to increase the angle for servo 1</p></li>
-<li><p>CTRL+Key right to decrease the angle for servo 1</p></li>
-<li><p>CTRL+Key plus to increase the angle for servo 2</p></li>
-<li><p>CTRL+Key minus to decrease the angle for servo 2</p></li>
+<li>Start the scene with the [<em>Animate</em>] button, then click anywhere in the simulation window and type the keystroke to start sending data to the real robot. Observe how the real robot responds to the modifications of the simulation: this is the direct control, where the user specifies the angular position to reach, which are then also sent to the robot.</li>
+<li>Remark how the real robot is limited in his movements, while nothing prevents the user to make complete turns aroud the motor shaft with the servo-arms in the simulation.</li>
 </ul>
+<h3 id="step-7-adding-collision-models">Step 7: Adding collision models</h3>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to-6"><i>At the end of this step, you will be able to:</i></h4>
+<ul>
+<li>Add a rigid object that interacts with the robot thanks to a collision model</li>
+<li>Add a collision model so that the silicone piece can no longer go through the servomotors.</li>
+</ul>
+<p>By default Sofa doesn't handle collisions as they are very expensive to compute. To activate collisions you need to define specifically the geometries for which collisions are checked and how they are handled. In this step we are adding a rigid Sphere object falling on the robot, as well as the description of the contact management between the ball and the silicone piece.<br />
+(This scene is defined for the simulation only, the interaction with the real robot has not been added.)</p>
+<p>A new controller, called <em>JumpController</em>, is also added to change rapidely the servo motors angles so the robot can play with the falling ball.</p>
+<p>The same keystrokes as in the previous steps are used, adding two new intermediate positions for a more dynamical response.</p>
+<ul>
+<li>Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/></li>
+<li>Keystroke to position the servomotors to an intermediate position: <img class="centered" src="../../images/keys/Ctrl_Q.png" alt="Ctrl + Q" width="100px"/></li>
+<li>Keystrokes to position the servomotors to a high angular position: <img class="centered" src="../../images/keys/Ctrl_Z.png" alt="Ctrl + Z" width="100px"/></li>
+<li>Keystrokes to control the angular position of each servomotor:</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Keyboard keys</th>
+<th align="center">Effect on angle</th>
+<th align="center">For Servo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/></td>
+<td align="center">Increase</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/></td>
+<td align="center">Decrease</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/></td>
+<td align="center">Increase</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/></td>
+<td align="center">Decrease</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/></td>
+<td align="center">Increase</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="left"><img class="centered" src="../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/></td>
+<td align="center">Decrease</td>
+<td align="center">2</td>
+</tr>
+</tbody>
+</table>
 <pre>
-<a href="details/step8.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step8code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="details/step7.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step7code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
-<div id="step8code" class="hide">
+<div id="step7code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># -*- coding: utf-8 -*-</span>
 <span class="co">&quot;&quot;&quot;</span>
-<span class="co">    In step8 we are showing how to add collision detection</span>
+<span class="co">    In Step 7 we are showing how to add collision detection</span>
 <span class="co">    and contact management in our project.</span>
 
 <span class="co">    The important component to see in the graph are:</span>
@@ -594,9 +850,10 @@ We will now add a deformable object to a scene. To do that we first need to defi
 <span class="co">&quot;&quot;&quot;</span>
 <span class="im">import</span> Sofa
 <span class="im">from</span> splib.constants <span class="im">import</span> Key
-<span class="im">from</span> stlib.scene <span class="im">import</span> Scene, Interaction
+<span class="im">from</span> stlib.scene <span class="im">import</span> Scene, Interaction, ContactHeader
 <span class="im">from</span> stlib.physics.rigid <span class="im">import</span> Sphere
-<span class="im">from</span> tripod <span class="im">import</span> Tripod
+<span class="co">#from tripod import Tripod</span>
+<span class="im">from</span> tripod <span class="im">import</span> TripodCollision
 <span class="im">from</span> tripodcontroller <span class="im">import</span> MyController
 
 <span class="kw">class</span> JumpController(Sofa.PythonScriptController):
@@ -622,35 +879,47 @@ We will now add a deformable object to a scene. To do that we first need to defi
 
     scene.createObject(<span class="st">&quot;OglModel&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;data/mesh2/blueprint.stl&quot;</span>)
 
-    scene.addContact(alarmDistance<span class="op">=</span><span class="dv">10</span>,
+    <span class="co"># Adding contact handling</span>
+    scene.addContact(alarmDistance<span class="op">=</span><span class="dv">5</span>,
                      contactDistance<span class="op">=</span><span class="dv">2</span>)
 
     model <span class="op">=</span> scene.createChild(<span class="st">&quot;Model&quot;</span>)
     Sphere(model, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">40.0</span>,<span class="fl">0.0</span>],
                   uniformScale<span class="op">=</span><span class="dv">10</span>,
-                  totalMass<span class="op">=</span><span class="fl">0.01</span>)
+                  totalMass<span class="op">=</span><span class="fl">0.0015</span>)
 
-    tripod <span class="op">=</span> Tripod(model)
+    <span class="co">## The new tripod prefab with the collision model on the top of the servomotors is implemented in the prefab TripodCollision in tripod.py and doesn&#39;t work yet</span>
 
-    MyController(rootNode, [tripod.ActuatedArm0,
-                            tripod.ActuatedArm1,
-                            tripod.ActuatedArm2])
+    <span class="co">#tripod = Tripod(model)</span>
+    MyTripod <span class="op">=</span> TripodCollision(model)
+    <span class="co"># Problem with the collisions</span>
+    <span class="co">#tous les &#39;tripod&#39; changes en &#39;MyTripod&#39;</span>
+    <span class="co"># The regular controller that is being used for the last 2 steps</span>
+    MyController(rootNode, [MyTripod.ActuatedArm0,
+                            MyTripod.ActuatedArm1,
+                            MyTripod.ActuatedArm2])
 
-    JumpController(rootNode, [tripod.ActuatedArm0,
-                              tripod.ActuatedArm1,
-                              tripod.ActuatedArm2])
+    <span class="co"># The additionnal controller that add two predefined positions for the three servomotors</span>
+    JumpController(rootNode, [MyTripod.ActuatedArm0,
+                              MyTripod.ActuatedArm1,
+                              MyTripod.ActuatedArm2])
 
-    Interaction(rootNode, [tripod.ActuatedArm0,
-                           tripod.ActuatedArm1,
-                           tripod.ActuatedArm2])</code></pre></div>
+    Interaction(rootNode, [MyTripod.ActuatedArm0,
+                           MyTripod.ActuatedArm1,
+                           MyTripod.ActuatedArm2])</code></pre></div>
 </div>
 </div>
-<h3 id="step-9-inverse-control">Step 9: Inverse control</h3>
-<p>In the previous steps we where controlling the robot by directly specifying the angle of the ServorMotor object. In this step we will use Sofa to inverse the model and adding an effector to the simulation so that it become possible to specify the effector position and let the simulation computes the angles to reach the effectors's position.</p>
+<h4 id="exploring-the-scene-6"><i>Exploring the scene</i></h4>
+<ul>
+<li>Once the scene animated, observe how the ball follows the mouvement of the silicone piece: as lond as the ball 'sits' into the small hole at the center of the piece, it follows its mouvements. However, if the silicone piece is sloped enough, the ball falls under gravity force.</li>
+<li>Thanks to a collision model between the top of the servomotors and the silicone piece, the silicone piece can no longer go through the servomotors.</li>
+</ul>
+<h3 id="step-8-inverse-control">Step 8: Inverse control</h3>
+<p>In the previous steps we where controlling the robot by directly specifying the angle of the ServorMotor object. In this step we will use Sofa to inverse the model and adding an effector to the simulation so that it becomes possible to specify the effector's position and let the simulation compute the angular positions to apply to reach the effectors's position.</p>
 <pre>
-<a href="Rigidification/TripodRigidInverse.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Try the scene in Sofa.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step9code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="Rigidification/TripodRigidInverse.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step9code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step9code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> Sofa
@@ -696,7 +965,6 @@ path3D <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va
     <span class="cf">return</span> TableOut
 
 
-
 <span class="co">#Units: mm and kg</span>
 <span class="kw">def</span> createScene(rootNode):
     rootNode.createObject(<span class="st">&#39;RequiredPlugin&#39;</span>, name<span class="op">=</span><span class="st">&#39;SoftRobots&#39;</span>, printLog<span class="op">=</span><span class="st">&quot;false&quot;</span>)
@@ -708,7 +976,9 @@ path3D <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va
 
     rootNode.createObject(<span class="st">&#39;BackgroundSetting&#39;</span>, color<span class="op">=</span><span class="st">&#39;0 0.168627 0.211765&#39;</span>)<span class="op">;</span>
     rootNode.createObject(<span class="st">&#39;OglSceneFrame&#39;</span>, style<span class="op">=</span><span class="st">&quot;Arrows&quot;</span>, alignment<span class="op">=</span><span class="st">&quot;TopRight&quot;</span>)<span class="op">;</span>
-    <span class="co"># rootNode.createObject(&#39;OglGrid&#39;, size=100, nbSubdiv=10); # useful to check unit </span>
+    rootNode.createObject(<span class="st">&#39;OglGrid&#39;</span>, size<span class="op">=</span><span class="dv">100</span>, nbSubdiv<span class="op">=</span><span class="dv">10</span>)<span class="op">;</span> <span class="co"># useful to check unit </span>
+        <span class="co"># rootNode.createObject(&#39;PythonScriptController&#39;, filename=&quot;serialPortController.py&quot;, classname=&quot;interface&quot;)</span>
+        rootNode.createObject(<span class="st">&#39;SerialPortBridgeGeneric&#39;</span>, name<span class="op">=</span><span class="st">&quot;serial&quot;</span>, port<span class="op">=</span><span class="st">&quot;/dev/ttyUSB0&quot;</span>, baudRate<span class="op">=</span><span class="st">&quot;115200&quot;</span>, size<span class="op">=</span><span class="st">&quot;3&quot;</span>, listening<span class="op">=</span><span class="st">&quot;true&quot;</span>)
 
     rootNode.createObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)
 
@@ -782,8 +1052,8 @@ path3D <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va
 
     tetras<span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;tetras&#39;</span>,  position<span class="op">=</span><span class="st">&#39;@container.position&#39;</span>, rest_position<span class="op">=</span><span class="st">&#39;@container.position&#39;</span>)<span class="op">;</span>
     mass <span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;UniformMass&#39;</span>, totalmass<span class="op">=</span><span class="st">&#39;0.1&#39;</span>)<span class="op">;</span>
-    tetraFF<span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, poissonRatio<span class="op">=</span><span class="st">&#39;0.45&#39;</span>,  youngModulus<span class="op">=</span><span class="st">&#39;1800&#39;</span>)<span class="op">;</span>
-
+    tetraFF<span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, poissonRatio<span class="op">=</span><span class="st">&#39;0.45&#39;</span>,  youngModulus<span class="op">=</span><span class="st">&#39;8000&#39;</span>)<span class="op">;</span>
+<span class="co"># youngModulus changed from 1800 to 8000</span>
 
     y0<span class="op">=</span><span class="dv">0</span><span class="op">;</span> y1<span class="op">=</span><span class="dv">0</span><span class="op">;</span> y2<span class="op">=</span><span class="dv">0</span> 
     
@@ -849,8 +1119,17 @@ path3D <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va
     <span class="cf">return</span> rootNode</code></pre></div>
 </div>
 </div>
+<h3 id="step-9-model-reduction">Step 9: Model reduction</h3>
+<p>Here or in a more advanced tutorial perhaps?</p>
+<h3 id="step-10-closed-loop-control">Step 10: Closed-loop control</h3>
 <h3 id="conclusion">Conclusion</h3>
 <p>Congratulation, you completed this tutorial. You are strongly encouraged to pursue with the other tutorial and read the thematical documentations.</p>
 <p>If you have any comments or suggestions, please submit issues on our <a href="https://github.com/SofaDefrost">github/SoftRobots</a> page.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>All keyboard keys come from Kai Noack's 'Free Keyboard Graphics and Key Icons for Screencasts', that can be found at this adress <a href="https://github.com/q2apro/keyboard-keys-speedflips/" class="uri">https://github.com/q2apro/keyboard-keys-speedflips/</a>. Many thanks to him for publishing it in the free domain.<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
 </body>
 </html>
