@@ -184,8 +184,9 @@ void SerialPortBridgeGeneric::sendPacket()
     memcpy (packetPtr, m_packetOut.data(), m_packetOut.size() * sizeof(m_packetOut));
 
     m_serial.FlushReceiver();
+	int status = 0;
     for(int i=0;i<d_redundancy.getValue(); i++)
-        m_serial.Write(packetPtr, m_packetOut.size());
+        status = m_serial.Write(packetPtr, m_packetOut.size());
 }
 
 

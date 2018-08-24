@@ -285,8 +285,7 @@ void SlidingModel<DataTypes>::draw(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
     if (!d_showDirection.getValue()) return;
 
-
-    ReadAccessor<Data<VecCoord> > positions = *m_state->read(core::ConstVecCoordId::position());
+	ReadAccessor<Data<VecCoord> > positions = *m_state->read(core::ConstVecCoordId::position());
     const SetIndexArray &indices = d_indices.getValue();
 
     sofa::defaulttype::Vec<3,SReal> bary(0.,0.,0.);

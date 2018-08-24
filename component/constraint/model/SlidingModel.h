@@ -103,6 +103,9 @@ public:
                                         const DataVecDeriv &vfree) override;
     /////////////////////////////////////////////////////////////////////////
 
+
+	void computeViolation(Deriv &result, const Coord &PosRef, const Coord &PosIn);
+
 protected:
 
     Data<Deriv>                 d_direction;
@@ -118,7 +121,6 @@ protected:
 
     int                         m_columnIndex;
 
-    void computeViolation(Deriv &result, const Coord &PosRef, const Coord &PosIn);
 
 private:
     void initDatas();
