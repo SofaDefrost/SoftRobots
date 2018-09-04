@@ -29,7 +29,7 @@ def createScene(rootNode):
     # robot.createObject('HexahedronSetGeometryAlgorithms');
 
     robot.createObject('MechanicalObject', name='hexas', src="@grid");
-    robot.createObject('UniformMass', totalmass='0.4');
+    robot.createObject('UniformMass', totalMass='0.4');
     robot.createObject('HexahedronFEMForceField', poissonRatio='0.45',  youngModulus='600');
 
     robot.createObject('BoxROI', name='boxROI', box="-30 80 70 30 140 130   -130 -100 70  -60  -20 130  130 -100 70  60  -20 130", drawBoxes='true');

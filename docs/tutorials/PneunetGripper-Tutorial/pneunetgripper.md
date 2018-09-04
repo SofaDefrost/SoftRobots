@@ -31,7 +31,7 @@ finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', me
 ```
 The mass of the material can be defined with the UniformMass component, which assumes a uniform distribution of the mass inside the body:
 ```python
-finger.createObject('UniformMass', totalmass='0.0008')
+finger.createObject('UniformMass', totalMass='0.0008')
 ```
 Note that by default, the gravity is defined as "0 -9.81 0". You can redefine it with the following command in the rootNode:
 ```python
@@ -279,7 +279,7 @@ def createScene(rootNode):
                 finger1.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
                 
                 finger1.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
-                finger1.createObject('UniformMass', totalmass=str(fingersMass))
+                finger1.createObject('UniformMass', totalMass=str(fingersMass))
                 finger1.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus=str(youngModulusFingers), drawAsEdges="1")
 		  
                 finger1.createObject('BoxROI', name='boxROI', box='-10 0 -20 0 30 20', drawBoxes='true',doUpdate='0')
@@ -342,7 +342,7 @@ def createScene(rootNode):
                 finger2.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
                 
                 finger2.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
-                finger2.createObject('UniformMass', totalmass=str(fingersMass))
+                finger2.createObject('UniformMass', totalMass=str(fingersMass))
                 finger2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus=str(youngModulusFingers), drawAsEdges="1")
                 finger2.createObject('RestShapeSpringsForceField', points='@../finger1/boxROI.indices', stiffness='1e12', angularStiffness='1e12')
                 
@@ -401,7 +401,7 @@ def createScene(rootNode):
                 finger3.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
                 
                 finger3.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
-                finger3.createObject('UniformMass', totalmass=str(fingersMass))
+                finger3.createObject('UniformMass', totalMass=str(fingersMass))
                 finger3.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus=str(youngModulusFingers), drawAsEdges="1")
                 finger3.createObject('RestShapeSpringsForceField', points='@../finger1/boxROI.indices', stiffness='1e12', angularStiffness='1e12')
                 

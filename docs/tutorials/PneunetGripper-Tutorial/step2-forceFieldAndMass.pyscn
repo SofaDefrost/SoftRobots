@@ -14,4 +14,4 @@ def createScene(rootNode):
         finger.createObject('Mesh', src='@loader', name='container')
         finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showObject='true', showObjectScale='1')
         finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500', drawAsEdges="true")
-        finger.createObject('UniformMass', totalmass='0.0008')
+        finger.createObject('UniformMass', totalMass='0.0008')
