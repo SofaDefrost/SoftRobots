@@ -39,7 +39,7 @@ def createScene(rootNode):
                 finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
 
                 # Gives a mass to the model
-                finger.createObject('UniformMass', totalmass='0.5')
+                finger.createObject('UniformMass', totalMass='0.5')
 
                 # Add a TetrahedronFEMForceField componant which implement an elastic material model solved using the Finite Element Method on
                 # tetrahedrons.

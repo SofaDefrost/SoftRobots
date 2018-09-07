@@ -31,7 +31,7 @@ def createScene(rootNode):
 
 				#To be properly simulated and to interact with gravity or inertia forces, an object also needs a mass. You can add a
 				#given mass with a uniform distribution for an object by adding a UniformMass component to the finger node
-				finger.createObject('UniformMass', totalmass=' 0.5')
+				finger.createObject('UniformMass', totalMass=' 0.5')
 
 				# The next component to add is a FEM forcefield which defines how the object reacts to a loading (i.e. which deformations are created from forces applied onto it).
 				# Here, because the finger is made of silicone, its mechanical behavior is assumed elastic. This behavior is available via the TetrahedronFEMForceField component.

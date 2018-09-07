@@ -30,7 +30,7 @@ def createScene(rootNode):
 
     robot.createObject('MechanicalObject', name='tetras');
     ### UniformMass: Here you can set the mass of the structure
-    robot.createObject('UniformMass', totalmass='0.4');
+    robot.createObject('UniformMass', totalMass='0.4');
     ### TetrahedronFEMForceField:
     ### By using this component you choose hyperelastic model
     ### Here you can set the youngModulus to adapt the stiffness of the deformable structurepoissonRatio = 0.2
