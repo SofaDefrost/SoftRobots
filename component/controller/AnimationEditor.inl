@@ -724,7 +724,7 @@ void AnimationEditor<DataTypes>::updateAnimationWithInterpolation(const int star
     }
 
     int nbPositions = m_state->read(core::ConstVecCoordId::position())->getValue().size();
-    int nbStep = endKey - startKey + 1;
+    int nbStep = endKey - startKey;
 
     for (int i=0; i<nbStep; i++)
     {

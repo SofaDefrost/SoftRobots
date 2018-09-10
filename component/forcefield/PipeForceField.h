@@ -138,8 +138,8 @@ protected:
 
     core::behavior::MechanicalState<DataTypes> * m_mstate;
 
-    SingleLink < PipeForceField<DataTypes>, BarycentricMapping<DataTypes, DataTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > d_barycentricMapping;
-    SingleLink < PipeForceField<DataTypes>, MeshSpringForceField<DataTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > d_mappedForceField;
+    SingleLink < PipeForceField<DataTypes>, BarycentricMapping<DataTypes, DataTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > l_barycentricMapping;
+    SingleLink < PipeForceField<DataTypes>, MeshSpringForceField<DataTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > l_mappedForceField;
 
 
     /**

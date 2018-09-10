@@ -27,7 +27,7 @@ def createScene(rootNode):
                 finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
                 finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
                 finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
-                finger.createObject('UniformMass', totalmass='0.5')    
+                finger.createObject('UniformMass', totalMass='0.5')    
                 finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
 		
                 finger.createObject('BoxROI', name='ROI1', box='-15 0 0 5 10 15', drawBoxes='true')
@@ -88,7 +88,7 @@ def createScene(rootNode):
                 finger2.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
                 finger2.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
                 finger2.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
-                finger2.createObject('UniformMass', totalmass='0.5')    
+                finger2.createObject('UniformMass', totalMass='0.5')    
                 finger2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
 		
                 finger2.createObject('BoxROI', name='ROI1', box='135 0 0 155 10 15', drawBoxes='true')
