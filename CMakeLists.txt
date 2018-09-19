@@ -5,7 +5,22 @@ cmake_policy(SET CMP0048 NEW)
 
 project(SoftRobots VERSION 1.0)
 
-option(USE_COMPRESSED_ROW_SPARSE "Use compressed row sparse format in the mappings" ON)
+if(SOFA_USE_MASK)
+    message(SEND_ERROR "You should not compile the plugin SoftRobots with SOFA_USE_MASK enabled.")
+endif(SOFA_USE_MASK)
+
+if(NOT SOFA_BUILD_METIS)
+    message(SEND_ERROR "You should not compile the plugin SoftRobots without enabling SOFA_BUILD_METIS.")
+endif(SOFA_BUILD_METIS)
+
+if(NOT PLUGIN_SOFAPYTHON)
+    message(SEND_ERROR "You should not compile the plugin SoftRobots without enabling PLUGIN_SOFAPYTHON.")
+endif(PLUGIN_SOFAPYTHON)
+
+if(NOT PLUGIN_SOFASPARSESOLVER)
+    message(SEND_ERROR "You should not compile the plugin SoftRobots without enabling PLUGIN_SOFASPARSESOLVER.")
+endif(PLUGIN_SOFASPARSESOLVER)
+
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
