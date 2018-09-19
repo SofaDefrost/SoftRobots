@@ -5,6 +5,10 @@ if(NOT PLUGIN_SOFAPYTHON)
     set(PLUGIN_SOFAPYTHON ON CACHE BOOL "Build the SofaPython Plugin." FORCE)
 endif(NOT PLUGIN_SOFAPYTHON)
 
+if(NOT PLUGIN_SOFASPARSESOLVER)
+    set(PLUGIN_SOFASPARSESOLVER ON CACHE BOOL "" FORCE)
+endif(NOT PLUGIN_SOFASPARSESOLVER)
+
 if(NOT SOFA_BUILD_METIS)
     set(SOFA_BUILD_METIS ON CACHE BOOL "Build the metis library distributed in the extlibs/ directory.  It is used only
                                         by the SparseLDLSolver component.  Note that this library is usually available
