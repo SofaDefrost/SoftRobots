@@ -401,6 +401,9 @@ int Serial::Read (void *Buffer,unsigned int MaxNbBytes,unsigned int TimeOut_ms)
 
 void Serial::FlushReceiver()
 {
+#if defined (_WIN32) || defined(_WIN64)
+	PurgeComm(hSerial, PURGE_RXCLEAR);
+#endif
 #if defined (__linux__) || defined (__APPLE__)
     tcflush(fd,TCIFLUSH);
 #endif

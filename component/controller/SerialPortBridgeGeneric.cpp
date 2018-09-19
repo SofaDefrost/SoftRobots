@@ -201,7 +201,7 @@ void SerialPortBridgeGeneric::receivePacket()
     unsigned int maxNbBytes = nbData * sizeof(unsigned char);
     unsigned char* packetPtr = new unsigned char[nbData];
 
-    unsigned int timeOut_ms = 20;
+    unsigned int timeOut_ms = 200;
     int status = m_serial.Read(packetPtr, maxNbBytes, timeOut_ms);
     if(status==1)
     {

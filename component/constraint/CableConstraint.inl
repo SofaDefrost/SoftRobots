@@ -65,15 +65,13 @@ CableConstraint<DataTypes>::CableConstraint(MechanicalState* object)
 										  "If unspecified, the default value is displacement"))
 
 	, d_stiffness(initData(&d_stiffness, (double) 0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
-	, d_neutralEffectorPosition(initData(&d_neutralEffectorPosition, (double)0, "neutralEffectorPosition", "FOR TESTING MISK"))
-	, d_neutralActuatorPosition(initData(&d_neutralActuatorPosition, (double)0, "neutralActuatorPosition", "FOR TESTING MISK"))
+	, d_actuatorBiasDisplacement(initData(&d_actuatorBiasDisplacement, (double)0, "actuatorBiasDisplacement", "bias force should go in the value section"))
 {
     d_value.setGroup("Input");
     d_valueIndex.setGroup("Input");
     d_valueType.setGroup("Input");
 	d_stiffness.setGroup("Input");
-	d_neutralEffectorPosition.setGroup("Output"); // TEST
-	d_neutralActuatorPosition.setGroup("Output");
+	d_actuatorBiasDisplacement.setGroup("Input");
 }
 
 
@@ -95,15 +93,13 @@ CableConstraint<DataTypes>::CableConstraint()
 		"If unspecified, the default value is displacement"))
 
 	, d_stiffness(initData(&d_stiffness, (double)0, "stiffness", "stiffness to enforce (when valueType = stiffness)"))
-	, d_neutralEffectorPosition(initData(&d_neutralEffectorPosition, (double)0, "neutralEffectorPosition", "FOR TESTING MISK"))
-	, d_neutralActuatorPosition(initData(&d_neutralActuatorPosition, (double)0, "neutralActuatorPosition", "FOR TESTING MISK"))
+	, d_actuatorBiasDisplacement(initData(&d_actuatorBiasDisplacement, (double)0, "actuatorBiasDisplacement", "bias force should go in the value section"))
 {
 	d_value.setGroup("Input");
 	d_valueIndex.setGroup("Input");
 	d_valueType.setGroup("Input");
 	d_stiffness.setGroup("Input");
-	d_neutralEffectorPosition.setGroup("Output"); // TEST
-	d_neutralActuatorPosition.setGroup("Output");
+	d_actuatorBiasDisplacement.setGroup("Input");
 }
 
 template<class DataTypes>
@@ -170,24 +166,34 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
 
         CableDisplacementConstraintResolution *cr=  new CableDisplacementConstraintResolution(imposed_value, &m_force);
         resTab[offset++] =cr;
+		d_cableLength.setValue(d_cableInitialLength.getValue() - m_imposedValue);
+		d_displacement.setValue(m_imposedValue);
+		d_force.setValue(m_force);
     }
     else if (m_type == "force") // force
     {
         CableForceConstraintResolution *cr=  new CableForceConstraintResolution(imposed_value, &m_displacement);
         resTab[offset++] =cr;
+		d_cableLength.setValue(d_cableInitialLength.getValue() - m_displacement);
+		d_force.setValue(m_imposedValue);
+		d_displacement.setValue(m_displacement);
     }
 	else // stiffness
 	{
 		double imposed_stiffness = d_stiffness.getValue();
-		CableStiffnessConstraintResolution *cr = new CableStiffnessConstraintResolution(imposed_value, imposed_stiffness, &m_displacement, &m_force, &m_neutralEffectorPosition, &m_neutralActuatorPosition); // TEST
+		double imposed_actuatorBiasDisplacement = d_actuatorBiasDisplacement.getValue();
+		CableStiffnessConstraintResolution *cr = new CableStiffnessConstraintResolution(imposed_value, imposed_stiffness, imposed_actuatorBiasDisplacement, &m_displacement, &m_force); // TEST
 		resTab[offset++] = cr;
-	}
+		d_cableLength.setValue(d_cableInitialLength.getValue() - m_displacement);
+		d_displacement.setValue(m_displacement);
+		d_force.setValue(m_force);
+			}
 }
 
 template<class DataTypes>
 void CableConstraint<DataTypes>::draw(const VisualParams* vparams)
 {
-	if (m_type == "displacement")
+	/*if (m_type == "displacement")
 	{
 		d_cableLength.setValue(d_cableInitialLength.getValue() - m_imposedValue);
 		d_displacement.setValue(m_imposedValue);
@@ -204,9 +210,7 @@ void CableConstraint<DataTypes>::draw(const VisualParams* vparams)
 		d_cableLength.setValue(d_cableInitialLength.getValue() - m_displacement);
 		d_displacement.setValue(m_displacement);
 		d_force.setValue(m_force);
-		d_neutralEffectorPosition.setValue(m_neutralEffectorPosition);
-		d_neutralActuatorPosition.setValue(m_neutralActuatorPosition);
-	}
+	}*/
 
 }
 

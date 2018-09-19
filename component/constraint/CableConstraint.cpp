@@ -79,6 +79,7 @@ void CableDisplacementConstraintResolution::resolution(int line, double** w, dou
         lambda[line]=0;
 
     storeForce(line, lambda);
+	std::cout << "d[line]: " << d[line] << "\t lambda: " << lambda[line] << std::endl;
 }
 
 
@@ -131,36 +132,30 @@ void CableForceConstraintResolution::storeDisplacement(int line,  double* d)
 }
 
 //------------- Stiffness Constraint -----------
-CableStiffnessConstraintResolution::CableStiffnessConstraintResolution(double& imposedBiasForce, double& imposedStiffness, double* displacement, double* force, double* neutralEffectorPosition, double* neutralActuatorPosition)
+CableStiffnessConstraintResolution::CableStiffnessConstraintResolution(double& imposedBiasForce, double& imposedStiffness, double& imposedActuatorBiasDisplacement, double* displacement, double* force)
 	: ConstraintResolution(1)
-	, m_imposedBiasForce(imposedBiasForce) // TEST
+	, m_imposedBiasForce(imposedBiasForce)
 	, m_imposedStiffness(imposedStiffness)
+	, m_imposedActuatorBiasDisplacement(imposedActuatorBiasDisplacement)
 	, m_displacement(displacement)
 	, m_force(force)
-	, m_neutralEffectorPosition(neutralEffectorPosition)
-	, m_neutralActuatorPosition(neutralActuatorPosition)
 {}
 
 void CableStiffnessConstraintResolution::init(int line, double** w, double * lambda)
 {
 	SOFA_UNUSED(lambda);
-	int otherLine = 0; // TEST
-	if (line == 0) // TEST
-		otherLine = 1; // TEST
 	m_wActuatorActuator = w[line][line];
-	m_wEffectorActuator = w[otherLine][line]; // TEST
 }
 
 void CableStiffnessConstraintResolution::resolution(int line, double**, double* d, double* lambda, double* dfree)
 {
 	//SOFA_UNUSED(dfree);
-	int otherLine = 0;
-	if (line == 0) // TEST
-		otherLine = 1;
-	*m_neutralEffectorPosition = m_wEffectorActuator*m_imposedBiasForce + dfree[otherLine]; // TEST
-	*m_neutralActuatorPosition = m_wActuatorActuator*m_imposedBiasForce + dfree[line]; // TEST
-	double m_imposedNeutralPosition = *m_neutralActuatorPosition - m_imposedBiasForce / m_imposedStiffness; // TEST
-
+	//int otherLine = 0;
+	//if (line == 0) // TEST
+	//	otherLine = 1;
+	//*m_neutralEffectorPosition = m_wEffectorActuator*m_imposedBiasForce + dfree[otherLine]; // TEST
+	//*m_neutralActuatorPosition = m_wActuatorActuator*m_imposedBiasForce + dfree[line]; // TEST
+	//double m_imposedNeutralPosition = *m_neutralActuatorPosition - m_imposedBiasForce / m_imposedStiffness; // TEST
 	if (abs(m_imposedStiffness*m_wActuatorActuator - 1) < STIFFNESS_CONSTRAINT_TOLERANCE)
 	{
 		// TODO MISK msg_warning() << "Commanded stiffness matches natural stiffness. Stiffness constraint is not imposed (no force was added).";
@@ -168,13 +163,15 @@ void CableStiffnessConstraintResolution::resolution(int line, double**, double* 
 	}
 	else
 	{
-		double lastLambda = lambda[line];
-		lambda[line] = m_imposedStiffness*(m_wActuatorActuator*lastLambda + m_imposedNeutralPosition - d[line]) / (m_wActuatorActuator*m_imposedStiffness - 1);
+		//lambda[line] = m_imposedBiasForce + m_imposedStiffness*(d[line]-m_imposedActuatorBiasDisplacement);
+		double lambdaLast = lambda[line];
+		lambda[line] = (m_imposedBiasForce + m_imposedStiffness*(d[line] - m_imposedActuatorBiasDisplacement - m_wActuatorActuator*lambdaLast)) / (1 - m_imposedStiffness*m_wActuatorActuator);
 		if (lambda[line] < 0.0)
 			lambda[line] = 0.0;
-		d[line] += m_wActuatorActuator*(lambda[line] - lastLambda);
+		d[line] += m_wActuatorActuator*(lambda[line] - lambdaLast);
 	}
 	storeForceAndDisplacement(line, d, lambda);
+	//std::cout << "Lambda: " << lambda[line] << "   d: " << d[line] << std::endl;
 }
 
 
