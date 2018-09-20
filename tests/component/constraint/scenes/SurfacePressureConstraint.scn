@@ -4,6 +4,7 @@
         <VisualStyle displayFlags='showCollision showVisualModels showForceFields showInteractionForceFields hideCollisionModels hideBoundingCollisionModels hideWireframe'/>
 
         <RequiredPlugin pluginName='SoftRobots'/>
+        <RequiredPlugin pluginName='SofaSparseSolver'/>
 
         <FreeMotionMasterSolver/>
         <CollisionPipeline verbose='0'/>
