@@ -5,21 +5,36 @@ cmake_policy(SET CMP0048 NEW)
 
 project(SoftRobots VERSION 1.0)
 
-if(SOFA_USE_MASK)
-    message(SEND_ERROR "You should not compile the plugin SoftRobots with SOFA_USE_MASK enabled.")
-endif(SOFA_USE_MASK)
+option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
 
-if(NOT SOFA_BUILD_METIS)
-    message(SEND_ERROR "You should not compile the plugin SoftRobots without enabling SOFA_BUILD_METIS.")
-endif(SOFA_BUILD_METIS)
+if(SOFA_USE_MASK AND NOT SOFTROBOTS_IGNORE_ERRORS)
+    message(SEND_ERROR "
+        You should not use the plugin SoftRobots with SOFA_USE_MASK enabled.
+        Most components will not work correctly.
+        To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
+endif()
 
-if(NOT PLUGIN_SOFAPYTHON)
-    message(SEND_ERROR "You should not compile the plugin SoftRobots without enabling PLUGIN_SOFAPYTHON.")
-endif(PLUGIN_SOFAPYTHON)
+if(NOT SOFA_BUILD_METIS AND NOT SOFTROBOTS_IGNORE_ERRORS)
+    message(SEND_ERROR "
+        You should not use the plugin SoftRobots without enabling SOFA_BUILD_METIS.
+        Most examples will run slowly.
+        To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
+endif()
 
-if(NOT PLUGIN_SOFASPARSESOLVER)
-    message(SEND_ERROR "You should not compile the plugin SoftRobots without enabling PLUGIN_SOFASPARSESOLVER.")
-endif(PLUGIN_SOFASPARSESOLVER)
+if(NOT PLUGIN_SOFAPYTHON AND NOT SOFTROBOTS_IGNORE_ERRORS)
+    message(SEND_ERROR "
+        You should not use the plugin SoftRobots without enabling PLUGIN_SOFAPYTHON.
+        Most examples will not be loadable.
+        To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
+endif()
+
+if(NOT PLUGIN_SOFASPARSESOLVER AND NOT SOFTROBOTS_IGNORE_ERRORS)
+    message(SEND_ERROR "
+        You should not use the plugin SoftRobots without enabling PLUGIN_SOFASPARSESOLVER.
+        Most examples and some tests will not work.
+        To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
+endif()
+
 
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
