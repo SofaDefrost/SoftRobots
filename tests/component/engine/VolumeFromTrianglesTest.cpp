@@ -59,6 +59,9 @@ using sofa::component::container::MechanicalObject ;
 #include <SoftRobots/component/engine/VolumeFromTriangles.h>
 using sofa::component::engine::VolumeFromTriangles ;
 
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::DataRepository;
+
 
 namespace sofa
 {
@@ -124,6 +127,8 @@ struct VolumeFromTrianglesTest : public Sofa_test<typename _DataTypes::Real>,
 
     double volumeComputationTest()
     {
+        DataRepository.addFirstPath(SOFTROBOTS_TEST_DIR);
+
         Simulation* simu;
         setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
 
@@ -134,7 +139,7 @@ struct VolumeFromTrianglesTest : public Sofa_test<typename _DataTypes::Real>,
         typename ThisClass::SPtr                   thisobject = New< ThisClass >() ;
 
         node->addObject(mesh) ;
-        mesh->load("mesh/smCube27.obj");
+        mesh->load("component/engine/mesh/smCube27.obj");
         node->addObject(mecaobject) ;
         mecaobject->init() ;
         node->addObject(thisobject) ;

@@ -70,8 +70,8 @@ using sofa::core::behavior::BaseMechanicalState ;
 template<typename DataTypes>
 PipeForceField<DataTypes>::PipeForceField()
     : Inherit(),
-      d_barycentricMapping(initLink("barycentricMapping", " link to the BarycentricMapping")),
-      d_mappedForceField(initLink("mappedForceField", "link to the MeshSpringForceField"))
+      l_barycentricMapping(initLink("barycentricMapping", " link to the BarycentricMapping")),
+      l_mappedForceField(initLink("mappedForceField", "link to the MeshSpringForceField"))
 {}
 
 template<typename DataTypes>
@@ -120,36 +120,36 @@ template<typename DataTypes>
 void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
                                                const MultiMatrixAccessor* matrix)
 {
-    if (d_barycentricMapping.get() == NULL )
+    if (l_barycentricMapping.get() == NULL )
     {
-        msg_error() << "Mapping is missing. AddKToMatrix not computed";
+        msg_error() << "Link to barycentric mapping is missing or incorrect. AddKToMatrix not computed.";
         return;
     }
-    if (d_mappedForceField.get() == NULL )
+    if (l_mappedForceField.get() == NULL )
     {
-        msg_error() << "MappedFF is missing. AddKToMatrix not computed";
+        msg_error() << "Link to mapped force field is missing or incorrect. AddKToMatrix not computed.";
         return;
     }
 
 
     //Get the jacobian matrix from the BarycentricMapping
     const CompressedRowSparseMatrix<_3_3_Matrix_Type>* J;
-    J = dynamic_cast<const CompressedRowSparseMatrix<_3_3_Matrix_Type> *> (d_barycentricMapping.get()->getJ() );
+    J = dynamic_cast<const CompressedRowSparseMatrix<_3_3_Matrix_Type> *> (l_barycentricMapping.get()->getJ() );
 
     if (J == NULL )
     {
-        msg_error() << "Jacobian matrix from Mapping is missing. AddKToMatrix not computed";
+        msg_error() << "Jacobian matrix from barycentric mapping is missing. AddKToMatrix not computed.";
         return;
     }
 
 
     //Get the stiffness matrix from the mapped ForceField
     CompressedRowSparseMatrix< _3_3_Matrix_Type >* mappedFFMatrix = new CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
-    BaseMechanicalState* springState = d_mappedForceField.get()->getContext()->getMechanicalState();
+    BaseMechanicalState* springState = l_mappedForceField.get()->getContext()->getMechanicalState();
 
     if (springState == NULL )
     {
-        msg_error() << "Mstate from mappedFF is missing. AddKToMatrix not computed";
+        msg_error() << "Mstate from mappedFF is missing. AddKToMatrix not computed.";
         delete mappedFFMatrix;
         return;
     }
@@ -160,20 +160,22 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
     mappedFFMatrixAccessor->setGlobalMatrix(mappedFFMatrix);
     mappedFFMatrixAccessor->setupMatrices();
 
-    MultiMatrixAccessor::MatrixRef r = mappedFFMatrixAccessor->getMatrix(springState);
+    MultiMatrixAccessor::MatrixRef mappedMatrixRef = mappedFFMatrixAccessor->getMatrix(springState);
 
-    d_mappedForceField.get()->addKToMatrix(mparams, mappedFFMatrixAccessor);
+    l_mappedForceField.get()->addKToMatrix(mparams, mappedFFMatrixAccessor);
     CompressedRowSparseMatrix<_3_3_Matrix_Type> JtK ;
     CompressedRowSparseMatrix<_3_3_Matrix_Type> JtKJ ;
 
     CompressedRowSparseMatrix<_3_3_Matrix_Type>* K ;
-    K = dynamic_cast<CompressedRowSparseMatrix<_3_3_Matrix_Type>*>(r.matrix);
+    K = dynamic_cast<CompressedRowSparseMatrix<_3_3_Matrix_Type>*>(mappedMatrixRef.matrix);
     multMatricesT<3, 3, 3>(*J, *K, JtK);
     multMatrices<3, 3, 3>(JtK, *J, JtKJ);
 
-
     //Add JtKJ to global system
-    MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(mstate);
+    if(mstate==nullptr)
+        msg_error() << "Missing context mechanical state.";
+
+    MultiMatrixAccessor::MatrixRef matrixRef = matrix->getMatrix(mstate);
     _3_3_Matrix_Type KMatrixBuffer;
     for(size_t kRowIndex = 0 ; kRowIndex < (unsigned int)JtKJ.nBlocRow ; ++kRowIndex) {
         for(_3_3_ColBlockConstIterator kColIter = JtKJ.bRowBegin(kRowIndex); kColIter < JtKJ.bRowEnd(kRowIndex) ; kColIter++) {
@@ -186,11 +188,10 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
 
             for (int i = 0; i < 3 ; i++)
                 for (int j = 0; j < 3; j++)
-                    mat.matrix->add(mat.offset + 3 * kRowIndex + i,mat.offset + 3 * kColIndex + j, kBlockData(i, j));
+                    matrixRef.matrix->add(matrixRef.offset + 3 * kRowIndex + i,matrixRef.offset + 3 * kColIndex + j, kBlockData(i, j));
         }
     }
 
-    delete K;
     delete mappedFFMatrix;
     delete mappedFFMatrixAccessor;
 }

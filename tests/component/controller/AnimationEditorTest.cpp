@@ -66,6 +66,8 @@ template <typename DataTypes>
 struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, AnimationEditor<DataTypes>
 {
     typedef AnimationEditor<DataTypes> ThisClass ;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Coord Coord;
 
     ///////////////////////////////////////////////////////////////////////
     // Bring parents members in the current lookup context.
@@ -237,10 +239,15 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
         m_animation.resize(1,m_state->read(core::ConstVecCoordId::position())->getValue());
 
         d_cursor.setValue(5);
+        VecCoord newPosition;
+        newPosition.resize(1);
+        newPosition[0] = Coord(0.,12.5,0.);
+        m_state->write(core::VecCoordId::position())->setValue(newPosition);
         addKeyFrame();
         if(m_keyFramesID.size() != 2) return false;
         if(m_keyFramesID[1] != 5) return false;
         if(m_animation.size() != 6) return false;
+        EXPECT_EQ(m_animation[5],newPosition);
 
         deleteKeyFrame();
         if(m_keyFramesID.size() != 1) return false;

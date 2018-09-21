@@ -97,7 +97,7 @@ void UnilateralPlaneConstraint<DataTypes>::init()
 
     if(mstate == nullptr)
     {
-        msg_error(this) << "There is no mechanical state associated with this node. Component deactivated."
+        msg_error() << "There is no mechanical state associated with this node. Component deactivated."
                            "To remove this error message, fix your scene possibly by "
                            "adding a MechanicalObject." ;
         return;
@@ -126,9 +126,9 @@ void UnilateralPlaneConstraint<DataTypes>::checkIndicesRegardingState()
     for(int i=0; i<4; i++)
     {
         if (positions.size() <= d_indices.getValue()[i])
-            msg_error(this) << "Indices at index " << i << " is to large regarding mechanicalState [position] size" ;
+            msg_error() << "Indices at index " << i << " is to large regarding mechanicalState [position] size" ;
         if (d_indices.getValue()[i] < 0)
-            msg_error(this) << "Indices at index " << i << " is negative" ;
+            msg_error() << "Indices at index " << i << " is negative" ;
     }
 }
 
