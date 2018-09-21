@@ -126,7 +126,7 @@ def createScene(rootNode):
 	nodeFEM.createObject('TetrahedronSetGeometryAlgorithms');
 
 	tetras= nodeFEM.createObject('MechanicalObject', name='tetras',  position='@container.position', rest_position='@container.position');
-	mass = nodeFEM.createObject('UniformMass', totalmass='0.032');
+	mass = nodeFEM.createObject('UniformMass', totalMass='0.032');
 	tetraFF= nodeFEM.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='150');
 
 	y0=-25

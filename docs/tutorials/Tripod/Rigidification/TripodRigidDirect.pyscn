@@ -97,7 +97,7 @@ def createScene(rootNode):
     nodeFEM.createObject('TetrahedronSetGeometryAlgorithms');
 
     tetras= nodeFEM.createObject('MechanicalObject', name='tetras',  position='@container.position', rest_position='@loader.position');
-    mass = nodeFEM.createObject('UniformMass', totalmass='0.4');
+    mass = nodeFEM.createObject('UniformMass', totalMass='0.4');
     tetraFF= nodeFEM.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='600');
 
     #fix = nodeFEM.createObject('RestShapeSpringsForceField', name='fix', stiffness='1e10', points=AddConstantAndtransformTableInString(list_branch0,-1) ) #external_rest_shape='@../actuators/attach0/mm0'

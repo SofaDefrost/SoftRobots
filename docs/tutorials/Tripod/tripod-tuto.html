@@ -1051,7 +1051,7 @@ path3D <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va
     
 
     tetras<span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;tetras&#39;</span>,  position<span class="op">=</span><span class="st">&#39;@container.position&#39;</span>, rest_position<span class="op">=</span><span class="st">&#39;@container.position&#39;</span>)<span class="op">;</span>
-    mass <span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;UniformMass&#39;</span>, totalmass<span class="op">=</span><span class="st">&#39;0.1&#39;</span>)<span class="op">;</span>
+    mass <span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;UniformMass&#39;</span>, totalMass<span class="op">=</span><span class="st">&#39;0.1&#39;</span>)<span class="op">;</span>
     tetraFF<span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, poissonRatio<span class="op">=</span><span class="st">&#39;0.45&#39;</span>,  youngModulus<span class="op">=</span><span class="st">&#39;8000&#39;</span>)<span class="op">;</span>
 <span class="co"># youngModulus changed from 1800 to 8000</span>
 

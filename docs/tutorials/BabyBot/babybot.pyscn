@@ -54,7 +54,7 @@ def createScene(rootNode):
     robot.createObject('TetrahedronSetGeometryAlgorithms',  template='Vec3d',drawEdges='0');
 
     robot.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', position='@loader.position');
-    robot.createObject('UniformMass', totalmass='0.4');
+    robot.createObject('UniformMass', totalMass='0.4');
     robot.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.45',  youngModulus='600'); #600kPa
 
     robot.createObject('BoxROI', name='boxROI1', box="-30 80 70 30 140 130   ", drawBoxes='true');
