@@ -28,9 +28,9 @@ if(NOT PLUGIN_SOFAPYTHON AND NOT SOFTROBOTS_IGNORE_ERRORS)
         To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
 endif()
 
-if(NOT PLUGIN_SOFASPARSESOLVER AND NOT SOFTROBOTS_IGNORE_ERRORS)
+if(NOT MODULE_SOFASPARSESOLVER AND NOT SOFTROBOTS_IGNORE_ERRORS)
     message(SEND_ERROR "
-        You should not use the plugin SoftRobots without enabling PLUGIN_SOFASPARSESOLVER.
+        You should not use the plugin SoftRobots without enabling MODULE_SOFASPARSESOLVER.
         Most examples and some tests will not work.
         To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
 endif()
