@@ -57,7 +57,8 @@ def Finger(parentNode=None, name="Finger",
                  cableGeometry=loadPointListFromFile(os.path.join(templatepath, "mesh/cable.json")),
                  valueType=valueType);
 
-    FingerController(eobject, cable, valueType) #MISK may change to vary variation based on value type
+    #Eulalie.C (21/09/18): this feature does not work, either fix it or remove this comment before SoftRobots v19 
+    #FingerController(eobject, cable, valueType) #MISK may change to vary variation based on value type
 
     CollisionMesh(eobject, name="CollisionMesh",
                  surfaceMeshFileName=os.path.join(templatepath, "mesh/finger.stl"),
