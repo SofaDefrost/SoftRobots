@@ -86,6 +86,7 @@ public:
     Data<int>                    d_baudRate;
     Data<helper::vector<double>> d_packetOut;
     Data<helper::vector<unsigned char>> d_packetIn;
+    Data<helper::vector<unsigned char>> d_header;
     Data<int>                    d_size;
     Data<bool>                   d_precise;
     Data<bool>                   d_splitPacket;

@@ -54,7 +54,7 @@ def createScene(rootNode):
                 accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
 
                 accordion.createObject('MechanicalObject', name='tetras', template='Vec3d')
-                accordion.createObject('UniformMass', totalmass='0.030')
+                accordion.createObject('UniformMass', totalMass='0.030')
                 accordion.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
 
                 accordion.createObject('BoxROI', name='ROI1', box='-2 -2 0 2 2 0.5', drawBoxes='true')

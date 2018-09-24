@@ -64,12 +64,17 @@ int SerialPortBridgeGenericClass = core::RegisterObject("Send data (ex: force, d
 SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     : d_port(initData(&d_port, "port", "Serial port name"))
     , d_baudRate(initData(&d_baudRate, "baudRate", "Transmission speed"))
-    , d_packetOut(initData(&d_packetOut, "sentData", "Data to send"))
-    , d_packetIn(initData(&d_packetIn, "receivedData", "Data received"))
+    , d_packetOut(initData(&d_packetOut, "sentData", "Data to send: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255.\n"
+                           "The value of 'header' will be sent at the beginning of the sent data,\n"
+                           "enabling to implement a header research in the 'receiving' code, for synchronization purposes.\n"
+                           ))
+    , d_packetIn(initData(&d_packetIn, "receivedData", "Data received: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255."))
+    , d_header(initData(&d_header, helper::vector<unsigned char>(255,254), "header", "Vector of unsigned char. Only one value is espected, two values if splitPacket = 1."))
     , d_size(initData(&d_size,(int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
                                             "Will return a warning if sentData size does not match this value."))
-    , d_precise(initData(&d_precise,false,"precise","If true, will send the data in the format [MSB,LSB]*2*size"))
-    , d_splitPacket(initData(&d_splitPacket,false,"splitPacket","If true, will split the packet in two for lower error rate (only in precise mode)"))
+    , d_precise(initData(&d_precise,false,"precise","If true, will send the data in the format [header[0],[MSB,LSB]*2*size]"))
+    , d_splitPacket(initData(&d_splitPacket,false,"splitPacket","If true, will split the packet in two for lower error rate (only in precise mode),\n"
+                               "data will have the format [header[0],[MSB,LSB]*size],[header[1],[MSB,LSB]*size]"))
     , d_redundancy(initData(&d_redundancy,1,"redundancy","Each packet will be send that number of times (1=default)"))
     , d_doReceive(initData(&d_doReceive,false,"receive","If true, will read from serial port (timeOut = 10ms)"))
 {
@@ -85,24 +90,43 @@ void SerialPortBridgeGeneric::init()
 {
     checkConnection();
 
+    // To remove before v19.0 of the plugin
+    msg_warning() << "An old implementation was using 245 as the default header for sentData. This is not the case anymore. The default header is now equal to 255.";
+
+    if(d_precise.getValue())
+        msg_warning() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
+    // /////////////////////////////////////
+
+
+    if(d_splitPacket.getValue())
+    {
+        if(d_header.getValue().size()<2)
+        {
+            msg_warning() << "Problem with header size. Set default [255,254].";
+            d_header.setValue(helper::vector<unsigned char>(255,254));
+        }
+
+    }
+    else if(d_header.getValue().size()==0)
+    {
+        msg_warning() << "Problem with header size. Set default 255.";
+        d_header.setValue(helper::vector<unsigned char>(255,254));
+    }
+
+
     // Initial value sent to the robot
-    //[245, 0 .. 0]
+    //[header[0], 0 .. 0]
     if(d_precise.getValue())  m_packetOut.resize(d_size.getValue()*2+1);
     else                      m_packetOut.resize(d_size.getValue()+1);
 
-    m_packetOut[0] = (unsigned char)245;
+    m_packetOut[0] = d_header.getValue()[0];
     for (int i=1; i<(int)m_packetOut.size(); i++)
         m_packetOut[i] = (unsigned char)0;
     if (d_redundancy.getValue()<1)
     {
-        msg_warning(this) <<"No valid number of packets set in Redundancy, set automatically to 1";
+        msg_warning() <<"No valid number of packets set in Redundancy, set automatically to 1";
         d_redundancy.setValue(1);
     }
-
-    // Vector to void*
-    //void* packetPtr = new unsigned char[m_packetOut.size() * sizeof(m_packetOut)];
-    //memcpy (packetPtr, m_packetOut.data(), m_packetOut.size() * sizeof(m_packetOut));
-    //TODO : the two previous lines were currently useless -> Finish implementation using them or remove them definitely
 }
 
 
@@ -111,9 +135,9 @@ void SerialPortBridgeGeneric::checkConnection()
     int status = m_serial.Open(d_port.getValue().c_str() , d_baudRate.getValue());
 
     if (status!=1)
-        msg_warning(this) <<"No serial port found";
+        msg_warning() <<"No serial port found";
     else
-        msg_info(this) <<"Serial port found";
+        msg_info() <<"Serial port found";
 }
 
 
@@ -147,22 +171,23 @@ void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
 
 void SerialPortBridgeGeneric::sendPacketPrecise()
 {
-    //[245, [MSB,LSB]*size*2]
+    //[header[0], [MSB,LSB]*size*2]
     int packetlength=d_size.getValue();
     m_packetOut.resize(packetlength*2+1);
 
-    m_packetOut[0] = (unsigned char)245;        //first half
+    m_packetOut[0] = d_header.getValue()[0];
     for (int i=0; i<packetlength; i++)
     {
-        int value = d_packetOut.getValue()[i]*1000; //conversion from meter to millimeter
+        int value = d_packetOut.getValue()[i];
         unsigned char LSB = value&0xFF;
         unsigned char MSB = value>>8&0xFF;
         m_packetOut[i*2+1]=MSB;
         m_packetOut[i*2+2]=LSB;
     }
 
+    //[header[0], [MSB,LSB]*size], [header[1], [MSB,LSB]*size]
     if(d_splitPacket.getValue())
-        m_packetOut.insert(m_packetOut.begin()+packetlength+1, 246);
+        m_packetOut.insert(m_packetOut.begin()+packetlength+1, d_header.getValue()[1]);
 
     // Vector to void*
     void* packetPtr = new unsigned char[m_packetOut.size() * sizeof(m_packetOut)];
@@ -176,10 +201,10 @@ void SerialPortBridgeGeneric::sendPacketPrecise()
 
 void SerialPortBridgeGeneric::sendPacket()
 {
-    //[245, d_packet]
+    //[header[0], d_packet]
     m_packetOut.resize(d_size.getValue()+1);
 
-    m_packetOut[0] = (unsigned char)245;
+    m_packetOut[0] = d_header.getValue()[0];
     for (int i=0; i<d_size.getValue(); i++)
         m_packetOut[i+1] = (unsigned char)d_packetOut.getValue()[i];
 
@@ -219,14 +244,14 @@ void SerialPortBridgeGeneric::receivePacket()
 void SerialPortBridgeGeneric::checkData()
 {
     if(!d_size.isSet())
-        msg_warning(this) <<"Size not set.";
+        msg_warning() <<"Size not set.";
 
     if((int)d_packetOut.getValue().size()!=d_size.getValue())
     {
-        msg_warning(this) <<"The user specified a size for sentData, size="<<d_size.getValue()
+        msg_warning() <<"The user specified a size for sentData, size="<<d_size.getValue()
                           <<" but sentData.size="<<d_packetOut.getValue().size()<<"."
                           <<" To remove this warning you can either change the value of 'size' or 'sentData'."
-                          <<" Make sure it corresponds to what the arduino card is expecting.";
+                          <<" Make sure the size and format of the data correspond to what the microcontroller in the robot is expecting.";
         d_size.setValue(d_packetOut.getValue().size());
     }
 }

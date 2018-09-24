@@ -14,7 +14,7 @@ def createScene(rootNode):
         finger.createObject('Mesh', src='@loader', name='container')
         finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showObject='true', showObjectScale='1')
         finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500', drawAsEdges="true")
-        finger.createObject('UniformMass', totalmass='0.0008')
+        finger.createObject('UniformMass', totalMass='0.0008')
         finger.createObject('BoxROI', name='boxROISubTopo', box='-100 22.5 -8 -19 28 8')
         finger.createObject('BoxROI', name='boxROI', box='-10 0 -20 0 30 20', drawBoxes='true')
         finger.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12', angularStiffness='1e12')

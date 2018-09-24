@@ -25,7 +25,7 @@ def createScene(rootNode):
                 bunnyPressure.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
                 
                 bunnyPressure.createObject('MechanicalObject', name='tetras', template='Vec3d')
-                bunnyPressure.createObject('UniformMass', totalmass='0.5')
+                bunnyPressure.createObject('UniformMass', totalMass='0.5')
                 bunnyPressure.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', poissonRatio='0.3',  youngModulus='18000')
 		  
                 bunnyPressure.createObject('BoxROI', name='boxROI', box='-5 -6 -5  5 -4.5 5', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
@@ -70,7 +70,7 @@ def createScene(rootNode):
                 bunnyVolume.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
                 
                 bunnyVolume.createObject('MechanicalObject', name='tetras', template='Vec3d')
-                bunnyVolume.createObject('UniformMass', totalmass='0.5')
+                bunnyVolume.createObject('UniformMass', totalMass='0.5')
                 bunnyVolume.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', poissonRatio='0.3',  youngModulus='18000')
 		  
                 bunnyVolume.createObject('BoxROI', name='boxROI', box='10 -6 -5  20 -4.5 5', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")

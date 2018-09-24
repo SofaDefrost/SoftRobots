@@ -82,7 +82,7 @@ void DataVariationLimiter<DataTypes>::initData()
 {
     //Init data
     if(!d_input.isSet())
-        msg_warning(this) << "Input not set.";
+        msg_warning() << "Input not set.";
     else
     {
         d_inputSize.setValue(d_input.getValue().size());
@@ -152,7 +152,7 @@ void DataVariationLimiter<DataTypes>::onBeginAnimationStep(const double dt)
 
     if(input.size()<d_inputSize.getValue())
     {
-        msg_warning(this) << "Problem with input size. Abort.";
+        msg_warning() << "Problem with input size. Abort.";
         return;
     }
 
@@ -179,7 +179,7 @@ void DataVariationLimiter<DataTypes>::interpolate(const int index)
 
     if(d_inputSize.getValue() != output.size() || d_inputSize.getValue() != m_step.size() || d_inputSize.getValue() != m_isStabilizing.size())
     {
-        dmsg_warning(this) << "Size problem in interpolate(), size="<<d_inputSize.getValue() << ", output.size=" <<output.size() << ", step.size=" <<m_step.size() << ", isStab.size=" <<m_isStabilizing.size() << ". Abort.";
+        dmsg_warning() << "Size problem in interpolate(), size="<<d_inputSize.getValue() << ", output.size=" <<output.size() << ", step.size=" <<m_step.size() << ", isStab.size=" <<m_isStabilizing.size() << ". Abort.";
         return;
     }
 

@@ -4,6 +4,7 @@
         <VisualStyle displayFlags='showCollision showVisualModels showForceFields showInteractionForceFields hideCollisionModels hideBoundingCollisionModels hideWireframe'/>
 
         <RequiredPlugin pluginName='SoftRobots'/>
+        <RequiredPlugin pluginName='SofaSparseSolver'/>
 
         <FreeMotionMasterSolver/>
         <CollisionPipeline verbose='0'/>
@@ -20,7 +21,7 @@
                 <TetrahedronSetTopologyContainer src="@loader"/>
                 <TetrahedronSetGeometryAlgorithms drawTetrahedra="false" template="Vec3d"/>
                 <MechanicalObject name="tetras" template="Vec3d"/>
-                <UniformMass totalmass="0.5"/>
+                <UniformMass totalMass="0.5"/>
                 <TetrahedronFEMForceField youngModulus="18000" poissonRatio='0.3' method='large'/>
 
                 <BoxROI name='ROI1' box='-5 -15 -5  5 -4.5 5' drawBoxes='true'/>                

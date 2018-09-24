@@ -44,8 +44,6 @@ using sofa::helper::WriteAccessor ;
 #include <string>
 using std::string ;
 
-
-
 #include <fstream>
 using std::filebuf ;
 
@@ -64,6 +62,8 @@ namespace component
 
 namespace forcefield
 {
+
+using sofa::core::objectmodel::ComponentState;
 
 template<typename DataTypes>
 PREquivalentStiffnessForceField<DataTypes>::PREquivalentStiffnessForceField()
@@ -87,6 +87,8 @@ PREquivalentStiffnessForceField<DataTypes>::~PREquivalentStiffnessForceField()
 template<typename DataTypes>
 void PREquivalentStiffnessForceField<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid;
+
     Inherit::init();
     const string& filename = d_complianceFile.getValue();
 
@@ -96,10 +98,16 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
     // getting mstate bound to this forcefield
     MechanicalState<DataTypes>* mstate;
     getContext()->get(mstate, BaseContext::Local);
+    if(mstate==nullptr)
+    {
+        msg_error() << "No mechanical state associated with this component. The component is deactivated.";
+        return;
+    }
 
     // Read rest positions
     WriteAccessor<VecCoord> restPosWriter(m_restPos);
     ReadAccessor<DataVecCoord> restPosReader(*mstate->read(core::ConstVecCoordId::restPosition()));
+
     size_t nFrames = restPosReader.size();
     restPosWriter.resize(nFrames);
     m_pos.resize(nFrames);
@@ -119,18 +127,19 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
         std::istream file(&filebuffer);
         for(size_t n = 0 ; n < nFrames - 1 ; ++n) {
             if( ! (file >> m_complianceMat[n]) ) {
-                serr << "Unable to read compliance matrix for frames [" << n << " | " << n + 1 << "]" << sendl;
+                msg_warning() << "Unable to read compliance matrix for frames [" << n << " | " << n + 1 << "]";
 
             } else {
 
                 m_CInv[n].invert(m_complianceMat[n]);
-                cout << "Inverting compliance #" << n << "\n"<<m_CInv<< endl;
             }
         }
         filebuffer.close();
     } else {
-        serr << "Cannot find compliance matrices file : " << filename << sendl;
+        msg_warning() << "Can not find compliance matrices file : " << filename;
     }
+
+    m_componentstate = ComponentState::Invalid;
 }
 
 template<typename DataTypes>
@@ -139,6 +148,9 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         const DataVecCoord& x,
         const DataVecDeriv& v)
 {
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     SOFA_UNUSED(v);
 
     const VecCoord& X = x.getValue();
@@ -229,7 +241,6 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         F1 = q0Current.rotate(F1);
         tau1 = q0Current.rotate(tau1);
 
-        //Vec6 f1(F1, tau1);
 
         // compute transport matrix
         Vec3 p0p1;
@@ -257,7 +268,6 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         F0 = q0Current.rotate(F0);
         tau0 = q0Current.rotate(tau0);
 
-        //Vec6 f0(F0, tau0);
 
         Vec6 f0( F0atX0inWorld.getForce(),  F0atX0inWorld.getTorque());
         Vec6 f1(-F1atX1inWorld.getForce(), -F1atX1inWorld.getTorque());
@@ -273,13 +283,6 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         block =  H * m_CInv[n] * H.transposed();
         m_K[n + start].setsub(0, 0, block);
         m_K[n + start].setsub(6, 6, m_CInv[n]);
-
-
-        Vec12 U_test;
-        for (unsigned int i=0; i<6; i++)
-            U_test[i+6] = Uloc[i];
-
-        Vec12 F_test = m_K[n + start]*U_test;
 
 
         // build rotation matrix 4 3x3 blocks on diagonal
@@ -300,30 +303,20 @@ template<typename DataTypes>
 void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParams* mparams,
                                                            DataVecDeriv&  d_f ,
                                                            const DataVecDeriv&  d_x)
-{
+{    
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     const VecDeriv& dx = d_x.getValue();
     VecDeriv& dfdq = *d_f.beginEdit();
     const size_t nFrames = dx.size();
 
-    VecCoord displaced(dx.size());
-
-    const Real epsilon = 1e-8;
     const Real kFact = mparams->kFactor();
-    const Real coef = d_coeff.getValue();
     const unsigned int& start = d_startIndex.getValue();
 
     for(size_t n = 0 ; n < nFrames - (1 + start) ; ++n) {
         Vec12 dq;
 
-        /* sometimes doesn't work...
-        // convert to Vec6 using getVAll() then grab the pointer
-        Real* dq0 = dx[n + 0 + start].getVAll().ptr();
-        Real* dq1 = dx[n + 1 + start].getVAll().ptr();
-
-        // concatenate the two Vec6
-        std::copy(dq0, dq0 + 6, dq.ptr());
-        std::copy(dq1, dq1 + 6, dq.ptr() + 6);
-        */
         for (unsigned int i=0; i<6; i++)
         {
             dq[i  ] = dx[n + 0 + start][i];
@@ -355,7 +348,10 @@ template<typename DataTypes>
 void PREquivalentStiffnessForceField<DataTypes>::addKToMatrix(BaseMatrix* matrix,
                                                               double kFact,
                                                               unsigned int& offset)
-{
+{    
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
     if( CSRMatB66* csrMat = dynamic_cast<CSRMatB66*>(matrix) ) {
         for(size_t n = 0 ; n < m_K.size() ; ++n) {
             const Mat12x12& K = m_K[n];
@@ -417,7 +413,6 @@ void PREquivalentStiffnessForceField<DataTypes>::computeForce(const VecCoord& po
                                                               const VecCoord& restPos,
                                                               VecDeriv& f)
 {
-
     const size_t nFrames = pos.size();
 
     const Real coef = d_coeff.getValue();

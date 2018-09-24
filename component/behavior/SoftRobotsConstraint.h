@@ -30,6 +30,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_SOFTROBOTSCONSTRAINT_H
 #define SOFA_CORE_BEHAVIOR_SOFTROBOTSCONSTRAINT_H
 
+#include <sofa/core/behavior/MechanicalState.h>
 #include "SoftRobotsBaseConstraint.h"
 
 #include "../initSoftRobots.h"

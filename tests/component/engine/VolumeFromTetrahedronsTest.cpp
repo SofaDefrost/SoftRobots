@@ -59,6 +59,9 @@ using sofa::component::container::MechanicalObject ;
 #include <SoftRobots/component/engine/VolumeFromTetrahedrons.h>
 using sofa::component::engine::VolumeFromTetrahedrons ;
 
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::DataRepository;
+
 
 namespace sofa
 {
@@ -121,6 +124,8 @@ struct VolumeFromTetrahedronsTest : public Sofa_test<typename _DataTypes::Real>,
 
     double volumeComputationTest()
     {
+        DataRepository.addFirstPath(SOFTROBOTS_TEST_DIR);
+
         Simulation* simu;
         setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
 
@@ -131,7 +136,7 @@ struct VolumeFromTetrahedronsTest : public Sofa_test<typename _DataTypes::Real>,
         typename ThisClass::SPtr                          thisobject = New< ThisClass >() ;
 
         node->addObject(mesh) ;
-        mesh->load("mesh/single_tetra.msh");
+        mesh->load("component/engine/mesh/single_tetra.msh");
         node->addObject(mecaobject) ;
         mecaobject->init();
         node->addObject(thisobject) ;

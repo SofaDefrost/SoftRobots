@@ -40,7 +40,7 @@ def createScene(rootNode):
                 tentacle.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
 
                 tentacle.createObject('MechanicalObject', name='tetras', template='Vec3d')
-                tentacle.createObject('UniformMass', totalmass='0.024')
+                tentacle.createObject('UniformMass', totalMass='0.024')
                 tentacle.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='200')
 
                 tentacle.createObject('BoxROI', name='ROI1', box='50 -20 30    75 20 50', drawBoxes='true')
