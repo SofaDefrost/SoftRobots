@@ -61,7 +61,7 @@ class ServoMotor(SofaObject):
         self.node = Node(parent, "ServoMotor")
         self.node.addNewData("angle",
                              "ServoMotor Properties",
-                             "The angular position of the motor (in radians)","d", 0.0)
+                             "The angular position of the motor (in radians)","double", 0.0)
         self.angle=self.node.findData("angle")
 
         self.dofs = self.node.createObject("MechanicalObject", size=1,
@@ -97,7 +97,7 @@ class KinematicMotorController(Sofa.PythonScriptController):
         self.parentframe = parentframe
         self.node = node
         self.target = target
-        self.addNewData("angle", "Properties", "The angular position of the motor (in radians)","d", angleValue)
+        self.addNewData("angle", "Properties", "The angular position of the motor (in radians)","double", angleValue)
 
     def applyAngleToServoWheel(self, angle):
         rigidparent = RigidDof(self.parentframe)
