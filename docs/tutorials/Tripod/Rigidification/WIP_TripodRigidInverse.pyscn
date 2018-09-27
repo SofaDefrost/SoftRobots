@@ -127,7 +127,7 @@ def createScene(rootNode):
 	
 
 	tetras= nodeFEM.createObject('MechanicalObject', name='tetras',  position='@container.position', rest_position='@container.position');
-	mass = nodeFEM.createObject('UniformMass', totalMass='0.1');
+	vertexMass = nodeFEM.createObject('UniformMass', totalMass='0.1');
 	tetraFF= nodeFEM.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='8000');
 # youngModulus changed from 1800 to 8000
 
@@ -175,7 +175,7 @@ def createScene(rootNode):
 	# sphere.createObject("CGLinearSolver")
 	# sphere.createObject("MechanicalObject", position="0. 0. 50.")
 	# sphere.createObject("Sphere", radius="10")
-	# sphere.createObject("UniformMass", mass="0.02")
+	# sphere.createObject("UniformMass", vertexMass="0.02")
 	# sphere.createObject("UncoupledConstraintCorrection")
 
 
@@ -183,7 +183,7 @@ def createScene(rootNode):
 	## RIGID PART
 	###############################
 	controllerNode = robot.createChild('controllerNode')
-	myController = rigidControl(controllerNode, "superCaMarche", [branch0, branch1, branch2, centerList],[tetraFF, mass], tetras, nodeFEM, transform, 1)
+	myController = rigidControl(controllerNode, "superCaMarche", [branch0, branch1, branch2, centerList],[tetraFF, vertexMass], tetras, nodeFEM, transform, 1)
 
 	visuServo = rootNode.createChild('VisuServo')
 	visuServo.createObject('MeshSTLLoader', name='loader', filename=path3D+'SG90_servomotor.stl', rotation="0 0 0")

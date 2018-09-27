@@ -29,7 +29,7 @@ Next, we need to define what kind of material we are going to simulate, and this
 ```python
 finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
 ```
-The mass of the material can be defined with the UniformMass component, which assumes a uniform distribution of the mass inside the body:
+The vertexMass of the material can be defined with the UniformMass component, which assumes a uniform distribution of the vertexMass inside the body:
 ```python
 finger.createObject('UniformMass', totalMass='0.0008')
 ```
@@ -123,14 +123,14 @@ Now, to create an actual gripper, we just need to create two more fingers and de
 
 ### Add an object to grab and a plane to put it on
 
-In this scene, we create the object to grab and define it as rigid. This implies creating a new node, adding a time integration and a solver component, defining a mass, and defining constraint corrections that will be used later for collisons. 
+In this scene, we create the object to grab and define it as rigid. This implies creating a new node, adding a time integration and a solver component, defining a vertexMass, and defining constraint corrections that will be used later for collisons. 
 
 ```python
 cube = rootNode.createChild('cube')
 cube.createObject('EulerImplicit', name='odesolver')
 cube.createObject('SparseLDLSolver', name='linearSolver')
 cube.createObject('MechanicalObject', template="Rigid", scale="4", position='-23 16 0 0 0 0 1')
-cube.createObject('UniformMass', mass='0.0008  74088  0.2352 0 0  0 0.2352 0  0 0 0.2352')                cube.createObject('UncoupledConstraintCorrection')
+cube.createObject('UniformMass', vertexMass='0.0008  74088  0.2352 0 0  0 0.2352 0  0 0 0.2352')                cube.createObject('UncoupledConstraintCorrection')
 ```
 
 We also need to define a plane, using the predefined meshes of SOFA:
@@ -244,8 +244,8 @@ def createScene(rootNode):
                 cube.createObject('EulerImplicit', name='odesolver')
                 cube.createObject('SparseLDLSolver', name='linearSolver')
                 cube.createObject('MechanicalObject', template="Rigid", scale="4", position='-23 16 0 0 0 0 1')#, dx="47.0", dy="10", dz="8", rx="10" ,ry="10")
-                #cube.createObject('UniformMass', mass='0.0008  74088  0.2352 0 0  0 0.2352 0  0 0 0.2352')
-                cube.createObject('UniformMass', mass='0.0008')
+                #cube.createObject('UniformMass', vertexMass='0.0008  74088  0.2352 0 0  0 0.2352 0  0 0 0.2352')
+                cube.createObject('UniformMass', vertexMass='0.0008')
                 cube.createObject('UncoupledConstraintCorrection')
                 
                 #collision

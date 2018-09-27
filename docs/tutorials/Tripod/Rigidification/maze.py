@@ -27,7 +27,7 @@ class Maze(SofaObject):
         volume = 1.0
         inertiaMatrix = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
 
-        #self.mass = self.node.createObject('UniformMass', name="mass", mass=[totalMass, volume, inertiaMatrix[:]])
+        #self.vertexMass = self.node.createObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
 
 
         if doAddVisualModel:

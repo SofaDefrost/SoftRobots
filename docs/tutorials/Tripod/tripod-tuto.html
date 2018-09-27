@@ -99,7 +99,7 @@ Figure 1: Photo of the Tipod robot.
 <li>By right-clicking in the <em>Graph</em> panel, the code file can be opened (<em>Open file in editor</em> in the dropdown menu)</li>
 </ul>
 <p>The first two steps aim at modelling the deformable silicone piece of the robot. The objects composing it are added one by one with the function <code>node.createObject()</code>. Just like in the First Steps tutorial, a mechanical model of the piece is first created, called <em>ElasticBody</em>. As the silicone piece is soft and can be deformed through constraints, it is necessary to describe its entire volume (and not only its center of gravity as it is usually done for rigid objects). Based on its shape, it is discretized: here it is decomposed into tetrahedral elements, linking all the points - or nodes - of the volume. This discretization produces the following types of elements: tetrahedrons, triangles, lines, and points. These elements are listed into a <em>MechanicalObject</em> named &quot;dofs&quot;. The mesh file describing the discretization into tetrahedral elements is &quot;tripod_mid.stl&quot;. The data provided by the meshes must be organized and stored into different data fields (one for the positions of the nodes, one for the triangular elements, ...) before Sofa uses them for computation. This formatting is done by means of code blocks called <em>loaders</em>. The loader used here, <code>MeshSTLLoader</code> is designed for <code>STL</code> files.<br />
-The mass distribution of the piece is implemented, as well as a time integration scheme (implicit Euler method) and a solver (here the quick resolution method using the LDL matrix decomposition).<br />
+The vertexMass distribution of the piece is implemented, as well as a time integration scheme (implicit Euler method) and a solver (here the quick resolution method using the LDL matrix decomposition).<br />
 Then, a Visual model of the piece is built, using the same mesh file as for the mechanical model. Because it was decided (for the sake of simplicity) to use the same meshing for both models, the loader is introduced in the rootNode.<br />
 Finally, the two representations are linked together by a mapping, which allows to adapt the visual model to the deformations of the mechanical model of the soft piece. As the same mesh is used for both the mechanical and the visual model, the mapping is simply mirroring the mechanical model to adapt the visual one. This is why we use an <em>IdentityMapping</em> here.</p>
 The resulting simulation looks like this: <!-- arranger la simu pour que ça tombe vers le bas ! -->
@@ -281,7 +281,7 @@ In order to implement the deformation behaviour, the MechanicalObject must be co
 </ul>
 <p>In this step, the prefab <em>FixingBox</em> is described, that allows to fix the position of some areas of a physical object in space. (ROI stands for Region Of Interest.) It will be used in this step to prevent the falling of the silicone piece under gravity, by constraining the position of its central part. The prefab object is called via the following function:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">FixingBox(ParentNode, ApplyTo, translation, scale)</code></pre></div>
-<p>In parallel, in order to lighten the code and ease the reading, the introduction of a function <code class="sourceCode python">ElasticBody(parent)</code> is proposed in this step, bringing together all the components of the silicone piece model. This function also uses the prefab <code>ElasticMaterialObject</code>, that implements the mechanical model of an elastic material (including a mesh loader, mass definition, time integration and solver tools, and the description of the Force Fields).<br />
+<p>In parallel, in order to lighten the code and ease the reading, the introduction of a function <code class="sourceCode python">ElasticBody(parent)</code> is proposed in this step, bringing together all the components of the silicone piece model. This function also uses the prefab <code>ElasticMaterialObject</code>, that implements the mechanical model of an elastic material (including a mesh loader, vertexMass definition, time integration and solver tools, and the description of the Force Fields).<br />
 Such a function is defined at the beginning of the scene, and can be called as often as wished in the description of the scene (i.e. in the function <code class="sourceCode python">createScene(rootNode)</code>).</p>
 <pre>
 <a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
@@ -1051,7 +1051,7 @@ path3D <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va
     
 
     tetras<span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;tetras&#39;</span>,  position<span class="op">=</span><span class="st">&#39;@container.position&#39;</span>, rest_position<span class="op">=</span><span class="st">&#39;@container.position&#39;</span>)<span class="op">;</span>
-    mass <span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;UniformMass&#39;</span>, totalMass<span class="op">=</span><span class="st">&#39;0.1&#39;</span>)<span class="op">;</span>
+    vertexMass <span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;UniformMass&#39;</span>, totalMass<span class="op">=</span><span class="st">&#39;0.1&#39;</span>)<span class="op">;</span>
     tetraFF<span class="op">=</span> nodeFEM.createObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, poissonRatio<span class="op">=</span><span class="st">&#39;0.45&#39;</span>,  youngModulus<span class="op">=</span><span class="st">&#39;8000&#39;</span>)<span class="op">;</span>
 <span class="co"># youngModulus changed from 1800 to 8000</span>
 
@@ -1099,7 +1099,7 @@ path3D <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va
     <span class="co"># sphere.createObject(&quot;CGLinearSolver&quot;)</span>
     <span class="co"># sphere.createObject(&quot;MechanicalObject&quot;, position=&quot;0. 0. 50.&quot;)</span>
     <span class="co"># sphere.createObject(&quot;Sphere&quot;, radius=&quot;10&quot;)</span>
-    <span class="co"># sphere.createObject(&quot;UniformMass&quot;, mass=&quot;0.02&quot;)</span>
+    <span class="co"># sphere.createObject(&quot;UniformMass&quot;, vertexMass=&quot;0.02&quot;)</span>
     <span class="co"># sphere.createObject(&quot;UncoupledConstraintCorrection&quot;)</span>
 
 
@@ -1107,7 +1107,7 @@ path3D <span class="op">=</span> os.path.dirname(os.path.abspath(<span class="va
     <span class="co">## RIGID PART</span>
     <span class="co">###############################</span>
     controllerNode <span class="op">=</span> robot.createChild(<span class="st">&#39;controllerNode&#39;</span>)
-    myController <span class="op">=</span> rigidControl(controllerNode, <span class="st">&quot;superCaMarche&quot;</span>, [branch0, branch1, branch2, centerList],[tetraFF, mass], tetras, nodeFEM, transform, <span class="dv">1</span>)
+    myController <span class="op">=</span> rigidControl(controllerNode, <span class="st">&quot;superCaMarche&quot;</span>, [branch0, branch1, branch2, centerList],[tetraFF, vertexMass], tetras, nodeFEM, transform, <span class="dv">1</span>)
 
     visuServo <span class="op">=</span> rootNode.createChild(<span class="st">&#39;VisuServo&#39;</span>)
     visuServo.createObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span>path3D<span class="op">+</span><span class="st">&#39;SG90_servomotor.stl&#39;</span>, rotation<span class="op">=</span><span class="st">&quot;0 0 0&quot;</span>)

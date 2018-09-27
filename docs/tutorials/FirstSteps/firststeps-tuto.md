@@ -48,7 +48,7 @@ sudo PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.pyscn
 - Conveniently reload the scene after each modification
 
 The content of the `pyscn` simulation files is in fact standard python code with at least one function named `createScene` taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description.  
-A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode". Additional components can be added to the scene, that aren't nodes (they cannot have children), related to the behaviour of the object (examples: *UniformMass* for mass parameters definition, and *OGLModel* for the settings of the graphic display). 
+A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode". Additional components can be added to the scene, that aren't nodes (they cannot have children), related to the behaviour of the object (examples: *UniformMass* for vertexMass parameters definition, and *OGLModel* for the settings of the graphic display). 
 
 Making a very simple scene:
 <div>
@@ -146,10 +146,10 @@ In the particular case where the simulated object is rigid, like here, all of it
 cube.createObject('MechanicalObject', name, template, translation, rotation)
 ```  
 
-The physical properties of the object material, like its mass distribution, are also implemented. 
+The physical properties of the object material, like its vertexMass distribution, are also implemented. 
 
 ```python
-cube.createObject('UniformMass', name, mass=[totalMass, volume, inertiaMatrix[:]])
+cube.createObject('UniformMass', name, vertexMass=[totalMass, volume, inertiaMatrix[:]])
 ```
 
 A time integration scheme is then added and defines the system to be solved at each time step of the simulation (here the implicit Euler Method). A solving method is in turn added (here the Conjugate Gradient method), that solves the equations governing the model at each time step, and updates the *MechanicalObject*.  
@@ -191,7 +191,7 @@ def createScene(rootNode):
 
 
   cube.createObject('MechanicalObject', name="DOF", template="Rigid", translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
-  cube.createObject('UniformMass', name="mass", mass=[totalMass, volume, inertiaMatrix[:]])
+  cube.createObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
 
   # The following line defines the material behaviour when submitted to constraints; it is not necessary in this step, as no interaction between objects has been defined
   #cube.createObject('UncoupledConstraintCorrection')
@@ -279,7 +279,7 @@ def createScene(rootNode):
 
 
   cube.createObject('MechanicalObject', name="DOF", template="Rigid", translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
-  cube.createObject('UniformMass', name="mass", mass=[totalMass, volume, inertiaMatrix[:]])
+  cube.createObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
 
   # Material behaviour when submitted to constraints
   cube.createObject('UncoupledConstraintCorrection')
