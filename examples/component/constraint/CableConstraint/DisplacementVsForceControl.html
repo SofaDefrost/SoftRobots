@@ -1,23 +1,21 @@
-<html>
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<link href="../../../../../examples/Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="../../../../docs/style.css" type="text/css" />
 </head>
-
-<body bgcolor="#F0F8FF">
-
-	<div id="contenu">
-
-		<h1>Cable constraint</h1>
-		
-		<p>In this scene we demonstrate how to use the <FONT COLOR="#0B2161">CableConstraint</FONT> component to model an inelastic 
-		   1d cable. This cable is then connected to a mechanical object made of an elastic material. You can either control the force (left) applyed by the cable
-		   or its displacement (right).
-		<br>
-		<center><img src="images/DisplacementVsForceControl.png" /></center>
-               
-	</div>
-
+<body>
+<h1 id="displacement-vs.-force-control-for-cables">Displacement vs. Force Control for Cables</h1>
+<p>In this scene we demonstrate how to use the <em>CableConstraint</em> component to model an inelastic 1d cable. This cable is embedded in an elastic finger. The cable is free to slide through the material. You can either control the force applied by the cable or its displacement. If the force is controlled (for example, with a DC motor), the simulation will solve for the displacement that satisfies that force condition. If the displacement is controlled (for example, with a servo motor), the simulation will solve for the force that is required to obtain that displacement. The cable can only apply force in tension. By applying the same force or position command to fingers of different stiffness, we can see the difference in the behavior of the two types of commands. The stiffer finger moves less given the same force command than the softer finger, but for the displacement command, both actuators move the same amount.</p>
+<p>To see the constraints move the finger, click animate, click in the visual display field, and press ctrl+ and ctrl-. This example uses a PythonScriptController.</p>
+<div>
+<pre>
+<img src="images/DisplacementVsForceControl.png" />
+</pre>
+</div>
 </body>
-
 </html>

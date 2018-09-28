@@ -1,0 +1,69 @@
+from stlib.scene import MainHeader, ContactHeader
+from stlib.visuals import ShowGrid
+from stlib.solver import DefaultSolver
+from stlib.physics.rigid import Floor
+
+def createScene(rootNode):
+	ShowGrid(rootNode)
+
+	# A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
+	MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+
+    #Collision built-in function (already used in Step 1)
+	ContactHeader(rootNode, alarmDistance=10, contactDistance=5)
+
+	cube = rootNode.createChild("Cube")
+
+	### Mechanical model
+
+	totalMass = 1.0
+	volume = 1.0
+	inertiaMatrix = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+
+
+	cube.createObject('MechanicalObject', name="DOF", template="Rigid", translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
+	cube.createObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+
+	# Material behaviour when submitted to constraints
+	cube.createObject('UncoupledConstraintCorrection')
+
+	### Time integration and solver
+
+	cube.createObject('EulerImplicit', name='odesolver')
+	cube.createObject('CGLinearSolver', name='Solver')
+
+
+	### Visual Object of the Cube
+
+	visual = cube.createChild("CubeVisual")
+	# Graphic model based on a mesh
+	visual.createObject('OglModel', name="Visual", fileMesh="mesh/smCube27.obj", color=[0.1,0.0,1.0], scale=20.0)
+	# Building a correspondance between the mechanical and the graphical representation
+	visual.createObject('RigidMapping')
+
+	### Collision Object for the Cube
+
+	collision = cube.createChild("CubeCollisionModel")
+	collision.createObject('MeshObjLoader', name="loader", filename="mesh/smCube27.obj", triangulate="true", scale=20.0)
+
+	collision.createObject('Mesh', src="@loader")
+	collision.createObject('MechanicalObject')
+
+	collision.createObject('Triangle')
+	collision.createObject('Line')
+	collision.createObject('Point')
+
+	collision.createObject('RigidMapping')
+
+
+	########################################
+	### Adding the Floor for more fun ;) ###
+	floor = Floor(rootNode,
+		  name="Floor",
+          translation=[0.0,-300.0,0.0],
+          uniformScale=5.0,
+          isAStaticObject=True)
+
+	
+
+	return rootNode

@@ -32,10 +32,12 @@
 
 #include <sofa/config/build_option_opengl.h>
 
+
 #ifdef SOFA_WITH_OPENGL
 #include <sofa/helper/gl/template.h>
 using sofa::helper::gl::glVertexT;
 #endif
+
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

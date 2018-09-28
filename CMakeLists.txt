@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.0)
 
 # Force cmake to use the NEW policy regaringthe "VERSION" management.
 cmake_policy(SET CMP0048 NEW)
@@ -37,6 +37,13 @@ endif()
 
 
 
+find_package(STLIB QUIET)
+if(STLIB_FOUND)
+    message("-- Found dependency : 'STLIB' plugin .")
+else()
+    message("-- The higly recommanded 'STLIB' plugin is missing. You can compile SoftRobots but most of the provided examples will not work. ")
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 
@@ -48,7 +55,7 @@ set(SOURCE_FILES
     component/initSoftRobots.cpp
         )
 
-file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn")
+file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
 include(cmake/environment.cmake)
 include(cmake/utils.cmake)
