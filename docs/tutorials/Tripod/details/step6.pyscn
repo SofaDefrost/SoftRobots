@@ -66,7 +66,7 @@ class SerialPortController(Sofa.PythonScriptController):
 
         if self.state == "no-comm":
             return
-        
+
         # vector storing the simulated servomotors' angular position
         angles = []
 
@@ -90,7 +90,8 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-981.0,0.0], plugins=["SoftRobots"])
     scene.VisualStyle.displayFlags="showBehavior"
 
-    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
 
     model = scene.createChild("Model")
     tripod = Tripod(model)
@@ -109,4 +110,3 @@ def createScene(rootNode):
     Interaction(rootNode, [tripod.ActuatedArm0,
                            tripod.ActuatedArm1,
                            tripod.ActuatedArm2])
-

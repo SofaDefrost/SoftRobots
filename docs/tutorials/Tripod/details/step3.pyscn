@@ -15,21 +15,21 @@ def ElasticBody(parent):
     body = parent.createChild("ElasticBody")
 
     # prefab ElasticMaterialObject implementing the whole mechanical and visual model of the silicone piece
-    e = ElasticMaterialObject(body, 
+    e = ElasticMaterialObject(body,
                                 volumeMeshFileName="data/mesh2/tripod_mid.gidmsh",
-                                poissonRatio=0.45, 
-                                youngModulus=800, 
+                                poissonRatio=0.45,
+                                youngModulus=800,
                                 totalMass=0.032,
                                 rotation=[90,0,0])
 
     visual = e.createChild("Visual")
-    visual.createObject("MeshSTLLoader", 
-                         name="loader", 
-                         filename="data/mesh2/tripod_mid.stl", 
+    visual.createObject("MeshSTLLoader",
+                         name="loader",
+                         filename="data/mesh2/tripod_mid.stl",
                          rotation=[90,0,0])
-    visual.createObject("OglModel", 
-                         name="renderer", 
-                         src="@loader", 
+    visual.createObject("OglModel",
+                         name="renderer",
+                         src="@loader",
                          color=[1.0,1.0,1.0,0.5])
     visual.createObject("BarycentricMapping",
                              input=e.dofs.getLinkPath(),
@@ -41,15 +41,16 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-981.0,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
-    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
 
     ## Instanciating the prefab into the graph
     body = ElasticBody(rootNode)
 
     ## Instanciating the FixingBox prefab into the graph, constraining the mechanical object of the ElasticBody.
-    fix = FixingBox(rootNode, 
-                    body.ElasticMaterialObject, 
-                    translation=[0.0,0.0,0.0],  
+    fix = FixingBox(rootNode,
+                    body.ElasticMaterialObject,
+                    translation=[0.0,0.0,0.0],
                     scale=[30,30,30])
 
     # Changing the property of the Box ROI so that the constraint area appears on screen.

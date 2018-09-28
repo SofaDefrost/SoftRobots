@@ -37,7 +37,8 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0,-9810,0])
     scene.VisualStyle.displayFlags="showBehavior"
 
-    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
 
     # Adding contact handling
     scene.addContact(alarmDistance=5,
@@ -67,4 +68,3 @@ def createScene(rootNode):
     Interaction(rootNode, [MyTripod.ActuatedArm0,
                            MyTripod.ActuatedArm1,
                            MyTripod.ActuatedArm2])
-

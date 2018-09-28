@@ -38,7 +38,8 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-981.0,0.0])
     scene.VisualStyle.displayFlags="showBehavior"
 
-    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
 
     tripod = Tripod(rootNode)
 

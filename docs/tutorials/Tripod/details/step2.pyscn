@@ -11,7 +11,8 @@ def createScene(rootNode):
     scene.dt = 0.001
 
     ## Graphic modelling of the legends associated to the servomotors
-    scene.createObject("OglModel", fileMesh="data/mesh2/blueprint.stl")
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
 
 
     ## To simulate an elastic object, we need:
@@ -21,17 +22,17 @@ def createScene(rootNode):
     elasticbody = rootNode.createChild("ElasticBody")
 
     # Specific loader for the mechanical model
-    elasticbody.createObject('GIDMeshLoader', 
-                              name='loader', 
+    elasticbody.createObject('GIDMeshLoader',
+                              name='loader',
                               filename="data/mesh2/tripod_high.gidmsh")
-    elasticbody.createObject('TetrahedronSetTopologyContainer', 
-                              src='@loader', 
+    elasticbody.createObject('TetrahedronSetTopologyContainer',
+                              src='@loader',
                               name='container')
-    elasticbody.createObject("MechanicalObject", 
-                              name="dofs", 
-                              position=elasticbody.loader.position, 
+    elasticbody.createObject("MechanicalObject",
+                              name="dofs",
+                              position=elasticbody.loader.position,
                               rotation=[90.0,0.0,0.0],
-                              showObject=True, 
+                              showObject=True,
                               showObjectScale=5.0)
     elasticbody.createObject("UniformMass", totalMass=0.032)
 
@@ -39,27 +40,25 @@ def createScene(rootNode):
     elasticbody.createObject("SparseLDLSolver")
 
     # ForceField components
-    elasticbody.createObject("TetrahedronFEMForceField", 
-                              youngModulus=900, 
+    elasticbody.createObject("TetrahedronFEMForceField",
+                              youngModulus=900,
                               poissonRatio=0.45)
     # It is possible to visualize the "forcefields" by doing
     scene.VisualStyle.displayFlags="showForceFields"
 
     ## Visual model
     visual = elasticbody.createChild("Visual")
-    
+
     # Specific loader for the visual model
-    visual.createObject("MeshSTLLoader", 
-                         name="loader", 
-                         filename="data/mesh2/tripod_mid.stl", 
+    visual.createObject("MeshSTLLoader",
+                         name="loader",
+                         filename="data/mesh2/tripod_mid.stl",
                          rotation=[90,0,0])
-    visual.createObject("OglModel", 
-                         src="@loader", 
-                         name="renderer", 
+    visual.createObject("OglModel",
+                         src="@loader",
+                         name="renderer",
                          color=[1.0,1.0,1.0,0.5])
 
     visual.createObject("BarycentricMapping",
                         input=elasticbody.dofs.getLinkPath(),
                         output=visual.renderer.getLinkPath())
-
-
