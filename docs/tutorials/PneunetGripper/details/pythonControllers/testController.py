@@ -23,7 +23,7 @@ def rotateRestPos(rest_pos,rx,centerPosY,centerPosZ):
     return str_out
 
 class GripperController(Sofa.PythonScriptController):
-    
+
     def __init__(self, node):
 
             self.listening = True
@@ -34,20 +34,19 @@ class GripperController(Sofa.PythonScriptController):
 
             self.finger1Node=self.node.getChild('finger1')
             self.finger2Node=self.node.getChild('finger2')
-            self.finger3Node=self.node.getChild('finger3')    
+            self.finger3Node=self.node.getChild('finger3')
             self.pressureConstraint1Node = self.finger1Node.getChild('cavity')
             self.pressureConstraint2Node = self.finger2Node.getChild('cavity')
             self.pressureConstraint3Node = self.finger3Node.getChild('cavity')
-            
+
             self.centerPosY = 70
             self.centerPosZ = 0
             self.rotAngle = 0
-            
+
     def onKeyPressed(self,c):
-            print ord(c)
             self.dt = self.node.findData('dt').value
             incr = self.dt*1000.0;
-            
+
             self.MecaObject1=self.finger1Node.getObject('MechanicalObject');
             self.MecaObject2=self.finger2Node.getObject('MechanicalObject');
             self.MecaObject3=self.finger3Node.getObject('MechanicalObject');
@@ -88,8 +87,8 @@ class GripperController(Sofa.PythonScriptController):
                 self.MecaObject2.findData('rest_position').value = test2
                 test3 = moveRestPos(self.MecaObject3.rest_position, 3.0, 0.0, 0.0)
                 self.MecaObject3.findData('rest_position').value = test3
-                
-            
+
+
 
             # DOWN key : rear
             if ord(c)==18:
@@ -111,9 +110,9 @@ class GripperController(Sofa.PythonScriptController):
                 self.MecaObject2.findData('rest_position').value = test
                 test = moveRestPos(self.MecaObject3.rest_position, 0.0, dy, dz)
                 self.MecaObject3.findData('rest_position').value = test
-                self.centerPosY = self.centerPosY + dy        
+                self.centerPosY = self.centerPosY + dy
                 self.centerPosZ = self.centerPosZ + dz
-                
+
             # RIGHT key : right
             if ord(c)==21:
                 dy = -3.0*math.cos(self.rotAngle)
@@ -124,7 +123,7 @@ class GripperController(Sofa.PythonScriptController):
                 self.MecaObject2.findData('rest_position').value = test
                 test = moveRestPos(self.MecaObject3.rest_position, 0.0, dy, dz)
                 self.MecaObject3.findData('rest_position').value = test
-                self.centerPosY = self.centerPosY + dy        
+                self.centerPosY = self.centerPosY + dy
                 self.centerPosZ = self.centerPosZ + dz
 
             # a key : direct rotation
@@ -136,7 +135,7 @@ class GripperController(Sofa.PythonScriptController):
                 test = rotateRestPos(self.MecaObject3.rest_position, math.pi/16,self.centerPosY,self.centerPosZ)
                 self.MecaObject3.findData('rest_position').value = test
                 self.rotAngle = self.rotAngle + math.pi/16
-            
+
             # q key : indirect rotation
             if (ord(c) == 81):
                 test = rotateRestPos(self.MecaObject1.rest_position, -math.pi/16, self.centerPosY,self.centerPosZ)
