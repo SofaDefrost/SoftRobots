@@ -22,4 +22,4 @@ class interface(Sofa.PythonScriptController):
 
 
         self.node.getObject('serial').findData('sentData').value = outputVector
-        print outputVector
+        #print(outputVector)

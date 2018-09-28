@@ -16,23 +16,23 @@
 def fillIndexPairs(numNodes, freeNodes, rigidBlocks):
     numRigidBlocks = len(rigidBlocks)
 
-    
-    
+
+
     # TODO verify that the lists of freeNodes and rigidBlocks are provided in ascending order !
     iteratorFreeNodes=0;
     iteratorRigidBlocks=[0]*numRigidBlocks
-    
+
     #  iterators limits
     numFreeNodes = len(freeNodes);
     numRigidNodesOnBlock = [0]*numRigidBlocks
 
-    
+
     for j in range (numRigidBlocks):
         numRigidNodesOnBlock[j] =  len(rigidBlocks[j])
-    
+
     # test num Nodes:
     numNodes2 = numFreeNodes+sum(numRigidNodesOnBlock)
-    print 'numNodes2 :' +str(numNodes2)
+    #print 'numNodes2 :' +str(numNodes2)
 
     if numNodes != numNodes2:
         print '+++++++++++++++++++++++++++++++++++++++++++++'
@@ -43,23 +43,23 @@ def fillIndexPairs(numNodes, freeNodes, rigidBlocks):
         print 'rigidBlocks: size = '+ str(sum(numRigidNodesOnBlock))
         print '+++++++++++++++++++++++++++++++++++++++++++++'
         return [ ]
-    
-    
+
+
     #result:
     indexPairs=[1,1]*(numNodes)
-    
+
     for i in range(numNodes):
-    
+
         if i==freeNodes[iteratorFreeNodes]:
             # node i belongs to free Nodes
             indexPairs[2*i  ]=0;
             indexPairs[2*i+1]=iteratorFreeNodes;
             iteratorFreeNodes=iteratorFreeNodes+1;
-            
+
             if (iteratorFreeNodes>=numFreeNodes): # we are at the limit
                 iteratorFreeNodes = iteratorFreeNodes-1;
-        
-                
+
+
         else:
             for j in range (numRigidBlocks):
                 if i==rigidBlocks[j][iteratorRigidBlocks[j]]:
@@ -69,7 +69,7 @@ def fillIndexPairs(numNodes, freeNodes, rigidBlocks):
 
                     if (iteratorRigidBlocks[j]>=numRigidNodesOnBlock[j]): # we are at the limit of the node list
                         iteratorRigidBlocks[j] = iteratorRigidBlocks[j]-1;
-                            
+
 
     return indexPairs
 
@@ -85,20 +85,20 @@ def fillIndexPairs2(numNodes, rigidBlocks):
     iteratorRigidBlocks=[0]*numRigidBlocks
     numRigidNodesOnBlock = [0]*numRigidBlocks
 
-    
+
     for j in range (numRigidBlocks):
         numRigidNodesOnBlock[j] =  len(rigidBlocks[j])
-        print 'numRigidNodesOnBlock['+str(j)+'] = ' + str(numRigidNodesOnBlock[j])
-        print rigidBlocks[j]
-    
-    
-    
-    
+        #print 'numRigidNodesOnBlock['+str(j)+'] = ' + str(numRigidNodesOnBlock[j])
+        #print rigidBlocks[j]
+
+
+
+
     #result:
     indexPairs=[1,1]*(numNodes)
-    
+
     for i in range(numNodes):
-        
+
         freeNodeTest=1;
         for j in range (numRigidBlocks):
             if i==rigidBlocks[j][iteratorRigidBlocks[j]]:
@@ -106,16 +106,16 @@ def fillIndexPairs2(numNodes, rigidBlocks):
                 indexPairs[2*i  ]=j+1;
                 indexPairs[2*i+1]=iteratorRigidBlocks[j];
                 iteratorRigidBlocks[j] = iteratorRigidBlocks[j]+1;
-                
+
                 if (iteratorRigidBlocks[j]>=numRigidNodesOnBlock[j]): # we are at the limit of the node list
                     iteratorRigidBlocks[j] = iteratorRigidBlocks[j]-1;
-    
+
         if freeNodeTest:
             # node i belongs to free Nodes
             indexPairs[2*i  ]=0;
             indexPairs[2*i+1]=iteratorFreeNodes;
             iteratorFreeNodes=iteratorFreeNodes+1;
-                
+
 
     return indexPairs
 
@@ -124,25 +124,25 @@ def fillIndexPairs2(numNodes, rigidBlocks):
 def fillIndexPairs_oneRigid(numNodes, rigidBlocks):
     numRigidBlocks = len(rigidBlocks)
     indexPairs=[1,1]*(numNodes)
-    
+
     iteratorFreeNodes=0;
     iteratorRigidNodes=0;
-    
+
     for i in range(numNodes):
         freeNodeTest=1;
         iteratorRigidNodes = 0;
-        
+
         it=0;
-    
+
         for j in range (numRigidBlocks):
-            
+
             for k in rigidBlocks[j]:
                 if i==k:
                     freeNodeTest=0;
                     iteratorRigidNodes=it
                 it=it+1
 
-                
+
         if freeNodeTest:
             # node i belongs to free Nodes
             indexPairs[2*i  ]=0;
@@ -151,22 +151,21 @@ def fillIndexPairs_oneRigid(numNodes, rigidBlocks):
         else:
             indexPairs[2*i  ]=1;
             indexPairs[2*i+1]=iteratorRigidNodes;
-            
-            
+
+
     return indexPairs
-    
+
 
 # compute the gravity center of a set of point (list of position)
 
 def gravityCenter(listPos):
     numP = len(listPos)
-    print numP
     posG=[0,0,0]
     for p in range(numP):
         posG = [ posG[0]+ listPos[p][0],  posG[1]+ listPos[p][1],  posG[2]+ listPos[p][2] ]  ;
-    
+
     posG = [posG[0]/numP, posG[1]/numP, posG[2]/numP ];
-    
+
     return posG
 
 
@@ -195,17 +194,17 @@ def doTest():
     freeNodes=[0, 2, 3, 4, 6];
     rigidBlocks=[[1,7,9], [5,8]];
     numNodes=10;
-    
-    
+
+
     index_result = fillIndexPairs(numNodes, freeNodes, rigidBlocks);
     print 'result='
     print index_result
-    
+
     index_result = fillIndexPairs2(numNodes, rigidBlocks);
     print 'result='
     print index_result
-    
-    
+
+
     if [0,0,1,0,0,1,0,2,0,3,2,0,0,4,1,1,2,1,1,2] == index_result:
         print ('result ok')
     else:
@@ -217,17 +216,3 @@ def doTest():
 
 if __name__ == '__main__':
     doTest()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
