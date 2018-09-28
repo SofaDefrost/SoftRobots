@@ -69,8 +69,9 @@ def TripodCollision(parent, name="Tripod+Collision", radius=55, numMotors=3, ang
                                        translation=translation, eulerRotation=eulerRotation,
                                        attachingTo=body.ElasticMaterialObject)
         translationServoTops=[dist*sin(to_radians(angle2)), -0.0, dist*cos(to_radians(angle2))+55.0]
+
         CollisionMesh(c.ServoMotor,
                  surfaceMeshFileName="data/mesh2/servo_collision.stl",
-                 name="TopServo"+str(i), rotation=eulerRotation, translation=translationServoTops, collisionGroup=1, mappingType='RigidMapping')
+                 name="TopServo"+str(i), collisionGroup=1, mappingType='RigidMapping')
 
     return tripod
