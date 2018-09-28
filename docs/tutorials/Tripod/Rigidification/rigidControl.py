@@ -162,7 +162,7 @@ class rigidControl(Sofa.PythonScriptController):
         ###########
         # ---- creation of the mappedMatrixForcefield
         ###########
-        test = self.node.createObject('MappedMatrixForceFieldAndMass', template='Vec3d,Rigid', object1='@./FreeNodes/FreeNodes', object2='@./Rigid/RigidFrames', mappedForceField='@'+self.forceFields[0].getPathName(), mappedMass='@'+self.forceFields[1].getPathName())
+        test = self.node.createObject('MechanicalMatrixMapper', template='Vec3d,Rigid', object1='@./FreeNodes/FreeNodes', object2='@./Rigid/RigidFrames', nodeToParse = '@'+ self.nodeFEM.getPathName())
         test.init();
 
 
