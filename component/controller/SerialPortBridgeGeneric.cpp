@@ -69,7 +69,7 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
                            "enabling to implement a header research in the 'receiving' code, for synchronization purposes.\n"
                            ))
     , d_packetIn(initData(&d_packetIn, "receivedData", "Data received: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255."))
-    , d_header(initData(&d_header, helper::vector<unsigned char>(255,254), "header", "Vector of unsigned char. Only one value is espected, two values if splitPacket = 1."))
+    , d_header(initData(&d_header, helper::vector<unsigned char>{255,254}, "header", "Vector of unsigned char. Only one value is espected, two values if splitPacket = 1."))
     , d_size(initData(&d_size,(int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
                                             "Will return a warning if sentData size does not match this value."))
     , d_precise(initData(&d_precise,false,"precise","If true, will send the data in the format [header[0],[MSB,LSB]*2*size]"))
@@ -97,31 +97,47 @@ void SerialPortBridgeGeneric::init()
         msg_warning() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
     // /////////////////////////////////////
 
+    if(d_splitPacket.getValue() && !d_precise.getValue())
+    {
+        msg_warning() << "Option splitPacket should only be used in precise mode. Set default value, false.";
+        d_splitPacket.setValue(false);
+    }
+
 
     if(d_splitPacket.getValue())
     {
         if(d_header.getValue().size()<2)
         {
             msg_warning() << "Problem with header size. Set default [255,254].";
-            d_header.setValue(helper::vector<unsigned char>(255,254));
+            d_header.setValue(helper::vector<unsigned char>{255,254});
         }
 
     }
     else if(d_header.getValue().size()==0)
     {
         msg_warning() << "Problem with header size. Set default 255.";
-        d_header.setValue(helper::vector<unsigned char>(255,254));
+        d_header.setValue(helper::vector<unsigned char>{255,254});
     }
 
 
     // Initial value sent to the robot
     //[header[0], 0 .. 0]
-    if(d_precise.getValue())  m_packetOut.resize(d_size.getValue()*2+1);
-    else                      m_packetOut.resize(d_size.getValue()+1);
+    if(d_precise.getValue())
+    {
+        if(d_splitPacket.getValue())
+            m_packetOut.resize(d_size.getValue()*2+2);
+        else
+            m_packetOut.resize(d_size.getValue()*2+1);
+    }
+    else
+        m_packetOut.resize(d_size.getValue()+1);
 
     m_packetOut[0] = d_header.getValue()[0];
     for (int i=1; i<(int)m_packetOut.size(); i++)
         m_packetOut[i] = (unsigned char)0;
+    if(d_splitPacket.getValue())
+        m_packetOut[m_packetOut.size()/2] = d_header.getValue()[1];
+
     if (d_redundancy.getValue()<1)
     {
         msg_warning() <<"No valid number of packets set in Redundancy, set automatically to 1";
