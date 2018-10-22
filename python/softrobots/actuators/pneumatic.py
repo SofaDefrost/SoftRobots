@@ -78,9 +78,9 @@ def PneumaticCavity(surfaceMeshFileName=None,
 
     # Create a SurfacePressureConstraint object with a name.
     # the indices are referring to the MechanicalObject's positions.
-    pneumatic.createObject('SurfacePressureConstraint',
-                          value=initialValue,
-                          valueType=valueType)
+    #pneumatic.createObject('SurfacePressureConstraint',
+    #                      value=initialValue,
+    #                      valueType=valueType)
 
     # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
     # between the cavity's DoFs and the parents's ones so that the pressure applied on the cavity wall will be mapped
