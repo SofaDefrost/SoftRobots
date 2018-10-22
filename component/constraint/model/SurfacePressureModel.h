@@ -128,7 +128,6 @@ protected:
 
     double                      m_displayedValue; // can be either pressure or volumeGrowth
     unsigned int                m_columnId;
-    int                         m_columnIndex;
     bool                        m_hasCableSlidingPoint;
 
 
