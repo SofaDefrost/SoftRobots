@@ -8,7 +8,7 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 def createScene(rootNode):
                 rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
                 rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
-                
+
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
                 rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
@@ -18,19 +18,20 @@ def createScene(rootNode):
                 finger = rootNode.createChild('finger')
                 finger.createObject('EulerImplicit')
                 finger.createObject('CGLinearSolver')
-                 
+
                 finger.createObject('MeshSTLLoader', name='loader', filename=path+'finger.stl')
                 finger.createObject('Mesh', src='@loader', name="mesh")
-               
+
                 # Create a mechanicaobject component to stores the DoFs of the model
                 finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showTetra='true', showIndicesScale='4e-5', rx='0', dz='0')
-                finger.createObject('VolumeFromTriangles')                              
-       
+                finger.createObject('VolumeFromTriangles')
+
                 ##########################################
                 # Visualization                          #
                 ##########################################
                 fingerVisu = finger.createChild('visu')
-                fingerVisu.createObject('OglModel', filename=path+"finger.stl", template='ExtVec3f', color="0.0 0.7 0.7 0.5")
+                fingerVisu.createObject('MeshSTLLoader', filename=path+"finger.stl", name="loader")
+                fingerVisu.createObject('OglModel', src="@loader", template='ExtVec3f', color="0.0 0.7 0.7 0.5")
                 fingerVisu.createObject('BarycentricMapping')
 
                 return rootNode

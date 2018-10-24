@@ -85,7 +85,8 @@ def createScene(rootNode):
                 # Visualization                          #
                 ##########################################
                 tentacleVisu = tentacle.createChild('visu')
-                tentacleVisu.createObject('OglModel', filename=path+"Tentacle.stl", template='ExtVec3f', color="0.0 0.7 0.7")
+                tentacleVisu.createObject('MeshSTLLoader', filename=path+"Tentacle.stl", name="loader")
+                tentacleVisu.createObject('OglModel', src="@loader", template='ExtVec3f', color="0.0 0.7 0.7")
                 tentacleVisu.createObject('BarycentricMapping')
 
 
