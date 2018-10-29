@@ -16,4 +16,6 @@ Content:
 """
 from cable import PullingCable
 from pneumatic import PneumaticCavity
+from volume import VolumeEffector
+from pneumaticsensor import PneumaticCavitySensor
 
