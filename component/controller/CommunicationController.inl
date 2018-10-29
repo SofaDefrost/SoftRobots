@@ -106,20 +106,22 @@ void CommunicationController<DataTypes>::init()
 template<class DataTypes>
 void CommunicationController<DataTypes>::reinit()
 {
-    //closeCommunication();
-    //init();
+    closeCommunication();
+    init();
 }
 
 template<class DataTypes>
 void CommunicationController<DataTypes>::reset()
 {
-    //reinit();
+    reinit();
 }
 
 
 template<class DataTypes>
 void CommunicationController<DataTypes>::openCommunication()
 {
+    m_context = new zmq::context_t();
+
     if(d_job.getValue().getSelectedItem() == "sender")
     {
         string adress = "tcp://*:";
@@ -127,9 +129,9 @@ void CommunicationController<DataTypes>::openCommunication()
         adress.insert(adress.length(), port);
 
         if(d_pattern.getValue().getSelectedItem() == "publish/subscribe")
-            m_socket = new zmq::socket_t(m_context, ZMQ_PUB);
+            m_socket = new zmq::socket_t(*m_context, ZMQ_PUB);
         else
-            m_socket = new zmq::socket_t(m_context, ZMQ_REP);
+            m_socket = new zmq::socket_t(*m_context, ZMQ_REP);
 
         m_socket->bind(adress.c_str());
     }
@@ -145,7 +147,7 @@ void CommunicationController<DataTypes>::openCommunication()
 
         if(d_pattern.getValue().getSelectedItem() == "publish/subscribe")
         {
-            m_socket = new zmq::socket_t(m_context, ZMQ_SUB);
+            m_socket = new zmq::socket_t(*m_context, ZMQ_SUB);
 
             // Should drop sent messages if exceed HWM.
             // WARNING: does not work, uncomment if problem solved
@@ -157,7 +159,7 @@ void CommunicationController<DataTypes>::openCommunication()
         }
         else
         {
-            m_socket = new zmq::socket_t(m_context, ZMQ_REQ);
+            m_socket = new zmq::socket_t(*m_context, ZMQ_REQ);
             m_socket->connect(adress.c_str());
         }
     }
@@ -167,8 +169,14 @@ void CommunicationController<DataTypes>::openCommunication()
 template<class DataTypes>
 void CommunicationController<DataTypes>::closeCommunication()
 {
-    m_socket->close();
+    if(m_socket)
+        m_socket->close();
+
+    if(m_context)
+        m_context->close();
+
     delete m_socket;
+    delete m_context;
 }
 
 

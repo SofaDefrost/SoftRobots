@@ -108,7 +108,7 @@ public:
 
 protected:
 
-    zmq::context_t     m_context{1};
+    zmq::context_t     *m_context;
     zmq::socket_t      *m_socket;
 
     void sendData();
