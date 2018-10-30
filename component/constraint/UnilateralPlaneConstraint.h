@@ -38,7 +38,7 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include "../initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 
 namespace sofa
 {

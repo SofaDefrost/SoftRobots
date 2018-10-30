@@ -36,6 +36,11 @@ if(NOT MODULE_SOFASPARSESOLVER AND NOT SOFTROBOTS_IGNORE_ERRORS)
 endif()
 
 
+find_package(SofaPython QUIET)
+if(SofaPython_FOUND)
+    message("SofaPyhon found")
+    set(SOFTROBOTS_PYTHON 1) # config.h.in
+endif()
 
 find_package(STLIB QUIET)
 if(STLIB_FOUND)
@@ -48,12 +53,16 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 
 set(HEADER_FILES
-    component/initSoftRobots.h
+#    component/initSoftRobots.h
         )
 
 set(SOURCE_FILES
     component/initSoftRobots.cpp
         )
+
+# initSoftRobots.h
+configure_file(component/initSoftRobots.h.in "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h" DESTINATION "include/SoftRobots" COMPONENT headers)
 
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
@@ -77,14 +86,18 @@ include(component/forcefield/Forcefield_Links.cmake)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 
 find_package(SofaFramework REQUIRED)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction)
 
-# Config files and install rules for pythons scripts
-sofa_set_python_directory(${PROJECT_NAME} "python")
+if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
+    # Config files and install rules for pythons scripts
+    sofa_set_python_directory(${PROJECT_NAME} "python")
+endif()
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SoftRobots ${PROJECT_VERSION} ${PROJECT_NAME} SoftRobots)
@@ -92,5 +105,9 @@ sofa_create_package(SoftRobots ${PROJECT_VERSION} ${PROJECT_NAME} SoftRobots)
 if(SOFA_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
+
+
+
+include(CPack)
 
 

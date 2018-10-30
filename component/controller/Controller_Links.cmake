@@ -1,3 +1,5 @@
+find_package(SofaFramework) # to include SofaMacros
+
 #COMMUNICATION CONTROLLER
 if(SOFTROBOTS_COMMUNICATIONCONTROLLER)
     target_link_libraries(${PROJECT_NAME} "-lzmq")
@@ -18,12 +20,13 @@ find_package(Qt5 COMPONENTS Core QUIET)
 if(Qt5Core_FOUND)
     message("SoftRobots: Using Qt5 for some controllers")
     find_package(Qt5 COMPONENTS Network REQUIRED)
-    target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Network)
-else()
-    message("SoftRobots: Using Qt4 for some controllers")
-    find_package(Qt4 COMPONENTS qtcore qtnetwork REQUIRED)
-    include_directories(${QT_INCLUDES})
-    target_link_libraries(${PROJECT_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTNETWORK_LIBRARY})
+    set(QT_TARGETS Qt5::Core Qt5::Network)
+    target_link_libraries(${PROJECT_NAME} ${QT_TARGETS})
+
+    if(WIN32)
+        sofa_copy_libraries_from_targets(${QT_TARGETS})
+    endif()
+    sofa_install_libraries_from_targets(${QT_TARGETS})
 endif()
 
 

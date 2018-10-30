@@ -27,11 +27,28 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+using sofa::helper::system::PluginManager;
+using sofa::helper::system::Plugin;
+
+#include <sofa/helper/system/DynamicLibrary.h>
+using sofa::helper::system::DynamicLibrary;
+
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
+
+#include <sofa/helper/Utils.h>
+using sofa::helper::Utils;
+
+#ifdef SOFTROBOTS_PYTHON
+#include <SofaPython/PythonEnvironment.h>
+using sofa::simulation::PythonEnvironment;
+#endif
+
+#include <fstream>
 
 namespace sofa
 {
@@ -51,16 +68,61 @@ extern "C" {
 void initExternalModule()
 {    
     static bool first = true;
-    if (first)
+    if (!first)
     {
-        /// Automatically load the SoftRobots.Inverse plugin if available.
-        if( !PluginManager::getInstance().findPlugin("SoftRobots.Inverse").empty() )
-        {
-            PluginManager::getInstance().loadPlugin("SoftRobots.Inverse") ;
-        }
-
-        first = false;
+        return;
     }
+    first = false;
+
+    /// Automatically load the SoftRobots.Inverse plugin if available.
+    if( !PluginManager::getInstance().findPlugin("SoftRobots.Inverse").empty() )
+    {
+        PluginManager::getInstance().loadPlugin("SoftRobots.Inverse") ;
+    }
+
+#ifdef SOFTROBOTS_PYTHON
+    typedef std::map<std::string, Plugin > PluginMap;
+    typedef PluginMap::iterator PluginIterator;
+
+    PluginMap&  map = PluginManager::getInstance().getPluginMap();
+    for( const auto& elem : map)
+    {
+        Plugin p = elem.second;
+        if ( p.getModuleName() == getModuleName() )
+        {
+            std::string modulePath = elem.first;
+            modulePath.resize( modulePath.find(getModuleName() + std::string(".") + DynamicLibrary::extension) );
+            modulePath = FileSystem::getParentDirectory( modulePath );
+            std::cout << "modulePath = " << modulePath << std::endl;
+
+            // APPROACH 1: Read python path from .ini file and add it to python environment
+//            const std::string etcDir = modulePath + "/etc";
+//            const std::string moduleIniFilePath = etcDir + "/" + getModuleName() + ".ini";
+//            std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(moduleIniFilePath);
+//            if (iniFileValues.find("PYTHON_DIR") != iniFileValues.end())
+//            {
+//                std::string iniFileValue = iniFileValues["PYTHON_DIR"];
+//                if (!FileSystem::isAbsolute(iniFileValue))
+//                    iniFileValue = etcDir + "/" + iniFileValue;
+//                PythonEnvironment::addPythonModulePathsFromConfigFile(iniFileValue);
+//            }
+
+            // APPROACH 2: Read python config file to get python module path
+            // see PythonEnvironment::addPythonModulePathsFromConfigFile
+            std::string configFilePath = modulePath + "/etc/sofa/python.d/" + getModuleName();
+            std::ifstream configFile(configFilePath.c_str());
+            std::string line;
+            while(std::getline(configFile, line))
+            {
+                if (!FileSystem::isAbsolute(line))
+                {
+                    line = modulePath + "/" + line;
+                }
+                PythonEnvironment::addPythonModulePath(line);
+            }
+        }
+    }
+#endif
 }
 
 const char* getModuleName()
