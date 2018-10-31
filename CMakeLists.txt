@@ -38,8 +38,7 @@ endif()
 
 find_package(SofaPython QUIET)
 if(SofaPython_FOUND)
-    message("SofaPyhon found")
-    set(SOFTROBOTS_PYTHON 1) # config.h.in
+    set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
 endif()
 
 find_package(STLIB QUIET)
@@ -83,8 +82,6 @@ include(component/controller/Controller_Links.cmake)
 include(component/engine/Engine_Links.cmake)
 include(component/forcefield/Forcefield_Links.cmake)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 
@@ -101,6 +98,8 @@ endif()
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(SoftRobots ${PROJECT_VERSION} ${PROJECT_NAME} SoftRobots)
+
+install(DIRECTORY docs DESTINATION share/sofa/${PROJECT_NAME})
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(tests)
