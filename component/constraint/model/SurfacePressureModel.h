@@ -31,11 +31,10 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_H
 #define SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_H
 
-#include "../../behavior/SoftRobotsConstraint.h"
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
+
+#include "../../behavior/SoftRobotsConstraint.h"
 
 namespace sofa
 {
@@ -93,20 +92,28 @@ public:
 
     ////////////////////////// Inherited from BaseObject ////////////////////
     virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reinit() override;
     virtual void reset() override;
     virtual void draw(const VisualParams* vparams) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Actuator //////////////////////
-    virtual void getConstraintViolation(const ConstraintParams* cParams,
-                                        BaseVector *resV,
-                                        const DataVecCoord &xfree,
-                                        const DataVecDeriv &vfree) override;
-
     virtual void buildConstraintMatrix(const ConstraintParams* cParams,
                                        DataMatrixDeriv &cMatrix,
                                        unsigned int &cIndex,
                                        const DataVecCoord &x) override;
+
+    virtual void getConstraintViolation(const ConstraintParams* cParams,
+                                        BaseVector *resV,
+                                        const DataVecCoord &xfree,
+                                        const DataVecDeriv &vfree) override;
+    /////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////// Inherited from BaseConstraint ////////////////
+    virtual void storeLambda(const ConstraintParams* cParams,
+                             core::MultiVecDerivId res,
+                             const BaseVector* lambda) override;
     /////////////////////////////////////////////////////////////////////////
 
 protected:
@@ -119,16 +126,21 @@ protected:
     Data<bool>                          d_flipNormal;
 
     Data<double>                        d_pressure;
+    Data<Real>                          d_maxPressure;
+    Data<Real>                          d_minPressure;
     Data<double>                        d_volumeGrowth;
-
+    Data<Real>                          d_maxVolumeGrowth;
+    Data<Real>                          d_minVolumeGrowth;
     Data<Real>                          d_maxVolumeGrowthVariation;
 
-    bool                                m_visualization{false};
-    Data<Real>                          d_showVisuScale;
+    Data<bool>                          d_drawPressure;
+    Data<Real>                          d_drawScale;
+    // To remove in SoftRobots v20.0
+    Data<bool>                          d_visualizationDepracated;
+    Data<Real>                          d_showVisuScaleDepracated;
+    //
 
-    double                      m_displayedValue; // can be either pressure or volumeGrowth
     unsigned int                m_columnId;
-    bool                        m_hasCableSlidingPoint;
 
 
 protected:
@@ -151,6 +163,8 @@ protected:
     ////////////////////////////////////////////////////////////////////////////
 
 private:
+    void setUpData();
+    void internalInit();
 
     void drawValue(const core::visual::VisualParams* vparams);
     void computeEdges();

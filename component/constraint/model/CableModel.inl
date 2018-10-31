@@ -30,14 +30,11 @@
 
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_INL
-#include <cstdio>
-#include <cstdlib>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include "CableModel.h"
-#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -59,8 +56,11 @@ using sofa::helper::vector;
 template<class DataTypes>
 CableModel<DataTypes>::CableModel(MechanicalState* object)
     : SoftRobotsConstraint<DataTypes>(object)
+    // To remove in SoftRobots v19.0
     ,  d_indexDeprecated(initData(&d_indexDeprecated, "index",
                                  "Deprecated, must be replaced by the field name [indices]"))
+    //
+
     , d_indices(initData(&d_indices, "indices",
                          "List of points connected by the cable (from extremity to actuated point). \n"
                          "If no indices are given, default value is 0. \n"
@@ -85,6 +85,23 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
     , d_displacement(initData(&d_displacement,(double)0.0, "displacement",
                           "Output displacement compared to the initial cable length."))
 
+    , d_maxForce(initData(&d_maxForce,(Real)0.0, "maxForce",
+                          "Maximum force of the actuator. \n"
+                          "If unspecified no maximum value will be considered."))
+
+    , d_minForce(initData(&d_minForce,(Real)0.0, "minForce",
+                          "Minimum force of the actuator. \n"
+                          "If unspecified no minimum value will be considered \n"
+                          "and the cable will then be seen as a stiff rod able to push."))
+
+    , d_maxPositiveDisplacement(initData(&d_maxPositiveDisplacement,(Real)0.0, "maxPositiveDisp",
+                                         "Maximum displacement of the actuator in the positive direction. \n"
+                                         "If unspecified no maximum value will be considered."))
+
+    , d_maxNegativeDisplacement(initData(&d_maxNegativeDisplacement,(Real)0.0, "maxNegativeDisp",
+                                         "Maximum displacement of the actuator in the negative direction. \n"
+                                         "If unspecified no maximum value will be considered."))
+
     , d_maxDispVariation(initData(&d_maxDispVariation,(Real)0.0, "maxDispVariation",
                                    "Maximum variation of the displacement allowed. If not set, no max variation will be concidered."))
 
@@ -98,38 +115,18 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
                           "Color of the string."))
 
 {
-    d_indexDeprecated.setDisplayed(false);
-
-    d_indices.setGroup("Input");
-    d_pullPoint.setGroup("Input");
-
-    d_maxDispVariation.setGroup("Input");
-
-    d_cableInitialLength.setGroup("Vector");
-    d_cableLength.setGroup("Vector");
-
-    d_cableInitialLength.setReadOnly(true);
-    d_cableLength.setReadOnly(true);
-
-    d_force.setGroup("Vector");
-    d_displacement.setGroup("Vector");
-
-    d_force.setReadOnly(true);
-    d_displacement.setReadOnly(true);
-
-    d_hasPullPoint.setGroup("Input");
-
-    d_drawPullPoint.setGroup("Visualization");
-    d_drawPoints.setGroup("Visualization");
-    d_color.setGroup("Visualization");
+    setUpData();
 }
 
 
 template<class DataTypes>
 CableModel<DataTypes>::CableModel()
-    :
-      d_indexDeprecated(initData(&d_indexDeprecated, "index",
+    : SoftRobotsConstraint<DataTypes>()
+    // To remove in SoftRobots v19.0
+    , d_indexDeprecated(initData(&d_indexDeprecated, "index",
                                  "Deprecated, must be replaced with the field name [indices]"))
+    //
+
     , d_indices(initData(&d_indices, "indices",
                          "List of points connected by the cable (from extremity to actuated point). \n"
                          "If no indices are given, default value is 0. \n"
@@ -155,6 +152,23 @@ CableModel<DataTypes>::CableModel()
     , d_displacement(initData(&d_displacement,(double)0.0, "displacement",
                           "Output displacement compared to the initial cable length."))
 
+    , d_maxForce(initData(&d_maxForce,(Real)0.0, "maxForce",
+                          "Maximum force of the actuator. \n"
+                          "If unspecified no maximum value will be considered."))
+
+    , d_minForce(initData(&d_minForce,(Real)0.0, "minForce",
+                          "Minimum force of the actuator. \n"
+                          "If unspecified no minimum value will be considered \n"
+                          "and the cable will then be seen as a stiff rod able to push."))
+
+    , d_maxPositiveDisplacement(initData(&d_maxPositiveDisplacement,(Real)0.0, "maxPositiveDisp",
+                                         "Maximum displacement of the actuator in the positive direction. \n"
+                                         "If unspecified no maximum value will be considered."))
+
+    , d_maxNegativeDisplacement(initData(&d_maxNegativeDisplacement,(Real)0.0, "maxNegativeDisp",
+                                         "Maximum displacement of the actuator in the negative direction. \n"
+                                         "If unspecified no maximum value will be considered."))
+
     , d_maxDispVariation(initData(&d_maxDispVariation,(Real)0.0, "maxDispVariation",
                                    "Maximum variation of the displacement allowed. If not set, no max variation will be concidered."))
 
@@ -167,30 +181,7 @@ CableModel<DataTypes>::CableModel()
     , d_color(initData(&d_color,Vec4f(0.4,0.4,0.4,1), "color",
                           "Color of the string."))
 {
-    d_indexDeprecated.setDisplayed(false);
-
-    d_indices.setGroup("Input");
-    d_pullPoint.setGroup("Input");
-
-    d_maxDispVariation.setGroup("Input");
-
-    d_cableInitialLength.setGroup("Vector");
-    d_cableLength.setGroup("Vector");
-
-    d_cableInitialLength.setReadOnly(true);
-    d_cableLength.setReadOnly(true);
-
-    d_force.setGroup("Vector");
-    d_displacement.setGroup("Vector");
-
-    d_force.setReadOnly(true);
-    d_displacement.setReadOnly(true);
-
-    d_hasPullPoint.setGroup("Input");
-
-    d_drawPullPoint.setGroup("Visualization");
-    d_drawPoints.setGroup("Visualization");
-    d_color.setGroup("Visualization");
+    setUpData();
 }
 
 template<class DataTypes>
@@ -199,15 +190,37 @@ CableModel<DataTypes>::~CableModel()
 }
 
 template<class DataTypes>
+void CableModel<DataTypes>::setUpData()
+{
+    // To remove in SoftRobots v19.0
+    d_indexDeprecated.setDisplayed(false);
+    //
+
+    d_cableInitialLength.setReadOnly(true);
+    d_cableLength.setReadOnly(true);
+
+    d_force.setGroup("Vector");
+    d_displacement.setGroup("Vector");
+    d_force.setReadOnly(true);
+    d_displacement.setReadOnly(true);
+
+    d_drawPullPoint.setGroup("Visualization");
+    d_drawPoints.setGroup("Visualization");
+    d_color.setGroup("Visualization");
+}
+
+template<class DataTypes>
 void CableModel<DataTypes>::init()
 {
     m_componentstate = ComponentState::Invalid;
     SoftRobotsConstraint<DataTypes>::init();
 
+    // To remove in SoftRobots v19.0
     if(d_indexDeprecated.isSet())
         msg_warning(this) << "The field of the Cable component named 'index' is now deprecated. "
                              "To remove this warning message, the field "
                              "'index' should be replaced by the field 'indices'." ;
+    //
 
     if(m_state==nullptr)
     {
@@ -264,9 +277,7 @@ void CableModel<DataTypes>::reset()
     if(m_componentstate != ComponentState::Valid)
         return ;
 
-    VecCoord positions = (*m_state->read(VecCoordId::position())).getValue();
-    Real cableLength = getCableLength(positions);
-    d_cableLength.setValue(cableLength);
+    d_cableLength.setValue(d_cableInitialLength.getValue());
 }
 
 
@@ -296,8 +307,6 @@ void CableModel<DataTypes>::initActuatedPoints()
         }
     }
 
-
-
     if (nbIndices == 0)
     {
         SetIndexArray &list = (*d_indices.beginEdit());
@@ -305,12 +314,12 @@ void CableModel<DataTypes>::initActuatedPoints()
         list.push_back(0);
         d_indices.endEdit();
 
-        m_hasCableSlidingPoint=false;
+        m_hasSlidingPoint=false;
     }
     else if (nbIndices == 1)
-        m_hasCableSlidingPoint=false;
+        m_hasSlidingPoint=false;
     else
-        m_hasCableSlidingPoint=true;
+        m_hasSlidingPoint=true;
 }
 
 
@@ -334,6 +343,10 @@ SReal CableModel<DataTypes>::getCableLength(const VecCoord &positions)
 {
     const SetIndexArray &indices = d_indices.getValue();
     Coord previousPosition = d_pullPoint.getValue();
+
+    // if no fixed pull point, we take the first point of the list
+    if (!d_hasPullPoint.getValue())
+        previousPosition = positions[ indices[0] ];
 
     Real cableLength = 0.0;
     for (unsigned int i=0; i<indices.size(); i++)
@@ -362,10 +375,11 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
     MatrixDerivRowIterator rowIterator = matrix.writeLine(m_columnIndex);
 
-    if(!m_hasCableSlidingPoint)
+    if(!m_hasSlidingPoint)
     {
 
-        if ( d_hasPullPoint.getValue()){
+        if ( d_hasPullPoint.getValue())
+        {
             Deriv direction = d_pullPoint.getValue() - x.getValue()[d_indices.getValue()[0]];
             direction.normalize();
             rowIterator.setCol(d_indices.getValue()[0],  direction);
@@ -376,9 +390,6 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
             direction.normalize();
             rowIterator.setCol(d_indices.getValue()[1],  -direction);
             rowIterator.setCol(d_indices.getValue()[0],  direction);
-
-            d_pullPoint.setValue(x.getValue()[d_indices.getValue()[0]]);
-
         }
     }
     else
@@ -396,7 +407,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 int currentIndex = indices[i];
                 int nextIndex    = indices[i+1];
 
-                previousPosition = d_pullPoint.getValue();
+                previousPosition = (d_hasPullPoint.getValue()) ? d_pullPoint.getValue(): x.getValue()[d_indices.getValue()[0]];
                 currentPosition  = x.getValue()[currentIndex];
                 nextPosition     = x.getValue()[nextIndex];
 
@@ -411,8 +422,6 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                     rowIterator.setCol(currentIndex, slidingDirection);
                 else
                     rowIterator.setCol(currentIndex, -directionAhead);
-
-
             }
             else if (i != indices.size()-1)  // all points except extremities
             {
@@ -464,29 +473,31 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(vfree);
     const VecCoord& positions =  xfree.getValue();
-    const SetIndexArray &indices = d_indices.getValue();
 
-
-    // if no fixed pull point, we take the first point of the list
-    if (!d_hasPullPoint.getValue())
-    {
-        d_pullPoint.setValue(xfree.getValue()[ indices[0] ]);
-    }
-
-    Coord previousPosition = d_pullPoint.getValue();
-
-    Real currentLength = 0.0;
-    for (unsigned int i=0; i<indices.size(); i++)
-    {
-        Coord currentPosition  = positions[indices[i]];
-        Deriv direction = currentPosition - previousPosition;
-        previousPosition = currentPosition;
-        currentLength += direction.norm();
-    }
+    Real currentLength = getCableLength(positions);
 
     resV->set(m_columnIndex, (d_cableInitialLength.getValue() - currentLength) );
 }
 
+
+template<class DataTypes>
+void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
+                                        core::MultiVecDerivId res,
+                                        const sofa::defaulttype::BaseVector* lambda)
+{
+    SOFA_UNUSED(res);
+    SOFA_UNUSED(cParams);
+
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
+    d_force.setValue(lambda->element(m_columnIndex));
+
+    // Compute actual cable length and displacement from updated positions of mechanical
+    const VecCoord& position = m_state->read(VecCoordId::position())->getValue();
+    d_cableLength.setValue(getCableLength(position));
+    d_displacement.setValue(d_cableInitialLength.getValue()-d_cableLength.getValue());
+}
 
 template<class DataTypes>
 void CableModel<DataTypes>::draw(const VisualParams* vparams)

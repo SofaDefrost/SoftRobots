@@ -63,9 +63,7 @@ CableConstraint<DataTypes>::CableConstraint(MechanicalState* object)
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
-    d_value.setGroup("Input");
-    d_valueIndex.setGroup("Input");
-    d_valueType.setGroup("Input");
+    setUpData();
 }
 
 
@@ -85,14 +83,21 @@ CableConstraint<DataTypes>::CableConstraint()
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
-    d_value.setGroup("Input");
-    d_valueIndex.setGroup("Input");
-    d_valueType.setGroup("Input");
+    setUpData();
 }
 
 template<class DataTypes>
 CableConstraint<DataTypes>::~CableConstraint()
 {
+}
+
+template<class DataTypes>
+void CableConstraint<DataTypes>::setUpData()
+{
+    // To remove in SoftRobots v20.0
+    msg_warning() << "An old implementation of CableConstraint was not allowing negative force. This is now possible. "
+                  << "However, to limit the force to be strictly positive you now have to set minForce=0.";
+    //
 }
 
 template<class DataTypes>
@@ -135,35 +140,64 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
 
     SOFA_UNUSED(cParam);
 
-    double imposed_value=d_value.getValue()[d_valueIndex.getValue()];
+    double imposedValue=d_value.getValue()[d_valueIndex.getValue()];
 
     if(d_valueType.getValue().getSelectedItem() == "displacement") // displacement
     {
-        if(d_maxDispVariation.isSet())
-        {
-            double displacement = d_displacement.getValue();
-            if(imposed_value > displacement && imposed_value-displacement>d_maxDispVariation.getValue())
-                imposed_value = displacement+d_maxDispVariation.getValue();
+        double minForce=-1e99, maxForce=1e99;
+        setUpDisplacementLimits(imposedValue,minForce,maxForce);
 
-            if(imposed_value < displacement && imposed_value-displacement<-d_maxDispVariation.getValue())
-                imposed_value = displacement-d_maxDispVariation.getValue();
-        }
-
-
-        CableDisplacementConstraintResolution *cr=  new CableDisplacementConstraintResolution(imposed_value, &m_force);
+        CableDisplacementConstraintResolution *cr=  new CableDisplacementConstraintResolution(imposedValue, minForce, maxForce);
         resTab[offset++] =cr;
-        d_cableLength.setValue(d_cableInitialLength.getValue()-imposed_value);
-        d_displacement.setValue(imposed_value);
-        d_force.setValue(m_force);
     }
     else // force
     {
-        CableForceConstraintResolution *cr=  new CableForceConstraintResolution(imposed_value, &m_displacement);
+        double minDisplacement=-1e99, maxDisplacement=1e99;
+        setUpForceLimits(imposedValue,minDisplacement,maxDisplacement);
+
+        CableForceConstraintResolution *cr=  new CableForceConstraintResolution(imposedValue, minDisplacement, maxDisplacement);
         resTab[offset++] =cr;
-        d_cableLength.setValue(d_cableInitialLength.getValue()-d_displacement.getValue());
-        d_force.setValue(imposed_value);
-        d_displacement.setValue(m_displacement);
     }
+}
+
+template<class DataTypes>
+void CableConstraint<DataTypes>::setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce)
+{
+    if(d_maxDispVariation.isSet())
+    {
+        double displacement = d_displacement.getValue();
+        if(imposedValue > displacement && imposedValue-displacement>d_maxDispVariation.getValue())
+            imposedValue = displacement+d_maxDispVariation.getValue();
+
+        if(imposedValue < displacement && imposedValue-displacement<-d_maxDispVariation.getValue())
+            imposedValue = displacement-d_maxDispVariation.getValue();
+    }
+
+    if(d_maxPositiveDisplacement.isSet() && imposedValue>d_maxPositiveDisplacement.getValue())
+        imposedValue = d_maxPositiveDisplacement.getValue();
+
+    if(d_maxNegativeDisplacement.isSet() && imposedValue<-d_maxNegativeDisplacement.getValue())
+        imposedValue = -d_maxNegativeDisplacement.getValue();
+
+    if(d_minForce.isSet())
+        minForce=d_minForce.getValue();
+    if(d_maxForce.isSet())
+        maxForce=d_maxForce.getValue();
+}
+
+template<class DataTypes>
+void CableConstraint<DataTypes>::setUpForceLimits(double& imposedValue, double& minDisplacement, double& maxDisplacement)
+{
+    if(d_maxForce.isSet() && imposedValue>d_maxForce.getValue())
+        imposedValue = d_maxForce.getValue();
+
+    if(d_minForce.isSet() && imposedValue<d_minForce.getValue())
+        imposedValue = d_minForce.getValue();
+
+    if(d_maxNegativeDisplacement.isSet())
+        minDisplacement=-d_maxNegativeDisplacement.getValue();
+    if(d_maxPositiveDisplacement.isSet())
+        maxDisplacement=d_maxPositiveDisplacement.getValue();
 }
 
 

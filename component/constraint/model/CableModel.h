@@ -105,8 +105,16 @@ public:
                                         const DataVecDeriv &vfree) override;
     /////////////////////////////////////////////////////////////////////////
 
+    ////////////////////////// Inherited from BaseConstraint ////////////////
+    virtual void storeLambda(const ConstraintParams* cParams,
+                             core::MultiVecDerivId res,
+                             const BaseVector* lambda) override;
+    /////////////////////////////////////////////////////////////////////////
+
 protected:
+    // To remove in SoftRobots v19.0
     Data<SetIndexArray>         d_indexDeprecated ;
+    //
 
     Data<SetIndexArray>         d_indices;
     Data<Coord>                 d_pullPoint;
@@ -118,6 +126,10 @@ protected:
     Data<double>                d_force;
     Data<double>                d_displacement;
 
+    Data<Real>                  d_maxForce;
+    Data<Real>                  d_minForce;
+    Data<Real>                  d_maxPositiveDisplacement;
+    Data<Real>                  d_maxNegativeDisplacement;
     Data<Real>                  d_maxDispVariation;
 
     Data<bool>                  d_drawPullPoint;
@@ -125,7 +137,7 @@ protected:
     Data<defaulttype::Vec4f>    d_color;
 
     int                         m_columnIndex;
-    bool                        m_hasCableSlidingPoint;
+    bool                        m_hasSlidingPoint;
 
 
 protected:
@@ -139,15 +151,11 @@ protected:
     /// using the "this->" approach.
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::m_state ;
-    using SoftRobotsConstraint<DataTypes>::m_hasDeltaMax ;
-    using SoftRobotsConstraint<DataTypes>::m_hasLambdaMax ;
-    using SoftRobotsConstraint<DataTypes>::m_deltaMax ;
-    using SoftRobotsConstraint<DataTypes>::m_lambdaMax ;
-    using SoftRobotsConstraint<DataTypes>::addAlias ;
     using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 
 private:
+    void setUpData();
     void internalInit();
 
     void checkIndicesRegardingState();

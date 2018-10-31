@@ -49,11 +49,12 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::core;
 
-SurfacePressureConstraintResolution::SurfacePressureConstraintResolution(const double& imposedPressure, double *volumeGrowth)
+SurfacePressureConstraintResolution::SurfacePressureConstraintResolution(const double& imposedPressure, const double &minVolumeGrowth, const double &maxVolumeGrowth)
     : ConstraintResolution(1)
+    , m_imposedPressure(imposedPressure)
+    , m_minVolumeGrowth(minVolumeGrowth)
+    , m_maxVolumeGrowth(maxVolumeGrowth)
 {
-    m_imposedPressure = imposedPressure;
-    m_volumeGrowth = volumeGrowth;
 }
 
 void SurfacePressureConstraintResolution::init(int line, double**w, double*force)
@@ -71,7 +72,14 @@ void SurfacePressureConstraintResolution::resolution(int line, double** w, doubl
 
     force[line] = m_imposedPressure ;
 
-    *m_volumeGrowth = m_wActuatorActuator*force[line];
+    double volumeGrowth = m_wActuatorActuator*force[line];
+
+    if(volumeGrowth<m_minVolumeGrowth)
+        volumeGrowth = m_minVolumeGrowth;
+    if(volumeGrowth>m_maxVolumeGrowth)
+        volumeGrowth = m_maxVolumeGrowth;
+
+    force[line] -= (d[line]-volumeGrowth) / m_wActuatorActuator ;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,11 +87,12 @@ void SurfacePressureConstraintResolution::resolution(int line, double** w, doubl
 
 /////////////////////////////////// VolumeGrowthConstraintResolution ///////////////////////////////////////
 
-VolumeGrowthConstraintResolution::VolumeGrowthConstraintResolution(const double& imposedVolumeGrowth, double *pressure)
+VolumeGrowthConstraintResolution::VolumeGrowthConstraintResolution(const double &imposedVolumeGrowth, const double &minPressure, const double &maxPressure)
     : ConstraintResolution(1)
+    , m_imposedVolumeGrowth(imposedVolumeGrowth)
+    , m_minPressure(minPressure)
+    , m_maxPressure(maxPressure)
 {
-    m_imposedVolumeGrowth = imposedVolumeGrowth;
-    m_pressure = pressure;
 }
 
 void VolumeGrowthConstraintResolution::init(int line, double**w, double*force)
@@ -101,7 +110,10 @@ void VolumeGrowthConstraintResolution::resolution(int line, double** w, double* 
     // da=Waa*(lambda_a) + Sum Wai * lambda_i  = m_imposedVolumeGrowth
     lambda[line] -= (d[line]-m_imposedVolumeGrowth) / m_wActuatorActuator ;
 
-    *m_pressure = lambda[line];
+    if(lambda[line]<m_minPressure)
+        lambda[line] = m_minPressure;
+    if(lambda[line]>m_maxPressure)
+        lambda[line] = m_maxPressure;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
