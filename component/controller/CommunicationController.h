@@ -121,7 +121,6 @@ protected:
     // Factoring for templates
     void convertDataToMessage(string& messageStr);
     void convertStringStreamToData(std::stringstream *stream);
-    void checkDataSize(const unsigned int& nbDataFieldReceived);
 
 };  //class CommunicationController
 

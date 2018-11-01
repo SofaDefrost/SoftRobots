@@ -87,16 +87,6 @@ void CommunicationController<vector<Vec3d>>::convertStringStreamToData(stringstr
     }
 }
 
-template<>
-void CommunicationController<vector<Vec3d>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec3d>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*4*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
 
 
 ///// VEC3F
@@ -131,18 +121,6 @@ void CommunicationController<vector<Vec3f>>::convertStringStreamToData(stringstr
     }
 }
 
-template<>
-void CommunicationController<vector<Vec3f>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec3f>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*4*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
-
 
 ///// VEC1D
 
@@ -176,16 +154,6 @@ void CommunicationController<vector<Vec1d>>::convertStringStreamToData(stringstr
     }
 }
 
-template<>
-void CommunicationController<vector<Vec1d>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec1d>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*2*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
 
 
 
@@ -221,17 +189,6 @@ void CommunicationController<vector<Vec1f>>::convertStringStreamToData(stringstr
     }
 }
 
-template<>
-void CommunicationController<vector<Vec1f>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec1f>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*2*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
 
 
 ///// VEC1I
@@ -263,17 +220,6 @@ void CommunicationController<vector<Vec<2,int>>>::convertStringStreamToData(stri
         for(unsigned int j=0; j<data.size(); j++)
             for(int k=0; k<2; k++)
                 (*stream) >> data[j][k];
-    }
-}
-
-template<>
-void CommunicationController<vector<Vec<2,int>>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec<2,int>>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*3*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
     }
 }
 
@@ -312,17 +258,6 @@ void CommunicationController<vector<Vec<2,unsigned int>>>::convertStringStreamTo
     }
 }
 
-template<>
-void CommunicationController<vector<Vec<2,unsigned int>>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec<2,unsigned int>>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*3*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
 
 
 
@@ -357,17 +292,6 @@ void CommunicationController<vector<Rigid3dTypes::Coord>>::convertStringStreamTo
     }
 }
 
-template<>
-void CommunicationController<vector<Rigid3dTypes::Coord>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Rigid3dTypes::Coord>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*8*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
 
 //// RIGID3F
 
@@ -397,17 +321,6 @@ void CommunicationController<vector<Rigid3fTypes::Coord>>::convertStringStreamTo
         for(unsigned int j=0; j<data.size(); j++)
             for(int k=0; k<7; k++)
                 (*stream) >> data[j][k];
-    }
-}
-
-template<>
-void CommunicationController<vector<Rigid3fTypes::Coord>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Rigid3fTypes::Coord>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*8*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
     }
 }
 

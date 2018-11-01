@@ -260,14 +260,6 @@ void CommunicationController<DataTypes>::convertStringStreamToData(stringstream*
 
 
 template<class DataTypes>
-void CommunicationController<DataTypes>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(nbDataFieldReceived!=d_nbDataField.getValue())
-        msg_warning() << "Something wrong with the size of data received. Please check template.";
-}
-
-
-template<class DataTypes>
 void CommunicationController<DataTypes>::sendData()
 {
     if(d_pattern.getValue().getSelectedItem() == "request/reply")
@@ -275,6 +267,7 @@ void CommunicationController<DataTypes>::sendData()
 
     string messageStr;
     convertDataToMessage(messageStr);
+    messageStr = getTemplateName() + " " + messageStr;
 
     zmq::message_t message(messageStr.length());
 
@@ -300,20 +293,35 @@ void CommunicationController<DataTypes>::receiveData()
         memcpy(&messageChar, message.data(), message.size());
 
         stringstream stream;
-        unsigned int nbDataFieldReceived = 0;
+        stringstream templateStream;
+
+        unsigned int startId = 0;
         for(unsigned int i=0; i<message.size(); i++)
         {
-            if(messageChar[i]==' ' || i==message.size()-1)
-                nbDataFieldReceived++;
+            if(messageChar[i]==' ')
+            {
+                startId = ++i;
+                break;
+            }
 
+            templateStream << messageChar[i];
+        }
+
+        if(templateStream.str() != getTemplateName())
+        {
+            msg_error() << "The template of received data is not correct. Received " << templateStream.str() << ", while expecting " << getTemplateName();
+            return;
+        }
+
+        for(unsigned int i=startId; i<message.size(); i++)
+        {
             if(messageChar[i]==',')
                 messageChar[i]='.';
 
-            stream << messageChar[i];
+            stream << messageChar[i];              
         }
 
         convertStringStreamToData(&stream);
-        checkDataSize(nbDataFieldReceived);
     }
     else
         msg_warning() << "Problem with communication";
