@@ -81,42 +81,25 @@ void initExternalModule()
     }
 
 #ifdef SOFTROBOTS_PYTHON
-    typedef std::map<std::string, Plugin > PluginMap;
-    typedef PluginMap::iterator PluginIterator;
-
-    PluginMap&  map = PluginManager::getInstance().getPluginMap();
+    std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
     for( const auto& elem : map)
     {
         Plugin p = elem.second;
         if ( p.getModuleName() == getModuleName() )
         {
-            std::string modulePath = elem.first;
-            modulePath.resize( modulePath.find(getModuleName() + std::string(".") + DynamicLibrary::extension) );
-            modulePath = FileSystem::getParentDirectory( modulePath );
-            std::cout << "modulePath = " << modulePath << std::endl;
+            std::string moduleRoot = FileSystem::getParentDirectory(FileSystem::getParentDirectory(elem.first));
+            msg_info(getModuleName()) << "moduleRoot = " << moduleRoot;
 
-            // APPROACH 1: Read python path from .ini file and add it to python environment
-//            const std::string etcDir = modulePath + "/etc";
-//            const std::string moduleIniFilePath = etcDir + "/" + getModuleName() + ".ini";
-//            std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(moduleIniFilePath);
-//            if (iniFileValues.find("PYTHON_DIR") != iniFileValues.end())
-//            {
-//                std::string iniFileValue = iniFileValues["PYTHON_DIR"];
-//                if (!FileSystem::isAbsolute(iniFileValue))
-//                    iniFileValue = etcDir + "/" + iniFileValue;
-//                PythonEnvironment::addPythonModulePathsFromConfigFile(iniFileValue);
-//            }
-
-            // APPROACH 2: Read python config file to get python module path
+            // Read python config file to get python module path
             // see PythonEnvironment::addPythonModulePathsFromConfigFile
-            std::string configFilePath = modulePath + "/etc/sofa/python.d/" + getModuleName();
+            std::string configFilePath = moduleRoot + "/etc/sofa/python.d/" + getModuleName();
             std::ifstream configFile(configFilePath.c_str());
             std::string line;
             while(std::getline(configFile, line))
             {
                 if (!FileSystem::isAbsolute(line))
                 {
-                    line = modulePath + "/" + line;
+                    line = moduleRoot + "/" + line;
                 }
                 PythonEnvironment::addPythonModulePath(line);
             }
