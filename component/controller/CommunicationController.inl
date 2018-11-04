@@ -53,6 +53,7 @@ using std::stringstream;
 using sofa::helper::WriteAccessor;
 using sofa::helper::ReadAccessor;
 using std::string;
+using core::objectmodel::ComponentState;
 
 template<class DataTypes>
 CommunicationController<DataTypes>::CommunicationController()
@@ -68,8 +69,10 @@ CommunicationController<DataTypes>::CommunicationController()
                                                  "messages shall queue in memory. Default 0 (means no limit)."))
     , d_port(initData(&d_port, string("5556"), "port", "Default value 5556."))
     , d_ipAdress(initData(&d_ipAdress, "ip", "IP adress of the sender. No given adress will set up a local communication."))
-    , d_atBeginAnimationStep(initData(&d_atBeginAnimationStep, (bool)1, "atBeginAnimationStep", "If true, will send or receive datas at begin of the animation step (if false, at end of the animation step). Default true."))
+    , d_atBeginAnimationStep(initData(&d_atBeginAnimationStep, (bool)1, "atBeginAnimationStep",
+                                      "If true, will send or receive datas at begin of the animation step (if false, at end of the animation step). Default true."))
     , d_beginAt(initData(&d_beginAt, (double)0, "beginAt", "Time step value to start the communication at."))
+    , d_timeOut(initData(&d_timeOut, (unsigned int)3000, "timeOut", "Set time out (in ms) before killing the communication. Default is 3000ms, 0 means no time out."))
     , d_nbDataField(initData(&d_nbDataField, (unsigned int)1, "nbDataField",
                              "Number of field 'data' the user want to send or receive.\n"
                              "Default value is 1."))
@@ -89,6 +92,8 @@ CommunicationController<DataTypes>::~CommunicationController()
 template<class DataTypes>
 void CommunicationController<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid;
+
     // Should drop sent messages if exceed HWM.
     // WARNING: does not work
     if(d_job.getValue().getSelectedItem() == "receiver" && d_pattern.getValue().getSelectedItem() == "publish/subscribe")
@@ -101,6 +106,8 @@ void CommunicationController<DataTypes>::init()
 
     d_data.resize(d_nbDataField.getValue());
     openCommunication();
+
+    m_componentstate = ComponentState::Valid;
 }
 
 template<class DataTypes>
@@ -154,14 +161,21 @@ void CommunicationController<DataTypes>::openCommunication()
             //uint64_t HWM = d_HWM.getValue();
             //m_socket->setsockopt(ZMQ_RCVHWM, &HWM, sizeof(HWM));
 
-            m_socket->connect(adress.c_str());
             m_socket->setsockopt(ZMQ_SUBSCRIBE, "", 0); // Arg2: publisher name - Arg3: size of publisher name
+            m_socket->connect(adress.c_str());
         }
         else
         {
             m_socket = new zmq::socket_t(*m_context, ZMQ_REQ);
             m_socket->connect(adress.c_str());
         }
+    }
+
+    if(d_timeOut.getValue()>0)
+    {
+        // Set timeout: if reached, the communication will close and the component status will switch to invalid
+        m_socket->setsockopt(ZMQ_RCVTIMEO,d_timeOut.getValue());
+        m_socket->setsockopt(ZMQ_SNDTIMEO,d_timeOut.getValue());
     }
 }
 
@@ -201,6 +215,9 @@ void CommunicationController<DataTypes>::onBeginAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
+    if(m_componentstate != ComponentState::Valid)
+        return;
+
     if(d_beginAt.getValue()>m_time)
         return;
 
@@ -219,6 +236,9 @@ template<class DataTypes>
 void CommunicationController<DataTypes>::onEndAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
+
+    if(m_componentstate != ComponentState::Valid)
+        return;
 
     if(d_beginAt.getValue()>m_time)
     {
@@ -243,7 +263,10 @@ void CommunicationController<DataTypes>::convertDataToMessage(string& messageStr
     for(unsigned int i=0; i<d_data.size(); i++)
     {
         ReadAccessor<Data<DataTypes>> data = d_data[i];
-        messageStr += std::to_string(data) + " ";
+        messageStr += std::to_string(data.size()) + " ";
+        for(unsigned int j=0; j<data.size(); j++)
+            for(unsigned int k=0; k<data[j].size(); k++)
+                messageStr += std::to_string(data[j][k]) + " ";
     }
 }
 
@@ -254,7 +277,13 @@ void CommunicationController<DataTypes>::convertStringStreamToData(stringstream*
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
         WriteAccessor<Data<DataTypes>> data = d_data[i];
-        (*stream) >> data;
+        int dataSize = 0;
+        (*stream) >> dataSize;
+        data.resize(dataSize);
+
+        for(unsigned int j=0; j<data.size(); j++)
+            for(unsigned int k=0; k<data[j].size(); k++)
+                (*stream) >> data[j][k];
     }
 }
 
@@ -275,7 +304,12 @@ void CommunicationController<DataTypes>::sendData()
 
     bool status = m_socket->send(message);
     if(!status)
-        msg_warning() << "Problem with communication";
+    {
+        msg_warning() << "A problem with the communication has been detected. The component won't work anymore. "
+                      << "If a timeOut has been set, you may consider a greater value.";
+        closeCommunication();
+        m_componentstate = ComponentState::Invalid;
+    }
 }
 
 
@@ -309,7 +343,9 @@ void CommunicationController<DataTypes>::receiveData()
 
         if(templateStream.str() != getTemplateName())
         {
-            msg_error() << "The template of received data is not correct. Received " << templateStream.str() << ", while expecting " << getTemplateName();
+            msg_error() << "The template of received data is not correct. Received " << templateStream.str() << ", while expecting " << getTemplateName()
+                        << ". The component won't work anymore. ";
+            m_componentstate = ComponentState::Invalid;
             return;
         }
 
@@ -324,7 +360,12 @@ void CommunicationController<DataTypes>::receiveData()
         convertStringStreamToData(&stream);
     }
     else
-        msg_warning() << "Problem with communication";
+    {
+        msg_warning() << "A problem with the communication has been detected. The component won't work anymore. "
+                      << "If a timeOut has been set, you may consider a greater value.";
+        closeCommunication();
+        m_componentstate = ComponentState::Invalid;
+    }
 }
 
 
@@ -334,6 +375,7 @@ void CommunicationController<DataTypes>::sendRequest()
     zmq::message_t request;
     m_socket->send(request);
 }
+
 
 template<class DataTypes>
 void CommunicationController<DataTypes>::receiveRequest()

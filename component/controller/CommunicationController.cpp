@@ -55,275 +55,85 @@ using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
 
-///// VEC3D
-
-
 template<>
-void CommunicationController<vector<Vec3d>>::convertDataToMessage(string& messageStr)
+void CommunicationController<double>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<vector<Vec3d>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<3; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        ReadAccessor<Data<double>> data = d_data[i];
+        messageStr += std::to_string(data) + " ";
     }
 }
 
 template<>
-void CommunicationController<vector<Vec3d>>::convertStringStreamToData(stringstream *stream)
-{
-    for (unsigned int i= 0; i<d_data.size(); i++)
-    {
-        WriteAccessor<Data<vector<Vec3d>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<3; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-
-
-///// VEC3F
-
-
-template<>
-void CommunicationController<vector<Vec3f>>::convertDataToMessage(string& messageStr)
+void CommunicationController<int>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<vector<Vec3f>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<3; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        ReadAccessor<Data<int>> data = d_data[i];
+        messageStr += std::to_string(data) + " ";
     }
 }
 
 template<>
-void CommunicationController<vector<Vec3f>>::convertStringStreamToData(stringstream *stream)
-{
-    for (unsigned int i= 0; i<d_data.size(); i++)
-    {
-        WriteAccessor<Data<vector<Vec3f>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<3; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-
-///// VEC1D
-
-
-template<>
-void CommunicationController<vector<Vec1d>>::convertDataToMessage(string& messageStr)
+void CommunicationController<float>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<vector<Vec1d>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<1; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        ReadAccessor<Data<float>> data = d_data[i];
+        messageStr += std::to_string(data) + " ";
     }
 }
 
 template<>
-void CommunicationController<vector<Vec1d>>::convertStringStreamToData(stringstream *stream)
-{
-    for (unsigned int i= 0; i<d_data.size(); i++)
-    {
-        WriteAccessor<Data<vector<Vec1d>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<1; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-
-
-
-///// VEC1F
-
-
-template<>
-void CommunicationController<vector<Vec1f>>::convertDataToMessage(string& messageStr)
+void CommunicationController<unsigned int>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<vector<Vec1f>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<1; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        ReadAccessor<Data<unsigned int>> data = d_data[i];
+        messageStr += std::to_string(data) + " ";
     }
 }
 
 template<>
-void CommunicationController<vector<Vec1f>>::convertStringStreamToData(stringstream *stream)
+void CommunicationController<double>::convertStringStreamToData(stringstream *stream)
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<vector<Vec1f>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<1; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-
-
-///// VEC1I
-
-
-template<>
-void CommunicationController<vector<Vec<2,int>>>::convertDataToMessage(string& messageStr)
-{
-    for(unsigned int i=0; i<d_data.size(); i++)
-    {
-        ReadAccessor<Data<vector<Vec<2,int>>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<2; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        WriteAccessor<Data<double>> data = d_data[i];
+        (*stream) >> data;
     }
 }
 
 template<>
-void CommunicationController<vector<Vec<2,int>>>::convertStringStreamToData(stringstream *stream)
+void CommunicationController<float>::convertStringStreamToData(stringstream *stream)
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<vector<Vec<2,int>>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<2; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-
-
-
-///// VEC1UI
-
-
-template<>
-void CommunicationController<vector<Vec<2,unsigned int>>>::convertDataToMessage(string& messageStr)
-{
-    for(unsigned int i=0; i<d_data.size(); i++)
-    {
-        ReadAccessor<Data<vector<Vec<2,unsigned int>>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<2; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        WriteAccessor<Data<float>> data = d_data[i];
+        (*stream) >> data;
     }
 }
 
 template<>
-void CommunicationController<vector<Vec<2,unsigned int>>>::convertStringStreamToData(stringstream *stream)
+void CommunicationController<int>::convertStringStreamToData(stringstream *stream)
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<vector<Vec<2,unsigned int>>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<2; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-
-
-
-//// RIGID3D
-
-template<>
-void CommunicationController<vector<Rigid3dTypes::Coord>>::convertDataToMessage(string& messageStr)
-{
-    for(unsigned int i=0; i<d_data.size(); i++)
-    {
-        ReadAccessor<Data<vector<Rigid3dTypes::Coord>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<7; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        WriteAccessor<Data<int>> data = d_data[i];
+        (*stream) >> data;
     }
 }
 
 template<>
-void CommunicationController<vector<Rigid3dTypes::Coord>>::convertStringStreamToData(stringstream *stream)
+void CommunicationController<unsigned int>::convertStringStreamToData(stringstream *stream)
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<vector<Rigid3dTypes::Coord>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<7; k++)
-                (*stream) >> data[j][k];
+        WriteAccessor<Data<unsigned int>> data = d_data[i];
+        (*stream) >> data;
     }
 }
-
-
-//// RIGID3F
-
-template<>
-void CommunicationController<vector<Rigid3fTypes::Coord>>::convertDataToMessage(string& messageStr)
-{
-    for(unsigned int i=0; i<d_data.size(); i++)
-    {
-        ReadAccessor<Data<vector<Rigid3fTypes::Coord>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<7; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
-    }
-}
-
-template<>
-void CommunicationController<vector<Rigid3fTypes::Coord>>::convertStringStreamToData(stringstream *stream)
-{
-    for (unsigned int i= 0; i<d_data.size(); i++)
-    {
-        WriteAccessor<Data<vector<Rigid3fTypes::Coord>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<7; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
 
 
 //////////////////////////////// Template name definition

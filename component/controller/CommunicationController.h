@@ -102,6 +102,7 @@ public:
     Data<string>                            d_ipAdress;
     Data<bool>                              d_atBeginAnimationStep;
     Data<double>                            d_beginAt;
+    Data<unsigned int>                      d_timeOut;
     double                                  m_time{0.};
     Data<unsigned int>                      d_nbDataField;
     vectorData<DataTypes>                   d_data;
