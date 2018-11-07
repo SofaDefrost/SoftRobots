@@ -184,13 +184,16 @@ template<class DataTypes>
 void CommunicationController<DataTypes>::closeCommunication()
 {
     if(m_socket)
+    {
         m_socket->close();
+        delete m_socket;
+    }
 
     if(m_context)
+    {
         m_context->close();
-
-    delete m_socket;
-    delete m_context;
+        delete m_context;
+    }
 }
 
 
