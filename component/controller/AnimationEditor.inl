@@ -69,6 +69,7 @@ namespace _animationeditor_
 using sofa::core::objectmodel::ComponentState;
 
 using sofa::core::objectmodel::KeypressedEvent;
+using sofa::core::objectmodel::MouseEvent;
 using sofa::simulation::AnimateBeginEvent;
 
 using sofa::core::visual::VisualParams;
@@ -80,6 +81,7 @@ using std::cout;
 using std::stringstream;
 using sofa::defaulttype::Vec4f;
 using sofa::defaulttype::Vec3d;
+using sofa::defaulttype::Vec4d;
 using std::ifstream;
 using std::ofstream;
 using sofa::helper::vector;
@@ -96,7 +98,9 @@ AnimationEditor<DataTypes>::AnimationEditor()
                                   "If dx is set, at each time step, the animation will progress in term of displacement/distance.\n"
                                   "A positive dx means move forward and a negative dx means backward (on the timeline)."))
     , d_frameTime(initData(&d_frameTime,0.01,"frameTime","Frame time."))
-    , d_drawTimeline(initData(&d_drawTimeline,false,"drawTimeLine",""))
+    , d_drawTimeline(initData(&d_drawTimeline,true,"drawTimeline",""))
+    , d_drawSize(initData(&d_drawSize,0.1,"drawSize",""))
+    , d_drawTrajectory(initData(&d_drawTrajectory,true,"drawTrajectory",""))
     , d_cursor(initData(&d_cursor,0,"cursor","Current frame of the cursor along the timeline"))
     , m_state(nullptr)
     , m_isFrameDirty(false)
@@ -106,6 +110,9 @@ AnimationEditor<DataTypes>::AnimationEditor()
     , m_dx(0.)
 {
     d_drawTimeline.setGroup("Visualization");
+    d_drawTrajectory.setGroup("Visualization");
+    d_drawSize.setGroup("Visualization");
+    f_listening.setValue(true);
 }
 
 
@@ -362,7 +369,7 @@ void AnimationEditor<DataTypes>::handleEvent(Event *event)
         {
             if(keyEvent->getKey() == 18 || keyEvent->getKey() == 20) moveCursor(keyEvent->getKey());
             else if(keyEvent->getKey() == 17 || keyEvent->getKey() == 16) moveCursor(keyEvent->getKey());
-            else if(keyEvent->getKey() == '+' || keyEvent->getKey() == '-') moveCursor(keyEvent->getKey());
+            else if(keyEvent->getKey() == 22 || keyEvent->getKey() == 23) moveCursor(keyEvent->getKey());
             else if(keyEvent->getKey() == 'A') addKeyFrame();                 // Ctrl+a (add)
             else if(keyEvent->getKey() == 'D') deleteKeyFrame();              // Ctrl+d (delete)
             else if(keyEvent->getKey() == 'W') saveAnimation();               // Ctrl+w (write)
@@ -408,7 +415,7 @@ void AnimationEditor<DataTypes>::moveCursor(const char key)
         d_cursor.setValue(d_cursor.getValue()-(d_maxKeyFrame.getValue()/20));
     }
 
-    if(key == '+')//Move cursor to the next nearest key frame : Ctrl+'+'
+    if(key == 23)//Move cursor to the next nearest key frame : Ctrl+PgDn
     {
         if (d_cursor.getValue() < m_maxKeyFrameID)
         {
@@ -422,7 +429,7 @@ void AnimationEditor<DataTypes>::moveCursor(const char key)
         }
     }
 
-    if(key == '-')//Move cursor to the previous nearest key frame : Ctrl+'-'
+    if(key == 22)//Move cursor to the previous nearest key frame : Ctrl+PgUp
     {
         if (d_cursor.getValue() > 0)
         {
@@ -750,8 +757,16 @@ void AnimationEditor<DataTypes>::draw(const VisualParams* vparams)
     if(m_componentstate != ComponentState::Valid)
             return ;
 
-    if(!d_drawTimeline.getValue()) return;
+    if(d_drawTimeline.getValue())
+        drawTimeline(vparams);
 
+    if(d_drawTrajectory.getValue())
+        drawTrajectory(vparams);
+}
+
+template<class DataTypes>
+void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
+{
 #ifdef SOFA_WITH_DACCORD
     // If the currently selected object is not a time line... we do nothing.
     if( dynamic_cast<AnimationEditor<DataTypes>*>(Editor::getSelected()) == nullptrptr )
@@ -771,87 +786,55 @@ void AnimationEditor<DataTypes>::draw(const VisualParams* vparams)
     glPushMatrix();
     glLoadIdentity();
 
+    double yUPos = 50.;
+    double yDPos = 0.;
+    double sizeCursor = yUPos/5.;
+    double xShift = 25.;
 
-    //////////////////////////////AnimationEditor/////////////////////////////
-    Vec3d ULPosition = Vec3d(0,vparams->viewport()[3]/12.,0);
-    Vec3d URPosition = Vec3d(vparams->viewport()[2],vparams->viewport()[3]/12,0);
-    Vec3d DRPosition = Vec3d(vparams->viewport()[2],vparams->viewport()[3]/10.,0);
-    Vec3d DLPosition = Vec3d(0,vparams->viewport()[3]/10.,0);
-
-    glColor3f(0.4f, 0.4f, 0.4f);
-    glBegin(GL_QUADS);
-    glVertex2f(ULPosition[0], ULPosition[1]);
-    glVertex2f(URPosition[0], URPosition[1]);
-    glVertex2f(DRPosition[0], DRPosition[1]);
-    glVertex2f(DLPosition[0], DLPosition[1]);
-    glEnd();
+    //////////////////////////////Timeline/////////////////////////////
+    vector<Vec3d> quad;
+    quad.push_back(Vec3d(0,yUPos,0)); //UR
+    quad.push_back(Vec3d(vparams->viewport()[2],yUPos,0)); //UL
+    quad.push_back(Vec3d(vparams->viewport()[2],yDPos,0)); //DL
+    quad.push_back(Vec3d(0,yDPos,0)); //DR
+    vparams->drawTool()->drawQuads(quad,Vec4f(0.4,0.4,0.4,1.));
 
     int maxKey = 0;
     for(unsigned int i=0; i<m_keyFramesID.size(); i++)
         if(m_keyFramesID[i]>maxKey)
             maxKey = m_keyFramesID[i];
 
-    ULPosition = Vec3d(ratio,vparams->viewport()[3]/12.,0);
-    URPosition = Vec3d((maxKey+1)*ratio,vparams->viewport()[3]/12,0);
-    DRPosition = Vec3d((maxKey+1)*ratio,vparams->viewport()[3]/10.,0);
-    DLPosition = Vec3d(ratio,vparams->viewport()[3]/10.,0);
-
-    glColor3f(0.8f, 0.7f, 0.6f);
-    glBegin(GL_QUADS);
-    glVertex2f(ULPosition[0], ULPosition[1]);
-    glVertex2f(URPosition[0], URPosition[1]);
-    glVertex2f(DRPosition[0], DRPosition[1]);
-    glVertex2f(DLPosition[0], DLPosition[1]);
-    glEnd();
+    quad.clear();
+    quad.push_back(Vec3d(ratio+xShift,yUPos,0)); //UR
+    quad.push_back(Vec3d((maxKey+1)*ratio+xShift,yUPos,0)); //UL
+    quad.push_back(Vec3d((maxKey+1)*ratio+xShift,yDPos,0)); //DL
+    quad.push_back(Vec3d(ratio+xShift,yDPos,0)); //DR
+    vparams->drawTool()->drawQuads(quad,Vec4f(0.,0.3,0.,1.));
     ///////////////////////////////////////////////
 
-    //////////////TRIANGLES////////////////////////
+    //////////////Cursor////////////////////////
     glBegin(GL_TRIANGLES);
 
-
-    //Initial key frame
-    glColor3f(0.6f, 0.6f, 0.6f);
-    glVertex2f(ratio, vparams->viewport()[3]/10);
-    glVertex2f(ratio+5, vparams->viewport()[3]/10 + 10);
-    glVertex2f(ratio-5, vparams->viewport()[3]/10 + 10);
-
-    //Max key frame
-    glColor3f(0.4f, 0.f, 0.f);
-    glVertex2f((d_maxKeyFrame.getValue()+1)*ratio, vparams->viewport()[3]/10);
-    glVertex2f((d_maxKeyFrame.getValue()+1)*ratio+5, vparams->viewport()[3]/10 + 10);
-    glVertex2f((d_maxKeyFrame.getValue()+1)*ratio-5, vparams->viewport()[3]/10 + 10);
-
-    //Selected
-    glColor3f(0.6f, 0.6f, 0.6f);
-    for (unsigned int i=0; i<m_keyFramesID.size(); i++)
-    {
-        glVertex2f((m_keyFramesID[i]+1)*ratio, vparams->viewport()[3]/10);
-        glVertex2f(5+(m_keyFramesID[i]+1)*ratio, vparams->viewport()[3]/10 + 10);
-        glVertex2f(-5+(m_keyFramesID[i]+1)*ratio, vparams->viewport()[3]/10 + 10);
-    }
-
     //Current cursor
-    glColor3f(0.9f, 0.9f, 0.9f);
-    glVertex2f((d_cursor.getValue()+1)*ratio, vparams->viewport()[3]/10);
-    glVertex2f(5+(d_cursor.getValue()+1)*ratio, vparams->viewport()[3]/10 + 10);
-    glVertex2f(-5+(d_cursor.getValue()+1)*ratio, vparams->viewport()[3]/10 + 10);
-
-    glEnd();
-
+    vector<Vec3d> triangle;
+    triangle.push_back(Vec3d((d_cursor.getValue()+1)*ratio+xShift, yUPos, 0.));
+    triangle.push_back(Vec3d(sizeCursor/2.+(d_cursor.getValue()+1)*ratio+xShift, yUPos + sizeCursor, 0.));
+    triangle.push_back(Vec3d(-sizeCursor/2.+(d_cursor.getValue()+1)*ratio+xShift, yUPos + sizeCursor, 0.));
+    vparams->drawTool()->drawTriangles(triangle,Vec4f(0.9,0.9,0.9,1.));
     ///////////////////////////////////////////////////
 
-    /// /////////////////////LINES/////////////////////
+    /// /////////////////////KeyFrames/////////////////////
     for(unsigned int i=0; i<m_keyFramesID.size(); i++)
     {
         vector<Vec3d> line;
-        line.push_back(Vec3d((m_keyFramesID[i]+1)*ratio,vparams->viewport()[3]/12,0.));
-        line.push_back(Vec3d((m_keyFramesID[i]+1)*ratio,vparams->viewport()[3]/10,0.));
-        vparams->drawTool()->drawLines(line,2,Vec4f(1.,0.9,0.,1.));
+        line.push_back(Vec3d((m_keyFramesID[i]+1)*ratio+xShift,yUPos,0.));
+        line.push_back(Vec3d((m_keyFramesID[i]+1)*ratio+xShift,yDPos,0.));
+        vparams->drawTool()->drawLines(line,2,Vec4f(0.,0.5,0.,1.));
     }
 
     vector<Vec3d> line;
-    line.push_back(Vec3d((d_maxKeyFrame.getValue()+1)*ratio,vparams->viewport()[3]/12,0.));
-    line.push_back(Vec3d((d_maxKeyFrame.getValue()+1)*ratio,vparams->viewport()[3]/10,0.));
+    line.push_back(Vec3d((d_maxKeyFrame.getValue()+1)*ratio+xShift,yUPos,0.));
+    line.push_back(Vec3d((d_maxKeyFrame.getValue()+1)*ratio+xShift,yDPos,0.));
     vparams->drawTool()->drawLines(line,2,Vec4f(0.6,0.,0.,1.));
     ////////////////////////////////////////////////
 
@@ -860,6 +843,27 @@ void AnimationEditor<DataTypes>::draw(const VisualParams* vparams)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 #endif
+}
+
+template<class DataTypes>
+void AnimationEditor<DataTypes>::drawTrajectory(const VisualParams* vparams)
+{
+    vector<Vec3d> points;
+    for(unsigned int i=0; i<m_keyFramesID.size(); i++)
+    {
+        for(unsigned int k=0; k<m_animation[i].size(); k++)
+            points.push_back(m_animation[m_keyFramesID[i]][k]);
+    }
+
+    vector<Vec3d> lines;
+    for(unsigned int i=0; i<points.size()-1; i++)
+    {
+        lines.push_back(points[i]);
+        lines.push_back(points[i+1]);
+    }
+
+    vparams->drawTool()->drawPoints(points,d_drawSize.getValue()*5.,Vec4f(0.4,0.4,0.4,1.));
+    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,Vec4f(0.5,0.5,0.5,1.));
 }
 
 }//namespace _animationeditor_

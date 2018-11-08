@@ -117,6 +117,8 @@ public:
     Data<double>            d_dx;
     Data<double>            d_frameTime;
     Data<bool>              d_drawTimeline;
+    Data<double>            d_drawSize;
+    Data<bool>              d_drawTrajectory;
     Data<int>               d_cursor;
 
     vector<int>                      m_keyFramesID;
@@ -154,6 +156,8 @@ protected:
     bool isCursorKeyFrame(int &index);
     int getMaxKeyFrameID();
 
+    void drawTimeline(const core::visual::VisualParams* vparams);
+    void drawTrajectory(const core::visual::VisualParams* vparams);
 
 };   //class AnimationEditor
 

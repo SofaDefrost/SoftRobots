@@ -209,19 +209,19 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
         m_maxKeyFrameID = 100;
 
         d_cursor.setValue(30);
-        moveCursor('+');
+        moveCursor(23); //PgDn
         EXPECT_EQ(d_cursor.getValue(),53);
 
         d_cursor.setValue(30);
-        moveCursor('-');
+        moveCursor(22); //PgUp
         EXPECT_EQ(d_cursor.getValue(),24);
 
         d_cursor.setValue(0);
-        moveCursor('-');
+        moveCursor(22); //PgUp
         EXPECT_EQ(d_cursor.getValue(),0);
 
         d_cursor.setValue(100);
-        moveCursor('+');
+        moveCursor(23); //PgDn
         EXPECT_EQ(d_cursor.getValue(),100);
     }
 

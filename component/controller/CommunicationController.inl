@@ -120,7 +120,6 @@ void CommunicationController<DataTypes>::reinit()
 template<class DataTypes>
 void CommunicationController<DataTypes>::reset()
 {
-    reinit();
 }
 
 
@@ -183,13 +182,13 @@ void CommunicationController<DataTypes>::openCommunication()
 template<class DataTypes>
 void CommunicationController<DataTypes>::closeCommunication()
 {
-    if(m_socket)
+    if(m_socket != nullptr)
     {
         m_socket->close();
         delete m_socket;
     }
 
-    if(m_context)
+    if(m_context != nullptr)
     {
         m_context->close();
         delete m_context;

@@ -36,7 +36,7 @@ def createScene(rootNode):
                         showObject="1",
                         showObjectScale="1",
                         drawMode="1")
-                goal.createObject('AnimationEditor', listening="1", load="1", filename=path+"Accordion_Animation.txt", drawTimeLine=1)
+                goal.createObject('AnimationEditor', filename=path+"Accordion_Animation.txt", drawTrajectory=0)
                 goal.createObject('UncoupledConstraintCorrection')
 
 
@@ -143,8 +143,8 @@ def createScene(rootNode):
                 ##########################################
                 accordionVisu = accordion.createChild('visu')
                 accordionVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Body.obj", name="loader")
-                accordionVisu.createObject('OglModel', src="loader", putOnlyTexCoords='true', normals='0', translation="0 -2.5 2.5")
-                accordionVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                accordionVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="0 -2.5 2.5")
+                accordionVisu.createObject('OglShader', fileVertexShaders='["shaders/shaderLibrary.glsl"]', fileFragmentShaders='["shaders/shaderLibrary.glsl"]')
                 accordionVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
                 accordionVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
                 accordionVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
@@ -158,9 +158,9 @@ def createScene(rootNode):
                 accordionVisu.createObject('BarycentricMapping')
 
                 Environment = rootNode.createChild('Environment')
-                Environment.createObject('MeshObjLoader', fileMesh=pathMesh+'Cyclo_Springy.obj', name='loader')
+                Environment.createObject('MeshObjLoader', filename=pathMesh+'Cyclo_Springy.obj', name='loader')
                 Environment.createObject('OglModel', putOnlyTexCoords='true', src="@loader", name='decor', normals='0', rotation="90 0 0")
-                Environment.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                Environment.createObject('OglShader', fileVertexShaders='["shaders/shaderLibrary.glsl"]', fileFragmentShaders='["shaders/shaderLibrary.glsl"]')
                 Environment.createObject('OglFloat3Variable', name='AmbientColor', value='1.0 1.0 1.0')
                 Environment.createObject('OglFloat3Variable', name='DiffuseColor', value='0.8 0.8 0.8')
                 Environment.createObject('OglFloat3Variable', name='SpecularColor', value='1 1 1')
@@ -175,7 +175,7 @@ def createScene(rootNode):
                 EyeLVisu = EyeLMO.createChild('EyeLVisu')
                 EyeLVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Eye_Left.obj", name="loader")
                 EyeLVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="-1 -1.0 -1")
-                EyeLVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                EyeLVisu.createObject('OglShader', fileVertexShaders='["shaders/shaderLibrary.glsl"]', fileFragmentShaders='["shaders/shaderLibrary.glsl"]')
                 EyeLVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
                 EyeLVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
                 EyeLVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
@@ -194,7 +194,7 @@ def createScene(rootNode):
                 EyeRVisu = EyeRMO.createChild('EyeRVisu')
                 EyeRVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Eye_Right.obj", name="loader")
                 EyeRVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="1 -1.0 -1")
-                EyeRVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                EyeRVisu.createObject('OglShader', fileVertexShaders='["shaders/shaderLibrary.glsl"]', fileFragmentShaders='["shaders/shaderLibrary.glsl"]')
                 EyeRVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
                 EyeRVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
                 EyeRVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
@@ -213,7 +213,7 @@ def createScene(rootNode):
                 MouthVisu = MouthMO.createChild('EyeLVisu')
                 MouthVisu.createObject('MeshObjLoader', filename=pathMesh+"Springy_Cartoon_Mouth.obj", name="loader")
                 MouthVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="0 -1.0 1.0")
-                MouthVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                MouthVisu.createObject('OglShader', fileVertexShaders='["shaders/shaderLibrary.glsl"]', fileFragmentShaders='["shaders/shaderLibrary.glsl"]')
                 MouthVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
                 MouthVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
                 MouthVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
@@ -232,7 +232,7 @@ def createScene(rootNode):
                 NoseVisu = NoseMO.createChild('NoseVisu')
                 NoseVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Nose.obj", name="loader")
                 NoseVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="0 -1.0 0")
-                NoseVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                NoseVisu.createObject('OglShader', fileVertexShaders='["shaders/shaderLibrary.glsl"]', fileFragmentShaders='["shaders/shaderLibrary.glsl"]')
                 NoseVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
                 NoseVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
                 NoseVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
