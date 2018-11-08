@@ -90,7 +90,7 @@ using sofa::helper::vector;
 template<class DataTypes>
 AnimationEditor<DataTypes>::AnimationEditor()
     :
-      d_maxKeyFrame(initData(&d_maxKeyFrame,(int)150,"maxKeyFrame","Max >= 1, default 150"))
+      d_maxKeyFrame(initData(&d_maxKeyFrame,(unsigned int)150,"maxKeyFrame","Max >= 1, default 150"))
     , d_filename(initData(&d_filename,string("animation.txt"),"filename","If no filename given, set default to animation.txt"))
     , d_loop(initData(&d_loop,false,"loop","If true, will loop on the animation (only in play mode)."))
     , d_load(initData(&d_load,true,"load","If true, will load the animation at init."))
@@ -101,7 +101,7 @@ AnimationEditor<DataTypes>::AnimationEditor()
     , d_drawTimeline(initData(&d_drawTimeline,true,"drawTimeline",""))
     , d_drawSize(initData(&d_drawSize,0.1,"drawSize",""))
     , d_drawTrajectory(initData(&d_drawTrajectory,true,"drawTrajectory",""))
-    , d_cursor(initData(&d_cursor,0,"cursor","Current frame of the cursor along the timeline"))
+    , d_cursor(initData(&d_cursor,(unsigned int)0,"cursor","Current frame of the cursor along the timeline"))
     , m_state(nullptr)
     , m_isFrameDirty(false)
     , m_isPlaying(false)
@@ -159,7 +159,7 @@ void AnimationEditor<DataTypes>::reinit()
     if(d_maxKeyFrame.getValue()<=0)
         d_maxKeyFrame.setValue(1);
 
-    int nbFrames = m_animation.size();
+    unsigned int nbFrames = m_animation.size();
     if(d_maxKeyFrame.getValue()<nbFrames)
     {
         m_animation.erase(m_animation.begin()+d_maxKeyFrame.getValue()+1,m_animation.end());
@@ -235,7 +235,7 @@ void AnimationEditor<DataTypes>::loadAnimation()
                     m_animation.resize(nbFrames);
                     m_keyFramesID.clear();
                     d_cursor.setValue(0);
-                    if(d_maxKeyFrame.getValue()<(int)nbFrames)
+                    if(d_maxKeyFrame.getValue()<nbFrames)
                         d_maxKeyFrame.setValue(nbFrames+nbFrames/2);
                 }
             }
@@ -344,7 +344,7 @@ void AnimationEditor<DataTypes>::onBeginAnimationStep(const double dt)
     if(m_isFrameDirty)
     {
         m_isFrameDirty = false;
-        if(d_cursor.getValue()<(int)m_animation.size())
+        if(d_cursor.getValue()<m_animation.size())
             m_state->write(core::VecCoordId::position())->setValue(m_animation[d_cursor.getValue()]);
     }
 }
@@ -400,7 +400,8 @@ void AnimationEditor<DataTypes>::moveCursor(const char key)
     if(key == 18)//Move cursor to left direction : Ctrl+Left Arrow
     {
         m_isFrameDirty = true;
-        d_cursor.setValue(d_cursor.getValue()-1);
+        if(d_cursor.getValue()>0)
+            d_cursor.setValue(d_cursor.getValue()-1);
     }
 
     if(key == 17)//Move cursor fast to right direction : Ctrl+Fn+Right Arrow
@@ -412,14 +413,15 @@ void AnimationEditor<DataTypes>::moveCursor(const char key)
     if(key == 16)//Move cursor fast to left direction : Ctrl+Fn+Left Arrow
     {
         m_isFrameDirty = true;
-        d_cursor.setValue(d_cursor.getValue()-(d_maxKeyFrame.getValue()/20));
+        if(d_cursor.getValue()>0)
+            d_cursor.setValue(d_cursor.getValue()-(d_maxKeyFrame.getValue()/20));
     }
 
     if(key == 23)//Move cursor to the next nearest key frame : Ctrl+PgDn
     {
         if (d_cursor.getValue() < m_maxKeyFrameID)
         {
-            int nextKeyFrame = m_maxKeyFrameID;
+            unsigned int nextKeyFrame = m_maxKeyFrameID;
             for(unsigned int i=0; i<m_keyFramesID.size(); i++)
                 if(m_keyFramesID[i]<nextKeyFrame && m_keyFramesID[i]>d_cursor.getValue())
                     nextKeyFrame = m_keyFramesID[i];
@@ -433,7 +435,7 @@ void AnimationEditor<DataTypes>::moveCursor(const char key)
     {
         if (d_cursor.getValue() > 0)
         {
-            int previousKeyFrame = 0;
+            unsigned int previousKeyFrame = 0;
             for(unsigned int i=0; i<m_keyFramesID.size(); i++)
                 if(m_keyFramesID[i]>previousKeyFrame && m_keyFramesID[i]<d_cursor.getValue())
                     previousKeyFrame = m_keyFramesID[i];
@@ -461,7 +463,7 @@ template<class DataTypes>
 void AnimationEditor<DataTypes>::moveCursorWithdx()
 {
     ReadAccessor<Data<double>> dx = d_dx;
-    int cursor = d_cursor.getValue();
+    unsigned int cursor = d_cursor.getValue();
     if(dx>0)
     {
         if(d_cursor.getValue()<m_maxKeyFrameID)
@@ -634,8 +636,8 @@ bool AnimationEditor<DataTypes>::isCursorKeyFrame(int &index)
 template<class DataTypes>
 int AnimationEditor<DataTypes>::getMaxKeyFrameID()
 {
-    int maxID = 0;
-    for (int i=0; i<(int)m_keyFramesID.size(); i++)
+    unsigned int maxID = 0;
+    for (unsigned int i=0; i<m_keyFramesID.size(); i++)
         if (maxID < m_keyFramesID[i])
             maxID = m_keyFramesID[i];
     return maxID;
@@ -651,13 +653,13 @@ void AnimationEditor<DataTypes>::updateAnimation(Status status)
         return;
     }
 
-    int nbKeyFrame  = m_keyFramesID.size();
-    int currentKey  = d_cursor.getValue();
-    int previousKey = 0;
-    int nextKey     = d_maxKeyFrame.getValue()+1;
+    unsigned int nbKeyFrame  = m_keyFramesID.size();
+    unsigned int currentKey  = d_cursor.getValue();
+    unsigned int previousKey = 0;
+    unsigned int nextKey     = d_maxKeyFrame.getValue()+1;
 
     // Get previous and next keyframe
-    for (int i=0; i<nbKeyFrame; i++)
+    for (unsigned int i=0; i<nbKeyFrame; i++)
     {
         if(m_keyFramesID[i]<currentKey && m_keyFramesID[i]>previousKey)
             previousKey = m_keyFramesID[i];
@@ -799,7 +801,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
     quad.push_back(Vec3d(0,yDPos,0)); //DR
     vparams->drawTool()->drawQuads(quad,Vec4f(0.4,0.4,0.4,1.));
 
-    int maxKey = 0;
+    unsigned int maxKey = 0;
     for(unsigned int i=0; i<m_keyFramesID.size(); i++)
         if(m_keyFramesID[i]>maxKey)
             maxKey = m_keyFramesID[i];
@@ -849,10 +851,13 @@ template<class DataTypes>
 void AnimationEditor<DataTypes>::drawTrajectory(const VisualParams* vparams)
 {
     vector<Vec3d> points;
-    for(unsigned int i=0; i<m_keyFramesID.size(); i++)
+    vector<unsigned int> IDSorted = m_keyFramesID;
+    unsigned int nbKey = m_keyFramesID.size();
+    std::sort(IDSorted.begin(), IDSorted.begin() + nbKey);
+    for(unsigned int k=0; k<nbKey; k++)
     {
-        for(unsigned int k=0; k<m_animation[i].size(); k++)
-            points.push_back(m_animation[m_keyFramesID[i]][k]);
+        for(unsigned int j=0; j<m_animation[k].size(); j++)
+            points.push_back(m_animation[IDSorted[k]][j]);
     }
 
     vector<Vec3d> lines;

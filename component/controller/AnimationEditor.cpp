@@ -149,11 +149,14 @@ template<>
 void AnimationEditor<Rigid3dTypes>::drawTrajectory(const VisualParams* vparams)
 {
     vector<Vec3d> points;
-    for(unsigned int i=0; i<m_keyFramesID.size(); i++)
+    vector<unsigned int> IDSorted = m_keyFramesID;
+    unsigned int nbKey = m_keyFramesID.size();
+    std::sort(IDSorted.begin(), IDSorted.begin() + nbKey);
+    for(unsigned int i=0; i<nbKey; i++)
     {
         for(unsigned int k=0; k<m_animation[i].size(); k++)
         {
-            points.push_back(m_animation[m_keyFramesID[i]][k].getCenter());
+            points.push_back(m_animation[IDSorted[i]][k].getCenter());
             vparams->drawTool()->drawFrame(m_animation[m_keyFramesID[i]][k].getCenter(), m_animation[m_keyFramesID[i]][k].getOrientation(), Vec3f(d_drawSize.getValue(),d_drawSize.getValue(),d_drawSize.getValue()));
         }
     }
@@ -172,11 +175,14 @@ template<>
 void AnimationEditor<Rigid3fTypes>::drawTrajectory(const VisualParams* vparams)
 {
     vector<Vec3d> points;
-    for(unsigned int i=0; i<m_keyFramesID.size(); i++)
+    vector<unsigned int> IDSorted = m_keyFramesID;
+    unsigned int nbKey = m_keyFramesID.size();
+    std::sort(IDSorted.begin(), IDSorted.begin() + nbKey);
+    for(unsigned int i=0; i<nbKey; i++)
     {
         for(unsigned int k=0; k<m_animation[i].size(); k++)
         {
-            points.push_back(m_animation[m_keyFramesID[i]][k].getCenter());
+            points.push_back(m_animation[IDSorted[i]][k].getCenter());
             vparams->drawTool()->drawFrame(m_animation[m_keyFramesID[i]][k].getCenter(), m_animation[m_keyFramesID[i]][k].getOrientation(), Vec3f(d_drawSize.getValue(),d_drawSize.getValue(),d_drawSize.getValue()));
         }
     }
@@ -190,6 +196,7 @@ void AnimationEditor<Rigid3fTypes>::drawTrajectory(const VisualParams* vparams)
 
     vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,Vec4f(0.5,0.5,0.5,1.));
 }
+
 
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
 using sofa::core::RegisterObject ;

@@ -108,8 +108,15 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
         thisobject->setName("myname") ;
         EXPECT_TRUE(thisobject->getName() == "myname") ;
 
-        EXPECT_TRUE( thisobject->findData("maxKeyFrame") != nullptr ) ;
         EXPECT_TRUE( thisobject->findData("filename") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("loop") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("load") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("maxKeyFrame") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("cursor") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("dx") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("drawTimeline") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("drawTrajectory") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("drawSize") != nullptr ) ;
 
         return ;
     }
@@ -128,7 +135,7 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
     }
 
 
-    bool initTest()
+    void initTest()
     {
         typename ThisClass::SPtr thisobject = New<ThisClass >() ;
 
@@ -137,30 +144,18 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
         m_node->addObject(thisobject) ;
         thisobject->init();
 
-        if(thisobject->m_keyFramesID.size() != 1)
-            return false;
-
-        if(thisobject->m_keyFramesID[0] != 0)
-            return false;
-
-        if(thisobject->m_animation.size() != 1)
-            return false;
-
-        thisobject->findData("maxKeyFrame")->read("-1"); // maxKeyFrame <= 0 not allowed
-        thisobject->init();
-        if(thisobject->d_maxKeyFrame.getValue() != 1)
-            return false;
+        EXPECT_EQ(thisobject->f_listening, true);
+        EXPECT_EQ(thisobject->m_keyFramesID.size(), (unsigned int)1);
+        EXPECT_EQ(thisobject->m_keyFramesID[0], (unsigned int)0);
+        EXPECT_EQ(thisobject->m_animation.size(), (unsigned int)1);
 
         thisobject->findData("maxKeyFrame")->read("0"); // maxKeyFrame <= 0 not allowed
         thisobject->init();
-        if(thisobject->d_maxKeyFrame.getValue() != 1)
-            return false;
-
-        return true;
+        EXPECT_EQ(thisobject->d_maxKeyFrame.getValue(), (unsigned int)1);
     }
 
 
-    bool reinitTest()
+    void reinitTest()
     {
         typename ThisClass::SPtr thisobject = New<ThisClass >() ;
 
@@ -169,17 +164,9 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
         m_node->addObject(thisobject) ;
         thisobject->init();
 
-        thisobject->findData("maxKeyFrame")->read("-1"); // maxKeyFrame <= 0 not allowed
-        thisobject->reinit();
-        if(thisobject->d_maxKeyFrame.getValue() != 1)
-            return false;
-
         thisobject->findData("maxKeyFrame")->read("0"); // maxKeyFrame <= 0 not allowed
         thisobject->reinit();
-        if(thisobject->d_maxKeyFrame.getValue() != 1)
-            return false;
-
-        return true;
+        EXPECT_EQ(thisobject->d_maxKeyFrame.getValue(), (unsigned int)1);
     }
 
 
@@ -187,15 +174,15 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
     {
         d_cursor.setValue(0);
         moveCursor(20);
-        EXPECT_EQ(d_cursor.getValue(),1);
+        EXPECT_EQ(d_cursor.getValue(), (unsigned int)1);
 
         d_cursor.setValue(2);
         moveCursor(18);
-        EXPECT_EQ(d_cursor.getValue(),1);
+        EXPECT_EQ(d_cursor.getValue(), (unsigned int)1);
 
         d_cursor.setValue(0);
         moveCursor(18);
-        EXPECT_EQ(d_cursor.getValue(),0);
+        EXPECT_EQ(d_cursor.getValue(), (unsigned int)0);
 
         d_cursor.setValue(d_maxKeyFrame.getValue());
         moveCursor(20);
@@ -210,19 +197,19 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
 
         d_cursor.setValue(30);
         moveCursor(23); //PgDn
-        EXPECT_EQ(d_cursor.getValue(),53);
+        EXPECT_EQ(d_cursor.getValue(), (unsigned int)53);
 
         d_cursor.setValue(30);
         moveCursor(22); //PgUp
-        EXPECT_EQ(d_cursor.getValue(),24);
+        EXPECT_EQ(d_cursor.getValue(), (unsigned int)24);
 
         d_cursor.setValue(0);
         moveCursor(22); //PgUp
-        EXPECT_EQ(d_cursor.getValue(),0);
+        EXPECT_EQ(d_cursor.getValue(), (unsigned int)0);
 
         d_cursor.setValue(100);
         moveCursor(23); //PgDn
-        EXPECT_EQ(d_cursor.getValue(),100);
+        EXPECT_EQ(d_cursor.getValue(), (unsigned int)100);
     }
 
 
@@ -244,14 +231,14 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
         newPosition[0] = Coord(0.,12.5,0.);
         m_state->write(core::VecCoordId::position())->setValue(newPosition);
         addKeyFrame();
-        if(m_keyFramesID.size() != 2) return false;
-        if(m_keyFramesID[1] != 5) return false;
-        if(m_animation.size() != 6) return false;
+        if(m_keyFramesID.size() != (unsigned int)2) return false;
+        if(m_keyFramesID[1] != (unsigned int)5) return false;
+        if(m_animation.size() != (unsigned int)6) return false;
         EXPECT_EQ(m_animation[5],newPosition);
 
         deleteKeyFrame();
-        if(m_keyFramesID.size() != 1) return false;
-        if(m_animation.size() != 1) return false;
+        if(m_keyFramesID.size() != (unsigned int)1) return false;
+        if(m_animation.size() != (unsigned int)1) return false;
 
         return true;
     }
@@ -296,11 +283,11 @@ TYPED_TEST(AnimationEditorTest, SimpleScene) {
 }
 
 TYPED_TEST(AnimationEditorTest, initTest) {
-    ASSERT_TRUE(this->initTest()) ;
+    ASSERT_NO_THROW(this->initTest()) ;
 }
 
 TYPED_TEST(AnimationEditorTest, reinitTest) {
-    ASSERT_TRUE(this->reinitTest()) ;
+    ASSERT_NO_THROW(this->reinitTest()) ;
 }
 
 TYPED_TEST(AnimationEditorTest, moveCursorTest) {
