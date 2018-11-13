@@ -18,6 +18,8 @@ def createScene(rootNode):
                 # Otherwise use a GenericConstraintSolver
                 rootNode.createObject('GenericConstraintSolver', tolerance="1e-5", maxIterations="100")
 
+                rootNode.gravity = "0 -9810 0"
+                rootNode.dt="0.01"
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
                 rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
@@ -25,7 +27,7 @@ def createScene(rootNode):
                 # FEM Model                              #
                 ##########################################
                 finger = rootNode.createChild('finger')
-                finger.createObject('EulerImplicit', name='odesolver', firstOrder='1')
+                finger.createObject('EulerImplicit', name='odesolver', firstOrder='0', rayleighMass="0.1", rayleighStiffness="0.1")
                 finger.createObject('SparseLDLSolver', name='preconditioner')
 
 		        # Add a componant to load a VTK tetrahedral mesh and expose the resulting topology in the scene .
@@ -39,11 +41,11 @@ def createScene(rootNode):
                 finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
 
                 # Gives a mass to the model
-                finger.createObject('UniformMass', totalMass='0.5')
+                finger.createObject('UniformMass', totalMass='0.075')
 
                 # Add a TetrahedronFEMForceField componant which implement an elastic material model solved using the Finite Element Method on
                 # tetrahedrons.
-                finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
+                finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.45',  youngModulus='600')
 
                 # To facilitate the selection of DoFs, SOFA has a concept called ROI (Region of Interest).
 		        # The idea is that ROI component "select" all DoFS that are enclosed by their "region".
