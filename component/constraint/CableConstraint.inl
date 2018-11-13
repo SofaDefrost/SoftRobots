@@ -144,7 +144,8 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
 
     if(d_valueType.getValue().getSelectedItem() == "displacement") // displacement
     {
-        double minForce=-1e99, maxForce=1e99;
+        double maxForce = std::numeric_limits<double>::max();
+        double minForce = -maxForce;
         setUpDisplacementLimits(imposedValue,minForce,maxForce);
 
         CableDisplacementConstraintResolution *cr=  new CableDisplacementConstraintResolution(imposedValue, minForce, maxForce);
@@ -152,7 +153,8 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
     }
     else // force
     {
-        double minDisplacement=-1e99, maxDisplacement=1e99;
+        double maxDisplacement = std::numeric_limits<double>::max();
+        double minDisplacement = -maxDisplacement;
         setUpForceLimits(imposedValue,minDisplacement,maxDisplacement);
 
         CableForceConstraintResolution *cr=  new CableForceConstraintResolution(imposedValue, minDisplacement, maxDisplacement);

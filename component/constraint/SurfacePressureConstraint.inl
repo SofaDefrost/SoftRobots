@@ -150,7 +150,8 @@ void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<C
 
     if(d_valueType.getValue().getSelectedItem() == "volumeGrowth")
     {
-        double minPressure=-1e99, maxPressure=1e99;
+        double maxPressure = std::numeric_limits<double>::max();
+        double minPressure = -maxPressure;
         setUpVolumeLimits(imposedValue,minPressure,maxPressure);
 
         VolumeGrowthConstraintResolution *cr=  new VolumeGrowthConstraintResolution(imposedValue, minPressure, maxPressure);
@@ -158,7 +159,8 @@ void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<C
     }
     else // pressure
     {
-        double minVolumeGrowth=-1e99, maxVolumeGrowth=1e99;
+        double maxVolumeGrowth = std::numeric_limits<double>::max();
+        double minVolumeGrowth = -maxVolumeGrowth;
         setUpPressureLimits(imposedValue,minVolumeGrowth,maxVolumeGrowth);
 
         SurfacePressureConstraintResolution *cr=  new SurfacePressureConstraintResolution(imposedValue, minVolumeGrowth, maxVolumeGrowth);
