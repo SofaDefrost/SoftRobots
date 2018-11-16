@@ -159,7 +159,6 @@ protected:
     void internalInit();
 
 private:
-    void setUpData();
     void setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce);
     void setUpForceLimits(double& imposedValue, double& minDisplacement, double& maxDisplacement);
 };

@@ -63,7 +63,6 @@ CableConstraint<DataTypes>::CableConstraint(MechanicalState* object)
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
-    setUpData();
 }
 
 
@@ -83,7 +82,6 @@ CableConstraint<DataTypes>::CableConstraint()
                                           "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
-    setUpData();
 }
 
 template<class DataTypes>
@@ -92,18 +90,16 @@ CableConstraint<DataTypes>::~CableConstraint()
 }
 
 template<class DataTypes>
-void CableConstraint<DataTypes>::setUpData()
-{
-    // To remove in SoftRobots v20.0
-    msg_warning() << "An old implementation of CableConstraint was not allowing negative force. This is now possible. "
-                  << "However, to limit the force to be strictly positive you now have to set minForce=0.";
-    //
-}
-
-template<class DataTypes>
 void CableConstraint<DataTypes>::init()
 {
     Inherit::init();
+
+    // To remove in SoftRobots v20.0
+    if(!d_minForce.isSet())
+        msg_warning() << "An old implementation of CableConstraint was not allowing negative force. This is now possible. "
+                      << "However, to limit the force to be strictly positive you now have to set minForce=0.";
+    //
+
     internalInit();
 }
 
