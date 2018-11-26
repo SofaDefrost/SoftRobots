@@ -81,8 +81,7 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
 
 public:
-    CableModel();
-    CableModel(MechanicalState* object);
+    CableModel(MechanicalState* object = nullptr);
     virtual ~CableModel();
 
     ////////////////////////// Inherited from BaseObject ////////////////////
