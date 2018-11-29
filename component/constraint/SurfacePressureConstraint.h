@@ -110,16 +110,13 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename Coord::value_type      Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef SurfacePressureModel<DataTypes>           Inherit;
-
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
     typedef Data<MatrixDeriv>               DataMatrixDeriv;
     
 public:
-    SurfacePressureConstraint(MechanicalState* object);
-    SurfacePressureConstraint();
+    SurfacePressureConstraint(MechanicalState* object = nullptr);
 
     virtual ~SurfacePressureConstraint() ;
 

@@ -92,7 +92,6 @@ public:
     typedef typename DataTypes::MatrixDeriv         MatrixDeriv;
     typedef typename Coord::value_type              Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef Constraint<DataTypes> Inherit;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef Data<VecCoord>                          DataVecCoord;
@@ -100,8 +99,7 @@ public:
     typedef Data<MatrixDeriv>                       DataMatrixDeriv;
 
 public:
-    UnilateralPlaneConstraint(MechanicalState* object);
-    UnilateralPlaneConstraint();
+    UnilateralPlaneConstraint(MechanicalState* object = nullptr);
     virtual ~UnilateralPlaneConstraint() ;
 
     /////////////// Inherited from BaseObject  ////////////

@@ -64,7 +64,6 @@ class PREquivalentStiffnessForceField : public ForceField<DataTypes>
 public :
     SOFA_CLASS(SOFA_TEMPLATE(PREquivalentStiffnessForceField, DataTypes), SOFA_TEMPLATE(ForceField, DataTypes));
 
-    typedef ForceField<DataTypes>       Inherit;
     typedef typename DataTypes::Real    Real;
     typedef typename DataTypes::Coord   Coord;
     typedef typename DataTypes::Deriv   Deriv;

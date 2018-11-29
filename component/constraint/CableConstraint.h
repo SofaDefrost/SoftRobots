@@ -117,7 +117,6 @@ public:
 
 public:
     CableConstraint(MechanicalState* object = nullptr);
-
     virtual ~CableConstraint();
 
     /////////////// Inherited from BaseObject //////////////////////

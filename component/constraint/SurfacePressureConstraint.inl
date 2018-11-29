@@ -55,7 +55,7 @@ using sofa::helper::OptionsGroup;
 
 template<class DataTypes>
 SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState* object)
-    : Inherit(object)
+    : Inherit1(object)
     , d_value(initData(&d_value, "value",
                                 "List of choices for volume growth or pressure to impose.\n"))
 
@@ -72,24 +72,6 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState*
 
 
 template<class DataTypes>
-SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint()
-    : Inherit()
-    , d_value(initData(&d_value, "value",
-                                "List of choices for volume growth or pressure to impose.\n"))
-
-    , d_valueIndex(initData(&d_valueIndex, (unsigned int) 0, "valueIndex",
-                                  "Index of the value (in InputValue vector) that we want to impose \n"
-                                  "If unspecified, the default value is {0}"))
-
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"pressure","volumeGrowth"), "valueType",
-                                          "volumeGrowth = the contstraint will impose the volume growth provided in data d_inputValue[d_iputIndex] \n"
-                                          "force = the constraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
-                                          "If unspecified, the default value is pressure"))
-{
-}
-
-
-template<class DataTypes>
 SurfacePressureConstraint<DataTypes>::~SurfacePressureConstraint()
 {
 }
@@ -98,7 +80,7 @@ SurfacePressureConstraint<DataTypes>::~SurfacePressureConstraint()
 template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::init()
 {
-    Inherit::init();
+    Inherit1::init();
     initData();
 
     m_initialValue = d_value.getValue();
@@ -108,7 +90,7 @@ void SurfacePressureConstraint<DataTypes>::init()
 template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::reinit()
 {
-    Inherit::reinit();
+    Inherit1::reinit();
     initData();
 }
 
@@ -116,7 +98,7 @@ void SurfacePressureConstraint<DataTypes>::reinit()
 template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::reset()
 {
-    Inherit::reset();
+    Inherit1::reset();
     d_value.setValue(m_initialValue);
 }
 

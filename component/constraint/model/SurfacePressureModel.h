@@ -86,8 +86,7 @@ public:
     typedef core::topology::BaseMeshTopology::Edge          Edge;
 
 public:
-    SurfacePressureModel();
-    SurfacePressureModel(MechanicalState* object);
+    SurfacePressureModel(MechanicalState* object = nullptr);
     virtual ~SurfacePressureModel();
 
     ////////////////////////// Inherited from BaseObject ////////////////////

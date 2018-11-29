@@ -58,21 +58,8 @@ using defaulttype::Vector3;
 
 template<class DataTypes>
 UnilateralPlaneConstraint<DataTypes>::UnilateralPlaneConstraint(MechanicalState* object)
-    : Inherit(object)
+    : Inherit1(object)
     , d_indices(initData(&d_indices,"indices","Four indices: \n"
-                         "-First one for the constrained point \n"
-                         "-The others to describe the plane"))
-
-    , d_flipNormal(initData(&d_flipNormal,false,"flipNormal","The normal must be to the direction of the point"))
-
-    , m_columnIndex(0)
-{
-}
-
-
-template<class DataTypes>
-UnilateralPlaneConstraint<DataTypes>::UnilateralPlaneConstraint()
-    : d_indices(initData(&d_indices,"indices","Four indices: \n"
                          "-First one for the constrained point \n"
                          "-The others to describe the plane"))
 
@@ -93,7 +80,7 @@ template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::init()
 {
     m_componentstate = ComponentState::Invalid;
-    Inherit::init();
+    Inherit1::init();
 
     if(mstate == nullptr)
     {

@@ -75,7 +75,6 @@ public:
     typedef typename Coord::value_type          Real;
     typedef Vec<3, Real>                        Vec3;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef Constraint<DataTypes> Inherit;
 
     typedef typename MatrixDeriv::RowIterator   MatrixDerivRowIterator;
     typedef Data<VecCoord>           DataVecCoord;
@@ -105,8 +104,7 @@ public:
 protected:
     unsigned int m_cid;
 
-    PartialRigidificationConstraint(MechanicalState* object) ;
-    PartialRigidificationConstraint() ;
+    PartialRigidificationConstraint(MechanicalState* object = nullptr) ;
     virtual ~PartialRigidificationConstraint() ;
 
 private:
