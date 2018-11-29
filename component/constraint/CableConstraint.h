@@ -110,15 +110,13 @@ public:
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef CableModel<DataTypes> Inherit;
 
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
 
 public:
-    CableConstraint(MechanicalState* object);
-    CableConstraint();
+    CableConstraint(MechanicalState* object = nullptr);
 
     virtual ~CableConstraint();
 

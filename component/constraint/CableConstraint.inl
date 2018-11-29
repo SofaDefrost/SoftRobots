@@ -49,26 +49,7 @@ using sofa::helper::WriteAccessor;
 
 template<class DataTypes>
 CableConstraint<DataTypes>::CableConstraint(MechanicalState* object)
-    : Inherit(object)
-
-    , d_value(initData(&d_value, "value",
-                                "Displacement or force to impose.\n"))
-
-    , d_valueIndex(initData(&d_valueIndex, (unsigned int) 0, "valueIndex",
-                                  "Index of the value (in InputValue vector) that we want to impose \n"
-                                  "If unspecified the default value is {0}"))
-
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
-                                          "displacement = the contstraint will impose the displacement provided in data d_inputValue[d_iputIndex] \n"
-                                          "force = the contstraint will impose the force provided in data d_inputValue[d_iputIndex] \n"
-                                          "If unspecified, the default value is displacement"))
-{
-}
-
-
-template<class DataTypes>
-CableConstraint<DataTypes>::CableConstraint()
-    : Inherit()
+    : Inherit1(object)
 
     , d_value(initData(&d_value, "value",
                                 "Displacement or force to impose.\n"))
@@ -92,7 +73,7 @@ CableConstraint<DataTypes>::~CableConstraint()
 template<class DataTypes>
 void CableConstraint<DataTypes>::init()
 {
-    Inherit::init();
+    Inherit1::init();
 
     // To remove in SoftRobots v20.0
     if(!d_minForce.isSet())
