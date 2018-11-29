@@ -64,7 +64,6 @@ CenterOfMass<DataTypes>::CenterOfMass()
     , d_visuColor(initData(&d_visuColor, Vec4f(1.,0.,0.,1.), "visuColor",""))
 {
     d_centerOfMass.setReadOnly(true);
-    setDirtyValue();
 }
 
 
@@ -102,20 +101,16 @@ void CenterOfMass<DataTypes>::init()
 template <class DataTypes>
 void CenterOfMass<DataTypes>::reinit()
 {
-    if(m_componentstate != ComponentState::Valid)
-            return ;
-
-    computeCenterOfMass();
+    update();
 }
 
 
 template <class DataTypes>
-void CenterOfMass<DataTypes>::update()
+void CenterOfMass<DataTypes>::doUpdate()
 {
     if(m_componentstate != ComponentState::Valid)
             return ;
 
-    cleanDirty();
     computeCenterOfMass();
 }
 
@@ -147,7 +142,6 @@ void CenterOfMass<DataTypes>::handleEvent(Event *event)
 
     if (AnimateBeginEvent::checkEventType(event))
     {
-        setDirtyValue();
         update();
     }
 }

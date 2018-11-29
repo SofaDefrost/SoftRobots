@@ -62,7 +62,6 @@ VolumeFromTetrahedrons<DataTypes>::VolumeFromTetrahedrons()
     , d_doUpdate(initData(&d_doUpdate,false,"update","If true, will update the volume at each time step"))
 {
     d_volume.setReadOnly(true);
-    setDirtyValue();
 }
 
 
@@ -175,7 +174,7 @@ void VolumeFromTetrahedrons<DataTypes>::checkTopology()
 
 
 template <class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::update()
+void VolumeFromTetrahedrons<DataTypes>::doUpdate()
 {
     if(m_componentstate != ComponentState::Valid)
             return ;
@@ -184,7 +183,6 @@ void VolumeFromTetrahedrons<DataTypes>::update()
     {
         ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
         d_positions.setValue(positions.ref());
-        cleanDirty();
         updateVolume();
     }
 }
@@ -273,7 +271,6 @@ void VolumeFromTetrahedrons<DataTypes>::handleEvent(Event *event)
 
     if (AnimateBeginEvent::checkEventType(event))
     {
-        setDirtyValue();
         update();
     }
 }
