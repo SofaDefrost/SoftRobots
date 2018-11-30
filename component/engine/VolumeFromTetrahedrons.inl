@@ -33,9 +33,6 @@
 #include "VolumeFromTetrahedrons.h"
 #include <sofa/helper/helper.h>
 
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-
 namespace sofa
 {
 
@@ -45,21 +42,20 @@ namespace component
 namespace engine
 {
 
-using sofa::core::objectmodel::ComponentState;
+using core::objectmodel::ComponentState;
 using helper::ReadAccessor;
 using helper::vector;
-using sofa::core::ConstVecCoordId;
-using simulation::AnimateBeginEvent ;
-using core::objectmodel::Event ;
+using core::ConstVecCoordId;
+using core::objectmodel::BaseData;
 
 
 template <class DataTypes>
 VolumeFromTetrahedrons<DataTypes>::VolumeFromTetrahedrons()
-    : d_positions(initData(&d_positions,"positions","If not set by user, find the context mechanical"))
-    , d_tetras(initData(&d_tetras,"tetras","If not set by user, find the context topology"))
-    , d_hexas(initData(&d_hexas,"hexas","If not set by user, find the context topology"))
+    : d_positions(initData(&d_positions,"positions","If not set by user, find the context mechanical."))
+    , d_tetras(initData(&d_tetras,"tetras","If not set by user, find the context topology."))
+    , d_hexas(initData(&d_hexas,"hexas","If not set by user, find the context topology."))
     , d_volume(initData(&d_volume,Real(0.0),"volume",""))
-    , d_doUpdate(initData(&d_doUpdate,false,"update","If true, will update the volume at each time step"))
+    , d_doUpdate(initData(&d_doUpdate,false,"update","If true, will update the volume with the current positions."))
 {
     d_volume.setReadOnly(true);
 }
@@ -92,8 +88,15 @@ void VolumeFromTetrahedrons<DataTypes>::init()
             return;
         }
 
-        ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
-        d_positions.setValue(positions.ref());
+        BaseData* positionParent = m_state->findData("position");
+        if(positionParent)
+            d_positions.setParent(positionParent); // Links d_positions to m_state.position
+        else
+        {
+            ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
+            d_positions.setValue(positions.ref());
+            dmsg_error() << "Problem while accessing data position of m_state.";
+        }
     }
 
     initTopology();

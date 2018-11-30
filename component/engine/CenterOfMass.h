@@ -99,6 +99,7 @@ protected:
     MechanicalState* m_state;
     Mass* m_mass;
 
+    Data<VecCoord>d_positions;
     Data<Coord>   d_centerOfMass;
     Data<bool>    d_visualization;
     Data<float>   d_visuSize;
