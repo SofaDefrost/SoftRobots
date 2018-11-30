@@ -227,19 +227,6 @@ void VolumeFromTriangles<DataTypes>::updateVolume()
 }
 
 
-template<class DataTypes>
-void VolumeFromTriangles<DataTypes>::handleEvent(Event *event)
-{
-    if(m_componentstate != ComponentState::Valid)
-            return ;
-
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        update();
-    }
-}
-
-
 } // namespace engine
 
 } // namespace component

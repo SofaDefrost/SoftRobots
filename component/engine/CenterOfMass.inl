@@ -135,19 +135,6 @@ void CenterOfMass<DataTypes>::computeCenterOfMass()
 
 
 template<class DataTypes>
-void CenterOfMass<DataTypes>::handleEvent(Event *event)
-{
-    if(m_componentstate != ComponentState::Valid)
-            return ;
-
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        update();
-    }
-}
-
-
-template<class DataTypes>
 void CenterOfMass<DataTypes>::draw(const VisualParams *vparams)
 {
     if(m_componentstate != ComponentState::Valid)

@@ -263,19 +263,6 @@ SReal VolumeFromTetrahedrons<DataTypes>::getElementVolume(const Hexa& hexa)
 }
 
 
-template<class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::handleEvent(Event *event)
-{
-    if(m_componentstate != ComponentState::Valid)
-            return ;
-
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        update();
-    }
-}
-
-
 } // namespace engine
 
 } // namespace component
