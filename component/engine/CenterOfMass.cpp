@@ -27,8 +27,6 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_CENTEROFMASS_CPP
-
 #include "CenterOfMass.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <SofaEngine/config.h>
@@ -45,8 +43,6 @@ namespace engine
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using core::RegisterObject;
-
-SOFA_DECL_CLASS(CenterOfMass)
 
 int CenterOfMassClass = RegisterObject("This class computes the center of mass of the object in its context.")
 #ifdef SOFA_WITH_DOUBLE
