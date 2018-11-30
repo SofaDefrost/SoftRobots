@@ -84,11 +84,7 @@ void CenterOfMass<DataTypes>::init()
     m_mass  = dynamic_cast<Mass*>(getContext()->getMass());
 
     if(m_state)
-    {
-        BaseData* positionParent = m_state->findData("position");
-        if(positionParent)
-            d_positions.setParent(positionParent); // Links d_positions to m_state.position
-    }
+        d_positions.setParent(m_state->findData("position")); // Links d_positions to m_state.position
     else
     {
         msg_error() << "No mechanical state found in the context. The component is deactivated.";

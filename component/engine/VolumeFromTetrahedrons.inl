@@ -88,15 +88,7 @@ void VolumeFromTetrahedrons<DataTypes>::init()
             return;
         }
 
-        BaseData* positionParent = m_state->findData("position");
-        if(positionParent)
-            d_positions.setParent(positionParent); // Links d_positions to m_state.position
-        else
-        {
-            ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
-            d_positions.setValue(positions.ref());
-            dmsg_error() << "Problem while accessing data position of m_state.";
-        }
+        d_positions.setParent(m_state->findData("position")); // Links d_positions to m_state.position
     }
 
     initTopology();
