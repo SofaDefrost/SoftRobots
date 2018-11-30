@@ -33,9 +33,6 @@
 #include "VolumeFromTriangles.h"
 #include <sofa/helper/helper.h>
 
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-
 namespace sofa
 {
 
@@ -45,20 +42,19 @@ namespace component
 namespace engine
 {
 
-using sofa::core::objectmodel::ComponentState;
+using core::objectmodel::ComponentState;
 using helper::ReadAccessor;
 using helper::vector;
 using sofa::core::ConstVecCoordId;
-using simulation::AnimateBeginEvent ;
-using core::objectmodel::Event ;
+using core::objectmodel::BaseData ;
 
 template <class DataTypes>
 VolumeFromTriangles<DataTypes>::VolumeFromTriangles()
-    : d_positions(initData(&d_positions,"positions","If not set by user, find the context mechanical"))
-    , d_triangles(initData(&d_triangles,"triangles","If not set by user, find the context topology"))
-    , d_quads(initData(&d_quads,"quads","If not set by user, find the context topology"))
-    , d_volume(initData(&d_volume,Real(0.0),"volume","Relevant if closed surface"))
-    , d_doUpdate(initData(&d_doUpdate,false,"update","If true, will update the volume at each time step"))
+    : d_positions(initData(&d_positions,"positions","If not set by user, find the context mechanical."))
+    , d_triangles(initData(&d_triangles,"triangles","If not set by user, find the context topology."))
+    , d_quads(initData(&d_quads,"quads","If not set by user, find the context topology."))
+    , d_volume(initData(&d_volume,Real(0.0),"volume","Relevant if closed surface."))
+    , d_doUpdate(initData(&d_doUpdate,false,"update","If true, will update the volume with the current positions."))
 {
     d_volume.setReadOnly(true);
 }
@@ -91,8 +87,7 @@ void VolumeFromTriangles<DataTypes>::init()
             return;
         }
 
-        ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
-        d_positions.setValue(positions.ref());
+        d_positions.setParent(m_state->findData("position")); // Links d_positions to m_state.position
     }
 
     initTopology();
@@ -224,19 +219,6 @@ void VolumeFromTriangles<DataTypes>::updateVolume()
 
     if(volume<0) volume = -volume;
     d_volume.setValue(volume);
-}
-
-
-template<class DataTypes>
-void VolumeFromTriangles<DataTypes>::handleEvent(Event *event)
-{
-    if(m_componentstate != ComponentState::Valid)
-            return ;
-
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        update();
-    }
 }
 
 

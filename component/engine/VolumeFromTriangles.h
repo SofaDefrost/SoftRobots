@@ -97,10 +97,6 @@ public:
     virtual void doUpdate() override;
     ///////////////////////////////////////////////////////////////////////
 
-    ////////////////////////// Inherited from DDGNode /////////////////////
-    virtual void handleEvent(core::objectmodel::Event *event) override;
-    ///////////////////////////////////////////////////////////////////////
-
     SReal getVolume() {return d_volume.getValue();}
 
 protected:
@@ -126,7 +122,6 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_EXTERN_TEMPLATE
 #ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_SOFTROBOTS_API VolumeFromTriangles<sofa::defaulttype::Vec3dTypes>;
 #endif
@@ -134,7 +129,6 @@ extern template class SOFA_SOFTROBOTS_API VolumeFromTriangles<sofa::defaulttype:
 #ifdef SOFA_WITH_FLOAT
 extern template class SOFA_SOFTROBOTS_API VolumeFromTriangles<sofa::defaulttype::Vec3fTypes>;
 #endif
-#endif //SOFA_EXTERN_TEMPLATE
 
 } // namespace engine
 
