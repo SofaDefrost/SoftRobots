@@ -3,14 +3,14 @@ from splib.numerics import RigidDof
 from splib.animation import animate
 from splib.constants import Key
 
-def setupanimation(actuators, step, angularstep, factor):
+def setupanimation(actuators, step, angularstep, rayonMin, rayonMax, factor):
     """This functions is called repeatidely in an animation.
        It moves the actuators by translating & rotating them according to the factor
        value.
     """
     for actuator in actuators:
             rigid = RigidDof( actuator.dofs )
-            rigid.translate( rigid.forward * step * factor )
+            rigid.setPosition( rigid.getRestPosition() + rigid.forward * (rayonMax-rayonMin) * factor )
             actuator.ServoMotor.angle += angularstep * factor
 
 class MyController(Sofa.PythonScriptController):
@@ -43,4 +43,10 @@ class MyController(Sofa.PythonScriptController):
 
         if key == Key.A:
             animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
-                                    "angularstep" : -0.14}, duration=0.2)
+                                    "angularstep" : -0.14, "rayonMax" : 65, "rayonMin" : 25}, duration=0.2)
+
+        for actuator in self.actuators:
+            if(actuator.ServoMotor.angle>-0.0225):
+                actuator.ServoMotor.angle = -0.0255
+            if(actuator.ServoMotor.angle<-2.0225):
+                actuator.ServoMotor.angle = -2.0225

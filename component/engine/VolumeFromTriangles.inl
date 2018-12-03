@@ -61,7 +61,6 @@ VolumeFromTriangles<DataTypes>::VolumeFromTriangles()
     , d_doUpdate(initData(&d_doUpdate,false,"update","If true, will update the volume at each time step"))
 {
     d_volume.setReadOnly(true);
-    setDirtyValue();
 }
 
 
@@ -172,7 +171,7 @@ void VolumeFromTriangles<DataTypes>::checkTopology()
 
 
 template <class DataTypes>
-void VolumeFromTriangles<DataTypes>::update()
+void VolumeFromTriangles<DataTypes>::doUpdate()
 {
     if(m_componentstate != ComponentState::Valid)
             return ;
@@ -181,7 +180,6 @@ void VolumeFromTriangles<DataTypes>::update()
     {
         ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
         d_positions.setValue(positions.ref());
-        cleanDirty();
         updateVolume();
     }
 }
@@ -237,7 +235,6 @@ void VolumeFromTriangles<DataTypes>::handleEvent(Event *event)
 
     if (AnimateBeginEvent::checkEventType(event))
     {
-        setDirtyValue();
         update();
     }
 }

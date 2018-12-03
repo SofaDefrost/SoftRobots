@@ -8,10 +8,10 @@ from splib.constants import Key
 from math import floor, pi
 from tripod import Tripod
 
-def setupanimation(actuators, step, angularstep, factor):
+def setupanimation(actuators, step, angularstep, rayonMin, rayonMax, factor):
     for actuator in actuators:
             rigid = RigidDof( actuator.dofs )
-            rigid.translate( rigid.forward * step * factor )
+            rigid.setPosition( rigid.getRestPosition() + rigid.forward * (rayonMax-rayonMin) * factor )
             actuator.ServoMotor.angle += angularstep * factor
 
 class MyController(Sofa.PythonScriptController):
@@ -36,15 +36,20 @@ class MyController(Sofa.PythonScriptController):
         elif key == Key.minus:
             self.actuators[2].ServoMotor.angle -= self.stepsize
 
-
         if key == Key.A and self.serialportctrl.state == "init":
             self.serialportctrl.state = "no-comm"
             animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
-                                    "angularstep" : -0.145}, duration=0.2)
+                                    "angularstep" : -0.145, "rayonMax" : 65, "rayonMin" : 25}, duration=0.2)
 
         # Inclusion of the keystroke to start data sending = establishing communication ('comm')
         if key == Key.B and self.serialportctrl.state == "no-comm":
             self.serialportctrl.state = "comm"
+
+        for actuator in self.actuators:
+            if(actuator.ServoMotor.angle>-0.0225):
+                actuator.ServoMotor.angle = -0.0255
+            if(actuator.ServoMotor.angle<-2.0225):
+                actuator.ServoMotor.angle = -2.0225
 
 ## Description of how the communication is handled
 def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
@@ -72,7 +77,8 @@ class SerialPortController(Sofa.PythonScriptController):
 
         for servo in self.servos:
             #conversion of the angle values from radians to degrees
-            angleByte = 90+floor((servo.angle+pi/2.0)*255/pi)
+            angleDegree = servo.angle*360/(2.0*pi)
+            angleByte = floor(angleDegree) + 179
 
             #limitation of the angular position's command
             if angleByte < 60:

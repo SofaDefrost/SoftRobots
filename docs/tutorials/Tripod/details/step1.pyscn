@@ -14,16 +14,16 @@ def createScene(rootNode):
     scene.dt = 0.001
 
     ## Graphic modelling of the legends associated to the servomotors
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
+    scene.createObject("MeshSTLLoader", name="loader1", filename="data/mesh2/blueprint.stl")
+    scene.createObject("OglModel", src="@loader1")
 
     ## Tool to load the mesh file of the silicone piece. It will be used for both the mechnical and the visual models.
-    rootNode.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/tripod_mid.stl")
+    rootNode.createObject("MeshSTLLoader", name="loader2", filename="data/mesh2/tripod_mid.stl")
 
     ## Basic mechanical modelling of the silicone piece
     elasticbody = rootNode.createChild("ElasticBody")
     elasticbody.createObject("MechanicalObject", name="dofs",
-                             position=rootNode.loader.position,
+                             position=rootNode.loader2.position,
                              showObject=True, showObjectScale=5.0,
                              rotation=[90.0,0.0,0.0])
     elasticbody.createObject("UniformMass")
@@ -35,7 +35,7 @@ def createScene(rootNode):
     visual = rootNode.createChild("Visual")
     # The mesh used for the Visual object is the same as the one for the MechanicalObject, and has been introduced in the rootNode
     visual.createObject("OglModel", name="renderer",
-        src='@../loader',
+        src='@../loader2',
         color=[1.0,1.0,1.0,0.5])
 
     ## A mapping applies the deformations computed on the mechanical model (the input parameter)

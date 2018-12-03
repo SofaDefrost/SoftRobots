@@ -37,7 +37,6 @@
 #include <sofa/defaulttype/Vec.h>
 
 #include "CableModel.h"
-#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {

@@ -29,7 +29,7 @@ def ElasticBody(parent):
 
     return body
 
-def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
+def Tripod(parent, name="Tripod", radius=65, numMotors=3, angleShift=180.0):
     tripod = parent.createChild(name)
     body = ElasticBody(tripod)
 
@@ -50,7 +50,7 @@ def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
     return tripod
 
 ## Mon bricolage a partir d ici
-def TripodCollision(parent, name="Tripod+Collision", radius=55, numMotors=3, angleShift=180.0):
+def TripodCollision(parent, name="Tripod+Collision", radius=65, numMotors=3, angleShift=180.0):
     tripod = parent.createChild(name)
     body = ElasticBody(tripod)
 

@@ -39,8 +39,6 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 
-#include <sofa/helper/logging/Messaging.h>
-
 
 namespace sofa
 {
@@ -53,6 +51,7 @@ namespace controller
 
 using defaulttype::Vec;
 using sofa::helper::WriteAccessor;
+using sofa::core::objectmodel::ComponentState;
 
 SOFA_DECL_CLASS(SerialPortBridgeGeneric)
 
@@ -88,6 +87,7 @@ SerialPortBridgeGeneric::~SerialPortBridgeGeneric()
 
 void SerialPortBridgeGeneric::init()
 {
+    m_componentstate = ComponentState::Valid;
     checkConnection();
 
     // To remove before v19.0 of the plugin
@@ -151,7 +151,10 @@ void SerialPortBridgeGeneric::checkConnection()
     int status = m_serial.Open(d_port.getValue().c_str() , d_baudRate.getValue());
 
     if (status!=1)
+    {
         msg_warning() <<"No serial port found";
+        m_componentstate = ComponentState::Invalid;
+    }
     else
         msg_info() <<"Serial port found";
 }
@@ -169,6 +172,9 @@ void SerialPortBridgeGeneric::onBeginAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
+    if(m_componentstate == ComponentState::Invalid)
+        return;
+
     if(d_doReceive.getValue())
         receivePacket();
 }
@@ -177,6 +183,9 @@ void SerialPortBridgeGeneric::onBeginAnimationStep(const double dt)
 void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
+
+    if(m_componentstate == ComponentState::Invalid)
+        return;
 
     checkData();
 

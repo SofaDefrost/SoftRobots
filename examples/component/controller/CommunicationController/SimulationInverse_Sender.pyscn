@@ -151,7 +151,8 @@ def createScene(rootNode):
                 # Visualization                          #
                 ##########################################
                 accordionVisu = accordion.createChild('visu')
-                accordionVisu.createObject('OglModel', filename=path+"Springy.stl", color="0.4 0.4 0.4 0.5")
+                accordionVisu.createObject('MeshSTLLoader', filename=path+"Springy.stl", name="loader")
+                accordionVisu.createObject('OglModel', src="@loader", color="0.4 0.4 0.4 0.5")
                 accordionVisu.createObject('BarycentricMapping')
 
 
