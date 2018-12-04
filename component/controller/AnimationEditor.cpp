@@ -217,24 +217,14 @@ int AnimationEditorClass = RegisterObject("Build an animation from key points mo
                                    "ctrl+(pgDn/pgUp): move the cursor to the next/previous keyframe")
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef SOFA_WITH_FLOAT
-        .add< AnimationEditor<Vec3fTypes> >()
-        .add< AnimationEditor<Rigid3fTypes> >()
-#endif
-#ifdef SOFA_WITH_DOUBLE
-        .add< AnimationEditor<Vec3dTypes> >(true)
-        .add< AnimationEditor<Rigid3dTypes> >()
-#endif
+        .add< AnimationEditor<Vec3Types> >(true)
+        .add< AnimationEditor<Rigid3Types> >()
+
         ;
 
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3fTypes>;
-template class SOFA_SOFTROBOTS_API AnimationEditor<Rigid3fTypes>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3dTypes>;
-template class SOFA_SOFTROBOTS_API AnimationEditor<Rigid3dTypes>;
-#endif
+template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3Types>;
+template class SOFA_SOFTROBOTS_API AnimationEditor<Rigid3Types>;
+
 
 
 }//namespace _animationeditor_

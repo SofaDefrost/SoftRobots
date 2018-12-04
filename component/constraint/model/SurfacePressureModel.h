@@ -158,13 +158,8 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-extern template class SurfacePressureModel<Vec3dTypes>;
-#endif
+extern template class SurfacePressureModel<Vec3Types>;
 
-#ifdef SOFA_WITH_FLOAT
-extern template class SurfacePressureModel<Vec3fTypes>;
-#endif
 
 } // namespace constraintset
 

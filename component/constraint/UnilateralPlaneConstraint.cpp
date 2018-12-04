@@ -80,12 +80,8 @@ int UnilateralPlaneConstraintClass = core::RegisterObject("This component is a s
                                                           "by the three other points (in the direction of the plane normal). \n"
                                                           "All the four points, the triangle and the normal can be \n"
                                                           "seen by allowing the 'Collision Model' in the 'View' tab.")
-        #ifdef SOFA_WITH_DOUBLE
-        .add< UnilateralPlaneConstraint<Vec3dTypes> >(true)
-        #endif
-        #ifdef SOFA_WITH_FLOAT
-        .add< UnilateralPlaneConstraint<Vec3fTypes> >()
-        #endif
+                .add< UnilateralPlaneConstraint<Vec3Types> >(true)
+        
         ;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,12 +90,8 @@ int UnilateralPlaneConstraintClass = core::RegisterObject("This component is a s
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3fTypes>;
-#endif
+template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
+
 
 } // namespace constraintset
 

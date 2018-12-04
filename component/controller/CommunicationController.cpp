@@ -225,18 +225,11 @@ using sofa::core::RegisterObject ;
 
 int CommunicationControllerClass = RegisterObject("This component is used to build a communication between two simulations")
 
-#ifdef SOFA_WITH_DOUBLE
 .add< CommunicationController<double> >(true)
 .add< CommunicationController<vector<Vec3d>> >()
 .add< CommunicationController<vector<Vec1d>> >()
-.add< CommunicationController<vector<Rigid3dTypes::Coord>> >()
-#endif
-#ifdef SOFA_WITH_FLOAT
-.add< CommunicationController<float> >()
-.add< CommunicationController<vector<Vec3f>> >()
-.add< CommunicationController<vector<Vec1f>> >()
-.add< CommunicationController<vector<Rigid3fTypes::Coord>> >()
-#endif
+.add< CommunicationController<vector<Rigid3Types::Coord>> >()
+
 .add< CommunicationController<int> >()
 .add< CommunicationController<unsigned int> >()
 .add< CommunicationController<vector<Vec<2,int>>> >()
@@ -249,18 +242,11 @@ int CommunicationControllerClass = RegisterObject("This component is used to bui
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
 template class SOFA_SOFTROBOTS_API CommunicationController<double>;
 template class SOFA_SOFTROBOTS_API CommunicationController<vector<Vec3d>>;
 template class SOFA_SOFTROBOTS_API CommunicationController<vector<Vec1d>>;
-template class SOFA_SOFTROBOTS_API CommunicationController<vector<Rigid3dTypes::Coord>>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API CommunicationController<float>;
-template class SOFA_SOFTROBOTS_API CommunicationController<vector<Vec3f>>;
-template class SOFA_SOFTROBOTS_API CommunicationController<vector<Vec1f>>;
-template class SOFA_SOFTROBOTS_API CommunicationController<vector<Rigid3fTypes::Coord>>;
-#endif
+template class SOFA_SOFTROBOTS_API CommunicationController<vector<Rigid3Types::Coord>>;
+
 template class SOFA_SOFTROBOTS_API CommunicationController<int>;
 template class SOFA_SOFTROBOTS_API CommunicationController<unsigned int>;
 template class SOFA_SOFTROBOTS_API CommunicationController<vector<Vec<2,int>> >;

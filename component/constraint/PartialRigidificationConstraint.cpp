@@ -92,12 +92,8 @@ void PartialRigidificationConstraintResolution6Dof::store(int line, double* forc
 // 2-.add<>(true) : Set default template
 
 int PartialRigidificationConstraintClass = core::RegisterObject("PartialRigidificationConstraint")
-#ifdef SOFA_WITH_DOUBLE
-        .add< PartialRigidificationConstraint<Rigid3dTypes> >(true)
-#endif
-#ifdef SOFA_WITH_FLOAT
-        .add< PartialRigidificationConstraint<Rigid3fTypes> >()
-#endif
+        .add< PartialRigidificationConstraint<Rigid3Types> >(true)
+
         ;
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -105,12 +101,8 @@ int PartialRigidificationConstraintClass = core::RegisterObject("PartialRigidifi
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-template class PartialRigidificationConstraint<Rigid3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class PartialRigidificationConstraint<Rigid3fTypes>;
-#endif
+template class PartialRigidificationConstraint<Rigid3Types>;
+
 
 } // namespace constraintset
 
