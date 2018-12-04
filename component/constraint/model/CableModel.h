@@ -160,7 +160,7 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class CableModel<Vec3Types>;
+extern template class CableModel<defaulttype::Vec3Types>;
 
 
 } // namespace constraintset
