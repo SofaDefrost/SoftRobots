@@ -88,10 +88,8 @@ void PartialRigidificationConstraintResolution6Dof::store(int line, double* forc
 //////////////////////// FACTORY //////////////////////////////////////////////////////////////////
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-// 2-RegisterObject("description") + .add<> : Register the component
-// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(PartialRigidificationConstraint)
+// 1-RegisterObject("description") + .add<> : Register the component
+// 2-.add<>(true) : Set default template
 
 int PartialRigidificationConstraintClass = core::RegisterObject("PartialRigidificationConstraint")
 #ifdef SOFA_WITH_DOUBLE

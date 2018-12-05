@@ -122,10 +122,8 @@ void VolumeGrowthConstraintResolution::resolution(int line, double** w, double* 
 ///////////////////////////////////////// FACTORY //////////////////////////////////////////////////
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-// 2-RegisterObject("description") + .add<> : Register the component
-// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(SurfacePressureConstraint)
+// 1-RegisterObject("description") + .add<> : Register the component
+// 2-.add<>(true) : Set default template
 
 int SurfacePressureConstraintClass = core::RegisterObject("This component constrains a model by applying "
                                                           "pressure on surfaces (for exemple cavities)")

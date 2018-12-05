@@ -27,8 +27,6 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_VOLUMEFROMTRIANGLES_CPP
-
 #include "VolumeFromTriangles.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <SofaEngine/config.h>
@@ -45,8 +43,6 @@ namespace engine
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using core::RegisterObject;
-
-SOFA_DECL_CLASS(VolumeFromTriangles)
 
 int VolumeFromTrianglesClass = RegisterObject("This class computes the volume of a given closed surfacic mesh.")
 #ifdef SOFA_WITH_DOUBLE

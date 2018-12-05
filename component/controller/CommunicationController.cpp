@@ -218,13 +218,10 @@ std::string CommunicationController<vector<Rigid3fTypes::Coord>>::templateName(c
 
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
 using sofa::core::RegisterObject ;
-
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-// 2-RegisterObject("description") + .add<> : Register the component
-// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(CommunicationController)
+// 1-RegisterObject("description") + .add<> : Register the component
+// 2-.add<>(true) : Set default template
 
 int CommunicationControllerClass = RegisterObject("This component is used to build a communication between two simulations")
 

@@ -67,28 +67,6 @@ typedef struct
     float setpoint;
 }Packet;
 
-
-// /*==========  Network Class  ==========*/
-// class NetworkHandler : public QObject
-// {
-//     Q_OBJECT    
-
-//     private slots:
-//         void connecte();
-//         void deconnecte();
-//         void erreurSocket(QAbstractSocket::SocketError erreur);
-
-//     protected:
-//         QTcpSocket *_socket;
-
-//     public:
-//         NetworkHandler();
-//         ~NetworkHandler();
-
-//         void init();
-//         void send(char* pack);
-// };
-
 class InteractiveControl : public Controller
 {
 

@@ -33,7 +33,6 @@
 #include "CenterOfMass.h"
 #include <sofa/helper/helper.h>
 
-#include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
@@ -45,20 +44,20 @@ namespace component
 namespace engine
 {
 
-using sofa::core::objectmodel::ComponentState;
+using core::objectmodel::ComponentState;
 using helper::ReadAccessor;
 using helper::WriteAccessor;
 using helper::vector;
-using sofa::core::ConstVecCoordId;
-using simulation::AnimateBeginEvent ;
-using core::objectmodel::Event ;
+using core::ConstVecCoordId;
+using core::objectmodel::BaseData ;
 using core::visual::VisualParams ;
 using defaulttype::Vec4f ;
 using defaulttype::Vector3 ;
 
 template <class DataTypes>
 CenterOfMass<DataTypes>::CenterOfMass()
-    : d_centerOfMass(initData(&d_centerOfMass,"centerOfMass",""))
+    : d_positions(initData(&d_positions,"position","If not set by user, find the context mechanical."))
+    , d_centerOfMass(initData(&d_centerOfMass,"centerOfMass",""))
     , d_visualization(initData(&d_visualization,"visualization","If set to true, will draw the center of mass"))
     , d_visuSize(initData(&d_visuSize, (float)1., "visuSize",""))
     , d_visuColor(initData(&d_visuColor, Vec4f(1.,0.,0.,1.), "visuColor",""))
@@ -78,10 +77,15 @@ void CenterOfMass<DataTypes>::init()
 {
     m_componentstate = ComponentState::Invalid;
 
+    addInput(&d_positions);
+    addOutput(&d_centerOfMass);
+
     m_state = dynamic_cast<MechanicalState*>(getContext()->getMechanicalState());
     m_mass  = dynamic_cast<Mass*>(getContext()->getMass());
 
-    if(m_state == nullptr)
+    if(m_state)
+        d_positions.setParent(m_state->findData("position")); // Links d_positions to m_state.position
+    else
     {
         msg_error() << "No mechanical state found in the context. The component is deactivated.";
         return;
@@ -101,7 +105,6 @@ void CenterOfMass<DataTypes>::init()
 template <class DataTypes>
 void CenterOfMass<DataTypes>::reinit()
 {
-    update();
 }
 
 
@@ -118,7 +121,7 @@ void CenterOfMass<DataTypes>::doUpdate()
 template <class DataTypes>
 void CenterOfMass<DataTypes>::computeCenterOfMass()
 {
-    ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
+    ReadAccessor<Data<VecCoord> > positions = d_positions;
     int nbPoints = positions.size();
 
     Real totalMass = 0.0;
@@ -131,19 +134,6 @@ void CenterOfMass<DataTypes>::computeCenterOfMass()
     }
     centerOfMass /= totalMass;
     d_centerOfMass.setValue(centerOfMass);
-}
-
-
-template<class DataTypes>
-void CenterOfMass<DataTypes>::handleEvent(Event *event)
-{
-    if(m_componentstate != ComponentState::Valid)
-            return ;
-
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        update();
-    }
 }
 
 

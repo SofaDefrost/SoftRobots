@@ -133,7 +133,6 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_EXTERN_TEMPLATE
 #ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec3d>;
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec2d>;
@@ -150,7 +149,6 @@ extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec2i>;
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec3i>;
 
-#endif
 
 } // namespace engine
 
