@@ -44,19 +44,15 @@ namespace component
 namespace controller
 {
 
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec3f;
 using sofa::defaulttype::Quat;
+using sofa::defaulttype::Vec3Types ;
+using sofa::defaulttype::Rigid3Types ;
 
-using sofa::defaulttype::Rigid3dTypes;
-using sofa::defaulttype::Rigid3fTypes;
 
 namespace _animationeditor_ {
 
 template<>
-void AnimationEditor<Rigid3fTypes>::updateAnimationWithInterpolation(const int startKey,
+void AnimationEditor<Rigid3Types>::updateAnimationWithInterpolation(const int startKey,
                                                                      const int endKey)
 {
     if(m_state == nullptr)
@@ -79,11 +75,11 @@ void AnimationEditor<Rigid3fTypes>::updateAnimationWithInterpolation(const int s
         vector<Coord> newPositions;
         for (int k=0; k<nbPositions; k++)
         {
-            Vec3f direction = currentPositions[k].getCenter() - previousPositions[k].getCenter();
+            Rigid3Types::CPos direction = currentPositions[k].getCenter() - previousPositions[k].getCenter();
             double distance = direction.norm();
             double step = distance/nbStep*i;
             direction.normalize();
-            Vec3f center =  previousPositions[k].getCenter() + direction*step;
+            Rigid3Types::CPos center =  previousPositions[k].getCenter() + direction*step;
 
             double h =  (double)i/(double)nbStep;
             Quat orientation;
@@ -92,63 +88,19 @@ void AnimationEditor<Rigid3fTypes>::updateAnimationWithInterpolation(const int s
             orientation.normalize();
 
             Coord newPosition;
-            Rigid3fTypes::setCPos(newPosition, center);
-            Rigid3fTypes::setCRot(newPosition, orientation);
+            Rigid3Types::setCPos(newPosition, center);
+            Rigid3Types::setCRot(newPosition, orientation);
             newPositions.push_back(newPosition);
         }
         m_animation[startKey+i] = newPositions;
     }
 }
 
-template<>
-void AnimationEditor<Rigid3dTypes>::updateAnimationWithInterpolation(const int startKey,
-                                                                     const int endKey)
-{
-    if(m_state == nullptr)
-        return;
-
-    vector<Coord> previousPositions = m_animation[startKey];
-    vector<Coord> currentPositions  = m_animation[endKey];
-
-    if (currentPositions.size() != previousPositions.size())
-    {
-        msg_warning() <<"This component does not handle mechanical state size changes";
-        return;
-    }
-
-    int nbPositions = m_state->read(core::ConstVecCoordId::position())->getValue().size();
-    int nbStep = endKey - startKey;
-
-    for (int i=0; i<nbStep+1; i++)
-    {
-        vector<Coord> newPositions;
-        for (int k=0; k<nbPositions; k++)
-        {
-            Vec3d direction = currentPositions[k].getCenter() - previousPositions[k].getCenter();
-            double distance = direction.norm();
-            double step = distance/nbStep*i;
-            direction.normalize();
-            Vec3f center =  previousPositions[k].getCenter() + direction*step;
-
-            double h =  (double)i/(double)nbStep;
-            Quat orientation;
-            for(int l=0; l<4; l++)
-                orientation[l] = previousPositions[k].getOrientation()[l]*(1.-h) + currentPositions[k].getOrientation()[l]*h;
-            orientation.normalize();
-
-            Coord newPosition;
-            Rigid3dTypes::setCPos(newPosition, center);
-            Rigid3dTypes::setCRot(newPosition, orientation);
-            newPositions.push_back(newPosition);
-        }
-        m_animation[startKey+i] = newPositions;
-    }
-}
 
 template<>
-void AnimationEditor<Rigid3dTypes>::drawTrajectory(const VisualParams* vparams)
+void AnimationEditor<Rigid3Types>::drawTrajectory(const VisualParams* vparams)
 {
-    vector<Vec3d> points;
+    vector<Rigid3Types::CPos> points;
     vector<unsigned int> IDSorted = m_keyFramesID;
     unsigned int nbKey = m_keyFramesID.size();
     std::sort(IDSorted.begin(), IDSorted.begin() + nbKey);
@@ -157,37 +109,11 @@ void AnimationEditor<Rigid3dTypes>::drawTrajectory(const VisualParams* vparams)
         for(unsigned int k=0; k<m_animation[i].size(); k++)
         {
             points.push_back(m_animation[IDSorted[i]][k].getCenter());
-            vparams->drawTool()->drawFrame(m_animation[m_keyFramesID[i]][k].getCenter(), m_animation[m_keyFramesID[i]][k].getOrientation(), Vec3f(d_drawSize.getValue(),d_drawSize.getValue(),d_drawSize.getValue()));
+            vparams->drawTool()->drawFrame(m_animation[m_keyFramesID[i]][k].getCenter(), m_animation[m_keyFramesID[i]][k].getOrientation(), Rigid3Types::CPos(d_drawSize.getValue(),d_drawSize.getValue(),d_drawSize.getValue()));
         }
     }
 
-    vector<Vec3d> lines;
-    for(unsigned int i=0; i<points.size()-1; i++)
-    {
-        lines.push_back(points[i]);
-        lines.push_back(points[i+1]);
-    }
-
-    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,Vec4f(0.5,0.5,0.5,1.));
-}
-
-template<>
-void AnimationEditor<Rigid3fTypes>::drawTrajectory(const VisualParams* vparams)
-{
-    vector<Vec3d> points;
-    vector<unsigned int> IDSorted = m_keyFramesID;
-    unsigned int nbKey = m_keyFramesID.size();
-    std::sort(IDSorted.begin(), IDSorted.begin() + nbKey);
-    for(unsigned int i=0; i<nbKey; i++)
-    {
-        for(unsigned int k=0; k<m_animation[i].size(); k++)
-        {
-            points.push_back(m_animation[IDSorted[i]][k].getCenter());
-            vparams->drawTool()->drawFrame(m_animation[m_keyFramesID[i]][k].getCenter(), m_animation[m_keyFramesID[i]][k].getOrientation(), Vec3f(d_drawSize.getValue(),d_drawSize.getValue(),d_drawSize.getValue()));
-        }
-    }
-
-    vector<Vec3d> lines;
+    vector<Rigid3Types::CPos> lines;
     for(unsigned int i=0; i<points.size()-1; i++)
     {
         lines.push_back(points[i]);
@@ -217,24 +143,14 @@ int AnimationEditorClass = RegisterObject("Build an animation from key points mo
                                    "ctrl+(pgDn/pgUp): move the cursor to the next/previous keyframe")
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef SOFA_WITH_FLOAT
-        .add< AnimationEditor<Vec3fTypes> >()
-        .add< AnimationEditor<Rigid3fTypes> >()
-#endif
-#ifdef SOFA_WITH_DOUBLE
-        .add< AnimationEditor<Vec3dTypes> >(true)
-        .add< AnimationEditor<Rigid3dTypes> >()
-#endif
+        .add< AnimationEditor<Vec3Types> >(true)
+        .add< AnimationEditor<Rigid3Types> >()
+
         ;
 
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3fTypes>;
-template class SOFA_SOFTROBOTS_API AnimationEditor<Rigid3fTypes>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3dTypes>;
-template class SOFA_SOFTROBOTS_API AnimationEditor<Rigid3dTypes>;
-#endif
+template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3Types>;
+template class SOFA_SOFTROBOTS_API AnimationEditor<Rigid3Types>;
+
 
 
 }//namespace _animationeditor_

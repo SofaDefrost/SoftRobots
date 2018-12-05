@@ -54,6 +54,7 @@ using core::objectmodel::Event;
 using helper::vector;
 using core::behavior::MechanicalState;
 using std::string;
+using core::visual::VisualParams;
 
 
 /**
@@ -156,21 +157,17 @@ protected:
     bool isCursorKeyFrame(int &index);
     int getMaxKeyFrameID();
 
-    void drawTimeline(const core::visual::VisualParams* vparams);
-    void drawTrajectory(const core::visual::VisualParams* vparams);
+    void drawTimeline(const VisualParams* vparams);
+    void drawTrajectory(const VisualParams* vparams);
 
 };   //class AnimationEditor
 
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_SOFTROBOTS_API AnimationEditor<sofa::defaulttype::Vec3dTypes>;
-#endif
+using defaulttype::Vec3Types;
+extern template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3Types>;
 
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_SOFTROBOTS_API AnimationEditor<sofa::defaulttype::Vec3fTypes>;
-#endif
 
 }   //namespace _animationeditor_
 

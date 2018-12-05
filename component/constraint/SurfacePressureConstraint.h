@@ -164,12 +164,9 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3fTypes>;
-#endif
+using defaulttype::Vec3Types;
+extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3Types>;
+
 
 }
 

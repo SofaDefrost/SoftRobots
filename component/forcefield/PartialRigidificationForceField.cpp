@@ -51,12 +51,8 @@ using namespace sofa::defaulttype;
 // 2-.add<>(true) : Set default template
 
 int PartialRigidificationForceFieldClass = core::RegisterObject("Partially rigidify a mechanical object using a rigid mapping.")
-#ifdef SOFA_WITH_FLOAT
-        .add< PartialRigidificationForceField<Vec3fTypes, Rigid3fTypes> >()
-#endif
-#ifdef SOFA_WITH_DOUBLE
-        .add< PartialRigidificationForceField<Vec3dTypes, Rigid3dTypes> >(true)
-#endif
+        .add< PartialRigidificationForceField<Vec3Types, Rigid3Types> >(true)
+
         ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,12 +60,8 @@ int PartialRigidificationForceFieldClass = core::RegisterObject("Partially rigid
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-template class PartialRigidificationForceField<Vec3dTypes, Rigid3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class PartialRigidificationForceField<Vec3fTypes, Rigid3fTypes>;
-#endif
+template class PartialRigidificationForceField<Vec3Types, Rigid3Types>;
+
 
 } // namespace forcefield
 

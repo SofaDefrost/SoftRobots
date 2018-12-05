@@ -44,25 +44,17 @@ using namespace sofa::defaulttype;
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec3fTypes>;
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec2fTypes>;
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec1fTypes>;
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid3fTypes>;
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid2fTypes>;
-#endif
 
 // Force template specialization for the most common sofa double related type.
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec3dTypes>;
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec2dTypes>;
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec1dTypes>;
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid3dTypes>;
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid2dTypes>;
-#endif
+template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec3Types>;
+template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec2Types>;
+template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec1Types>;
+template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid3Types>;
+template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid2Types>;
+
 
 } // namespace behavior
 
