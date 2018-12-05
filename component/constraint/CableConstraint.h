@@ -58,9 +58,8 @@ public:
     CableDisplacementConstraintResolution(double& imposedDisplacement, double* force);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    virtual void init(int line, double** w, double *lambda) override;
-    //virtual void initForce(int line, double* lambda){ }
-    virtual void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
+    void init(int line, double** w, double *lambda) override;
+    void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
@@ -79,9 +78,9 @@ public:
     CableForceConstraintResolution(double& imposedForce, double* displacement);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    virtual void init(int line, double** w, double *force) override;
-    virtual void initForce(int line, double* force) override;
-    virtual void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+    void init(int line, double** w, double *force) override;
+    void initForce(int line, double* force) override;
+    void resolution(int line, double** w, double* d, double* force, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
@@ -124,18 +123,18 @@ public:
     CableConstraint(MechanicalState* object);
     CableConstraint();
 
-    virtual ~CableConstraint();
+    ~CableConstraint() override;
 
     /////////////// Inherited from BaseObject //////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
     ///////////////////////////////////////////////////////////////
 
 
     /////////////////// Inherited from BaseConstraint ///////////////
-    virtual void getConstraintResolution(const core::ConstraintParams *cParam,
-                                         std::vector<ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+    void getConstraintResolution(const core::ConstraintParams *cParam,
+                                 std::vector<ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
     ////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited attributes ////////////////////////////

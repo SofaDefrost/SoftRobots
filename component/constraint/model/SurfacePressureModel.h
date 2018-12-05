@@ -92,9 +92,9 @@ public:
     virtual ~SurfacePressureModel();
 
     ////////////////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override;
-    virtual void reset() override;
-    virtual void draw(const VisualParams* vparams) override;
+    void init() override;
+    void reset() override;
+    void draw(const VisualParams* vparams) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Actuator //////////////////////

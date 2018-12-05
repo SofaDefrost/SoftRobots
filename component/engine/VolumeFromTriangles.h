@@ -73,7 +73,7 @@ public:
 
 public:
 
-    virtual std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -84,17 +84,16 @@ public:
     }
 
     VolumeFromTriangles();
-
-    virtual ~VolumeFromTriangles();
+    ~VolumeFromTriangles() override;
 
 
     ////////////////////////// Inherited from BaseObject ///////////////////
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
     ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from DataEngine////////////////////
-    virtual void doUpdate() override;
+    void doUpdate() override;
     ///////////////////////////////////////////////////////////////////////
 
     SReal getVolume() {return d_volume.getValue();}

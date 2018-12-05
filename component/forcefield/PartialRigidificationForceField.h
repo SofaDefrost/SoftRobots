@@ -157,28 +157,28 @@ protected:
 public:
 
     ///////////////////////// Inherited from MixedInteractionForceField ///////////////////
-    virtual void addForce(const MechanicalParams* mparams,
-                          DataVecDeriv1& f1,
-                          DataVecDeriv2& f2,
-                          const DataVecCoord1& x1,
-                          const DataVecCoord2& x2,
-                          const DataVecDeriv1& v1,
-                          const DataVecDeriv2& v2) override;
+    void addForce(const MechanicalParams* mparams,
+                  DataVecDeriv1& f1,
+                  DataVecDeriv2& f2,
+                  const DataVecCoord1& x1,
+                  const DataVecCoord2& x2,
+                  const DataVecDeriv1& v1,
+                  const DataVecDeriv2& v2) override;
 
-    virtual void addDForce(const MechanicalParams* mparams,
-                           DataVecDeriv1& df1,
-                           DataVecDeriv2& df2,
-                           const DataVecDeriv1& dx1,
-                           const DataVecDeriv2& dx2) override;
+    void addDForce(const MechanicalParams* mparams,
+                   DataVecDeriv1& df1,
+                   DataVecDeriv2& df2,
+                   const DataVecDeriv1& dx1,
+                   const DataVecDeriv2& dx2) override;
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams,
-                                      const DataVecCoord1& x1, const DataVecCoord2& x2) const override;
+    double getPotentialEnergy(const MechanicalParams* mparams,
+                              const DataVecCoord1& x1, const DataVecCoord2& x2) const override;
     ////////////////////////////////////////////////////////////////////////////////////
 
 
     ///////////////////////// Inherited from BaseInteractionForceField ///////////////////
-    virtual void addKToMatrix(const MechanicalParams* mparams,
-                              const MultiMatrixAccessor* matrix ) override;
+    void addKToMatrix(const MechanicalParams* mparams,
+                      const MultiMatrixAccessor* matrix ) override;
     ////////////////////////////////////////////////////////////////////////////////////
 protected:
 

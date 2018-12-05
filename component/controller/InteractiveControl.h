@@ -94,13 +94,13 @@ protected:
 public:
 
     InteractiveControl();
-    virtual ~InteractiveControl();
+    ~InteractiveControl() override;
 
 public:
 
-    virtual void init();
-    virtual void reinit();
-    void onBeginAnimationStep(const double dt);
+    void init() override;
+    void reinit() override;
+    void onBeginAnimationStep(const double dt) override;
 
 protected:
 

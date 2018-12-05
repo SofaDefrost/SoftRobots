@@ -86,11 +86,11 @@ public:
     virtual ~CableModel();
 
     ////////////////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
-    virtual void reset() override;
-    virtual void draw(const VisualParams* vparams) override;
+    void init() override;
+    void bwdInit() override;
+    void reinit() override;
+    void reset() override;
+    void draw(const VisualParams* vparams) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Actuator //////////////////////
