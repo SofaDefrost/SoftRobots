@@ -60,7 +60,7 @@ public:
 
 public:
 
-    virtual std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -91,18 +91,17 @@ public:
     }
 
     DataVariationLimiter();
-
-    virtual ~DataVariationLimiter();
+    ~DataVariationLimiter() override;
 
 
     ////////////////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void reset() override;
+    void init() override;
+    void reinit() override;
+    void reset() override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Controller ////////////////////
-    virtual void onBeginAnimationStep(const double dt) override;
+    void onBeginAnimationStep(const double dt) override;
     /////////////////////////////////////////////////////////////////////////
 
     void interpolate(const int index);

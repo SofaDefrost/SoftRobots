@@ -78,10 +78,10 @@ public:
     };
 
 
-    AnimationEditor    ();
-    virtual ~AnimationEditor   ();
+    AnimationEditor();
+    ~AnimationEditor() override;
 
-    virtual std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -92,17 +92,17 @@ public:
     }
 
     ////////////////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
-    virtual void reset() override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void init() override;
+    void bwdInit() override;
+    void reinit() override;
+    void reset() override;
+    void draw(const core::visual::VisualParams* vparams) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Controller ////////////////////
-    virtual void onBeginAnimationStep(const double dt) override;
-    virtual void onEndAnimationStep(const double dt) override;
-    virtual void handleEvent(Event *event) override;
+    void onBeginAnimationStep(const double dt) override;
+    void onEndAnimationStep(const double dt) override;
+    void handleEvent(Event *event) override;
     /////////////////////////////////////////////////////////////////////////
 
     void setCursor(const int& cursor) {d_cursor.setValue(cursor); m_isFrameDirty=true;}

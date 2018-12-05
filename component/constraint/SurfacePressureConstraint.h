@@ -59,8 +59,8 @@ public:
     VolumeGrowthConstraintResolution(const double& imposedVolumeGrowth, double* pressure);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    virtual void init(int line, double** w, double *lambda) override;
-    virtual void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
+    void init(int line, double** w, double *lambda) override;
+    void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
@@ -75,8 +75,8 @@ public:
     SurfacePressureConstraintResolution(const double& imposedPressure, double* volumeGrowth);
 
     //////////////////// Inherited from ConstraintResolution ///////////////////
-    virtual void init(int line, double** w, double *force) override;
-    virtual void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+    void init(int line, double** w, double *force) override;
+    void resolution(int line, double** w, double* d, double* force, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
@@ -119,18 +119,18 @@ public:
     SurfacePressureConstraint(MechanicalState* object);
     SurfacePressureConstraint();
 
-    virtual ~SurfacePressureConstraint() ;
+    ~SurfacePressureConstraint() override;
 
     ////////////////////////////  Inherited from BaseObject //////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void reset() override;
+    void init() override;
+    void reinit() override;
+    void reset() override;
     //////////////////////////////////////////////////////////////////////////////
 
 
     /////////////////// from sofa::core::behavior::Constraint /////////////////////////
-    virtual void getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+    void getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
     ///////////////////////////////////////////////////////////////////////////////////
 
 

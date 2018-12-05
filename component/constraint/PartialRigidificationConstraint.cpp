@@ -51,35 +51,6 @@ PartialRigidificationConstraintResolution6Dof::PartialRigidificationConstraintRe
 {
 }
 
-void PartialRigidificationConstraintResolution6Dof::init(int line, double** w, double *force)
-{
-    SOFA_UNUSED(line);
-    SOFA_UNUSED(w);
-    SOFA_UNUSED(force);
-}
-
-void PartialRigidificationConstraintResolution6Dof::initForce(int line, double* force)
-{
-    SOFA_UNUSED(line);
-    SOFA_UNUSED(force);
-}
-
-void PartialRigidificationConstraintResolution6Dof::resolution(int line, double** w,
-                                                               double* d, double* dfree)
-{
-    SOFA_UNUSED(line);
-    SOFA_UNUSED(w);
-    SOFA_UNUSED(d);
-    SOFA_UNUSED(dfree);
-}
-
-void PartialRigidificationConstraintResolution6Dof::store(int line, double* force, bool convergence)
-{
-    SOFA_UNUSED(line);
-    SOFA_UNUSED(force);
-    SOFA_UNUSED(convergence);
-}
-
 
 
 /////////////////// PartialRigidificationConstraint //////////////////////////////////////////////

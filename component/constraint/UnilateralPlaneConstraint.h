@@ -65,8 +65,8 @@ public:
     UnilateralPlaneConstraintResolution(const unsigned int nbLines) ;
 
     /////////////// Inherited from ConstraintResolution ////////////
-    virtual void init(int line, double** w, double* force) override;
-    virtual void resolution(int line, double** w, double* d, double* force, double* dFree) override;
+    void init(int line, double** w, double* force) override;
+    void resolution(int line, double** w, double* d, double* force, double* dFree) override;
     ////////////////////////////////////////////////////////////////
 };
 
@@ -102,28 +102,28 @@ public:
 public:
     UnilateralPlaneConstraint(MechanicalState* object);
     UnilateralPlaneConstraint();
-    virtual ~UnilateralPlaneConstraint() ;
+    ~UnilateralPlaneConstraint() override;
 
     /////////////// Inherited from BaseObject  ////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void draw(const VisualParams* vparams) override;
+    void init() override;
+    void reinit() override;
+    void draw(const VisualParams* vparams) override;
     //////////////////////////////////////////////////////
 
     /////////////// Inherited from Constraint ////////////
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams ,
-                                       DataMatrixDeriv &cMatrix,
-                                       unsigned int &cIndex,
-                                       const DataVecCoord &x) override;
+    void buildConstraintMatrix(const ConstraintParams* cParams ,
+                               DataMatrixDeriv &cMatrix,
+                               unsigned int &cIndex,
+                               const DataVecCoord &x) override;
 
-    virtual void getConstraintViolation(const ConstraintParams* cParams ,
-                                        BaseVector *resV,
-                                        const DataVecCoord &xfree,
-                                        const DataVecDeriv &vfree) override;
+    void getConstraintViolation(const ConstraintParams* cParams ,
+                                BaseVector *resV,
+                                const DataVecCoord &xfree,
+                                const DataVecDeriv &vfree) override;
 
-    virtual void getConstraintResolution(const ConstraintParams* cParams,
-                                         std::vector<core::behavior::ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+    void getConstraintResolution(const ConstraintParams* cParams,
+                                 std::vector<core::behavior::ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
     ///////////////////////////////////////////////////////////////
 
 protected:

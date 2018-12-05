@@ -112,26 +112,26 @@ public :
     virtual ~PipeForceField();
 
     ////////////////////////// Inherited from BaseObject /////////////////////////
-    virtual void init() override;
+    void init() override;
     ///////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from ForceField /////////////////////////
-    virtual void addForce(const MechanicalParams* mparams,
-                          DataVecDeriv& f ,
-                          const DataVecCoord& x ,
-                          const DataVecDeriv& v) override;
+    void addForce(const MechanicalParams* mparams,
+                  DataVecDeriv& f ,
+                  const DataVecCoord& x ,
+                  const DataVecDeriv& v) override;
 
-    virtual void addDForce(const MechanicalParams* mparams,
-                           DataVecDeriv&   df ,
-                           const DataVecDeriv&
-                           dx ) override;
+    void addDForce(const MechanicalParams* mparams,
+                   DataVecDeriv&   df ,
+                   const DataVecDeriv&
+                   dx ) override;
 
 
-    virtual void addKToMatrix(const MechanicalParams* mparams,
-                              const MultiMatrixAccessor* matrix) override;
+    void addKToMatrix(const MechanicalParams* mparams,
+                      const MultiMatrixAccessor* matrix) override;
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams,
-                                      const DataVecCoord& x) const override;
+    double getPotentialEnergy(const MechanicalParams* mparams,
+                              const DataVecCoord& x) const override;
     ////////////////////////////////////////////////////////////////////////////
 
 protected:

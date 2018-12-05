@@ -67,7 +67,7 @@ public:
 
 public:
 
-    virtual std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -78,18 +78,17 @@ public:
     }
 
     CenterOfMass();
-
-    virtual ~CenterOfMass();
+    ~CenterOfMass() override;
 
 
     ////////////////////////// Inherited from BaseObject ///////////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void init() override;
+    void reinit() override;
+    void draw(const core::visual::VisualParams* vparams) override;
     ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from DataEngine////////////////////
-    virtual void doUpdate() override;
+    void doUpdate() override;
     ///////////////////////////////////////////////////////////////////////
 
     Coord getCenterOfMass() {return d_centerOfMass.getValue();}

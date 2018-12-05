@@ -72,12 +72,12 @@ public:
 
 public:
     //////////////////////////////// Came from BaseObject ///////////////////////////
-    virtual void init() override;
+    void init() override;
     /////////////////////////////////////////////////////////////////////////////////
 
 
     //////////////////////////////// Came from Base /////////////////////////////////
-    virtual std::string getTemplateName() const override;
+    std::string getTemplateName() const override;
     /////////////////////////////////////////////////////////////////////////////////
 
     static std::string templateName(const SoftRobotsConstraint<DataTypes>* = NULL) ;
@@ -134,7 +134,7 @@ public:
                                        const DataVecCoord &x) = 0;
 
 
-    virtual void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
+    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
 
 
 protected:

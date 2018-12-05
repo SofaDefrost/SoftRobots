@@ -71,28 +71,28 @@ public:
     typedef Controller Inherited;
     SOFA_CLASS(SOFA_TEMPLATE(CommunicationController,DataTypes), Inherited);
 
-    CommunicationController    ();
-    virtual ~CommunicationController();
+    CommunicationController();
+    ~CommunicationController() override;
 
     //////////////////////////////// Inherited from Base /////////////////////////////////
-    virtual std::string getTemplateName() const {return templateName(this);}
+    std::string getTemplateName() const override {return templateName(this);}
     static std::string templateName(const CommunicationController<DataTypes>* = NULL);
     /////////////////////////////////////////////////////////////////////////////////
 
 
     ////////////////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void reset() override;
+    void init() override;
+    void reinit() override;
+    void reset() override;
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse(BaseObjectDescription *arg) override;
+    void parse(BaseObjectDescription *arg) override;
     /// Assign the field values stored in the given map of name -> value pairs
-    virtual void parseFields(const map<string,string*>& str) override;
+    void parseFields(const map<string,string*>& str) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Controller ////////////////////
-    virtual void onBeginAnimationStep(const double dt) override;
-    virtual void onEndAnimationStep(const double dt) override;
+    void onBeginAnimationStep(const double dt) override;
+    void onEndAnimationStep(const double dt) override;
     /////////////////////////////////////////////////////////////////////////
 
     Data<helper::OptionsGroup>              d_job;
