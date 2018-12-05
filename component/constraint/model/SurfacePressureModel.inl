@@ -79,6 +79,9 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
     , d_cavityVolume(initData(&d_cavityVolume, (Real) 1.0, "cavityVolume",
                                "Output volume of the cavity (only relevant in case of closed mesh)"))
 
+    , d_deltaCavityVolume(initData(&d_deltaCavityVolume, (Real)0.0, "deltaCavityVolume",
+                                "Difference between the intial cavity volume and the current one"))
+
     , d_flipNormal(initData(&d_flipNormal, false, "flipNormal",
                                "Allows to invert cavity faces orientation. \n"
                                "If a positive pressure acts like a depressurization, try to set \n"
@@ -102,6 +105,7 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
 
     d_cavityVolume.setReadOnly(true);
     d_initialCavityVolume.setReadOnly(true);
+    d_deltaCavityVolume.setReadOnly(true);
 
     d_pressure.setGroup("Vector");
     d_volumeGrowth.setGroup("Vector");
@@ -132,6 +136,9 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel()
     , d_cavityVolume(initData(&d_cavityVolume, (Real) 1.0, "cavityVolume",
                                "Output volume of the cavity (only relevant in case of closed mesh)"))
 
+    , d_deltaCavityVolume(initData(&d_deltaCavityVolume, (Real)0.0, "deltaCavityVolume",
+                                "Difference between the intial cavity volume and the current one"))
+
     , d_flipNormal(initData(&d_flipNormal, false, "flipNormal",
                                "Allows to invert cavity faces orientation. \n"
                                "If a positive pressure acts like a depressurization, try to set \n"
@@ -156,6 +163,7 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel()
 
     d_cavityVolume.setReadOnly(true);
     d_initialCavityVolume.setReadOnly(true);
+    d_deltaCavityVolume.setReadOnly(true);
 
     d_pressure.setGroup("Vector");
     d_volumeGrowth.setGroup("Vector");
@@ -257,7 +265,7 @@ void SurfacePressureModel<DataTypes>::init()
     Real volume = getCavityVolume(positions.ref());
     d_initialCavityVolume.setValue(volume);
     d_cavityVolume.setValue(volume);
-
+    d_deltaCavityVolume.setValue(d_initialCavityVolume.getValue()-volume);
     m_componentstate = ComponentState::Valid;
 }
 
@@ -387,6 +395,7 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
     if(m_state!=nullptr)
         position = m_state->read(core::ConstVecCoordId::position());
     d_cavityVolume.setValue(getCavityVolume(position.ref()));
+    d_deltaCavityVolume.setValue(d_initialCavityVolume.getValue() - getCavityVolume(position.ref()));
 }
 
 template<class DataTypes>
