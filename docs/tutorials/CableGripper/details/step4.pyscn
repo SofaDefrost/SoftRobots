@@ -1,0 +1,65 @@
+# -*- coding: utf-8 -*-
+from stlib.physics.deformable import ElasticMaterialObject
+from stlib.physics.constraints import FixedBox
+from stlib.physics.collision import CollisionMesh
+from stlib.scene import Node 
+from softrobots.actuators import PullingCable
+from splib.loaders import loadPointListFromFile
+
+import Sofa
+class FingerController(Sofa.PythonScriptController):
+    def __init__(self, node, cable):
+        self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
+        self.name = "FingerController"
+
+    def onKeyPressed(self,c):
+        if (c == "+"):
+            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + 1.
+        if (c == "-"):
+            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] - 1.
+
+def Finger(parentNode=None, name="Finger",
+           rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
+           fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0]):
+
+    finger = Node(parentNode, "Finger")
+    eobject = ElasticMaterialObject(finger,
+                                    volumeMeshFileName="data/mesh/finger.vtk",
+                                    surfaceMeshFileName="data/mesh/finger.stl",
+                                    surfaceColor=[0.0,0.7,0.8]
+                                    )
+
+    FixedBox(eobject, doVisualization=True, atPositions=[-10,-10,-10,10,10,10])
+    cable = PullingCable(eobject,
+                         cableGeometry=loadPointListFromFile("data/mesh/cable.json"))
+   
+    FingerController(finger, cable)
+   
+    CollisionMesh(eobject,
+         surfaceMeshFileName="data/mesh/finger.stl", name="part0", collisionGroup=[1, 2])
+
+
+    CollisionMesh(eobject,
+                 surfaceMeshFileName="data/mesh/fingerCollision_part1.stl",
+                 name="CollisionMeshAuto1", collisionGroup=[1])
+
+    CollisionMesh(eobject,
+                 surfaceMeshFileName="data/mesh/fingerCollision_part2.stl",
+                 name="CollisionMeshAuto2", collisionGroup=[2])
+
+def createScene(rootNode):
+    # -*- coding: utf-8 -*-
+    from stlib.scene import MainHeader, ContactHeader
+    from stlib.visuals import ShowGrid
+    from stlib.physics.rigid import Floor
+    from stlib.physics.rigid import Cube
+    m=MainHeader(rootNode, plugins=["SoftRobots"])
+    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields showCollisionModels'
+    ContactHeader(rootNode, alarmDistance=4, contactDistance=3, frictionCoef=0.08)
+
+    ShowGrid(rootNode)
+    Finger(rootNode)
+
+    return rootNode
+
+

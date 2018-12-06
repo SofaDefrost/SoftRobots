@@ -145,15 +145,65 @@ void AnimationEditor<Rigid3dTypes>::updateAnimationWithInterpolation(const int s
     }
 }
 
+template<>
+void AnimationEditor<Rigid3dTypes>::drawTrajectory(const VisualParams* vparams)
+{
+    vector<Vec3d> points;
+    vector<unsigned int> IDSorted = m_keyFramesID;
+    unsigned int nbKey = m_keyFramesID.size();
+    std::sort(IDSorted.begin(), IDSorted.begin() + nbKey);
+    for(unsigned int i=0; i<nbKey; i++)
+    {
+        for(unsigned int k=0; k<m_animation[i].size(); k++)
+        {
+            points.push_back(m_animation[IDSorted[i]][k].getCenter());
+            vparams->drawTool()->drawFrame(m_animation[m_keyFramesID[i]][k].getCenter(), m_animation[m_keyFramesID[i]][k].getOrientation(), Vec3f(d_drawSize.getValue(),d_drawSize.getValue(),d_drawSize.getValue()));
+        }
+    }
+
+    vector<Vec3d> lines;
+    for(unsigned int i=0; i<points.size()-1; i++)
+    {
+        lines.push_back(points[i]);
+        lines.push_back(points[i+1]);
+    }
+
+    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,Vec4f(0.5,0.5,0.5,1.));
+}
+
+template<>
+void AnimationEditor<Rigid3fTypes>::drawTrajectory(const VisualParams* vparams)
+{
+    vector<Vec3d> points;
+    vector<unsigned int> IDSorted = m_keyFramesID;
+    unsigned int nbKey = m_keyFramesID.size();
+    std::sort(IDSorted.begin(), IDSorted.begin() + nbKey);
+    for(unsigned int i=0; i<nbKey; i++)
+    {
+        for(unsigned int k=0; k<m_animation[i].size(); k++)
+        {
+            points.push_back(m_animation[IDSorted[i]][k].getCenter());
+            vparams->drawTool()->drawFrame(m_animation[m_keyFramesID[i]][k].getCenter(), m_animation[m_keyFramesID[i]][k].getOrientation(), Vec3f(d_drawSize.getValue(),d_drawSize.getValue(),d_drawSize.getValue()));
+        }
+    }
+
+    vector<Vec3d> lines;
+    for(unsigned int i=0; i<points.size()-1; i++)
+    {
+        lines.push_back(points[i]);
+        lines.push_back(points[i+1]);
+    }
+
+    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,Vec4f(0.5,0.5,0.5,1.));
+}
+
+
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
 using sofa::core::RegisterObject ;
-
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-// 2-RegisterObject("description") + .add<> : Register the component
-// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(AnimationEditor)
+// 1-RegisterObject("description") + .add<> : Register the component
+// 2-.add<>(true) : Set default template
 
 int AnimationEditorClass = RegisterObject("Build an animation from key points motion: \n"
                                    "ctrl+a: add keyframe \n"
@@ -161,9 +211,10 @@ int AnimationEditorClass = RegisterObject("Build an animation from key points mo
                                    "ctrl+c: copy keyframe \n"
                                    "ctrl+v: paste keyframe \n"
                                    "ctrl+x: cut keyframe \n"
-                                   "ctrl+w: save animation \n"
+                                   "ctrl+w: write animation \n"
+                                   "ctrl+m: play/pause animation \n"
                                    "ctrl+(left/right)arrow: move the cursor along the timeline \n"
-                                   "ctrl+('+'/'-'): move the cursor to the next/previous keyframe")
+                                   "ctrl+(pgDn/pgUp): move the cursor to the next/previous keyframe")
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef SOFA_WITH_FLOAT

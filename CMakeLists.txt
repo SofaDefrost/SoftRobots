@@ -1,11 +1,48 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.0)
 
 # Force cmake to use the NEW policy regaringthe "VERSION" management.
 cmake_policy(SET CMP0048 NEW)
 
 project(SoftRobots VERSION 1.0)
 
-option(USE_COMPRESSED_ROW_SPARSE "Use compressed row sparse format in the mappings" ON)
+option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
+
+if(SOFA_USE_MASK AND NOT SOFTROBOTS_IGNORE_ERRORS)
+    message(SEND_ERROR "
+        You should not use the plugin SoftRobots with SOFA_USE_MASK enabled.
+        Most components will not work correctly.
+        To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
+endif()
+
+if(NOT SOFA_BUILD_METIS AND NOT SOFTROBOTS_IGNORE_ERRORS)
+    message(SEND_ERROR "
+        You should not use the plugin SoftRobots without enabling SOFA_BUILD_METIS.
+        Most examples will run slowly.
+        To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
+endif()
+
+if(NOT PLUGIN_SOFAPYTHON AND NOT SOFTROBOTS_IGNORE_ERRORS)
+    message(SEND_ERROR "
+        You should not use the plugin SoftRobots without enabling PLUGIN_SOFAPYTHON.
+        Most examples will not be loadable.
+        To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
+endif()
+
+if(NOT MODULE_SOFASPARSESOLVER AND NOT SOFTROBOTS_IGNORE_ERRORS)
+    message(SEND_ERROR "
+        You should not use the plugin SoftRobots without enabling MODULE_SOFASPARSESOLVER.
+        Most examples and some tests will not work.
+        To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
+endif()
+
+
+
+find_package(STLIB QUIET)
+if(STLIB_FOUND)
+    message("-- Found dependency : 'STLIB' plugin .")
+else()
+    message("-- The higly recommanded 'STLIB' plugin is missing. You can compile SoftRobots but most of the provided examples will not work. ")
+endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -18,7 +55,7 @@ set(SOURCE_FILES
     component/initSoftRobots.cpp
         )
 
-file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn")
+file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
 include(cmake/environment.cmake)
 include(cmake/utils.cmake)

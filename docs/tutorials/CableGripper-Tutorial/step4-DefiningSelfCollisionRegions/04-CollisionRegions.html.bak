@@ -1,5 +1,0 @@
-<h1 id="defining-self-collision-regions-step-4">Defining Self Collision Regions [step 4]</h1>
-<p>By default Sofa doesn't handle self-collisions, which in general are expensive to compute. This can lead to some undesireable results, i.e. self-interesections, as seen in the figure below.<br />
-<img src="../data/images/NoCollisionRegions.png" alt="Volumetric mesh of a soft finger" /></p>
-<p>Therefore, it is possible to define special geometries for which collions are checked and handled. In the following figure, the collision regions are shown in orange. <img src="../data/images/CollisionRegions.png" alt="Volumetric mesh of a soft finger" /></p>
-<p>Self-intersection is prevented by the collision regions as shown in this figure. <img src="../data/images/CollisionRegions2.png" alt="Volumetric mesh of a soft finger" /></p>

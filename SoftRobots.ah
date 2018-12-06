@@ -1,0 +1,25 @@
+{
+    "github/SoftRobots" : {
+        "ns" : "",
+	    "name": "github/SoftRobots",
+		"url" : "https://github.com/SofaDefrost"    
+    },
+
+	"PullingCable" : {
+	    "name": "PullingCable",
+		"url" : "http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable"
+	},
+
+    "MeshGeneration" : {
+        "ns": "SoftRobots::Docs",
+        "name": "MeshGeneration",
+        "relativepath" : "docs/thematicalDocs/T2-FromMeshToSimulation/index.html"
+    },
+
+    "FirstStep" : {
+        "ns": "SoftRobots::Docs",
+        "name": "FirstStep",
+        "relativepath" : "docs/tutorials/FirstSteps/firststeps-tuto.html"
+    }
+
+}

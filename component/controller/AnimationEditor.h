@@ -108,19 +108,21 @@ public:
     void setCursor(const int& cursor) {d_cursor.setValue(cursor); m_isFrameDirty=true;}
     int getCursor() {return d_cursor.getValue();}
     void setIsPlaying(const bool& isPlaying) {m_isPlaying = isPlaying;}
-    vector<int> getKeyFramesID() {return m_keyFramesID;}
+    vector<unsigned int> getKeyFramesID() {return m_keyFramesID;}
 
-    Data<int>               d_maxKeyFrame;
+    Data<unsigned int>      d_maxKeyFrame;
     Data<string>            d_filename;
     Data<bool>              d_loop;
     Data<bool>              d_load;
     Data<double>            d_dx;
     Data<double>            d_frameTime;
     Data<bool>              d_drawTimeline;
-    Data<int>               d_cursor;
+    Data<double>            d_drawSize;
+    Data<bool>              d_drawTrajectory;
+    Data<unsigned int>      d_cursor;
 
-    vector<int>                      m_keyFramesID;
-    vector<vector<Coord>>            m_animation;
+    vector<unsigned int>    m_keyFramesID;
+    vector<vector<Coord>>   m_animation;
 
     void saveAnimation();
     void loadAnimation();
@@ -139,8 +141,8 @@ protected:
     bool                             m_isFrameDirty;
     vector<Coord>                    m_frameCopy;
     bool                             m_isPlaying;
-    int                              m_maxKeyFrameID;
-    int                              m_incrKeyFrame;
+    unsigned int                     m_maxKeyFrameID;
+    unsigned int                     m_incrKeyFrame;
     double                           m_time;
     double                           m_dx;
 
@@ -154,21 +156,20 @@ protected:
     bool isCursorKeyFrame(int &index);
     int getMaxKeyFrameID();
 
+    void drawTimeline(const core::visual::VisualParams* vparams);
+    void drawTrajectory(const core::visual::VisualParams* vparams);
 
 };   //class AnimationEditor
 
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_EXTERN_TEMPLATE
 #ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_SOFTROBOTS_API AnimationEditor<sofa::defaulttype::Vec3dTypes>;
 #endif
 
 #ifdef SOFA_WITH_FLOAT
 extern template class SOFA_SOFTROBOTS_API AnimationEditor<sofa::defaulttype::Vec3fTypes>;
-#endif
-
 #endif
 
 }   //namespace _animationeditor_

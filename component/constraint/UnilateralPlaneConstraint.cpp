@@ -69,13 +69,10 @@ void UnilateralPlaneConstraintResolution::resolution(int line, double**w, double
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 using namespace sofa::helper;
-
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-// 2-RegisterObject("description") + .add<> : Register the component
-// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(UnilateralPlaneConstraint)
+// 1-RegisterObject("description") + .add<> : Register the component
+// 2-.add<>(true) : Set default template
 
 int UnilateralPlaneConstraintClass = core::RegisterObject("This component is a simple point plane collision model. \n"
                                                           "By providing 4 points to the component, the first point will \n"

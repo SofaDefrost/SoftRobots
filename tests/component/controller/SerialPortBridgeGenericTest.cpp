@@ -71,6 +71,8 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
     using SerialPortBridgeGeneric::d_precise ;
     using SerialPortBridgeGeneric::d_packetOut ;
     using SerialPortBridgeGeneric::d_port ;
+    using SerialPortBridgeGeneric::d_header ;
+    using SerialPortBridgeGeneric::d_splitPacket ;
     using SerialPortBridgeGeneric::m_packetOut ;
     ///////////////////////////////////////////////////////////////
 
@@ -144,22 +146,36 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
     void initTest(){
         d_size.setValue(4);
         d_precise.setValue(false);
+        d_splitPacket.setValue(false);
 
         init();
-        EXPECT_TRUE(m_packetOut.size()==5);
-        EXPECT_TRUE(m_packetOut[0]==245);
+        EXPECT_EQ(m_packetOut.size(),(unsigned int)5);
+        EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
         for(int i=1; i<5; i++)
-            EXPECT_TRUE(m_packetOut[i]==0);
+            EXPECT_EQ(m_packetOut[i],0);
 
 
         d_size.setValue(3);
         d_precise.setValue(true);
+        d_splitPacket.setValue(false);
 
         init();
-        EXPECT_TRUE(m_packetOut.size()==7);
-        EXPECT_TRUE(m_packetOut[0]==245);
+        EXPECT_EQ(m_packetOut.size(),(unsigned int)7);
+        EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
         for(int i=1; i<7; i++)
-            EXPECT_TRUE(m_packetOut[i]==0);
+            EXPECT_EQ(m_packetOut[i],0);
+
+        d_size.setValue(3);
+        d_precise.setValue(true);
+        d_splitPacket.setValue(true);
+        init();
+        EXPECT_EQ(m_packetOut.size(),(unsigned int)8);
+        EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
+        for(int i=1; i<4; i++)
+            EXPECT_EQ(m_packetOut[i],0);
+        EXPECT_EQ(m_packetOut[4],d_header.getValue()[1]);
+        for(int i=5; i<7; i++)
+            EXPECT_EQ(m_packetOut[i],0);
     }
 
 
@@ -169,26 +185,28 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
 
         d_size.setValue(4);
         d_precise.setValue(false);
+        d_splitPacket.setValue(false);
         packet.clear();
         packet.resize(4);
 
         onEndAnimationStep(0.0);
-        EXPECT_TRUE(m_packetOut.size()==5);
-        EXPECT_TRUE(m_packetOut[0]==245);
+        EXPECT_EQ(m_packetOut.size(),(unsigned int)5);
+        EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
         for(int i=1; i<5; i++)
-            EXPECT_TRUE(m_packetOut[i]==0);
+            EXPECT_EQ(m_packetOut[i],0);
 
 
         d_size.setValue(3);
         d_precise.setValue(true);
+        d_splitPacket.setValue(false);
         packet.clear();
         packet.resize(3);
 
         onEndAnimationStep(0.0);
-        EXPECT_TRUE(m_packetOut.size()==7);
-        EXPECT_TRUE(m_packetOut[0]==245);
+        EXPECT_EQ(m_packetOut.size(),(unsigned int)7);
+        EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
         for(int i=1; i<7; i++)
-            EXPECT_TRUE(m_packetOut[i]==0);
+            EXPECT_EQ(m_packetOut[i],0);
     }
 
 
@@ -221,7 +239,5 @@ TYPED_TEST(SerialPortBridgeGenericTest, initTest) {
 TYPED_TEST(SerialPortBridgeGenericTest, onEndAnimationStepTest) {
     ASSERT_NO_THROW(this->onEndAnimationStepTest()) ;
 }
-
-
 
 }

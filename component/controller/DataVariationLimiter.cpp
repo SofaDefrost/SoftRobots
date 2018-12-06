@@ -46,9 +46,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using core::RegisterObject;
 
-
-SOFA_DECL_CLASS(DataVariationLimiter)
-
 int DataVariationLimiterClass = RegisterObject("This component interpolates between two consecutive inputs when a jump is detected.")
 #ifdef SOFA_WITH_FLOAT
         .add< DataVariationLimiter<Vec3f> >()

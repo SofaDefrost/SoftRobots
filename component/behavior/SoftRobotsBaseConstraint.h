@@ -85,6 +85,9 @@ public:
     bool hasLambdaEqual();
 
 
+    /// Returns if the constraint has an epsilon value that can be used to prioritize the constraint (for actuator with inverse problem)
+    bool hasEpsilon();
+
 
     /// Accessor to maximum value of delta
     SReal getDeltaMax();
@@ -104,6 +107,10 @@ public:
 
     /// Accessor to equal constraint value of lambda
     SReal getLambdaEqual();
+
+
+    /// Accessor to epsilon value that can be used to prioritize the constraint (for actuator with inverse problem)
+    SReal getEpsilon();
 
 
 
@@ -137,6 +144,8 @@ protected:
     bool m_hasLambdaMin;
     bool m_hasLambdaEqual;
 
+    bool m_hasEpsilon;
+
     double m_deltaMax;
     double m_deltaMin;
     double m_deltaEqual;
@@ -144,6 +153,8 @@ protected:
     double m_lambdaMax;
     double m_lambdaMin;
     double m_lambdaEqual;
+
+    double m_epsilon;
 
     unsigned int m_nbLines; ///< Constraint nbLines in the constraints matrix
 

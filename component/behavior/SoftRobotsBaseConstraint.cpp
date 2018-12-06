@@ -47,6 +47,7 @@ SoftRobotsBaseConstraint::SoftRobotsBaseConstraint()
     , m_hasLambdaMax(false)
     , m_hasLambdaMin(false)
     , m_hasLambdaEqual(false)
+    , m_hasEpsilon(false)
 {
 }
 
@@ -82,6 +83,13 @@ bool SoftRobotsBaseConstraint::hasLambdaEqual()
     return m_hasLambdaEqual;
 }
 
+
+bool SoftRobotsBaseConstraint::hasEpsilon()
+{
+    return m_hasEpsilon;
+}
+
+
 SReal SoftRobotsBaseConstraint::getDeltaMax()
 {
     return m_deltaMax;
@@ -114,6 +122,11 @@ SReal SoftRobotsBaseConstraint::getLambdaEqual()
     return m_lambdaEqual;
 }
 
+
+SReal SoftRobotsBaseConstraint::getEpsilon()
+{
+    return m_epsilon;
+}
 
 
 unsigned int SoftRobotsBaseConstraint::getNbLines()

@@ -55,362 +55,85 @@ using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
 
-///// VEC3D
-
-
 template<>
-void CommunicationController<vector<Vec3d>>::convertDataToMessage(string& messageStr)
+void CommunicationController<double>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<vector<Vec3d>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<3; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        ReadAccessor<Data<double>> data = d_data[i];
+        messageStr += std::to_string(data) + " ";
     }
 }
 
 template<>
-void CommunicationController<vector<Vec3d>>::convertStringStreamToData(stringstream *stream)
-{
-    for (unsigned int i= 0; i<d_data.size(); i++)
-    {
-        WriteAccessor<Data<vector<Vec3d>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<3; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-template<>
-void CommunicationController<vector<Vec3d>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec3d>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*4*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
-
-///// VEC3F
-
-
-template<>
-void CommunicationController<vector<Vec3f>>::convertDataToMessage(string& messageStr)
+void CommunicationController<int>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<vector<Vec3f>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<3; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        ReadAccessor<Data<int>> data = d_data[i];
+        messageStr += std::to_string(data) + " ";
     }
 }
 
 template<>
-void CommunicationController<vector<Vec3f>>::convertStringStreamToData(stringstream *stream)
-{
-    for (unsigned int i= 0; i<d_data.size(); i++)
-    {
-        WriteAccessor<Data<vector<Vec3f>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<3; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-template<>
-void CommunicationController<vector<Vec3f>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec3f>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*4*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
-
-
-///// VEC1D
-
-
-template<>
-void CommunicationController<vector<Vec1d>>::convertDataToMessage(string& messageStr)
+void CommunicationController<float>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<vector<Vec1d>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<1; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        ReadAccessor<Data<float>> data = d_data[i];
+        messageStr += std::to_string(data) + " ";
     }
 }
 
 template<>
-void CommunicationController<vector<Vec1d>>::convertStringStreamToData(stringstream *stream)
-{
-    for (unsigned int i= 0; i<d_data.size(); i++)
-    {
-        WriteAccessor<Data<vector<Vec1d>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<1; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-template<>
-void CommunicationController<vector<Vec1d>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec1d>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*2*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
-
-
-///// VEC1F
-
-
-template<>
-void CommunicationController<vector<Vec1f>>::convertDataToMessage(string& messageStr)
+void CommunicationController<unsigned int>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<vector<Vec1f>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<1; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
+        ReadAccessor<Data<unsigned int>> data = d_data[i];
+        messageStr += std::to_string(data) + " ";
     }
 }
 
 template<>
-void CommunicationController<vector<Vec1f>>::convertStringStreamToData(stringstream *stream)
+void CommunicationController<double>::convertStringStreamToData(stringstream *stream)
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<vector<Vec1f>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<1; k++)
-                (*stream) >> data[j][k];
+        WriteAccessor<Data<double>> data = d_data[i];
+        (*stream) >> data;
     }
 }
 
 template<>
-void CommunicationController<vector<Vec1f>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec1f>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*2*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
-
-
-///// VEC1I
-
-
-template<>
-void CommunicationController<vector<Vec<2,int>>>::convertDataToMessage(string& messageStr)
-{
-    for(unsigned int i=0; i<d_data.size(); i++)
-    {
-        ReadAccessor<Data<vector<Vec<2,int>>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<2; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
-    }
-}
-
-template<>
-void CommunicationController<vector<Vec<2,int>>>::convertStringStreamToData(stringstream *stream)
+void CommunicationController<float>::convertStringStreamToData(stringstream *stream)
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<vector<Vec<2,int>>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<2; k++)
-                (*stream) >> data[j][k];
+        WriteAccessor<Data<float>> data = d_data[i];
+        (*stream) >> data;
     }
 }
 
 template<>
-void CommunicationController<vector<Vec<2,int>>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec<2,int>>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*3*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
-
-
-
-///// VEC1UI
-
-
-template<>
-void CommunicationController<vector<Vec<2,unsigned int>>>::convertDataToMessage(string& messageStr)
-{
-    for(unsigned int i=0; i<d_data.size(); i++)
-    {
-        ReadAccessor<Data<vector<Vec<2,unsigned int>>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<2; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
-    }
-}
-
-template<>
-void CommunicationController<vector<Vec<2,unsigned int>>>::convertStringStreamToData(stringstream *stream)
+void CommunicationController<int>::convertStringStreamToData(stringstream *stream)
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<vector<Vec<2,unsigned int>>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<2; k++)
-                (*stream) >> data[j][k];
+        WriteAccessor<Data<int>> data = d_data[i];
+        (*stream) >> data;
     }
 }
 
 template<>
-void CommunicationController<vector<Vec<2,unsigned int>>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Vec<2,unsigned int>>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*3*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
-
-
-
-//// RIGID3D
-
-template<>
-void CommunicationController<vector<Rigid3dTypes::Coord>>::convertDataToMessage(string& messageStr)
-{
-    for(unsigned int i=0; i<d_data.size(); i++)
-    {
-        ReadAccessor<Data<vector<Rigid3dTypes::Coord>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<7; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
-    }
-}
-
-template<>
-void CommunicationController<vector<Rigid3dTypes::Coord>>::convertStringStreamToData(stringstream *stream)
+void CommunicationController<unsigned int>::convertStringStreamToData(stringstream *stream)
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<vector<Rigid3dTypes::Coord>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<7; k++)
-                (*stream) >> data[j][k];
+        WriteAccessor<Data<unsigned int>> data = d_data[i];
+        (*stream) >> data;
     }
 }
-
-template<>
-void CommunicationController<vector<Rigid3dTypes::Coord>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Rigid3dTypes::Coord>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*8*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
-
-//// RIGID3F
-
-template<>
-void CommunicationController<vector<Rigid3fTypes::Coord>>::convertDataToMessage(string& messageStr)
-{
-    for(unsigned int i=0; i<d_data.size(); i++)
-    {
-        ReadAccessor<Data<vector<Rigid3fTypes::Coord>>> data = d_data[i];
-        messageStr += std::to_string(data.size()) + " ";
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<7; k++)
-                messageStr += std::to_string(data[j][k]) + " ";
-    }
-}
-
-template<>
-void CommunicationController<vector<Rigid3fTypes::Coord>>::convertStringStreamToData(stringstream *stream)
-{
-    for (unsigned int i= 0; i<d_data.size(); i++)
-    {
-        WriteAccessor<Data<vector<Rigid3fTypes::Coord>>> data = d_data[i];
-        int dataSize = 0;
-        (*stream) >> dataSize;
-        data.resize(dataSize);
-
-        for(unsigned int j=0; j<data.size(); j++)
-            for(int k=0; k<7; k++)
-                (*stream) >> data[j][k];
-    }
-}
-
-template<>
-void CommunicationController<vector<Rigid3fTypes::Coord>>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(d_data.size()>0)
-    {
-        ReadAccessor<Data<vector<Rigid3fTypes::Coord>>> data = d_data[0];
-        if(nbDataFieldReceived!=d_nbDataField.getValue()*8*data.size())
-            msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-    }
-}
-
 
 
 //////////////////////////////// Template name definition
@@ -495,13 +218,10 @@ std::string CommunicationController<vector<Rigid3fTypes::Coord>>::templateName(c
 
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
 using sofa::core::RegisterObject ;
-
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-// 2-RegisterObject("description") + .add<> : Register the component
-// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(CommunicationController)
+// 1-RegisterObject("description") + .add<> : Register the component
+// 2-.add<>(true) : Set default template
 
 int CommunicationControllerClass = RegisterObject("This component is used to build a communication between two simulations")
 

@@ -1,0 +1,254 @@
+# -*- coding: utf-8 -*-
+
+import Sofa
+
+import os
+path = os.path.dirname(os.path.abspath(__file__))+'/'
+pathMesh = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
+
+
+def createScene(rootNode):
+
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('VisualStyle', displayFlags="showVisualModels hideBehaviorModels hideCollisionModels \
+                                        hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe")
+
+                rootNode.createObject('FreeMotionAnimationLoop')
+
+                rootNode.createObject('QPInverseProblemSolver', printLog='0', epsilon="1e-1",\
+                maxIterations="1000", tolerance="1e-14")
+
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+                rootNode.findData('gravity').value="0 0 -981.0"
+                rootNode.findData('dt').value=0.01
+
+
+
+                ##########################################
+                # Effector goal for interactive control  #
+                ##########################################
+                goal = rootNode.createChild('goal')
+                goal.createObject('EulerImplicit', firstOrder='1')
+                goal.createObject('CGLinearSolver', iterations='100', tolerance="1e-5", threshold="1e-5")
+                goal.createObject('MechanicalObject', name='goalMO',
+                        position='0 0 5',
+                        showObject="1",
+                        showObjectScale="1",
+                        drawMode="1")
+                goal.createObject('DataVariationLimiter', name="stabilizer", listening="1", input="@goalMO.position")
+                goal.createObject('MechanicalObject', name='goalMOStabilized',
+                        position='@stabilizer.output',
+                        showObject="1",
+                        showObjectScale="1",
+                        drawMode="1")
+                goal.createObject('UncoupledConstraintCorrection')
+
+
+                ##########################################
+                # FEM Model                              #
+                ##########################################
+                accordion = rootNode.createChild('accordion')
+                accordion.createObject('EulerImplicit', firstOrder='0', rayleighStiffness="0.1", rayleighMass="0.1")
+                accordion.createObject('SparseLDLSolver')
+
+                accordion.createObject('MeshVTKLoader', name='loader', filename=pathMesh+'Accordion.vtu', rotation="90 0 0")
+                accordion.createObject('TetrahedronSetTopologyContainer', src='@loader')
+                accordion.createObject('TetrahedronSetTopologyModifier')
+                accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
+                accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+
+                accordion.createObject('MechanicalObject', name='tetras', template='Vec3d')
+                accordion.createObject('UniformMass', totalMass='0.030')
+                accordion.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
+
+                accordion.createObject('BoxROI', name='ROI1', box='-2 -2 0 2 2 0.5', drawBoxes='true')
+                accordion.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness='1e12')
+
+                accordion.createObject('LinearSolverConstraintCorrection')
+
+
+                ##########################################
+                # Effector                               #
+                ##########################################
+
+                effector = accordion.createChild('effector')
+                effector.createObject('MechanicalObject', name="effectorPoint",
+                        position=("0 0 5"))
+                effector.createObject('PositionEffector', template='Vec3d',
+                        indices="0",
+                        effectorGoal="@../../goal/goalMOStabilized.position",
+                        useDirections="1 1 1")
+                effector.createObject('BarycentricMapping', mapForces="false", mapMasses="false")
+
+
+                ##########################################
+                # Cables                                 #
+                ##########################################
+
+                cables = accordion.createChild('cables')
+                cables.createObject('MechanicalObject', name="cablesPoint",
+                        position=(
+                                        "1.5 0 0.5   "+
+                                        "1.5 0 1.5   "+
+                                        "1.5 0 2.5   "+
+                                        "1.5 0 3.5   "+
+                                        "1.5 0 4.5   "+
+
+                                        "0 -1.5 0.5   "+
+                                        "0 -1.5 1.5   "+
+                                        "0 -1.5 2.5   "+
+                                        "0 -1.5 3.5   "+
+                                        "0 -1.5 4.5   "+
+
+                                        "-1.5 0 0.5   "+
+                                        "-1.5 0 1.5   "+
+                                        "-1.5 0 2.5   "+
+                                        "-1.5 0 3.5   "+
+                                        "-1.5 0 4.5   "))
+                cables.createObject('CableActuator', template='Vec3d',
+                        name="cable1",
+                        indices="0 1 2 3 4",
+                        pullPoint="1.5 0 0",
+                        minForce="0",
+                        maxPositiveDisp="1.5"
+                        )
+                cables.createObject('CableActuator', template='Vec3d',
+                        name="cable2",
+                        indices="5 6 7 8 9",
+                        pullPoint="0 -1.5 0",
+                        minForce="0",
+                        maxPositiveDisp="1.5"
+                        )
+                cables.createObject('CableActuator', template='Vec3d',
+                        name="cable3",
+                        indices="10 11 12 13 14",
+                        pullPoint="-1.5 0 0",
+                        minForce="0",
+                        maxPositiveDisp="1.5"
+                        )
+                cables.createObject('BarycentricMapping', mapForces="false", mapMasses="false")
+
+                ##########################################
+                # Pressure                               #
+                ##########################################
+                cavity = accordion.createChild('cavity')
+                cavity.createObject('MeshSTLLoader', name='loader', filename=pathMesh+'Cavity.stl')
+                cavity.createObject('Mesh', src='@loader', name='topo')
+                cavity.createObject('MechanicalObject', name='cavity')
+                cavity.createObject('SurfacePressureActuator', template='Vec3d', name="pressure",
+                    triangles='@topo.triangles',
+                    minPressure="0",
+                    maxVolumeGrowth="2")
+
+                cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+
+                ##########################################
+                # Visualization                          #
+                ##########################################
+                accordionVisu = accordion.createChild('visu')
+                accordionVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Body.obj", name="loader")
+                accordionVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="0 -2.5 2.5")
+                accordionVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                accordionVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
+                accordionVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
+                accordionVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
+                accordionVisu.createObject('OglFloatVariable', name='SpecularRoughness', value='0.25')
+                accordionVisu.createObject('OglFloatVariable', name='SpecularReflectance', value='0.05')
+                accordionVisu.createObject('OglFloat3Variable', name='LightColor', value='1 1 1')
+                accordionVisu.createObject('OglFloat3Variable', name='LightPosition', value='10 -10 10 ')
+                accordionVisu.createObject('OglFloat3Variable', name='LightDirection', value='-1 1 -1')
+                accordionVisu.createObject('OglShaderDefineMacro', id='DiffuseMap_Present')
+                accordionVisu.createObject('OglTexture', textureUnit='1', repeat='true', name='color', srgbColorspace='false', id='DiffuseMap', textureFilename=pathMesh+"Springy_Diffuse_Map.png")
+                accordionVisu.createObject('BarycentricMapping')
+
+                Environment = rootNode.createChild('Environment')
+                Environment.createObject('MeshObjLoader', filename=pathMesh+'Cyclo_Springy.obj', name='loader')
+                Environment.createObject('OglModel', putOnlyTexCoords='true', src="@loader", name='decor', normals='0', rotation="90 0 0")
+                Environment.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                Environment.createObject('OglFloat3Variable', name='AmbientColor', value='1.0 1.0 1.0')
+                Environment.createObject('OglFloat3Variable', name='DiffuseColor', value='0.8 0.8 0.8')
+                Environment.createObject('OglFloat3Variable', name='SpecularColor', value='1 1 1')
+                Environment.createObject('OglFloatVariable', name='SpecularRoughness', value='0.25')
+                Environment.createObject('OglFloatVariable', name='SpecularReflectance', value='0.05')
+                Environment.createObject('OglShaderDefineMacro', id='DiffuseMap_Present')
+                Environment.createObject('OglTexture', textureUnit='2', repeat='true', name='color', srgbColorspace='false', id='DiffuseMap', textureFilename=pathMesh+'Cyclo_Diffuse_Map.png')
+
+                EyeLMO = accordion.createChild('EyeLMO')
+                EyeLMO.createObject('MechanicalObject', template="Rigid", name="MO" ,position="1 -1.5 3.5 0 0 0 1")
+                EyeLMO.createObject('BarycentricMapping', template="Vec3d,Rigid3d", output="@./MO", input="@../tetras")
+                EyeLVisu = EyeLMO.createChild('EyeLVisu')
+                EyeLVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Eye_Left.obj", name="loader")
+                EyeLVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="-1 -1.0 -1")
+                EyeLVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                EyeLVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
+                EyeLVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
+                EyeLVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
+                EyeLVisu.createObject('OglFloatVariable', name='SpecularRoughness', value='0.25')
+                EyeLVisu.createObject('OglFloatVariable', name='SpecularReflectance', value='0.05')
+                EyeLVisu.createObject('OglFloat3Variable', name='LightColor', value='1 1 1')
+                EyeLVisu.createObject('OglFloat3Variable', name='LightPosition', value='10 -10 10 ')
+                EyeLVisu.createObject('OglFloat3Variable', name='LightDirection', value='-1 1 -1')
+                EyeLVisu.createObject('OglShaderDefineMacro', id='DiffuseMap_Present')
+                EyeLVisu.createObject('OglTexture', textureUnit='1', repeat='true', name='color', srgbColorspace='false', id='DiffuseMap', textureFilename=pathMesh+"Springy_Diffuse_Map.png")
+                EyeLVisu.createObject('RigidMapping')
+
+                EyeRMO = accordion.createChild('EyeRMO')
+                EyeRMO.createObject('MechanicalObject', template="Rigid", position="-1 -1.5 3.5 0 0 0 1")
+                EyeRMO.createObject('BarycentricMapping')
+                EyeRVisu = EyeRMO.createChild('EyeRVisu')
+                EyeRVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Eye_Right.obj", name="loader")
+                EyeRVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="1 -1.0 -1")
+                EyeRVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                EyeRVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
+                EyeRVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
+                EyeRVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
+                EyeRVisu.createObject('OglFloatVariable', name='SpecularRoughness', value='0.25')
+                EyeRVisu.createObject('OglFloatVariable', name='SpecularReflectance', value='0.05')
+                EyeRVisu.createObject('OglFloat3Variable', name='LightColor', value='1 1 1')
+                EyeRVisu.createObject('OglFloat3Variable', name='LightPosition', value='10 -10 10 ')
+                EyeRVisu.createObject('OglFloat3Variable', name='LightDirection', value='-1 1 -1')
+                EyeRVisu.createObject('OglShaderDefineMacro', id='DiffuseMap_Present')
+                EyeRVisu.createObject('OglTexture', textureUnit='1', repeat='true', name='color', srgbColorspace='false', id='DiffuseMap', textureFilename=pathMesh+"Springy_Diffuse_Map.png")
+                EyeRVisu.createObject('RigidMapping')
+
+                MouthMO = accordion.createChild('MouthMO')
+                MouthMO.createObject('MechanicalObject', template="Rigid", position="0 -1.5 1.5 0 0 0 1")
+                MouthMO.createObject('BarycentricMapping')
+                MouthVisu = MouthMO.createChild('EyeLVisu')
+                MouthVisu.createObject('MeshObjLoader', filename=pathMesh+"Springy_Cartoon_Mouth.obj", name="loader")
+                MouthVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="0 -1.0 1.0")
+                MouthVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                MouthVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
+                MouthVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
+                MouthVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
+                MouthVisu.createObject('OglFloatVariable', name='SpecularRoughness', value='0.25')
+                MouthVisu.createObject('OglFloatVariable', name='SpecularReflectance', value='0.05')
+                MouthVisu.createObject('OglFloat3Variable', name='LightColor', value='1 1 1')
+                MouthVisu.createObject('OglFloat3Variable', name='LightPosition', value='10 -10 10 ')
+                MouthVisu.createObject('OglFloat3Variable', name='LightDirection', value='-1 1 -1')
+                MouthVisu.createObject('OglShaderDefineMacro', id='DiffuseMap_Present')
+                MouthVisu.createObject('OglTexture', textureUnit='1', repeat='true', name='color', srgbColorspace='false', id='DiffuseMap', textureFilename=pathMesh+"Springy_Diffuse_Map.png")
+                MouthVisu.createObject('RigidMapping')
+
+                NoseMO = accordion.createChild('NoseMO')
+                NoseMO.createObject('MechanicalObject', template="Rigid", position="0 -1.5 2.5 0 0 0 1")
+                NoseMO.createObject('BarycentricMapping')
+                NoseVisu = NoseMO.createChild('NoseVisu')
+                NoseVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Nose.obj", name="loader")
+                NoseVisu.createObject('OglModel', src="@loader", putOnlyTexCoords='true', normals='0', translation="0 -1.0 0")
+                NoseVisu.createObject('OglShader', vertFilename='shaders/shaderLibrary.glsl', fragFilename='shaders/shaderLibrary.glsl')
+                NoseVisu.createObject('OglFloat3Variable', name='AmbientColor', value='0.8 0.8 0.8')
+                NoseVisu.createObject('OglFloat3Variable', name='DiffuseColor', value='1.0 1.0 1.0')
+                NoseVisu.createObject('OglFloat3Variable', name='SpecularColor', value='0.2 0.2 0.2')
+                NoseVisu.createObject('OglFloatVariable', name='SpecularRoughness', value='0.25')
+                NoseVisu.createObject('OglFloatVariable', name='SpecularReflectance', value='0.05')
+                NoseVisu.createObject('OglFloat3Variable', name='LightColor', value='1 1 1')
+                NoseVisu.createObject('OglFloat3Variable', name='LightPosition', value='10 -10 10 ')
+                NoseVisu.createObject('OglFloat3Variable', name='LightDirection', value='-1 1 -1')
+                NoseVisu.createObject('OglShaderDefineMacro', id='DiffuseMap_Present')
+                NoseVisu.createObject('OglTexture', textureUnit='1', repeat='true', name='color', srgbColorspace='false', id='DiffuseMap', textureFilename=pathMesh+"Springy_Diffuse_Map.png")
+                NoseVisu.createObject('RigidMapping')
+
+
+                return rootNode
