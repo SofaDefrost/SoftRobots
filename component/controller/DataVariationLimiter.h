@@ -60,7 +60,7 @@ public:
 
 public:
 
-    virtual std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -91,18 +91,17 @@ public:
     }
 
     DataVariationLimiter();
-
-    virtual ~DataVariationLimiter();
+    ~DataVariationLimiter() override;
 
 
     ////////////////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void reset() override;
+    void init() override;
+    void reinit() override;
+    void reset() override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Controller ////////////////////
-    virtual void onBeginAnimationStep(const double dt) override;
+    void onBeginAnimationStep(const double dt) override;
     /////////////////////////////////////////////////////////////////////////
 
     void interpolate(const int index);
@@ -133,17 +132,10 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec3d>;
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec2d>;
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec1d>;
-#endif
 
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec3f>;
-extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec2f>;
-extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec1f>;
-#endif
 
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec1i>;
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec2i>;

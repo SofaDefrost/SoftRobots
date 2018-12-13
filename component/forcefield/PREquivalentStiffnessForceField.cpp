@@ -46,12 +46,8 @@ namespace forcefield
 // 2-.add<>(true) : Set default template
 
 int PREquivalentStiffnessForceFieldClass = core::RegisterObject("Partial Rigidification equivalent stiffness forcefield")
-#ifdef SOFA_WITH_FLOAT
-        .add<PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3fTypes> >()
-#endif
-#ifdef SOFA_WITH_DOUBLE
-        .add<PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3dTypes> >(true)
-#endif
+        .add<PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types> >(true)
+
         ;
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,13 +55,9 @@ int PREquivalentStiffnessForceFieldClass = core::RegisterObject("Partial Rigidif
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_FLOAT
-template class PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3fTypes>;
-#endif
 
-#ifdef SOFA_WITH_DOUBLE
-template class PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3dTypes>;
-#endif
+template class PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types>;
+
 
 } // forcefield
 

@@ -67,7 +67,7 @@ public:
 
 public:
 
-    virtual std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -78,18 +78,17 @@ public:
     }
 
     CenterOfMass();
-
-    virtual ~CenterOfMass();
+    ~CenterOfMass() override;
 
 
     ////////////////////////// Inherited from BaseObject ///////////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void draw(const core::visual::VisualParams* vparams) override;
+    void init() override;
+    void reinit() override;
+    void draw(const core::visual::VisualParams* vparams) override;
     ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from DataEngine////////////////////
-    virtual void doUpdate() override;
+    void doUpdate() override;
     ///////////////////////////////////////////////////////////////////////
 
     Coord getCenterOfMass() {return d_centerOfMass.getValue();}
@@ -111,13 +110,8 @@ protected:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_SOFTROBOTS_API CenterOfMass<sofa::defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_SOFTROBOTS_API CenterOfMass<sofa::defaulttype::Vec3Types>;
 
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_SOFTROBOTS_API CenterOfMass<sofa::defaulttype::Vec3fTypes>;
-#endif
 
 } // namespace engine
 

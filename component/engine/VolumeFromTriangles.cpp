@@ -45,20 +45,12 @@ using namespace sofa::helper;
 using core::RegisterObject;
 
 int VolumeFromTrianglesClass = RegisterObject("This class computes the volume of a given closed surfacic mesh.")
-#ifdef SOFA_WITH_DOUBLE
-        .add< VolumeFromTriangles<Vec3dTypes> >(true)
-#endif
-#ifdef SOFA_WITH_FLOAT
-        .add< VolumeFromTriangles<Vec3fTypes> >()
-#endif
+        .add< VolumeFromTriangles<Vec3Types> >(true)
+
         ;
 
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API VolumeFromTriangles<Vec3fTypes>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SOFTROBOTS_API VolumeFromTriangles<Vec3dTypes>;
-#endif
+template class SOFA_SOFTROBOTS_API VolumeFromTriangles<Vec3Types>;
+
 
 } // namespace constraintset
 

@@ -127,12 +127,8 @@ void VolumeGrowthConstraintResolution::resolution(int line, double** w, double* 
 
 int SurfacePressureConstraintClass = core::RegisterObject("This component constrains a model by applying "
                                                           "pressure on surfaces (for exemple cavities)")
-#ifdef SOFA_WITH_DOUBLE
-.add< SurfacePressureConstraint<Vec3dTypes> >(true)//Set Vec3d to default template
-#endif
-#ifdef SOFA_WITH_FLOAT
-.add< SurfacePressureConstraint<Vec3fTypes> >()
-#endif
+.add< SurfacePressureConstraint<Vec3Types> >(true)//Set Vec3d to default template
+
 ;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -140,12 +136,8 @@ int SurfacePressureConstraintClass = core::RegisterObject("This component constr
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3fTypes>;
-#endif
+template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3Types>;
+
 
 }
 

@@ -58,8 +58,8 @@ public:
     CableDisplacementConstraintResolution(const double &imposedDisplacement, const double& min, const double& max);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    virtual void init(int line, double** w, double *lambda) override;
-    virtual void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
+    void init(int line, double** w, double *lambda) override;
+    void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
@@ -77,8 +77,8 @@ public:
     CableForceConstraintResolution(const double& imposedForce, const double& min, const double& max);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    virtual void init(int line, double** w, double *force) override;
-    virtual void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+    void init(int line, double** w, double *force) override;
+    void resolution(int line, double** w, double* d, double* force, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
@@ -117,18 +117,18 @@ public:
 
 public:
     CableConstraint(MechanicalState* object = nullptr);
-    virtual ~CableConstraint();
+    ~CableConstraint() override;
 
     /////////////// Inherited from BaseObject //////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
     ///////////////////////////////////////////////////////////////
 
 
     /////////////////// Inherited from BaseConstraint ///////////////
-    virtual void getConstraintResolution(const core::ConstraintParams *cParam,
-                                         std::vector<ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+    void getConstraintResolution(const core::ConstraintParams *cParam,
+                                 std::vector<ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
     ////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -162,12 +162,8 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-extern template class CableConstraint<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-extern template class CableConstraint<sofa::defaulttype::Vec3fTypes>;
-#endif
+extern template class CableConstraint<sofa::defaulttype::Vec3Types>;
+
 
 } // namespace constraintset
 

@@ -45,20 +45,12 @@ using namespace sofa::helper;
 using core::RegisterObject;
 
 int VolumeFromTetrahedronsClass = RegisterObject("This class computes the volume of a given volumetric mesh.")
-#ifdef SOFA_WITH_DOUBLE
-        .add< VolumeFromTetrahedrons<Vec3dTypes> >(true)
-#endif
-#ifdef SOFA_WITH_FLOAT
-        .add< VolumeFromTetrahedrons<Vec3fTypes> >()
-#endif
+        .add< VolumeFromTetrahedrons<Vec3Types> >(true)
+
         ;
 
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons<Vec3fTypes>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons<Vec3dTypes>;
-#endif
+template class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons<Vec3Types>;
+
 
 } // namespace constraintset
 

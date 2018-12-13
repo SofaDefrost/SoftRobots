@@ -126,12 +126,8 @@ void CableForceConstraintResolution::resolution(int line, double** w, double* d,
 // 2-.add<>(true) : Set default template
 
 int CableConstraintClass = RegisterObject("Simulate cable actuation.")
-#ifdef SOFA_WITH_DOUBLE
-.add< CableConstraint<Vec3dTypes> >(true)
-#endif
-#ifdef SOFA_WITH_FLOAT
-.add< CableConstraint<Vec3fTypes> >()
-#endif
+.add< CableConstraint<Vec3Types> >(true)
+
 ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -139,12 +135,8 @@ int CableConstraintClass = RegisterObject("Simulate cable actuation.")
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-template class CableConstraint<Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class CableConstraint<Vec3fTypes>;
-#endif
+template class CableConstraint<Vec3Types>;
+
 
 } // namespace constraintset
 

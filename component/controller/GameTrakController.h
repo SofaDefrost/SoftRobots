@@ -56,18 +56,18 @@ public:
     SOFA_CLASS(GameTrakController, Controller);
 
     GameTrakController();
-    virtual ~GameTrakController();
+    ~GameTrakController() override;
 
     ////////////////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
-    virtual void reset() override;
+    void init() override;
+    void bwdInit() override;
+    void reinit() override;
+    void reset() override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Controller ////////////////////
-    virtual void onBeginAnimationStep(const double dt) override;
-    virtual void onEndAnimationStep(const double dt) override;
+    void onBeginAnimationStep(const double dt) override;
+    void onEndAnimationStep(const double dt) override;
     /////////////////////////////////////////////////////////////////////////
 
     /// ////////////////////////// Inherited attributes ////////////////////////////

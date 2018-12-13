@@ -51,13 +51,6 @@ class PartialRigidificationConstraintResolution6Dof : public ConstraintResolutio
 {
 public:
     PartialRigidificationConstraintResolution6Dof() ;
-
-    //////////////// Inherited from Constraint Resolution ///////////////
-    virtual void init(int line, double** w, double *force) ;
-    virtual void initForce(int line, double* force) ;
-    virtual void resolution(int line, double** w, double* d, double* dFree) ;
-    virtual void store(int line, double* force, bool convergence) ;
-    /////////////////////////////////////////////////////////////////////
 };
 
 template< class DataTypes >
@@ -83,29 +76,29 @@ public:
 
 public:
     //////////////////// Inherited from BaseObject /////////////////////
-    virtual void init() override;
+    void init() override;
     ////////////////////////////////////////////////////////////////////
 
     //////////////////// Inherited from Constraint /////////////////////
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams,
-                                       DataMatrixDeriv &cMatrix,
-                                       unsigned int &cIndex,
-                                       const DataVecCoord &x) override;
+    void buildConstraintMatrix(const ConstraintParams* cParams,
+                               DataMatrixDeriv &cMatrix,
+                               unsigned int &cIndex,
+                               const DataVecCoord &x) override;
 
-    virtual void getConstraintViolation(const ConstraintParams* cParams,
-                                        BaseVector *resV,
-                                        const DataVecCoord &xfree,
-                                        const DataVecDeriv &vfree) override;
+    void getConstraintViolation(const ConstraintParams* cParams,
+                                BaseVector *resV,
+                                const DataVecCoord &xfree,
+                                const DataVecDeriv &vfree) override;
 
-    virtual void getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+    void getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
     ////////////////////////////////////////////////////////////////////
 
 protected:
     unsigned int m_cid;
 
     PartialRigidificationConstraint(MechanicalState* object = nullptr) ;
-    virtual ~PartialRigidificationConstraint() ;
+    ~PartialRigidificationConstraint() override;
 
 private:
 
@@ -120,12 +113,8 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-extern template class PartialRigidificationConstraint<sofa::defaulttype::Rigid3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-extern template class PartialRigidificationConstraint<sofa::defaulttype::Rigid3fTypes>;
-#endif
+extern template class PartialRigidificationConstraint<sofa::defaulttype::Rigid3Types>;
+
 
 } // namespace constraintset
 

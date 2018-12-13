@@ -127,14 +127,14 @@ public:
     ///
     /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
     /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() {}
+    void updateForceMask() override {}
 
 
 protected:
 
     SoftRobotsBaseConstraint();
 
-    virtual ~SoftRobotsBaseConstraint() {}
+    ~SoftRobotsBaseConstraint() override {}
 
     bool m_hasDeltaMax;
     bool m_hasDeltaMin;

@@ -59,8 +59,8 @@ public:
     VolumeGrowthConstraintResolution(const double& imposedVolumeGrowth, const double& minPressure, const double& maxPressure);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    virtual void init(int line, double** w, double *lambda) override;
-    virtual void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
+    void init(int line, double** w, double *lambda) override;
+    void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
@@ -76,8 +76,8 @@ public:
     SurfacePressureConstraintResolution(const double& imposedPressure, const double& minVolumeGrowth, const double& maxVolumeGrowth);
 
     //////////////////// Inherited from ConstraintResolution ///////////////////
-    virtual void init(int line, double** w, double *force) override;
-    virtual void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+    void init(int line, double** w, double *force) override;
+    void resolution(int line, double** w, double* d, double* force, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
@@ -118,18 +118,18 @@ public:
 public:
     SurfacePressureConstraint(MechanicalState* object = nullptr);
 
-    virtual ~SurfacePressureConstraint() ;
+    ~SurfacePressureConstraint() override;
 
     ////////////////////////////  Inherited from BaseObject //////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void reset() override;
+    void init() override;
+    void reinit() override;
+    void reset() override;
     //////////////////////////////////////////////////////////////////////////////
 
 
     /////////////////// from sofa::core::behavior::Constraint /////////////////////////
-    virtual void getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+    void getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
     ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -162,12 +162,9 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3fTypes>;
-#endif
+using defaulttype::Vec3Types;
+extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3Types>;
+
 
 }
 

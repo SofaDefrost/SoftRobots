@@ -45,20 +45,12 @@ using namespace sofa::helper;
 using core::RegisterObject;
 
 int CenterOfMassClass = RegisterObject("This class computes the center of mass of the object in its context.")
-#ifdef SOFA_WITH_DOUBLE
-        .add< CenterOfMass<Vec3dTypes> >(true)
-#endif
-#ifdef SOFA_WITH_FLOAT
-        .add< CenterOfMass<Vec3fTypes> >()
-#endif
+        .add< CenterOfMass<Vec3Types> >(true)
+
         ;
 
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API CenterOfMass<Vec3fTypes>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SOFTROBOTS_API CenterOfMass<Vec3dTypes>;
-#endif
+template class SOFA_SOFTROBOTS_API CenterOfMass<Vec3Types>;
+
 
 } // namespace constraintset
 
