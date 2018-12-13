@@ -91,6 +91,8 @@ public:
 
     ////////////////////////// Inherited from BaseObject ////////////////////
     void init() override;
+    void reinit() override;
+    void bwdInit() override;
     void reset() override;
     void draw(const VisualParams* vparams) override;
     /////////////////////////////////////////////////////////////////////////
