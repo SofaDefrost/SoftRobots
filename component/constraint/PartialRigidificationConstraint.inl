@@ -46,12 +46,7 @@ using defaulttype::Rigid3dTypes;
 
 template<class DataTypes>
 PartialRigidificationConstraint<DataTypes>::PartialRigidificationConstraint(MechanicalState* object)
-    : Inherit(object)
-{
-}
-
-template<class DataTypes>
-PartialRigidificationConstraint<DataTypes>::PartialRigidificationConstraint()
+    : Inherit1(object)
 {
 }
 
@@ -63,7 +58,7 @@ PartialRigidificationConstraint<DataTypes>::~PartialRigidificationConstraint()
 template<class DataTypes>
 void PartialRigidificationConstraint<DataTypes>::init()
 {
-    Inherit::init();
+    Inherit1::init();
 }
 
 

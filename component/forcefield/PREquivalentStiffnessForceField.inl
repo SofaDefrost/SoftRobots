@@ -67,7 +67,7 @@ using sofa::core::objectmodel::ComponentState;
 
 template<typename DataTypes>
 PREquivalentStiffnessForceField<DataTypes>::PREquivalentStiffnessForceField()
-    : Inherit(),
+    : Inherit1(),
       d_complianceFile(initData(&d_complianceFile, "complianceFile",
                                 "Name of the file where the compliance matrix is stored .")),
       d_coeff(initData(&d_coeff, (Real) 1.0, "coefForce",
@@ -89,7 +89,7 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
 {
     m_componentstate = ComponentState::Invalid;
 
-    Inherit::init();
+    Inherit1::init();
     const string& filename = d_complianceFile.getValue();
 
     filebuf filebuffer;

@@ -71,7 +71,6 @@ class PipeForceField : public ForceField<DataTypes>
 public :
     SOFA_CLASS(SOFA_TEMPLATE(PipeForceField, DataTypes), SOFA_TEMPLATE(ForceField, DataTypes));
 
-    typedef ForceField<DataTypes>        Inherit;
     typedef typename DataTypes::Real     Real;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

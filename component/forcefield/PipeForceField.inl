@@ -69,7 +69,7 @@ using sofa::core::behavior::BaseMechanicalState ;
 
 template<typename DataTypes>
 PipeForceField<DataTypes>::PipeForceField()
-    : Inherit(),
+    : Inherit1(),
       l_barycentricMapping(initLink("barycentricMapping", " link to the BarycentricMapping")),
       l_mappedForceField(initLink("mappedForceField", "link to the MeshSpringForceField"))
 {}
@@ -81,7 +81,7 @@ PipeForceField<DataTypes>::~PipeForceField()
 template<typename DataTypes>
 void PipeForceField<DataTypes>::init()
 {
-    Inherit::init();
+    Inherit1::init();
 }
 
 template<typename DataTypes>

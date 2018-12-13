@@ -55,7 +55,7 @@ using sofa::core::behavior::ConstraintResolution;
 class CableDisplacementConstraintResolution : public ConstraintResolution
 {
 public:
-    CableDisplacementConstraintResolution(double& imposedDisplacement, double* force);
+    CableDisplacementConstraintResolution(const double &imposedDisplacement, const double& min, const double& max);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
     void init(int line, double** w, double *lambda) override;
@@ -64,32 +64,29 @@ public:
 
 protected:
 
-    void storeForce(int line, double* lambda);
-
     double      m_wActuatorActuator;
     double      m_imposedDisplacement;
-    double*     m_force;
+    double      m_minForce;
+    double      m_maxForce;
 
 };
 
 class CableForceConstraintResolution : public ConstraintResolution
 {
 public:
-    CableForceConstraintResolution(double& imposedForce, double* displacement);
+    CableForceConstraintResolution(const double& imposedForce, const double& min, const double& max);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
     void init(int line, double** w, double *force) override;
-    void initForce(int line, double* force) override;
     void resolution(int line, double** w, double* d, double* force, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
 
-    void storeDisplacement(int line, double* d);
-
     double      m_wActuatorActuator;
     double      m_imposedForce;
-    double*     m_displacement;
+    double      m_minDisplacement;
+    double      m_maxDisplacement;
 
 };
 
@@ -113,16 +110,13 @@ public:
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef CableModel<DataTypes> Inherit;
 
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
 
 public:
-    CableConstraint(MechanicalState* object);
-    CableConstraint();
-
+    CableConstraint(MechanicalState* object = nullptr);
     ~CableConstraint() override;
 
     /////////////// Inherited from BaseObject //////////////////////
@@ -142,10 +136,11 @@ public:
     /// Bring inherited attributes and function in the current lookup context.
     /// otherwise any access to the base::attribute would require
     /// the "this->" approach.
-    using CableModel<DataTypes>::d_cableLength ;
-    using CableModel<DataTypes>::d_cableInitialLength ;
     using CableModel<DataTypes>::d_maxDispVariation ;
-    using CableModel<DataTypes>::d_force ;
+    using CableModel<DataTypes>::d_maxPositiveDisplacement ;
+    using CableModel<DataTypes>::d_maxNegativeDisplacement ;
+    using CableModel<DataTypes>::d_maxForce ;
+    using CableModel<DataTypes>::d_minForce ;
     using CableModel<DataTypes>::d_displacement ;
     using CableModel<DataTypes>::m_componentstate ;
     ///////////////////////////////////////////////////////////////////////////
@@ -160,9 +155,9 @@ protected:
 
     void internalInit();
 
-    double m_displacement;
-    double m_force;
-
+private:
+    void setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce);
+    void setUpForceLimits(double& imposedValue, double& minDisplacement, double& maxDisplacement);
 };
 
 // Declares template as extern to avoid the code generation of the template for

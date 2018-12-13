@@ -29,7 +29,6 @@
 ******************************************************************************/
 
 #include <sofa/defaulttype/Vec3Types.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include "CableModel.inl"
 
@@ -43,8 +42,6 @@ namespace constraintset
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core;
 
 // Force template specialization for the most common sofa type.
 // This goes with the extern template declaration in the .h. Declaring extern template
