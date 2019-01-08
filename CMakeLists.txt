@@ -76,7 +76,16 @@ include(component/forcefield/Forcefield_Links.cmake)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
+### dmarchal@eulalie there is a problem with this line.
+## It makes the softrobots package leaking its parent path which is problematic.
+## The only fix I know (the one we use in Sofa) is to move all the source code
+## into a directory called:
+## src/SoftRobots/
+## and set the 'src' as the include location
+## target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+
 
 find_package(SofaFramework REQUIRED)
 
