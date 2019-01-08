@@ -51,35 +51,6 @@ PartialRigidificationConstraintResolution6Dof::PartialRigidificationConstraintRe
 {
 }
 
-void PartialRigidificationConstraintResolution6Dof::init(int line, double** w, double *force)
-{
-    SOFA_UNUSED(line);
-    SOFA_UNUSED(w);
-    SOFA_UNUSED(force);
-}
-
-void PartialRigidificationConstraintResolution6Dof::initForce(int line, double* force)
-{
-    SOFA_UNUSED(line);
-    SOFA_UNUSED(force);
-}
-
-void PartialRigidificationConstraintResolution6Dof::resolution(int line, double** w,
-                                                               double* d, double* dfree)
-{
-    SOFA_UNUSED(line);
-    SOFA_UNUSED(w);
-    SOFA_UNUSED(d);
-    SOFA_UNUSED(dfree);
-}
-
-void PartialRigidificationConstraintResolution6Dof::store(int line, double* force, bool convergence)
-{
-    SOFA_UNUSED(line);
-    SOFA_UNUSED(force);
-    SOFA_UNUSED(convergence);
-}
-
 
 
 /////////////////// PartialRigidificationConstraint //////////////////////////////////////////////
@@ -88,18 +59,12 @@ void PartialRigidificationConstraintResolution6Dof::store(int line, double* forc
 //////////////////////// FACTORY //////////////////////////////////////////////////////////////////
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-// 2-RegisterObject("description") + .add<> : Register the component
-// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(PartialRigidificationConstraint)
+// 1-RegisterObject("description") + .add<> : Register the component
+// 2-.add<>(true) : Set default template
 
 int PartialRigidificationConstraintClass = core::RegisterObject("PartialRigidificationConstraint")
-#ifdef SOFA_WITH_DOUBLE
-        .add< PartialRigidificationConstraint<Rigid3dTypes> >(true)
-#endif
-#ifdef SOFA_WITH_FLOAT
-        .add< PartialRigidificationConstraint<Rigid3fTypes> >()
-#endif
+        .add< PartialRigidificationConstraint<Rigid3Types> >(true)
+
         ;
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,12 +72,8 @@ int PartialRigidificationConstraintClass = core::RegisterObject("PartialRigidifi
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-template class PartialRigidificationConstraint<Rigid3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class PartialRigidificationConstraint<Rigid3fTypes>;
-#endif
+template class PartialRigidificationConstraint<Rigid3Types>;
+
 
 } // namespace constraintset
 

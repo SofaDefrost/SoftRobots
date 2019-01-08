@@ -48,19 +48,18 @@ using namespace sofa::helper;
 using namespace sofa::core;
 
 //----------- Displacement constraint --------------
-CableDisplacementConstraintResolution::CableDisplacementConstraintResolution(double& imposedDisplacement, double* force)
+CableDisplacementConstraintResolution::CableDisplacementConstraintResolution(const double& imposedDisplacement, const double &min, const double &max)
     : ConstraintResolution(1)
     , m_imposedDisplacement(imposedDisplacement)
-    , m_force(force)
+    , m_minForce(min)
+    , m_maxForce(max)
 { }
 
 
 void CableDisplacementConstraintResolution::init(int line, double** w, double * lambda)
 {
     SOFA_UNUSED(lambda);
-
     m_wActuatorActuator = w[line][line];
-
 }
 
 
@@ -70,62 +69,50 @@ void CableDisplacementConstraintResolution::resolution(int line, double** w, dou
     SOFA_UNUSED(w);
 
     // da=Waa*(lambda_a) + Sum Wai * lambda_i  = m_imposedDisplacement
-
     lambda[line] -= (d[line]-m_imposedDisplacement) / m_wActuatorActuator;
 
-    if (lambda[line]<0)
-        lambda[line]=0;
+    if (lambda[line]<m_minForce)
+        lambda[line]=m_minForce;
 
-    storeForce(line, lambda);
-}
-
-
-void CableDisplacementConstraintResolution::storeForce(int line,  double* lambda)
-{
-    *m_force = lambda[line];
+    if (lambda[line]>m_maxForce)
+        lambda[line]=m_maxForce;
 }
 
 
 //--------------- Force constraint -------------
-CableForceConstraintResolution::CableForceConstraintResolution(double& imposedForce, double *displacement)
+CableForceConstraintResolution::CableForceConstraintResolution(const double &imposedForce, const double& min, const double& max)
     : ConstraintResolution(1)
     , m_imposedForce(imposedForce)
-    , m_displacement(displacement)
+    , m_minDisplacement(min)
+    , m_maxDisplacement(max)
 { }
 
 
 void CableForceConstraintResolution::init(int line, double** w, double * lambda)
 {
     SOFA_UNUSED(lambda);
-
     m_wActuatorActuator = w[line][line];
 }
 
- void CableForceConstraintResolution::initForce(int line, double* lambda)
-{
-     if (m_imposedForce<0.0)
-         m_imposedForce=0.0;
-
-     lambda[line] = m_imposedForce;
-}
-
-void CableForceConstraintResolution::resolution(int line, double**, double* d, double* lambda, double* dfree)
+void CableForceConstraintResolution::resolution(int line, double** w, double* d, double* lambda, double* dfree)
 {
     SOFA_UNUSED(dfree);
-    SOFA_UNUSED(d);
-    SOFA_UNUSED(line);
-
-    if (m_imposedForce<0.0)
-        m_imposedForce=0.0;
+    SOFA_UNUSED(w);
 
     lambda[line] = m_imposedForce;
-    storeDisplacement(line, d);
-}
+    double displacement = m_wActuatorActuator*lambda[line];
 
+    if (displacement<m_minDisplacement)
+    {
+        displacement=m_minDisplacement;
+        lambda[line] -= (d[line]-displacement) / m_wActuatorActuator;
+    }
 
-void CableForceConstraintResolution::storeDisplacement(int line,  double* d)
-{
-    *m_displacement = d[line];
+    if (displacement>m_maxDisplacement)
+    {
+        displacement=m_maxDisplacement;
+        lambda[line] -= (d[line]-displacement) / m_wActuatorActuator;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,18 +122,12 @@ void CableForceConstraintResolution::storeDisplacement(int line,  double* d)
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-// 2-RegisterObject("description") + .add<> : Register the component
-// 3-.add<>(true) : Set default template
-SOFA_DECL_CLASS(CableConstraint)
+// 1-RegisterObject("description") + .add<> : Register the component
+// 2-.add<>(true) : Set default template
 
 int CableConstraintClass = RegisterObject("Simulate cable actuation.")
-#ifdef SOFA_WITH_DOUBLE
-.add< CableConstraint<Vec3dTypes> >(true)
-#endif
-#ifdef SOFA_WITH_FLOAT
-.add< CableConstraint<Vec3fTypes> >()
-#endif
+.add< CableConstraint<Vec3Types> >(true)
+
 ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -154,12 +135,8 @@ int CableConstraintClass = RegisterObject("Simulate cable actuation.")
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-template class CableConstraint<Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class CableConstraint<Vec3fTypes>;
-#endif
+template class CableConstraint<Vec3Types>;
+
 
 } // namespace constraintset
 

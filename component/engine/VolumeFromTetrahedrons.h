@@ -73,7 +73,7 @@ public:
 
 public:
 
-    virtual std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -84,20 +84,15 @@ public:
     }
 
     VolumeFromTetrahedrons();
-
-    virtual ~VolumeFromTetrahedrons();
+    ~VolumeFromTetrahedrons() override;
 
     ////////////////////////// Inherited from BaseObject ///////////////////
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
     ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from DataEngine////////////////////
-    virtual void doUpdate() override;
-    ///////////////////////////////////////////////////////////////////////
-
-    ////////////////////////// Inherited from DDGNode /////////////////////
-    virtual void handleEvent(core::objectmodel::Event *event) override;
+    void doUpdate() override;
     ///////////////////////////////////////////////////////////////////////
 
     SReal getVolume() {return d_volume.getValue();}
@@ -127,15 +122,11 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_EXTERN_TEMPLATE 
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons<sofa::defaulttype::Vec3dTypes>;
-#endif
+extern template class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons<sofa::defaulttype::Vec3Types>;
 
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons<sofa::defaulttype::Vec3dTypes>;
-#endif
-#endif
+
+extern template class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons<sofa::defaulttype::Vec3Types>;
+
 
 } // namespace engine
 

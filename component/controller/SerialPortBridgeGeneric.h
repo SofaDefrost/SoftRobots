@@ -69,16 +69,16 @@ public:
     SOFA_CLASS(SerialPortBridgeGeneric, Controller);
 
     SerialPortBridgeGeneric();
-    virtual ~SerialPortBridgeGeneric();
+    ~SerialPortBridgeGeneric() override;
 
     /////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
     /////////////////////////////////////////////////////////////
 
     /////////////// Inherited from Controller ////////////////////
-    virtual void onBeginAnimationStep(const double dt) override;
-    virtual void onEndAnimationStep(const double dt) override;
+    void onBeginAnimationStep(const double dt) override;
+    void onEndAnimationStep(const double dt) override;
     /////////////////////////////////////////////////////////////
 
     //Config

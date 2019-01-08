@@ -81,16 +81,15 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
 
 public:
-    CableModel();
-    CableModel(MechanicalState* object);
+    CableModel(MechanicalState* object = nullptr);
     virtual ~CableModel();
 
     ////////////////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override;
-    virtual void bwdInit() override;
-    virtual void reinit() override;
-    virtual void reset() override;
-    virtual void draw(const VisualParams* vparams) override;
+    void init() override;
+    void bwdInit() override;
+    void reinit() override;
+    void reset() override;
+    void draw(const VisualParams* vparams) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Actuator //////////////////////
@@ -105,8 +104,16 @@ public:
                                         const DataVecDeriv &vfree) override;
     /////////////////////////////////////////////////////////////////////////
 
+    ////////////////////////// Inherited from BaseConstraint ////////////////
+    virtual void storeLambda(const ConstraintParams* cParams,
+                             core::MultiVecDerivId res,
+                             const BaseVector* lambda) override;
+    /////////////////////////////////////////////////////////////////////////
+
 protected:
+    // To remove in SoftRobots v19.0
     Data<SetIndexArray>         d_indexDeprecated ;
+    //
 
     Data<SetIndexArray>         d_indices;
     Data<Coord>                 d_pullPoint;
@@ -118,6 +125,10 @@ protected:
     Data<double>                d_force;
     Data<double>                d_displacement;
 
+    Data<Real>                  d_maxForce;
+    Data<Real>                  d_minForce;
+    Data<Real>                  d_maxPositiveDisplacement;
+    Data<Real>                  d_maxNegativeDisplacement;
     Data<Real>                  d_maxDispVariation;
 
     Data<bool>                  d_drawPullPoint;
@@ -125,7 +136,7 @@ protected:
     Data<defaulttype::Vec4f>    d_color;
 
     int                         m_columnIndex;
-    bool                        m_hasCableSlidingPoint;
+    bool                        m_hasSlidingPoint;
 
 
 protected:
@@ -139,15 +150,11 @@ protected:
     /// using the "this->" approach.
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::m_state ;
-    using SoftRobotsConstraint<DataTypes>::m_hasDeltaMax ;
-    using SoftRobotsConstraint<DataTypes>::m_hasLambdaMax ;
-    using SoftRobotsConstraint<DataTypes>::m_deltaMax ;
-    using SoftRobotsConstraint<DataTypes>::m_lambdaMax ;
-    using SoftRobotsConstraint<DataTypes>::addAlias ;
     using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 
 private:
+    void setUpData();
     void internalInit();
 
     void checkIndicesRegardingState();
@@ -160,15 +167,8 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_EXTERN_TEMPLATE
-#ifdef SOFA_WITH_DOUBLE
-extern template class CableModel<Vec3dTypes>;
-#endif
+extern template class CableModel<defaulttype::Vec3Types>;
 
-#ifdef SOFA_WITH_FLOAT
-extern template class CableModel<Vec3fTypes>;
-#endif
-#endif //SOFA_EXTERN_TEMPLATE
 
 } // namespace constraintset
 

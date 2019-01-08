@@ -65,8 +65,8 @@ public:
     UnilateralPlaneConstraintResolution(const unsigned int nbLines) ;
 
     /////////////// Inherited from ConstraintResolution ////////////
-    virtual void init(int line, double** w, double* force) override;
-    virtual void resolution(int line, double** w, double* d, double* force, double* dFree) override;
+    void init(int line, double** w, double* force) override;
+    void resolution(int line, double** w, double* d, double* force, double* dFree) override;
     ////////////////////////////////////////////////////////////////
 };
 
@@ -92,7 +92,6 @@ public:
     typedef typename DataTypes::MatrixDeriv         MatrixDeriv;
     typedef typename Coord::value_type              Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef Constraint<DataTypes> Inherit;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef Data<VecCoord>                          DataVecCoord;
@@ -100,30 +99,29 @@ public:
     typedef Data<MatrixDeriv>                       DataMatrixDeriv;
 
 public:
-    UnilateralPlaneConstraint(MechanicalState* object);
-    UnilateralPlaneConstraint();
-    virtual ~UnilateralPlaneConstraint() ;
+    UnilateralPlaneConstraint(MechanicalState* object = nullptr);
+    ~UnilateralPlaneConstraint() override;
 
     /////////////// Inherited from BaseObject  ////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void draw(const VisualParams* vparams) override;
+    void init() override;
+    void reinit() override;
+    void draw(const VisualParams* vparams) override;
     //////////////////////////////////////////////////////
 
     /////////////// Inherited from Constraint ////////////
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams ,
-                                       DataMatrixDeriv &cMatrix,
-                                       unsigned int &cIndex,
-                                       const DataVecCoord &x) override;
+    void buildConstraintMatrix(const ConstraintParams* cParams ,
+                               DataMatrixDeriv &cMatrix,
+                               unsigned int &cIndex,
+                               const DataVecCoord &x) override;
 
-    virtual void getConstraintViolation(const ConstraintParams* cParams ,
-                                        BaseVector *resV,
-                                        const DataVecCoord &xfree,
-                                        const DataVecDeriv &vfree) override;
+    void getConstraintViolation(const ConstraintParams* cParams ,
+                                BaseVector *resV,
+                                const DataVecCoord &xfree,
+                                const DataVecDeriv &vfree) override;
 
-    virtual void getConstraintResolution(const ConstraintParams* cParams,
-                                         std::vector<core::behavior::ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+    void getConstraintResolution(const ConstraintParams* cParams,
+                                 std::vector<core::behavior::ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
     ///////////////////////////////////////////////////////////////
 
 protected:
@@ -151,14 +149,8 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_EXTERN_TEMPLATE
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3fTypes>;
-#endif
-#endif
+extern template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
+
 
 } // namespace constraintset
 

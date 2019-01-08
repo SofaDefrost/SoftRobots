@@ -55,42 +55,38 @@ using sofa::core::behavior::ConstraintResolution;
 class CableDisplacementConstraintResolution : public ConstraintResolution
 {
 public:
-    CableDisplacementConstraintResolution(double& imposedDisplacement, double* force);
+    CableDisplacementConstraintResolution(const double &imposedDisplacement, const double& min, const double& max);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    virtual void init(int line, double** w, double *lambda) override;
-    //virtual void initForce(int line, double* lambda){ }
-    virtual void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
+    void init(int line, double** w, double *lambda) override;
+    void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
 
-    void storeForce(int line, double* lambda);
-
     double      m_wActuatorActuator;
     double      m_imposedDisplacement;
-    double*     m_force;
+    double      m_minForce;
+    double      m_maxForce;
 
 };
 
 class CableForceConstraintResolution : public ConstraintResolution
 {
 public:
-    CableForceConstraintResolution(double& imposedForce, double* displacement);
+    CableForceConstraintResolution(const double& imposedForce, const double& min, const double& max);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    virtual void init(int line, double** w, double *force) override;
-    virtual void initForce(int line, double* force) override;
-    virtual void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+    void init(int line, double** w, double *force) override;
+    void resolution(int line, double** w, double* d, double* force, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
 
-    void storeDisplacement(int line, double* d);
-
     double      m_wActuatorActuator;
     double      m_imposedForce;
-    double*     m_displacement;
+    double      m_minDisplacement;
+    double      m_maxDisplacement;
 
 };
 
@@ -114,28 +110,25 @@ public:
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef CableModel<DataTypes> Inherit;
 
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
 
 public:
-    CableConstraint(MechanicalState* object);
-    CableConstraint();
-
-    virtual ~CableConstraint();
+    CableConstraint(MechanicalState* object = nullptr);
+    ~CableConstraint() override;
 
     /////////////// Inherited from BaseObject //////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
+    void init() override;
+    void reinit() override;
     ///////////////////////////////////////////////////////////////
 
 
     /////////////////// Inherited from BaseConstraint ///////////////
-    virtual void getConstraintResolution(const core::ConstraintParams *cParam,
-                                         std::vector<ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+    void getConstraintResolution(const core::ConstraintParams *cParam,
+                                 std::vector<ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
     ////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -143,10 +136,11 @@ public:
     /// Bring inherited attributes and function in the current lookup context.
     /// otherwise any access to the base::attribute would require
     /// the "this->" approach.
-    using CableModel<DataTypes>::d_cableLength ;
-    using CableModel<DataTypes>::d_cableInitialLength ;
     using CableModel<DataTypes>::d_maxDispVariation ;
-    using CableModel<DataTypes>::d_force ;
+    using CableModel<DataTypes>::d_maxPositiveDisplacement ;
+    using CableModel<DataTypes>::d_maxNegativeDisplacement ;
+    using CableModel<DataTypes>::d_maxForce ;
+    using CableModel<DataTypes>::d_minForce ;
     using CableModel<DataTypes>::d_displacement ;
     using CableModel<DataTypes>::m_componentstate ;
     ///////////////////////////////////////////////////////////////////////////
@@ -161,21 +155,15 @@ protected:
 
     void internalInit();
 
-    double m_displacement;
-    double m_force;
-
+private:
+    void setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce);
+    void setUpForceLimits(double& imposedValue, double& minDisplacement, double& maxDisplacement);
 };
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_EXTERN_TEMPLATE
-#ifdef SOFA_WITH_DOUBLE
-extern template class CableConstraint<sofa::defaulttype::Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-extern template class CableConstraint<sofa::defaulttype::Vec3fTypes>;
-#endif
-#endif
+extern template class CableConstraint<sofa::defaulttype::Vec3Types>;
+
 
 } // namespace constraintset
 

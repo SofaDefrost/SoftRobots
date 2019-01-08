@@ -39,65 +39,9 @@ namespace controller
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(InteractiveControl)
 
 int InteractiveControlClass = core::RegisterObject("InteractiveControl (Controls external motors via network)")
         .add< InteractiveControl >();
-
-// // Ce slot est appelé lorsque la connexion au serveur a réussi
-// void NetworkHandler::connecte()
-// {
-//     std::cout << "Connexion réussie !" << std::endl;
-// }
-
-// // Ce slot est appelé lorsqu'on est déconnecté du serveur
-// void NetworkHandler::deconnecte()
-// {
-//     std::cout << "Déconnecté du serveur" << std::endl;
-// }
-
-// // Ce slot est appelé lorsqu'il y a une erreur
-// void NetworkHandler::erreurSocket(QAbstractSocket::SocketError erreur)
-// {
-//     switch(erreur) // On affiche un message différent selon l'erreur qu'on nous indique
-//     {
-//         case QAbstractSocket::HostNotFoundError:
-//             std::cerr << "ERREUR : le serveur n'a pas pu être trouvé. Vérifiez l'IP et le port." << std::endl;
-//             break;
-//         case QAbstractSocket::ConnectionRefusedError:
-//             std::cerr << "ERREUR : le serveur a refusé la connexion. Vérifiez si le programme \"serveur\" a bien été lancé. Vérifiez aussi l'IP et le port." << std::endl;
-//             break;
-//         case QAbstractSocket::RemoteHostClosedError:
-//             std::cerr << "ERREUR : le serveur a coupé la connexion." << std::endl;
-//             break;
-//         default:
-//             std::cerr << "ERREUR : " << (std::string)_socket->errorString() << std::endl;
-//     }
-// }
-
-// NetworkHandler::NetworkHandler()
-// {
-
-// }
-
-// NetworkHandler::~NetworkHandler()
-// {
-//     _socket->abort();
-// }
-
-// void NetworkHandler::init()
-// {
-//     std::cout << "Tentative de connexion en cours..." << std::endl;;
-
-//     _socket->abort();
-//     _socket->connectToHost("127.0.0.1", 1994);
-// }
-
-// void NetworkHandler::send(char* pack)
-// {
-//     // Sending packet
-//     _socket->write(pack);
-// }
 
 InteractiveControl::InteractiveControl()
     : d_motorIndex(initData(&d_motorIndex, (unsigned int)0, "motorIndex", "index of controlled motor (0 to 255 max)"))
@@ -147,39 +91,6 @@ void InteractiveControl::send()
     if((m_timeStart - m_timeEnd)>2)
     {
         std::cout << " DESINHIBE" <<  std::endl;
-
-//        // Send mode and inhibition
-//        make_new_buffer(buffer, set_mode_inhibition);
-//        set_field_time(buffer, 0);
-//        set_field_mode(buffer, 4);
-//        //temporarily set as current mode
-//        //set_field_mode(buffer, 2);
-//        set_field_inhibition(buffer, 0);
-//        // set_field_motor(buffer, motorIndex.getValue());
-//        set_field_motor(buffer, 0);
-//        set_field_address(buffer, 0x300);
-//        //set_field_address(buffer, d_motorIndex.getValue());
-//        set_field_id(buffer, make_id(buffer));
-//        QByteArray data_mode_inhibition(buffer, BUFFER_MAX_SIZE);
-
-        //    //FOR MOTOR 2
-        //    // Send mode and inhibition
-        //    make_new_buffer(buffer, set_mode_inhibition);
-        //    set_field_time(buffer, 0);
-        //    set_field_mode(buffer, 4);
-        //    //temporarily set as current mode
-        //    set_field_mode(buffer, 2);
-        //    set_field_inhibition(buffer, 0);
-        //    // set_field_motor(buffer, motorIndex.getValue());
-        //    set_field_motor(buffer, 1);
-        //    set_field_address(buffer, 0x300);
-        //    //set_field_address(buffer, d_motorIndex.getValue());
-        //    set_field_id(buffer, make_id(buffer));
-        //    QByteArray data_mode_inhibition2(buffer, BUFFER_MAX_SIZE);
-
-        //m_socket->write(data_mode_inhibition);
-        //m_socket->write(data_mode_inhibition2);
-
     }
 
     // Send setpoint
@@ -189,26 +100,10 @@ void InteractiveControl::send()
     set_field_inhibition(buffer, 0);
     set_field_motor(buffer, d_motorIndex.getValue());
     set_field_address(buffer, 0x300);
-    //set_field_setpoint(buffer, d_setPoint.getValue()[0]/(d_rotorDiameter.getValue()*M_PI));
     //temporarily set as defined current value
     set_field_setpoint(buffer, d_manualSetpoint.getValue());
     set_field_id(buffer, make_id(buffer));
     QByteArray data_setpoint(buffer, BUFFER_MAX_SIZE);
-
-    //    //FOR MOTOR 2
-    //    // Send setpoint
-    //    make_new_buffer(buffer, set_setpoint);
-    //    set_field_time(buffer, 0);
-    //    set_field_mode(buffer, d_mode.getValue());
-    //    // set_field_motor(buffer, motorIndex.getValue());
-    //    set_field_motor(buffer, 1);
-    //    set_field_address(buffer, 0x300);
-    //    //set_field_setpoint(buffer, d_setPoint.getValue()[1]/(d_rotorDiameter.getValue()*M_PI));
-    //    //temporarily set as defined current value
-    //    set_field_setpoint(buffer, 0.5);
-    //    set_field_id(buffer, make_id(buffer));
-    //    QByteArray data_setpoint2(buffer, BUFFER_MAX_SIZE);
-    //    // sout << "Call Send Method!" << sendl;
 
     if(d_printCableDisplacement.getValue())
     {
@@ -224,25 +119,6 @@ void InteractiveControl::send()
     {
         serr << e.what() << sendl;
     }
-
-    //     Packet pack;
-    //     pack.index_motor = (unsigned char)motorIndex.getValue();
-    //     pack.mode = (unsigned char)mode.getValue();
-    //     pack.setpoint = setpoint.getValue();
-
-    //     QByteArray data((char *)&pack, sizeof(pack));
-
-    //     // sout << "Call Send Method!" << sendl;
-
-    //     // Sending packet
-    //     try
-    //     {
-    //         _socket->write(data);
-    //     }
-    //     catch(std::exception const &e)
-    //     {
-    //         serr << e.what() << sendl;
-    //     }
 
     gettimeofday(&tv, NULL);
     m_timeEnd = tv.tv_sec;
@@ -266,24 +142,10 @@ void InteractiveControl::connect()
     }
 
     sout<<"Connexion @ "<<d_address.getValue().c_str()<<':'<<d_port.getValue()<<" [DONE]"<<sendl;
-
-//    char buffer[BUFFER_MAX_SIZE];
-//    make_new_buffer(buffer, set_mode_inhibition);
-//    set_field_time(buffer, 0);
-//    set_field_mode(buffer, 4);
-//    set_field_inhibition(buffer, 0);
-//    set_field_motor(buffer, 0);
-//    set_field_address(buffer, 0x300);
-//    set_field_id(buffer, make_id(buffer));
-//    QByteArray data_mode_init(buffer, BUFFER_MAX_SIZE);
-//    m_socket->write(data_mode_init);
 }
 
 void InteractiveControl::processDataReceivedFromHardware()
 {
-    //change size to 4 !
-    //char littleData[10];
-
     char buffer[BUFFER_MAX_SIZE];
 
     while(m_socket->readDatagram(buffer,BUFFER_MAX_SIZE) != -1)

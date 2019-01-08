@@ -30,15 +30,12 @@
 
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_INL
 #define SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_INL
-#include <cstdio>
-#include <cstdlib>
 
-#include "SurfacePressureModel.h"
 #include <iomanip>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 
-#include <sofa/helper/logging/Messaging.h>
+#include "SurfacePressureModel.h"
 
 namespace sofa
 {
@@ -90,88 +87,44 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
     , d_pressure(initData(&d_pressure, (double) 0, "pressure",
                              "Output pressure."))
 
+
+    , d_maxPressure(initData(&d_maxPressure, (Real) 0, "maxPressure",
+                             "Maximum pressure allowed for actuation. If no value is set by user, no \n"
+                             "maximum pressure constraint will be considered."))
+
+    , d_minPressure(initData(&d_minPressure, (Real) 0, "minPressure",
+                             "Minimum pressure allowed for actuation. If no value is set by user, no \n"
+                             "minimum pressure constraint will be considered. A negative pressure will empty/drain the cavity."))
+
     , d_volumeGrowth(initData(&d_volumeGrowth, (double) 0, "volumeGrowth",
                              "Output volume growth."))
+
+    , d_maxVolumeGrowth(initData(&d_maxVolumeGrowth, (Real) 0, "maxVolumeGrowth",
+                             "Maximum volume growth allowed for actuation. If no value is set by user, no \n"
+                             "maximum will be considered. NB: this value has a dependancy with the time step \n"
+                             "(volume/dt) in the dynamic case."))
+
+    , d_minVolumeGrowth(initData(&d_minVolumeGrowth, (Real) 0, "minVolumeGrowth",
+                             "Minimum volume growth allowed for actuation. If no value is set by user, no \n"
+                             "minimum will be considered. NB: this value has a dependancy with the time step \n"
+                             "(volume/dt) in the dynamic case."))
 
     , d_maxVolumeGrowthVariation(initData(&d_maxVolumeGrowthVariation, (Real) 0, "maxVolumeGrowthVariation",
                              "Maximum volume growth variation allowed for actuation. If no value is set by user, no \n"
                              "maximum will be considered. NB: this value has a dependancy with the time step \n"
                              "(volume/dt) in the dynamic case."))
 
-    , d_showVisuScale(initData(&d_showVisuScale, (Real) 0.1, "showVisuScale",
-                               "Scale for visualization. If unspecified the default value is {0.1}"))
-{
-    d_showVisuScale.setGroup("Visualization");
+    , d_drawPressure(initData(&d_drawPressure, false, "drawPressure",
+                               "Visualization of the value of pressure. \n"
+                               "If unspecified, the default value is {false}"))
 
-    d_cavityVolume.setReadOnly(true);
-    d_initialCavityVolume.setReadOnly(true);
-    d_deltaCavityVolume.setReadOnly(true);
-
-    d_pressure.setGroup("Vector");
-    d_volumeGrowth.setGroup("Vector");
-
-    d_pressure.setReadOnly(true);
-    d_volumeGrowth.setReadOnly(true);
-
-    d_maxVolumeGrowthVariation.setGroup("Input");
-}
-
-
-template<class DataTypes>
-SurfacePressureModel<DataTypes>::SurfacePressureModel()
-    : SoftRobotsConstraint<DataTypes>()
-    , d_triangles(initData(&d_triangles, "triangles",
-                            "List of triangles on which the surface pressure is applied.\n"
-                            "If no list is given, the component will \n"
-                            "fill the two lists with the context topology."))
-
-    , d_quads(initData (&d_quads, "quads",
-                            "List of quads on which the surface pressure is applied. \n"
-                            "If no list is given, the component will \n"
-                            "fill the two lists with the context topology."))
-
-    , d_initialCavityVolume(initData(&d_initialCavityVolume, "initialCavityVolume",
-                               "Output volume of the cavity at init (only relevant in case of closed mesh)"))
-
-    , d_cavityVolume(initData(&d_cavityVolume, (Real) 1.0, "cavityVolume",
-                               "Output volume of the cavity (only relevant in case of closed mesh)"))
-
-    , d_deltaCavityVolume(initData(&d_deltaCavityVolume, (Real)0.0, "deltaCavityVolume",
-                                "Difference between the intial cavity volume and the current one"))
-
-    , d_flipNormal(initData(&d_flipNormal, false, "flipNormal",
-                               "Allows to invert cavity faces orientation. \n"
-                               "If a positive pressure acts like a depressurization, try to set \n"
-                               "flipNormal to true."))
-
-    , d_pressure(initData(&d_pressure, (double) 0, "pressure",
-                             "Output pressure."))
-
-    , d_volumeGrowth(initData(&d_volumeGrowth, (double) 0, "volumeGrowth",
-                             "Output volume growth."))
-
-    , d_maxVolumeGrowthVariation(initData(&d_maxVolumeGrowthVariation, (Real) 0, "maxVolumeGrowthVariation",
-                             "Maximum volume growth variation allowed for actuation. If no value is set by user, no \n"
-                             "maximum will be considered. NB: this value has a dependancy with the time step \n"
-                             "(volume/dt) in the dynamic case."))
-
-    , d_showVisuScale(initData(&d_showVisuScale, (Real) 0.1, "showVisuScale",
+    , d_drawScale(initData(&d_drawScale, (Real) 0.1, "drawScale",
                                "Scale for visualization. If unspecified the default value is {0.1}"))
 
+    , d_visualizationDepracated(initData(&d_visualizationDepracated, false, "visualization",""))
+    , d_showVisuScaleDepracated(initData(&d_showVisuScaleDepracated, (Real) 0.1, "showVisuScale",""))
 {
-    d_showVisuScale.setGroup("Visualization");
-
-    d_cavityVolume.setReadOnly(true);
-    d_initialCavityVolume.setReadOnly(true);
-    d_deltaCavityVolume.setReadOnly(true);
-
-    d_pressure.setGroup("Vector");
-    d_volumeGrowth.setGroup("Vector");
-
-    d_pressure.setReadOnly(true);
-    d_volumeGrowth.setReadOnly(true);
-
-    d_maxVolumeGrowthVariation.setGroup("Input");
+    setUpData();
 }
 
 template<class DataTypes>
@@ -180,11 +133,88 @@ SurfacePressureModel<DataTypes>::~SurfacePressureModel()
 }
 
 template<class DataTypes>
+void SurfacePressureModel<DataTypes>::setUpData()
+{
+    // To remove in SoftRobots v20.0
+    d_visualizationDepracated.setDisplayed(false);
+    d_showVisuScaleDepracated.setDisplayed(false);
+    //
+
+    d_cavityVolume.setReadOnly(true);
+    d_initialCavityVolume.setReadOnly(true);
+    d_deltaCavityVolume.setReadOnly(true);
+
+    d_pressure.setGroup("Vector");
+    d_volumeGrowth.setGroup("Vector");
+    d_pressure.setReadOnly(true);
+    d_volumeGrowth.setReadOnly(true);
+
+    d_drawPressure.setGroup("Visualization");
+    d_drawScale.setGroup("Visualization");
+}
+
+template<class DataTypes>
 void SurfacePressureModel<DataTypes>::init()
 {
     m_componentstate = ComponentState::Invalid;
     SoftRobotsConstraint<DataTypes>::init();
 
+    // To remove in SoftRobots v20.0
+    if(d_visualizationDepracated.isSet())
+        msg_warning(this) << "The field named 'visualization' is now deprecated. "
+                             "To remove this warning message, the field "
+                             "'visualization' should be replaced by the field 'drawPressure'." ;
+    if(d_showVisuScaleDepracated.isSet())
+        msg_warning(this) << "The field named 'showVisuScale' is now deprecated. "
+                             "To remove this warning message, the field "
+                             "'showVisuScale' should be replaced by the field 'drawScale'." ;
+    //
+
+
+    internalInit();
+
+    // Compute initial cavity volume and store it (used in reset())
+    ReadAccessor<Data<VecCoord> > positions = *m_state->read(VecCoordId::position());
+    Real volume = getCavityVolume(positions.ref());
+    d_initialCavityVolume.setValue(volume);
+    d_cavityVolume.setValue(volume);
+
+    m_componentstate = ComponentState::Valid;
+}
+
+template<class DataTypes>
+void SurfacePressureModel<DataTypes>::bwdInit()
+{
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
+
+    d_cavityVolume.setReadOnly(true);
+    d_initialCavityVolume.setReadOnly(true);
+    d_deltaCavityVolume.setReadOnly(true);
+
+    // The initial volume is computed in bwdInit so the mapping (if there is any)
+    // will be considered
+    ReadAccessor<Data<VecCoord> > positions = *m_state->read(VecCoordId::position());
+    Real volume = getCavityVolume(positions.ref());
+    d_initialCavityVolume.setValue(volume);
+    d_cavityVolume.setValue(volume);
+}
+
+
+
+template<class DataTypes>
+void SurfacePressureModel<DataTypes>::reinit()
+{
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
+    internalInit();
+}
+
+template<class DataTypes>
+void SurfacePressureModel<DataTypes>::internalInit()
+{
     if(m_state==nullptr)
     {
         msg_error(this) << "There is no mechanical state associated with this node. "
@@ -226,7 +256,6 @@ void SurfacePressureModel<DataTypes>::init()
         computeEdges();
     }
 
-
     /// Check that the triangles datafield does not contains indices that would crash the
     /// component.
     ReadAccessor<Data<VecCoord> > positions = *m_state->read(VecCoordId::position());
@@ -261,6 +290,7 @@ void SurfacePressureModel<DataTypes>::init()
                                    << positions.size() << ")" ;
         }
     }
+
 
     Real volume = getCavityVolume(positions.ref());
     d_initialCavityVolume.setValue(volume);
@@ -324,22 +354,6 @@ SReal SurfacePressureModel<DataTypes>::getCavityVolume(const VecCoord& positions
 
 
 template<class DataTypes>
-void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
-                                                                BaseVector *resV,
-                                                                const DataVecCoord &xfree,
-                                                                const DataVecDeriv &vfree)
-{
-    if(m_componentstate != ComponentState::Valid)
-            return ;
-
-    SOFA_UNUSED(cParams);
-    SOFA_UNUSED(vfree);
-
-    Real dfree = SurfacePressureModel<DataTypes>::getCavityVolume(xfree.getValue());
-    resV->set(m_columnId, dfree - d_initialCavityVolume.getValue());
-}
-
-template<class DataTypes>
 void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams,
                                                                DataMatrixDeriv &cMatrix,
                                                                unsigned int &columnIndex,
@@ -390,12 +404,45 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
 
     cMatrix.endEdit();
     m_nbLines = columnIndex - m_columnId;
+}
 
-    // Update cavity volume at each time step
-    if(m_state!=nullptr)
-        position = m_state->read(core::ConstVecCoordId::position());
-    d_cavityVolume.setValue(getCavityVolume(position.ref()));
-    d_deltaCavityVolume.setValue(d_initialCavityVolume.getValue() - getCavityVolume(position.ref()));
+
+template<class DataTypes>
+void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
+                                                                BaseVector *resV,
+                                                                const DataVecCoord &xfree,
+                                                                const DataVecDeriv &vfree)
+{
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
+    SOFA_UNUSED(cParams);
+    SOFA_UNUSED(vfree);
+
+    Real dfree = SurfacePressureModel<DataTypes>::getCavityVolume(xfree.getValue());
+    resV->set(m_columnId, dfree - d_initialCavityVolume.getValue());
+}
+
+
+template<class DataTypes>
+void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
+                                                  core::MultiVecDerivId res,
+                                                  const sofa::defaulttype::BaseVector* lambda)
+{
+    SOFA_UNUSED(res);
+    SOFA_UNUSED(cParams);
+
+    if(m_componentstate != ComponentState::Valid)
+            return ;
+
+    d_pressure.setValue(lambda->element(m_columnId));
+
+
+    // Compute actual cavity volume and volume growth from updated positions of mechanical
+    const VecCoord& position = m_state->read(VecCoordId::position())->getValue();
+    d_cavityVolume.setValue(getCavityVolume(position));
+    d_volumeGrowth.setValue(d_cavityVolume.getValue()-d_initialCavityVolume.getValue());
+    d_deltaCavityVolume.setValue(d_initialCavityVolume.getValue() - getCavityVolume(position));
 }
 
 template<class DataTypes>
@@ -404,12 +451,12 @@ void SurfacePressureModel<DataTypes>::draw(const VisualParams* vparams)
     if(m_componentstate != ComponentState::Valid)
             return ;
 
-    if (m_visualization) drawValue(vparams);
+    if (d_drawPressure.getValue()) drawValue(vparams);
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     float red, green, blue;
 
-    if (m_displayedValue > 0)
+    if (d_pressure.getValue() > 0)
     {
         red = 1.0;
         green = 0;
@@ -430,8 +477,8 @@ void SurfacePressureModel<DataTypes>::draw(const VisualParams* vparams)
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::drawValue(const core::visual::VisualParams* vparams)
 {
-    float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * d_showVisuScale.getValue() );
-    string value = getValueString(m_displayedValue);
+    float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * d_drawScale.getValue() );
+    string value = getValueString(d_pressure.getValue());
     vparams->drawTool()->draw3DText(vparams->sceneBBox().maxBBox(),scale,Vec4f(1.,1.,1.,1.),value.c_str());
 }
 

@@ -64,7 +64,6 @@ class PREquivalentStiffnessForceField : public ForceField<DataTypes>
 public :
     SOFA_CLASS(SOFA_TEMPLATE(PREquivalentStiffnessForceField, DataTypes), SOFA_TEMPLATE(ForceField, DataTypes));
 
-    typedef ForceField<DataTypes>       Inherit;
     typedef typename DataTypes::Real    Real;
     typedef typename DataTypes::Coord   Coord;
     typedef typename DataTypes::Deriv   Deriv;
@@ -98,28 +97,28 @@ public :
 
 public :
     PREquivalentStiffnessForceField();
-    virtual ~PREquivalentStiffnessForceField();
+    ~PREquivalentStiffnessForceField() override;
 
     ////////////////////////// Inherited from BaseObject /////////////////////////
-    virtual void init() override;
+    void init() override;
     ///////////////////////////////////////////////////////////////////////////
 
     ///////////////////////// Inherited from ForceField /////////
-    virtual void addForce(const MechanicalParams* mparams,
-                          DataVecDeriv& f ,
-                          const DataVecCoord& x ,
-                          const DataVecDeriv& v) override;
+    void addForce(const MechanicalParams* mparams,
+                  DataVecDeriv& f ,
+                  const DataVecCoord& x ,
+                  const DataVecDeriv& v) override;
 
-    virtual void addDForce(const MechanicalParams* mparams,
-                           DataVecDeriv&   df ,
-                           const DataVecDeriv&   dx ) override;
+    void addDForce(const MechanicalParams* mparams,
+                   DataVecDeriv&   df ,
+                   const DataVecDeriv&   dx ) override;
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams,
-                                      const DataVecCoord& x) const override;
+    double getPotentialEnergy(const MechanicalParams* mparams,
+                              const DataVecCoord& x) const override;
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix* matrix,
-                              double kFact,
-                              unsigned int& offset) override;
+    void addKToMatrix(sofa::defaulttype::BaseMatrix* matrix,
+                      double kFact,
+                      unsigned int& offset) override;
     ////////////////////////////////////////////////////////////////////////////
 
     void displaceFrames(const VecCoord& frames, VecCoord& displaced, VecDeriv& dq, const Real epsilon);

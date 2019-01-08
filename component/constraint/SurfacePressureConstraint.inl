@@ -55,7 +55,7 @@ using sofa::helper::OptionsGroup;
 
 template<class DataTypes>
 SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState* object)
-    : Inherit(object)
+    : Inherit1(object)
     , d_value(initData(&d_value, "value",
                                 "List of choices for volume growth or pressure to impose.\n"))
 
@@ -67,47 +67,7 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState*
                                           "volumeGrowth = the contstraint will impose the volume growth provided in data d_inputValue[d_iputIndex] \n"
                                           "force = the contstraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
                                           "If unspecified, the default value is pressure"))
-
-    , d_visualization(initData(&d_visualization, false, "visualization",
-                               "Visualization of the value (either pressure or volume growth depending on the selection). \n"
-                               "If unspecified, the default value is {false}"))
-
-    , m_pressure(0.)
-    , m_volumeGrowth(0.)
 {
-    d_value.setGroup("Input");
-    d_valueIndex.setGroup("Input");
-    d_valueType.setGroup("Input");
-    d_visualization.setGroup("Visualization");
-}
-
-
-template<class DataTypes>
-SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint()
-    : Inherit()
-    , d_value(initData(&d_value, "value",
-                                "List of choices for volume growth or pressure to impose.\n"))
-
-    , d_valueIndex(initData(&d_valueIndex, (unsigned int) 0, "valueIndex",
-                                  "Index of the value (in InputValue vector) that we want to impose \n"
-                                  "If unspecified, the default value is {0}"))
-
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"pressure","volumeGrowth"), "valueType",
-                                          "volumeGrowth = the contstraint will impose the volume growth provided in data d_inputValue[d_iputIndex] \n"
-                                          "force = the constraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
-                                          "If unspecified, the default value is pressure"))
-
-    , d_visualization(initData(&d_visualization, false, "visualization",
-                               "Visualization of the value (either pressure or volume growth depending on the selection). \n"
-                               "If unspecified, the default value is {false}"))
-
-    , m_pressure(0.)
-    , m_volumeGrowth(0.)
-{
-    d_value.setGroup("Input");
-    d_valueIndex.setGroup("Input");
-    d_valueType.setGroup("Input");
-    d_visualization.setGroup("Visualization");
 }
 
 
@@ -120,10 +80,9 @@ SurfacePressureConstraint<DataTypes>::~SurfacePressureConstraint()
 template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::init()
 {
-    Inherit::init();
+    Inherit1::init();
     initData();
 
-    m_visualization = d_visualization.getValue();
     m_initialValue = d_value.getValue();
 }
 
@@ -131,15 +90,15 @@ void SurfacePressureConstraint<DataTypes>::init()
 template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::reinit()
 {
+    Inherit1::reinit();
     initData();
-
-    m_visualization = d_visualization.getValue();
 }
 
 
 template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::reset()
 {
+    Inherit1::reset();
     d_value.setValue(m_initialValue);
 }
 
@@ -159,8 +118,6 @@ void SurfacePressureConstraint<DataTypes>::initData()
         msg_warning() <<"Bad size for data value (size="<< d_value.getValue().size()<<"), or wrong value for data valueIndex (valueIndex="<<d_valueIndex.getValue()<<"). Set default valueIndex=0.";
         d_valueIndex.setValue(0);
     }
-    else
-        m_displayedValue = d_value.getValue()[d_valueIndex.getValue()];
 }
 
 
@@ -171,33 +128,68 @@ void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<C
     if(m_componentstate != ComponentState::Valid)
             return ;
 
-    double imposed_value = d_value.getValue()[d_valueIndex.getValue()];
-    m_displayedValue = d_value.getValue()[d_valueIndex.getValue()];
+    double imposedValue = d_value.getValue()[d_valueIndex.getValue()];
 
     if(d_valueType.getValue().getSelectedItem() == "volumeGrowth")
     {
-        if(d_maxVolumeGrowthVariation.isSet())
-        {
-            double volumeGrowth = d_volumeGrowth.getValue();
-            if(imposed_value > volumeGrowth && imposed_value-volumeGrowth>d_maxVolumeGrowthVariation.getValue())
-                imposed_value = volumeGrowth+d_maxVolumeGrowthVariation.getValue();
+        double maxPressure = std::numeric_limits<double>::max();
+        double minPressure = -maxPressure;
+        setUpVolumeLimits(imposedValue,minPressure,maxPressure);
 
-            if(imposed_value < volumeGrowth && imposed_value-volumeGrowth<-d_maxVolumeGrowthVariation.getValue())
-                imposed_value = volumeGrowth-d_maxVolumeGrowthVariation.getValue();
-        }
-
-        VolumeGrowthConstraintResolution *cr=  new VolumeGrowthConstraintResolution(imposed_value, &m_pressure);
+        VolumeGrowthConstraintResolution *cr=  new VolumeGrowthConstraintResolution(imposedValue, minPressure, maxPressure);
         resTab[offset++] =cr;
-        d_volumeGrowth.setValue(imposed_value);
-        d_pressure.setValue(m_pressure);
     }
     else // pressure
     {
-        SurfacePressureConstraintResolution *cr=  new SurfacePressureConstraintResolution(imposed_value, &m_volumeGrowth);
+        double maxVolumeGrowth = std::numeric_limits<double>::max();
+        double minVolumeGrowth = -maxVolumeGrowth;
+        setUpPressureLimits(imposedValue,minVolumeGrowth,maxVolumeGrowth);
+
+        SurfacePressureConstraintResolution *cr=  new SurfacePressureConstraintResolution(imposedValue, minVolumeGrowth, maxVolumeGrowth);
         resTab[offset++] = cr;
-        d_pressure.setValue(imposed_value);
-        d_volumeGrowth.setValue(m_volumeGrowth);
     }
+}
+
+
+template<class DataTypes>
+void SurfacePressureConstraint<DataTypes>::setUpVolumeLimits(double& imposedValue, double& minPressure, double& maxPressure)
+{
+    if(d_maxVolumeGrowthVariation.isSet())
+    {
+        double displacement = d_volumeGrowth.getValue();
+        if(imposedValue > displacement && imposedValue-displacement>d_maxVolumeGrowthVariation.getValue())
+            imposedValue = displacement+d_maxVolumeGrowthVariation.getValue();
+
+        if(imposedValue < displacement && imposedValue-displacement<-d_maxVolumeGrowthVariation.getValue())
+            imposedValue = displacement-d_maxVolumeGrowthVariation.getValue();
+    }
+
+    if(d_maxVolumeGrowth.isSet() && imposedValue>d_maxVolumeGrowth.getValue())
+        imposedValue = d_maxVolumeGrowth.getValue();
+
+    if(d_minVolumeGrowth.isSet() && imposedValue<d_minVolumeGrowth.getValue())
+        imposedValue = d_minVolumeGrowth.getValue();
+
+    if(d_minPressure.isSet())
+        minPressure=d_minPressure.getValue();
+    if(d_maxPressure.isSet())
+        maxPressure=d_maxPressure.getValue();
+}
+
+
+template<class DataTypes>
+void SurfacePressureConstraint<DataTypes>::setUpPressureLimits(double& imposedValue, double& minVolumeGrowth, double& maxVolumeGrowth)
+{
+    if(d_maxPressure.isSet() && imposedValue>d_maxPressure.getValue())
+        imposedValue = d_maxPressure.getValue();
+
+    if(d_minPressure.isSet() && imposedValue<d_minPressure.getValue())
+        imposedValue = d_minPressure.getValue();
+
+    if(d_minVolumeGrowth.isSet())
+        minVolumeGrowth = d_minVolumeGrowth.getValue();
+    if(d_maxVolumeGrowth.isSet())
+        maxVolumeGrowth =d_maxVolumeGrowth.getValue();
 }
 
 }

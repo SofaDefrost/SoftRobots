@@ -29,7 +29,6 @@
 ******************************************************************************/
 
 #include <sofa/defaulttype/Vec3Types.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include "SurfacePressureModel.inl"
 
@@ -43,19 +42,13 @@ namespace constraintset
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core;
 
 // Force template specialization for the most common sofa type.
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_WITH_DOUBLE
-template class SOFA_SOFTROBOTS_API SurfacePressureModel<Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-template class SOFA_SOFTROBOTS_API SurfacePressureModel<Vec3fTypes>;
-#endif
+template class SOFA_SOFTROBOTS_API SurfacePressureModel<Vec3Types>;
+
 
 } // namespace constraintset
 

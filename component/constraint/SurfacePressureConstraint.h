@@ -56,33 +56,35 @@ namespace _surfacepressureconstraint_
 class VolumeGrowthConstraintResolution : public ConstraintResolution
 {
 public:
-    VolumeGrowthConstraintResolution(const double& imposedVolumeGrowth, double* pressure);
+    VolumeGrowthConstraintResolution(const double& imposedVolumeGrowth, const double& minPressure, const double& maxPressure);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    virtual void init(int line, double** w, double *lambda) override;
-    virtual void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
+    void init(int line, double** w, double *lambda) override;
+    void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
     double      m_wActuatorActuator;
     double      m_imposedVolumeGrowth;
-    double*     m_pressure;
+    double      m_minPressure;
+    double      m_maxPressure;
 };
 
 class SurfacePressureConstraintResolution : public ConstraintResolution
 {
 public:
-    SurfacePressureConstraintResolution(const double& imposedPressure, double* volumeGrowth);
+    SurfacePressureConstraintResolution(const double& imposedPressure, const double& minVolumeGrowth, const double& maxVolumeGrowth);
 
     //////////////////// Inherited from ConstraintResolution ///////////////////
-    virtual void init(int line, double** w, double *force) override;
-    virtual void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+    void init(int line, double** w, double *force) override;
+    void resolution(int line, double** w, double* d, double* force, double* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
     double      m_wActuatorActuator;
     double      m_imposedPressure;
-    double*     m_volumeGrowth;
+    double      m_minVolumeGrowth;
+    double      m_maxVolumeGrowth;
 };
 
 
@@ -108,29 +110,26 @@ public:
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename Coord::value_type      Real;
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef SurfacePressureModel<DataTypes>           Inherit;
-
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
     typedef Data<MatrixDeriv>               DataMatrixDeriv;
     
 public:
-    SurfacePressureConstraint(MechanicalState* object);
-    SurfacePressureConstraint();
+    SurfacePressureConstraint(MechanicalState* object = nullptr);
 
-    virtual ~SurfacePressureConstraint() ;
+    ~SurfacePressureConstraint() override;
 
     ////////////////////////////  Inherited from BaseObject //////////////////////
-    virtual void init() override;
-    virtual void reinit() override;
-    virtual void reset() override;
+    void init() override;
+    void reinit() override;
+    void reset() override;
     //////////////////////////////////////////////////////////////////////////////
 
 
     /////////////////// from sofa::core::behavior::Constraint /////////////////////////
-    virtual void getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
-                                         unsigned int& offset) override;
+    void getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
+                                 unsigned int& offset) override;
     ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -139,39 +138,33 @@ protected:
     Data<vector<Real> >                     d_value;
     Data<unsigned int>                      d_valueIndex;
     Data<helper::OptionsGroup>              d_valueType;
-    Data<bool>                              d_visualization;
 
     double                                  m_pressure;
     double                                  m_volumeGrowth;
     vector<Real>                            m_initialValue;
 
     ////////////////////////// Inherited attributes ////////////////////////////
-    using SurfacePressureModel<DataTypes>::d_cavityVolume ;
-    using SurfacePressureModel<DataTypes>::d_initialCavityVolume ;
-    using SurfacePressureModel<DataTypes>::d_pressure ;
     using SurfacePressureModel<DataTypes>::d_volumeGrowth ;
     using SurfacePressureModel<DataTypes>::d_maxVolumeGrowthVariation ;
-    using SurfacePressureModel<DataTypes>::m_displayedValue ;
-    using SurfacePressureModel<DataTypes>::m_columnId;
-    using SurfacePressureModel<DataTypes>::m_visualization;
+    using SurfacePressureModel<DataTypes>::d_maxVolumeGrowth ;
+    using SurfacePressureModel<DataTypes>::d_minVolumeGrowth ;
+    using SurfacePressureModel<DataTypes>::d_maxPressure ;
+    using SurfacePressureModel<DataTypes>::d_minPressure ;
     using SoftRobotsConstraint<DataTypes>::m_componentstate;
     ////////////////////////////////////////////////////////////////////////////
 
 private:
     void initData();
+    void setUpVolumeLimits(double& imposedValue, double& minPressure, double& maxPressure);
+    void setUpPressureLimits(double& imposedValue, double& minVolumeGrowth, double& maxVolumeGrowth);
 
 };
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#ifdef SOFA_EXTERN_TEMPLATE
-#ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3dTypes>;
-#endif
-#ifdef SOFA_WITH_FLOAT
-extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3fTypes>;
-#endif
-#endif
+using defaulttype::Vec3Types;
+extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3Types>;
+
 
 }
 
