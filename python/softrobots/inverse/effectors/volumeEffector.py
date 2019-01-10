@@ -12,17 +12,19 @@ def getOrCreateTheTemplateNode(attachedAsAChildOf=None, attachedTo=None, name=No
         return attachedTo
     return attachedAsAChildOf.createChild(name)
 
-def PneumaticCavity(surfaceMeshFileName=None,
+def VolumeEffector(surfaceMeshFileName=None,
                     attachedAsAChildOf=None,
                     attachedTo=None,
-                    name="PneumaticCavity",
+                    name="VolumeEffector",
                     rotation=[0.0, 0.0, 0.0],
                     translation=[0.0, 0.0, 0.0],
                     uniformScale=1,
                     initialValue=0,
                     valueType="volumeGrowth"):
 
-    """Creates and adds a pneumatic constraint.
+    """Creates and adds a volume effector constraint.
+
+    This creates all the components necessary in Sofa to include a cavity model whose volume should be determined by optimizing an external force.
 
     The constraint apply to a parent mesh.
 
@@ -38,7 +40,7 @@ def PneumaticCavity(surfaceMeshFileName=None,
     Structure:
     .. sourcecode:: qml
         Node : {
-                name : "PneumaticCavity"
+                name : "VolumeEffector"
                 MeshTopology,
                 MechanicalObject,
                 SurfacePressureConstraint,
@@ -47,50 +49,48 @@ def PneumaticCavity(surfaceMeshFileName=None,
 
     """
     if attachedAsAChildOf == None and attachedTo == None:
-        Sofa.msg_error("Your PneumaticCavity isn't link/child of any node, please set the argument attachedTo or attachedAsAChildOf")
+        Sofa.msg_error("Your VolumeEffector isn't link/child of any node, please set the argument attachedTo or attachedAsAChildOf")
         return None
 
     if surfaceMeshFileName == None:
         Sofa.msg_error("No surfaceMeshFileName specified, please specify one")
         return None
 
-    pneumatic = getOrCreateTheTemplateNode(attachedAsAChildOf=attachedAsAChildOf,
+    veffector = getOrCreateTheTemplateNode(attachedAsAChildOf=attachedAsAChildOf,
                                            attachedTo=attachedTo,
                                            name=name)
 
     # This create a MeshSTLLoader, a componant loading the topology of the cavity.
     if surfaceMeshFileName.endswith(".stl"):
-        pneumatic.createObject('MeshSTLLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
+        veffector.createObject('MeshSTLLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
     elif surfaceMeshFileName.endswith(".obj"):
-        pneumatic.createObject('MeshObjLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
+        veffector.createObject('MeshObjLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
     else :
         Sofa.msg_error("Your surfaceMeshFileName extension is not the right one, you have to give a surfacic mesh with .stl or .obj extension")
         return None
 
     # This create a MeshTopology, a componant holding the topology of the cavity.
-    # pneumatic.createObject('MeshTopology', name="topology", filename=surfaceMeshFileName)
-    pneumatic.createObject('Mesh', name='topology', src='@MeshLoader')
+    # veffector.createObject('MeshTopology', name="topology", filename=surfaceMeshFileName)
+    veffector.createObject('Mesh', name='topology', src='@MeshLoader')
 
     # This create a MechanicalObject, a componant holding the degree of freedom of our
-    # mechanical modelling. In the case of a cavity actuated with pneumatic, it is a set of positions specifying
+    # mechanical modelling. In the case of a cavity actuated with veffector, it is a set of positions specifying
     # the points where the pressure is applied.
-    pneumatic.createObject('MechanicalObject', src="@topology")
-
-    # Create a SurfacePressureConstraint object with a name.
-    # the indices are referring to the MechanicalObject's positions.
-    pneumatic.createObject('SurfacePressureConstraint',
-                          value=initialValue,
-                          valueType=valueType)
+    veffector.createObject('MechanicalObject', src="@topology")
+    veffector.createObject('VolumeEffector', template='Vec3d', triangles='@topology.triangles')
+    #veffector.createObject('SurfacePressureConstraint',
+    #                      value=initialValue,
+    #                      valueType=valueType)
 
     # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
     # between the cavity's DoFs and the parents's ones so that the pressure applied on the cavity wall will be mapped
     # to the volume structure and vice-versa;
-    pneumatic.createObject('BarycentricMapping', name="Mapping", mapForces="false", mapMasses="false")
-    return pneumatic
+    veffector.createObject('BarycentricMapping', name="Mapping", mapForces="false", mapMasses="false")
+    return veffector
 
 # Exemple doesn't work
 def createScene(node):
     from stlib.scene import MainHeader
     MainHeader(node, plugins=["SoftRobots"])
     node.createObject('MechanicalObject')
-    PneumaticCavity(surfaceMeshFileName="mesh/cube.obj", attachedAsAChildOf=node)
+    VolumeEffector(surfaceMeshFileName="mesh/cube.obj", attachedAsAChildOf=node)

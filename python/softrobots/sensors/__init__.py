@@ -14,3 +14,4 @@ Content:
 
 """
 from stringsensor import StringSensor
+from pneumaticSensor import PneumaticSensor

@@ -12,17 +12,20 @@ def getOrCreateTheTemplateNode(attachedAsAChildOf=None, attachedTo=None, name=No
         return attachedTo
     return attachedAsAChildOf.createChild(name)
 
-def VolumeEffector(surfaceMeshFileName=None,
+def PneumaticSensor(surfaceMeshFileName=None,
                     attachedAsAChildOf=None,
                     attachedTo=None,
-                    name="VolumeEffector",
+                    name="PneumaticSensor",
                     rotation=[0.0, 0.0, 0.0],
                     translation=[0.0, 0.0, 0.0],
                     uniformScale=1,
                     initialValue=0,
                     valueType="volumeGrowth"):
 
-    """Creates and adds a pneumatic constraint.
+    """Creates and adds a pneumatic sensor constraint.
+
+    This initializes all the components necessary to implement a virtual volume sensor. For a given geometry this will initialize a cavity that will deform as the mesh deforms. The component calculates the volume, but doesn't apply any constraint, i.e. there is no
+    forces coming from a change in pressure for instance. This is the case when in real life air flow sensors are being used.
 
     The constraint apply to a parent mesh.
 
@@ -38,7 +41,7 @@ def VolumeEffector(surfaceMeshFileName=None,
     Structure:
     .. sourcecode:: qml
         Node : {
-                name : "VolumeEffector"
+                name : "PneumaticSensor"
                 MeshTopology,
                 MechanicalObject,
                 SurfacePressureConstraint,
@@ -47,43 +50,51 @@ def VolumeEffector(surfaceMeshFileName=None,
 
     """
     if attachedAsAChildOf == None and attachedTo == None:
-        Sofa.msg_error("Your VolumeEffector isn't link/child of any node, please set the argument attachedTo or attachedAsAChildOf")
+        Sofa.msg_error("Your PneumaticSensor isn't link/child of any node, please set the argument attachedTo or attachedAsAChildOf")
         return None
 
     if surfaceMeshFileName == None:
         Sofa.msg_error("No surfaceMeshFileName specified, please specify one")
         return None
 
-    pneumatic = getOrCreateTheTemplateNode(attachedAsAChildOf=attachedAsAChildOf,
+    PneumaticSensor = getOrCreateTheTemplateNode(attachedAsAChildOf=attachedAsAChildOf,
                                            attachedTo=attachedTo,
                                            name=name)
 
     # This create a MeshSTLLoader, a componant loading the topology of the cavity.
-    
-    pneumatic.createObject('MeshObjLoader', name='MeshLoader',filename=surfaceMeshFileName,rotation=rotation, translation=translation, scale=uniformScale)
-    pneumatic.createObject('Mesh', src='@MeshLoader', name='topo')
+    if surfaceMeshFileName.endswith(".stl"):
+        PneumaticSensor.createObject('MeshSTLLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
+    elif surfaceMeshFileName.endswith(".obj"):
+        PneumaticSensor.createObject('MeshObjLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
+    else :
+        Sofa.msg_error("Your surfaceMeshFileName extension is not the right one, you have to give a surfacic mesh with .stl or .obj extension")
+        return None
+
+    # This create a MeshTopology, a componant holding the topology of the cavity.
+    # PneumaticSensor.createObject('MeshTopology', name="topology", filename=surfaceMeshFileName)
+    PneumaticSensor.createObject('Mesh', name='topology', src='@MeshLoader')
 
     # This create a MechanicalObject, a componant holding the degree of freedom of our
-    # mechanical modelling. In the case of a cavity actuated with pneumatic, it is a set of positions specifying
+    # mechanical modelling. In the case of a cavity actuated with PneumaticSensor, it is a set of positions specifying
     # the points where the pressure is applied.
-    pneumatic.createObject('MechanicalObject', name='VECavity', src="@topo")
-    pneumatic.createObject('VolumeEffector', template='Vec3d', triangles='@topo.triangles')
+    PneumaticSensor.createObject('MechanicalObject', src="@topology")
 
     # Create a SurfacePressureConstraint object with a name.
     # the indices are referring to the MechanicalObject's positions.
-    #pneumatic.createObject('SurfacePressureConstraint',
+    #PneumaticSensor.createObject('SurfacePressureConstraint',
     #                      value=initialValue,
     #                      valueType=valueType)
 
     # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
     # between the cavity's DoFs and the parents's ones so that the pressure applied on the cavity wall will be mapped
     # to the volume structure and vice-versa;
-    pneumatic.createObject('BarycentricMapping', name="Mapping", mapForces="false", mapMasses="false")
-    return pneumatic
+    PneumaticSensor.createObject('BarycentricMapping', name="Mapping", mapForces="false", mapMasses="false")
+    PneumaticSensor.createObject('SurfacePressureSensor',  triangles='@topology.triangles')
+    return PneumaticSensor
 
 # Exemple doesn't work
 def createScene(node):
     from stlib.scene import MainHeader
     MainHeader(node, plugins=["SoftRobots"])
     node.createObject('MechanicalObject')
-    VolumeEffector(surfaceMeshFileName="mesh/cube.obj", attachedAsAChildOf=node)
+    PneumaticSensor(surfaceMeshFileName="mesh/cube.obj", attachedAsAChildOf=node)

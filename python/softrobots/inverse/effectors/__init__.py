@@ -16,3 +16,4 @@ Content:
 """
 from positionEffector import PositionEffector
 from effectorGoal import EffectorGoal
+from volumeEffector import VolumeEffector
