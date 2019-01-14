@@ -122,7 +122,6 @@ protected:
 
     Data<Real>                          d_initialCavityVolume;
     Data<Real>                          d_cavityVolume;
-    Data<Real>                          d_deltaCavityVolume;
     Data<bool>                          d_flipNormal;
 
     Data<double>                        d_pressure;
