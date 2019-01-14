@@ -88,7 +88,6 @@ def VolumeEffector(surfaceMeshFileName=None,
     veffector.createObject('BarycentricMapping', name="Mapping", mapForces="false", mapMasses="false")
     return veffector
 
-# Exemple doesn't work
 def createScene(node):
     from stlib.scene import MainHeader
     MainHeader(node, plugins=["SoftRobots"])

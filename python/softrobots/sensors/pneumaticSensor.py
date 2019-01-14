@@ -92,7 +92,6 @@ def PneumaticSensor(surfaceMeshFileName=None,
     PneumaticSensor.createObject('SurfacePressureSensor',  triangles='@topology.triangles')
     return PneumaticSensor
 
-# Exemple doesn't work
 def createScene(node):
     from stlib.scene import MainHeader
     MainHeader(node, plugins=["SoftRobots"])
