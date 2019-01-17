@@ -20,7 +20,7 @@
 import os
 import sys
 # sys.path.insert(0, os.path.abspath('.'))
-path = os.getcwd()+"/../../"
+path = os.getcwd()+"/../../../"
 sys.path.append(path)
 
 
@@ -33,7 +33,24 @@ sys.path.append(path)
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.autosummary',
+    #'sphinx.ext.intersphinx',
+    #'sphinx.ext.mathjax',
+    #'sphinx.ext.ifconfig',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages'
+    ]
+
+## Include Python objects as they appear in source files
+## Default: alphabetically ('alphabetical')
+autodoc_member_order = 'bysource'
+## Default flags used by autodoc directives
+autodoc_default_flags = []
+## Generate autodoc stubs with summaries from code
+autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
