@@ -68,7 +68,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'SoftRobots'
+project = u'SoftRobotsTemplates'
 copyright = u'Defrost Team'
 author = u'Defrost Team'
 
@@ -139,7 +139,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'softrobotsdoc'
+htmlhelp_basename = 'SoftRobotsTemplatesDoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -166,7 +166,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'softrobots.tex', u'SoftRobots Documentation',
+    (master_doc, 'softrobotstemplates.tex', u'SoftRobots Templates Documentation',
      u'damien.marchal@univ-lille1.fr', 'manual'),
 ]
 
@@ -176,7 +176,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'softrobots', u'SoftRobots Documentation',
+    (master_doc, 'softrobotstemplates', u'SoftRobots Templates Documentation',
      [author], 1)
 ]
 
@@ -187,8 +187,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'softrobots', u'SoftRobots Documentation',
-     author, 'softrobots', 'One line description of project.',
+    (master_doc, 'softrobotstemplates', u'SoftRobots Templates Documentation',
+     author, 'softrobotstemplates', 'One line description of project.',
      'Miscellaneous'),
 ]
 
