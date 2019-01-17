@@ -49,8 +49,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SoftRobots Components'
-copyright = u'2019, Eulalie Coevoet'
-author = u'Eulalie Coevoet'
+copyright = u'2019, DEFROST Team'
+author = u'DEFROST Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
