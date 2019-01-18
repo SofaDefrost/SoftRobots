@@ -64,8 +64,8 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState*
                                   "If unspecified the default value is {0}"))
 
     , d_valueType(initData(&d_valueType, OptionsGroup(2,"pressure","volumeGrowth"), "valueType",
-                                          "volumeGrowth = the contstraint will impose the volume growth provided in data d_inputValue[d_iputIndex] \n"
-                                          "force = the contstraint will impose the pressure provided in data d_inputValue[d_iputIndex] \n"
+                                          "volumeGrowth = the contstraint will impose the volume growth provided in data value[valueIndex] \n"
+                                          "force = the contstraint will impose the pressure provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is pressure"))
 {
 }
