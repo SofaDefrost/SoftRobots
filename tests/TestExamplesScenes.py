@@ -55,7 +55,6 @@ if os.path.isfile(sofabin):
 
 		      filename = os.path.join(dirname, thisfile)
 		      b,ext = os.path.splitext(filename)
-		      dirnameShort = os.path.splitunc(dirname)
 		      if os.path.isfile( filename ) and ext in supportedExtensions and pattern in filename:
 			      print("[TESTING] "+thisfile, end=""),
 			      sys.stdout.flush()
