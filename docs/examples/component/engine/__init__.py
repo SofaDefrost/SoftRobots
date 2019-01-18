@@ -1,8 +1,6 @@
 """
 Engine components (e.g compute volume)
 
-Content:
-********
 .. autosummary::
     :toctree: _autosummary
 
