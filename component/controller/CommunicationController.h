@@ -33,11 +33,11 @@
 
 #include <SofaUserInteraction/Controller.h>
 
-#include <zmq.hpp>
-#include <string>
-
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vectorData.h>
+
+#include <zmq.hpp>
+#include <string>
 
 #include "../initSoftRobots.h"
 
