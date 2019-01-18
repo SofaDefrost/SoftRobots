@@ -9,7 +9,7 @@ import time
 # Brief:
 # A simple script to load and run one time step of each scene of the examples repository 
 
-sofapath = os.path.dirname(os.path.abspath(__file__))+'/../examples/'
+scenespath = os.path.dirname(os.path.abspath(__file__))+'/../docs/'
 
 sofabin=""
 if len(sys.argv) > 1: sofabin  = sys.argv[1]
@@ -47,13 +47,15 @@ if os.path.isfile(sofabin):
 	      RED   = "\033[1;31m"
 	      ENDL  = "\033[0m"
 
-	      if os.path.isfile("TestExamplesScenesOutput.txt"): os.remove("TestExamplesScenesOutput.txt")
-	      outputFile = open("TestExamplesScenesOutput.txt","a")
+	      outputFilename = os.path.dirname(os.path.abspath(__file__))+"/TestExamplesScenesOutput.txt"
+	      if os.path.isfile(outputFilename): os.remove(outputFilename)
+	      outputFile = open(outputFilename,"a")
 
 	      for thisfile in names:
 
 		      filename = os.path.join(dirname, thisfile)
 		      b,ext = os.path.splitext(filename)
+		      dirnameShort = os.path.splitunc(dirname)
 		      if os.path.isfile( filename ) and ext in supportedExtensions and pattern in filename:
 			      print("[TESTING] "+thisfile, end=""),
 			      sys.stdout.flush()
@@ -76,7 +78,7 @@ if os.path.isfile(sofabin):
 
 	      outputFile.close()
 	      
-      os.path.walk(sofapath, dotest, None) 
+      os.path.walk(scenespath, dotest, None) 
 
       print("====================== [SUMMARY] ========================")
       print("Test: Load and run one time step of each scene of the examples repository.")
