@@ -81,7 +81,7 @@ struct UnilateralPlaneConstraintTest : public Sofa_test<typename _DataTypes::Rea
     ////////////////////////////////////////////////////////////////////
     // Bring parents members in the current lookup context.
     // more info at: https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    using UnilateralPlaneConstraint<_DataTypes>::m_columnIndex ;
+    using UnilateralPlaneConstraint<_DataTypes>::m_constraintIndex ;
     using UnilateralPlaneConstraint<_DataTypes>::d_flipNormal ;
     using UnilateralPlaneConstraint<_DataTypes>::d_indices ;
     /////////////////////////////////////////////////////////////////////

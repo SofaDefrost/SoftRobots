@@ -128,7 +128,7 @@ protected:
 
     Data<Vec<4,unsigned int>>   d_indices;
     Data<bool>         d_flipNormal;
-    int                m_columnIndex;
+    int                m_constraintIndex;
 
     void drawPoints(const VisualParams* vparams);
     void drawTriangles(const VisualParams* vparams);

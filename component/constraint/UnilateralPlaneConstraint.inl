@@ -65,7 +65,7 @@ UnilateralPlaneConstraint<DataTypes>::UnilateralPlaneConstraint(MechanicalState*
 
     , d_flipNormal(initData(&d_flipNormal,false,"flipNormal","The normal must be to the direction of the point"))
 
-    , m_columnIndex(0)
+    , m_constraintIndex(0)
 {
 }
 
@@ -132,11 +132,11 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const core::Con
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(x);
 
-    m_columnIndex = cIndex;
+    m_constraintIndex = cIndex;
 
     MatrixDeriv& column = *cMatrix.beginEdit();
 
-    MatrixDerivRowIterator rowIterator = column.writeLine(m_columnIndex);
+    MatrixDerivRowIterator rowIterator = column.writeLine(m_constraintIndex);
 
     ReadAccessor<Data<VecCoord> > positions = *mstate->read(VecCoordId::position());
     Coord p1 = positions[d_indices.getValue()[1]];
@@ -180,7 +180,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintViolation(const core::Co
 
     Real dfree = (p0-p1)*normal/normal.norm();
 
-    resV->set(m_columnIndex, dfree );
+    resV->set(m_constraintIndex, dfree );
 }
 
 
