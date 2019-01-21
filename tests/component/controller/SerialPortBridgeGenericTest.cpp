@@ -98,7 +98,8 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
         EXPECT_TRUE( thisobject->findData("size") != nullptr ) ;
         EXPECT_TRUE( thisobject->findData("precise") != nullptr ) ;
         EXPECT_TRUE( thisobject->findData("baudRate") != nullptr ) ;
-        EXPECT_TRUE( thisobject->findData("sentData") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("packetOut") != nullptr ) ;
+        EXPECT_TRUE( thisobject->findData("packetIn") != nullptr ) ;
         EXPECT_TRUE( thisobject->findData("port") != nullptr ) ;
 
         EXPECT_TRUE(thisobject->findData("size")->getValueString()=="0") ;
@@ -128,12 +129,12 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
         thisobject->onEndAnimationStep(0.0);
         EXPECT_EQ(thisobject->findData("size")->getValueString(),"0");
 
-        thisobject->findData("sentData")->read("0 1 2 3");
+        thisobject->findData("packetOut")->read("0 1 2 3");
         thisobject->onEndAnimationStep(0.0);
         EXPECT_EQ(thisobject->findData("size")->getValueString(),"4");
 
         thisobject->findData("size")->read("3");
-        thisobject->findData("sentData")->read("0 1 2");
+        thisobject->findData("packetOut")->read("0 1 2");
         thisobject->onEndAnimationStep(0.0);
         EXPECT_EQ(thisobject->findData("size")->getValueString(),"3");
     }

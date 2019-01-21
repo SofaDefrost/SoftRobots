@@ -61,11 +61,15 @@ int SerialPortBridgeGenericClass = core::RegisterObject("Send data (ex: force, d
 SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     : d_port(initData(&d_port, "port", "Serial port name"))
     , d_baudRate(initData(&d_baudRate, "baudRate", "Transmission speed"))
-    , d_packetOut(initData(&d_packetOut, "sentData", "Data to send: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255.\n"
+    , d_packetOut(initData(&d_packetOut, "packetOut", "Data to send: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255.\n"
                            "The value of 'header' will be sent at the beginning of the sent data,\n"
                            "enabling to implement a header research in the 'receiving' code, for synchronization purposes.\n"
                            ))
-    , d_packetIn(initData(&d_packetIn, "receivedData", "Data received: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255."))
+    , d_packetIn(initData(&d_packetIn, "packetIn", "Data received: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255."))
+    // To remove before v20.0 of the plugin
+    , d_packetOutDeprecated(initData(&d_packetOutDeprecated, "sentData", ""))
+    , d_packetInDeprecated(initData(&d_packetInDeprecated, "receivedData", ""))
+    //
     , d_header(initData(&d_header, helper::vector<unsigned char>{255,254}, "header", "Vector of unsigned char. Only one value is espected, two values if splitPacket = 1."))
     , d_size(initData(&d_size,(unsigned int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
                                             "Will return a warning if sentData size does not match this value."))
@@ -75,6 +79,10 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     , d_redundancy(initData(&d_redundancy,(unsigned int)1,"redundancy","Each packet will be send that number of times (1=default)"))
     , d_doReceive(initData(&d_doReceive,false,"receive","If true, will read from serial port (timeOut = 10ms)"))
 {
+    // To remove before v20.0 of the plugin
+    d_packetOutDeprecated.setDisplayed(false);
+    d_packetInDeprecated.setDisplayed(false);
+    //
 }
 
 
@@ -88,11 +96,33 @@ void SerialPortBridgeGeneric::init()
     m_componentstate = ComponentState::Valid;
     checkConnection();
 
-    // To remove before v19.0 of the plugin
+    // To remove before v20.0 of the plugin
     msg_warning() << "An old implementation was using 245 as the default header for sentData. This is not the case anymore. The default header is now equal to 255.";
 
     if(d_precise.getValue())
         msg_warning() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
+
+    if(d_packetOutDeprecated.isSet())
+    {
+        msg_warning() << "Data field 'sentData' is now deprecated. You should use the field name 'packetOut', which is a vector of unsigned char.";
+        if(!d_packetOut.isSet())
+        {
+            vector<double> packetOutDouble = d_packetOutDeprecated.getValue();
+            vector<unsigned char> packetOut;
+            unsigned int packetSize = static_cast<unsigned int>(packetOutDouble.size());
+            packetOut.resize(packetSize);
+            for(unsigned int i=0; i<packetSize; i++)
+                packetOut[i] = static_cast<unsigned char>(packetOutDouble[i]);
+            d_packetOut.setValue(packetOut);
+        }
+    }
+
+    if(d_packetInDeprecated.isSet())
+    {
+        msg_warning() << "Data field 'receivedData' is now deprecated. You should use the field name 'packetIn', which is a vector of unsigned char.";if(!d_packetOut.isSet())
+        if(!d_packetIn.isSet())
+            d_packetIn.setValue(d_packetInDeprecated.getValue());
+    }
     // /////////////////////////////////////
 
     if(d_splitPacket.getValue() && !d_precise.getValue())
