@@ -137,9 +137,9 @@ void GameTrakController::GameTrakCallback(void *context,
     Vec3d left(leftx,lefty,leftz);
     Vec3d right(rightx,righty,rightz);
 
-    int xId = d_x.getValue().getSelectedId();
-    int yId = d_y.getValue().getSelectedId();
-    int zId = d_z.getValue().getSelectedId();
+    unsigned int xId = d_x.getValue().getSelectedId();
+    unsigned int yId = d_y.getValue().getSelectedId();
+    unsigned int zId = d_z.getValue().getSelectedId();
 
     double signx = (xId%2)?1.:-1.;
     double signy = (yId%2)?1.:-1.;
@@ -230,7 +230,7 @@ void GameTrakController::onBeginAnimationStep(const double dt)
     SOFA_UNUSED(dt);
     WriteAccessor<Data<vector<Vec3d>>> output = d_output;
     Vec3d offset = d_offset.getValue();
-    for (int i=0; i<3; i++)
+    for (unsigned int i=0; i<3; i++)
     {
         output[0][i] = m_output[0][i] + d_translation.getValue()[i] - m_initLeft[i] + offset[i];
         output[1][i] = m_output[1][i] + d_translation.getValue()[i] - m_initRight[i];

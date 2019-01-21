@@ -626,7 +626,7 @@ bool AnimationEditor<DataTypes>::isCursorKeyFrame(int &index)
         if (d_cursor.getValue() == m_keyFramesID[i])
         {
             isKey = true;
-            index = i;
+            index = int(i);
             break;
         }
     return isKey;
@@ -636,7 +636,7 @@ bool AnimationEditor<DataTypes>::isCursorKeyFrame(int &index)
 template<class DataTypes>
 int AnimationEditor<DataTypes>::getMaxKeyFrameID()
 {
-    unsigned int maxID = 0;
+    int maxID = 0;
     for (unsigned int i=0; i<m_keyFramesID.size(); i++)
         if (maxID < m_keyFramesID[i])
             maxID = m_keyFramesID[i];
@@ -799,7 +799,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
     quad.push_back(Vec3d(vparams->viewport()[2],yUPos,0)); //UL
     quad.push_back(Vec3d(vparams->viewport()[2],yDPos,0)); //DL
     quad.push_back(Vec3d(0,yDPos,0)); //DR
-    vparams->drawTool()->drawQuads(quad,Vec4f(0.4,0.4,0.4,1.));
+    vparams->drawTool()->drawQuads(quad,Vec4f(0.4f,0.4f,0.4f,1.0f));
 
     unsigned int maxKey = 0;
     for(unsigned int i=0; i<m_keyFramesID.size(); i++)
@@ -811,7 +811,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
     quad.push_back(Vec3d((maxKey+1)*ratio+xShift,yUPos,0)); //UL
     quad.push_back(Vec3d((maxKey+1)*ratio+xShift,yDPos,0)); //DL
     quad.push_back(Vec3d(ratio+xShift,yDPos,0)); //DR
-    vparams->drawTool()->drawQuads(quad,Vec4f(0.,0.3,0.,1.));
+    vparams->drawTool()->drawQuads(quad,Vec4f(0.0f,0.3f,0.0f,1.0f));
     ///////////////////////////////////////////////
 
     //////////////Cursor////////////////////////
@@ -822,7 +822,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
     triangle.push_back(Vec3d((d_cursor.getValue()+1)*ratio+xShift, yUPos, 0.));
     triangle.push_back(Vec3d(sizeCursor/2.+(d_cursor.getValue()+1)*ratio+xShift, yUPos + sizeCursor, 0.));
     triangle.push_back(Vec3d(-sizeCursor/2.+(d_cursor.getValue()+1)*ratio+xShift, yUPos + sizeCursor, 0.));
-    vparams->drawTool()->drawTriangles(triangle,Vec4f(0.9,0.9,0.9,1.));
+    vparams->drawTool()->drawTriangles(triangle,Vec4f(0.9f,0.9f,0.9f,1.0f));
     ///////////////////////////////////////////////////
 
     /// /////////////////////KeyFrames/////////////////////
@@ -831,13 +831,13 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
         vector<Vec3d> line;
         line.push_back(Vec3d((m_keyFramesID[i]+1)*ratio+xShift,yUPos,0.));
         line.push_back(Vec3d((m_keyFramesID[i]+1)*ratio+xShift,yDPos,0.));
-        vparams->drawTool()->drawLines(line,2,Vec4f(0.,0.5,0.,1.));
+        vparams->drawTool()->drawLines(line,2,Vec4f(0.0f,0.5f,0.0f,1.0f));
     }
 
     vector<Vec3d> line;
     line.push_back(Vec3d((d_maxKeyFrame.getValue()+1)*ratio+xShift,yUPos,0.));
     line.push_back(Vec3d((d_maxKeyFrame.getValue()+1)*ratio+xShift,yDPos,0.));
-    vparams->drawTool()->drawLines(line,2,Vec4f(0.6,0.,0.,1.));
+    vparams->drawTool()->drawLines(line,2,Vec4f(0.6f,0.0f,0.0f,1.0f));
     ////////////////////////////////////////////////
 
     glMatrixMode(GL_PROJECTION);

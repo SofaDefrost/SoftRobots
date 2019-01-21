@@ -138,10 +138,6 @@ void VolumeFromTetrahedrons<DataTypes>::checkTopology()
     int nbTetras = tetras.size() ;
     for(int i=0;i<nbTetras;i++){
         for(int j=0;j<4;j++){
-            if( tetras[i][j] < 0 )
-                msg_error() << "tetras[" << i << "]["<< j << "]="<< tetras[i][j]
-                              <<". is too small regarding positions size of(" << positions.size() << ")" ;
-
             if( tetras[i][j] >= positions.size() )
                 msg_error() << "tetras[" << i << "]["<< j << "]="<< tetras[i][j]
                               <<". is too large regarding positions size of(" << positions.size() << ")" ;
@@ -153,11 +149,6 @@ void VolumeFromTetrahedrons<DataTypes>::checkTopology()
     int nbHexas = hexas.size() ;
     for(int i=0;i<nbHexas;i++){
         for(int j=0;j<6;j++){
-            if( hexas[i][j] < 0 )
-                msg_error() << "hexas [" <<i << "][" << j << "]=" << hexas[i][j]
-                              << " is too small regarding positions size of("
-                              << positions.size() << ")" ;
-
             if( hexas[i][j] >= positions.size() )
                 msg_error() << "hexas [" <<i << "][" << j << "]=" << hexas[i][j]
                               << " is too large regarding positions size of("

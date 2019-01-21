@@ -67,12 +67,12 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
                            ))
     , d_packetIn(initData(&d_packetIn, "receivedData", "Data received: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255."))
     , d_header(initData(&d_header, helper::vector<unsigned char>{255,254}, "header", "Vector of unsigned char. Only one value is espected, two values if splitPacket = 1."))
-    , d_size(initData(&d_size,(int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
+    , d_size(initData(&d_size,(unsigned int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
                                             "Will return a warning if sentData size does not match this value."))
     , d_precise(initData(&d_precise,false,"precise","If true, will send the data in the format [header[0],[MSB,LSB]*2*size]"))
     , d_splitPacket(initData(&d_splitPacket,false,"splitPacket","If true, will split the packet in two for lower error rate (only in precise mode),\n"
                                "data will have the format [header[0],[MSB,LSB]*size],[header[1],[MSB,LSB]*size]"))
-    , d_redundancy(initData(&d_redundancy,1,"redundancy","Each packet will be send that number of times (1=default)"))
+    , d_redundancy(initData(&d_redundancy,(unsigned int)1,"redundancy","Each packet will be send that number of times (1=default)"))
     , d_doReceive(initData(&d_doReceive,false,"receive","If true, will read from serial port (timeOut = 10ms)"))
 {
 }
@@ -131,7 +131,7 @@ void SerialPortBridgeGeneric::init()
         m_packetOut.resize(d_size.getValue()+1);
 
     m_packetOut[0] = d_header.getValue()[0];
-    for (int i=1; i<(int)m_packetOut.size(); i++)
+    for (unsigned int i=1; i<m_packetOut.size(); i++)
         m_packetOut[i] = (unsigned char)0;
     if(d_splitPacket.getValue())
         m_packetOut[m_packetOut.size()/2] = d_header.getValue()[1];
@@ -146,7 +146,7 @@ void SerialPortBridgeGeneric::init()
 
 void SerialPortBridgeGeneric::checkConnection()
 {
-    int status = m_serial.Open(d_port.getValue().c_str() , d_baudRate.getValue());
+    char status = m_serial.Open(d_port.getValue().c_str() , d_baudRate.getValue());
 
     if (status!=1)
     {
@@ -195,13 +195,13 @@ void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
 void SerialPortBridgeGeneric::sendPacketPrecise()
 {
     //[header[0], [MSB,LSB]*size*2]
-    int packetlength=d_size.getValue();
+    unsigned int packetlength=d_size.getValue();
     m_packetOut.resize(packetlength*2+1);
 
     m_packetOut[0] = d_header.getValue()[0];
-    for (int i=0; i<packetlength; i++)
+    for (unsigned int i=0; i<packetlength; i++)
     {
-        int value = d_packetOut.getValue()[i];
+        unsigned int value = d_packetOut.getValue()[i];
         unsigned char LSB = value&0xFF;
         unsigned char MSB = value>>8&0xFF;
         m_packetOut[i*2+1]=MSB;
@@ -217,7 +217,7 @@ void SerialPortBridgeGeneric::sendPacketPrecise()
     memcpy (packetPtr, m_packetOut.data(), m_packetOut.size() * sizeof(m_packetOut));
 
     m_serial.FlushReceiver();
-    for(int i=0;i<d_redundancy.getValue(); i++)
+    for(unsigned int i=0;i<d_redundancy.getValue(); i++)
         m_serial.Write(packetPtr, m_packetOut.size());
 }
 
@@ -228,15 +228,15 @@ void SerialPortBridgeGeneric::sendPacket()
     m_packetOut.resize(d_size.getValue()+1);
 
     m_packetOut[0] = d_header.getValue()[0];
-    for (int i=0; i<d_size.getValue(); i++)
-        m_packetOut[i+1] = (unsigned char)d_packetOut.getValue()[i];
+    for (unsigned int i=0; i<d_size.getValue(); i++)
+        m_packetOut[i+1] = d_packetOut.getValue()[i];
 
     // Vector to void*
     void* packetPtr = new unsigned char[m_packetOut.size() * sizeof(m_packetOut)];
     memcpy (packetPtr, m_packetOut.data(), m_packetOut.size() * sizeof(m_packetOut));
 
     m_serial.FlushReceiver();
-    for(int i=0;i<d_redundancy.getValue(); i++)
+    for(unsigned int i=0;i<d_redundancy.getValue(); i++)
         m_serial.Write(packetPtr, m_packetOut.size());
 }
 
@@ -245,7 +245,7 @@ void SerialPortBridgeGeneric::receivePacket()
 {
     WriteAccessor<Data<helper::vector<unsigned char>>> packetIn = d_packetIn;
 
-    int nbData = 1;
+    unsigned int nbData = 1;
     packetIn.clear();
     packetIn.resize(nbData);
 
@@ -256,7 +256,7 @@ void SerialPortBridgeGeneric::receivePacket()
     int status = m_serial.Read(packetPtr, maxNbBytes, timeOut_ms);
     if(status==1)
     {
-        for(int i=0; i<nbData; i++)
+        for(unsigned int i=0; i<nbData; i++)
             packetIn[i]=packetPtr[i];
     }
 
@@ -269,7 +269,7 @@ void SerialPortBridgeGeneric::checkData()
     if(!d_size.isSet())
         msg_warning() <<"Size not set.";
 
-    if((int)d_packetOut.getValue().size()!=d_size.getValue())
+    if(d_packetOut.getValue().size()!=d_size.getValue())
     {
         msg_warning() <<"The user specified a size for sentData, size="<<d_size.getValue()
                           <<" but sentData.size="<<d_packetOut.getValue().size()<<"."

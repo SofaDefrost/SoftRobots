@@ -120,12 +120,12 @@ template<typename DataTypes>
 void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
                                                const MultiMatrixAccessor* matrix)
 {
-    if (l_barycentricMapping.get() == NULL )
+    if (l_barycentricMapping.get() == nullptr )
     {
         msg_error() << "Link to barycentric mapping is missing or incorrect. AddKToMatrix not computed.";
         return;
     }
-    if (l_mappedForceField.get() == NULL )
+    if (l_mappedForceField.get() == nullptr )
     {
         msg_error() << "Link to mapped force field is missing or incorrect. AddKToMatrix not computed.";
         return;
@@ -136,7 +136,7 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
     const CompressedRowSparseMatrix<_3_3_Matrix_Type>* J;
     J = dynamic_cast<const CompressedRowSparseMatrix<_3_3_Matrix_Type> *> (l_barycentricMapping.get()->getJ() );
 
-    if (J == NULL )
+    if (J == nullptr )
     {
         msg_error() << "Jacobian matrix from barycentric mapping is missing. AddKToMatrix not computed.";
         return;
@@ -147,7 +147,7 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
     CompressedRowSparseMatrix< _3_3_Matrix_Type >* mappedFFMatrix = new CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
     BaseMechanicalState* springState = l_mappedForceField.get()->getContext()->getMechanicalState();
 
-    if (springState == NULL )
+    if (springState == nullptr )
     {
         msg_error() << "Mstate from mappedFF is missing. AddKToMatrix not computed.";
         delete mappedFFMatrix;

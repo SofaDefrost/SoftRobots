@@ -70,7 +70,7 @@ PREquivalentStiffnessForceField<DataTypes>::PREquivalentStiffnessForceField()
     : Inherit1(),
       d_complianceFile(initData(&d_complianceFile, "complianceFile",
                                 "Name of the file where the compliance matrix is stored .")),
-      d_coeff(initData(&d_coeff, (Real) 1.0, "coefForce",
+      d_coeff(initData(&d_coeff, Real(1.0), "coefForce",
                                 "Coefficient")),
       d_startIndex(initData(&d_startIndex, (unsigned int)0, "startIndex",
                                 "Nodes below this indices won't be computed."))
@@ -390,7 +390,7 @@ void PREquivalentStiffnessForceField<DataTypes>::displaceFrames(const VecCoord& 
                                                                 VecDeriv& dq,
                                                                 const Real epsilon)
 {
-    sofa::helper::RandomGenerator rgen(time(NULL));
+    sofa::helper::RandomGenerator rgen(time(nullptr));
     for(size_t n = 0 ; n < displaced.size() ; ++n) {
         Deriv& dqn = dq[n];
         dqn = Deriv(Vec3(), Vec3());

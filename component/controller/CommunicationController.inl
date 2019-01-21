@@ -65,13 +65,13 @@ CommunicationController<DataTypes>::CommunicationController()
                          "publish/subscribe: Messages sent are distributed in a fan out fashion to all connected peers. Never blocks.\n"
                          "request/reply: Message sent are waiting for reply. Allows only an alternating sequence of send\reply calls.\n"
                          "Default is publish/subscribe. WARNING: the pattern should be the same for both sender and receiver to be effective."))
-    , d_HWM(initData(&d_HWM, (uint64_t)0, "HWM", "If publisher, you can define the High Water Mark which is a hard limit on the maximum number of outstanding \n"
+    , d_HWM(initData(&d_HWM, uint64_t(0), "HWM", "If publisher, you can define the High Water Mark which is a hard limit on the maximum number of outstanding \n"
                                                  "messages shall queue in memory. Default 0 (means no limit)."))
     , d_port(initData(&d_port, string("5556"), "port", "Default value 5556."))
     , d_ipAdress(initData(&d_ipAdress, "ip", "IP adress of the sender. No given adress will set up a local communication."))
-    , d_atBeginAnimationStep(initData(&d_atBeginAnimationStep, (bool)1, "atBeginAnimationStep",
+    , d_atBeginAnimationStep(initData(&d_atBeginAnimationStep, true, "atBeginAnimationStep",
                                       "If true, will send or receive datas at begin of the animation step (if false, at end of the animation step). Default true."))
-    , d_beginAt(initData(&d_beginAt, (double)0, "beginAt", "Time step value to start the communication at."))
+    , d_beginAt(initData(&d_beginAt, double(0.0), "beginAt", "Time step value to start the communication at."))
     , d_timeOut(initData(&d_timeOut, (unsigned int)3000, "timeOut", "Set time out (in ms) before killing the communication. Default is 3000ms, 0 means no time out."))
     , d_nbDataField(initData(&d_nbDataField, (unsigned int)1, "nbDataField",
                              "Number of field 'data' the user want to send or receive.\n"
@@ -322,17 +322,18 @@ void CommunicationController<DataTypes>::receiveData()
         sendRequest();
 
     zmq::message_t message;
+    unsigned int messageSize;
     bool status = m_socket->recv(&message);
     if(status)
     {
-        char messageChar[message.size()];
-        memcpy(&messageChar, message.data(), message.size());
+        char messageChar[messageSize];
+        memcpy(&messageChar, message.data(), messageSize);
 
         stringstream stream;
         stringstream templateStream;
 
         unsigned int startId = 0;
-        for(unsigned int i=0; i<message.size(); i++)
+        for(unsigned int i=0; i<messageSize; i++)
         {
             if(messageChar[i]==' ')
             {
@@ -351,7 +352,7 @@ void CommunicationController<DataTypes>::receiveData()
             return;
         }
 
-        for(unsigned int i=startId; i<message.size(); i++)
+        for(unsigned int i=startId; i<messageSize; i++)
         {
             if(messageChar[i]==',')
                 messageChar[i]='.';

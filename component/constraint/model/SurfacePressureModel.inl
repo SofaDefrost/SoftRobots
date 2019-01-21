@@ -73,7 +73,7 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
     , d_initialCavityVolume(initData(&d_initialCavityVolume, "initialCavityVolume",
                                "Output volume of the cavity at init (only relevant in case of closed mesh)"))
 
-    , d_cavityVolume(initData(&d_cavityVolume, (Real) 1.0, "cavityVolume",
+    , d_cavityVolume(initData(&d_cavityVolume, Real(1.0), "cavityVolume",
                                "Output volume of the cavity (only relevant in case of closed mesh)"))
 
     , d_flipNormal(initData(&d_flipNormal, false, "flipNormal",
@@ -81,32 +81,32 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                                "If a positive pressure acts like a depressurization, try to set \n"
                                "flipNormal to true."))
 
-    , d_pressure(initData(&d_pressure, (double) 0, "pressure",
+    , d_pressure(initData(&d_pressure, double(0.0), "pressure",
                              "Output pressure."))
 
 
-    , d_maxPressure(initData(&d_maxPressure, (Real) 0, "maxPressure",
+    , d_maxPressure(initData(&d_maxPressure, Real(0.0), "maxPressure",
                              "Maximum pressure allowed for actuation. If no value is set by user, no \n"
                              "maximum pressure constraint will be considered."))
 
-    , d_minPressure(initData(&d_minPressure, (Real) 0, "minPressure",
+    , d_minPressure(initData(&d_minPressure, Real(0.0), "minPressure",
                              "Minimum pressure allowed for actuation. If no value is set by user, no \n"
                              "minimum pressure constraint will be considered. A negative pressure will empty/drain the cavity."))
 
-    , d_volumeGrowth(initData(&d_volumeGrowth, (double) 0, "volumeGrowth",
+    , d_volumeGrowth(initData(&d_volumeGrowth, double(0.0), "volumeGrowth",
                              "Output volume growth."))
 
-    , d_maxVolumeGrowth(initData(&d_maxVolumeGrowth, (Real) 0, "maxVolumeGrowth",
+    , d_maxVolumeGrowth(initData(&d_maxVolumeGrowth, Real(0.0), "maxVolumeGrowth",
                              "Maximum volume growth allowed for actuation. If no value is set by user, no \n"
                              "maximum will be considered. NB: this value has a dependancy with the time step \n"
                              "(volume/dt) in the dynamic case."))
 
-    , d_minVolumeGrowth(initData(&d_minVolumeGrowth, (Real) 0, "minVolumeGrowth",
+    , d_minVolumeGrowth(initData(&d_minVolumeGrowth, Real(0.0), "minVolumeGrowth",
                              "Minimum volume growth allowed for actuation. If no value is set by user, no \n"
                              "minimum will be considered. NB: this value has a dependancy with the time step \n"
                              "(volume/dt) in the dynamic case."))
 
-    , d_maxVolumeGrowthVariation(initData(&d_maxVolumeGrowthVariation, (Real) 0, "maxVolumeGrowthVariation",
+    , d_maxVolumeGrowthVariation(initData(&d_maxVolumeGrowthVariation, Real(0.0), "maxVolumeGrowthVariation",
                              "Maximum volume growth variation allowed for actuation. If no value is set by user, no \n"
                              "maximum will be considered. NB: this value has a dependancy with the time step \n"
                              "(volume/dt) in the dynamic case."))
@@ -115,11 +115,11 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                                "Visualization of the value of pressure. \n"
                                "If unspecified, the default value is {false}"))
 
-    , d_drawScale(initData(&d_drawScale, (Real) 0.1, "drawScale",
+    , d_drawScale(initData(&d_drawScale, Real(0.1), "drawScale",
                                "Scale for visualization. If unspecified the default value is {0.1}"))
 
     , d_visualizationDepracated(initData(&d_visualizationDepracated, false, "visualization",""))
-    , d_showVisuScaleDepracated(initData(&d_showVisuScaleDepracated, (Real) 0.1, "showVisuScale",""))
+    , d_showVisuScaleDepracated(initData(&d_showVisuScaleDepracated, Real(0.1), "showVisuScale",""))
 {
     setUpData();
 }

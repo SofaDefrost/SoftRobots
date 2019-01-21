@@ -75,34 +75,34 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
                               "If false, the pull point is not considered and the cable is entirely mapped \n"
                               " In that case, needs at least 2 different point in indices."))
 
-    , d_cableInitialLength(initData(&d_cableInitialLength, (Real)0.0, "cableInitialLength"," "))
+    , d_cableInitialLength(initData(&d_cableInitialLength, Real(0.0), "cableInitialLength"," "))
 
-    , d_cableLength(initData(&d_cableLength, (Real)0.0, "cableLength","Computation done at the end of the time step"))
+    , d_cableLength(initData(&d_cableLength, Real(0.0), "cableLength","Computation done at the end of the time step"))
 
-    , d_force(initData(&d_force,(double)0.0, "force",
+    , d_force(initData(&d_force,double(0.0), "force",
                                          "Output force."))
 
-    , d_displacement(initData(&d_displacement,(double)0.0, "displacement",
+    , d_displacement(initData(&d_displacement,double(0.0), "displacement",
                           "Output displacement compared to the initial cable length."))
 
-    , d_maxForce(initData(&d_maxForce,(Real)0.0, "maxForce",
+    , d_maxForce(initData(&d_maxForce,Real(0.0), "maxForce",
                           "Maximum force of the actuator. \n"
                           "If unspecified no maximum value will be considered."))
 
-    , d_minForce(initData(&d_minForce,(Real)0.0, "minForce",
+    , d_minForce(initData(&d_minForce,Real(0.0), "minForce",
                           "Minimum force of the actuator. \n"
                           "If unspecified no minimum value will be considered \n"
                           "and the cable will then be seen as a stiff rod able to push."))
 
-    , d_maxPositiveDisplacement(initData(&d_maxPositiveDisplacement,(Real)0.0, "maxPositiveDisp",
+    , d_maxPositiveDisplacement(initData(&d_maxPositiveDisplacement,Real(0.0), "maxPositiveDisp",
                                          "Maximum displacement of the actuator in the positive direction. \n"
                                          "If unspecified no maximum value will be considered."))
 
-    , d_maxNegativeDisplacement(initData(&d_maxNegativeDisplacement,(Real)0.0, "maxNegativeDisp",
+    , d_maxNegativeDisplacement(initData(&d_maxNegativeDisplacement,Real(0.0), "maxNegativeDisp",
                                          "Maximum displacement of the actuator in the negative direction. \n"
                                          "If unspecified no maximum value will be considered."))
 
-    , d_maxDispVariation(initData(&d_maxDispVariation,(Real)0.0, "maxDispVariation",
+    , d_maxDispVariation(initData(&d_maxDispVariation,Real(0.0), "maxDispVariation",
                                    "Maximum variation of the displacement allowed. If not set, no max variation will be concidered."))
 
     , d_drawPullPoint(initData(&d_drawPullPoint,true, "drawPullPoint",

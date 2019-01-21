@@ -136,10 +136,6 @@ void VolumeFromTriangles<DataTypes>::checkTopology()
     int nbTriangles = triangles.size() ;
     for(int i=0;i<nbTriangles;i++){
         for(int j=0;j<3;j++){
-            if( triangles[i][j] < 0 )
-                msg_error() << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
-                              <<". is too small regarding positions size of(" << positions.size() << ")" ;
-
             if( triangles[i][j] >= positions.size() )
                 msg_error() << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
                               <<". is too large regarding positions size of(" << positions.size() << ")" ;
@@ -151,11 +147,6 @@ void VolumeFromTriangles<DataTypes>::checkTopology()
     int nbQuads = quads.size() ;
     for(int i=0;i<nbQuads;i++){
         for(int j=0;j<4;j++){
-            if( quads[i][j] < 0 )
-                msg_error() << "quads [" <<i << "][" << j << "]=" << quads[i][j]
-                              << " is too small regarding positions size of("
-                              << positions.size() << ")" ;
-
             if( quads[i][j] >= positions.size() )
                 msg_error() << "quads [" <<i << "][" << j << "]=" << quads[i][j]
                               << " is too large regarding positions size of("

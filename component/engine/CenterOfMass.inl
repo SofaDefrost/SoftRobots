@@ -59,7 +59,7 @@ CenterOfMass<DataTypes>::CenterOfMass()
     : d_positions(initData(&d_positions,"position","If not set by user, find the context mechanical."))
     , d_centerOfMass(initData(&d_centerOfMass,"centerOfMass",""))
     , d_visualization(initData(&d_visualization,"visualization","If set to true, will draw the center of mass"))
-    , d_visuSize(initData(&d_visuSize, (float)1., "visuSize",""))
+    , d_visuSize(initData(&d_visuSize, float(1.0), "visuSize",""))
     , d_visuColor(initData(&d_visuColor, Vec4f(1.,0.,0.,1.), "visuColor",""))
 {
     d_centerOfMass.setReadOnly(true);

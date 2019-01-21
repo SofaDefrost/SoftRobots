@@ -126,19 +126,16 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
 
         thisobject->findData("size")->read("4");
         thisobject->onEndAnimationStep(0.0);
+        EXPECT_EQ(thisobject->findData("size")->getValueString(),"0");
 
-        EXPECT_TRUE(thisobject->findData("size")->getValueString()=="0");
-
-        thisobject->findData("sentData")->read("0. 1. 2. 3.");
+        thisobject->findData("sentData")->read("0 1 2 3");
         thisobject->onEndAnimationStep(0.0);
-
-        EXPECT_TRUE(thisobject->findData("size")->getValueString()=="4");
+        EXPECT_EQ(thisobject->findData("size")->getValueString(),"4");
 
         thisobject->findData("size")->read("3");
-        thisobject->findData("sentData")->read("0. 1. 2.");
+        thisobject->findData("sentData")->read("0 1 2");
         thisobject->onEndAnimationStep(0.0);
-
-        EXPECT_TRUE(thisobject->findData("size")->getValueString()=="3");
+        EXPECT_EQ(thisobject->findData("size")->getValueString(),"3");
     }
 
 
@@ -149,7 +146,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
         d_splitPacket.setValue(false);
 
         init();
-        EXPECT_EQ(m_packetOut.size(),(unsigned int)5);
+        EXPECT_EQ(m_packetOut.size(),5);
         EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
         for(int i=1; i<5; i++)
             EXPECT_EQ(m_packetOut[i],0);
@@ -160,28 +157,28 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
         d_splitPacket.setValue(false);
 
         init();
-        EXPECT_EQ(m_packetOut.size(),(unsigned int)7);
+        EXPECT_EQ(m_packetOut.size(),7);
         EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
-        for(int i=1; i<7; i++)
+        for(unsigned int i=1; i<7; i++)
             EXPECT_EQ(m_packetOut[i],0);
 
         d_size.setValue(3);
         d_precise.setValue(true);
         d_splitPacket.setValue(true);
         init();
-        EXPECT_EQ(m_packetOut.size(),(unsigned int)8);
+        EXPECT_EQ(m_packetOut.size(),8);
         EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
-        for(int i=1; i<4; i++)
+        for(unsigned int i=1; i<4; i++)
             EXPECT_EQ(m_packetOut[i],0);
         EXPECT_EQ(m_packetOut[4],d_header.getValue()[1]);
-        for(int i=5; i<7; i++)
+        for(unsigned int i=5; i<7; i++)
             EXPECT_EQ(m_packetOut[i],0);
     }
 
 
     void onEndAnimationStepTest(){
 
-        WriteAccessor<Data<vector<double>>> packet = d_packetOut;
+        WriteAccessor<Data<vector<unsigned char>>> packet = d_packetOut;
 
         d_size.setValue(4);
         d_precise.setValue(false);
@@ -190,7 +187,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
         packet.resize(4);
 
         onEndAnimationStep(0.0);
-        EXPECT_EQ(m_packetOut.size(),(unsigned int)5);
+        EXPECT_EQ(m_packetOut.size(),5);
         EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
         for(int i=1; i<5; i++)
             EXPECT_EQ(m_packetOut[i],0);
@@ -203,7 +200,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
         packet.resize(3);
 
         onEndAnimationStep(0.0);
-        EXPECT_EQ(m_packetOut.size(),(unsigned int)7);
+        EXPECT_EQ(m_packetOut.size(),7);
         EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
         for(int i=1; i<7; i++)
             EXPECT_EQ(m_packetOut[i],0);

@@ -79,7 +79,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 
     const helper::vector<BaseMatrix*>* J0J1 = d_subsetMultiMapping.get()->getJs();
 
-    if(J0J1 == NULL)
+    if(J0J1 == nullptr)
         dmsg_warning()<<"J0J1 null";
 
     if (J0J1->size() != 2)

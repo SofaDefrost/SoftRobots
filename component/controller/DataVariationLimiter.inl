@@ -58,7 +58,7 @@ DataVariationLimiter<DataTypes>::DataVariationLimiter()
 
     , d_inputSize(initData(&d_inputSize,(unsigned int)0,"size","Input size."))
 
-    , d_maxJump(initData(&d_maxJump,(double)0.1,"maxJump",
+    , d_maxJump(initData(&d_maxJump,double(0.1),"maxJump",
                          "Maximal jump allowed. Default 10% is equivalent to jump = 0.1."))
 
     , d_nbStep(initData(&d_nbStep,(unsigned int)50,"nbStep",
