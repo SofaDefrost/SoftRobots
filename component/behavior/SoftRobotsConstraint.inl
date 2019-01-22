@@ -76,7 +76,7 @@ void SoftRobotsConstraint<DataTypes>::init()
     /// This throw a LogicException (logic exception are not meant for users but for
     /// developpers).
     if(getContext()==nullptr)
-        dmsg_error() << "A constraint assumes that there is a valid context. please fix your code. " ;
+        dmsg_error() << "A constraint assumes that there is a valid context. Please fix your code. " ;
 
     m_state = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
