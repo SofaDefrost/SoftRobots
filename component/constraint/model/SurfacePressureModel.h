@@ -87,7 +87,7 @@ public:
 
 public:
     SurfacePressureModel(MechanicalState* object = nullptr);
-    virtual ~SurfacePressureModel();
+    ~SurfacePressureModel() override;
 
     ////////////////////////// Inherited from BaseObject ////////////////////
     void init() override;
@@ -98,19 +98,18 @@ public:
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Actuator //////////////////////
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams,
+    void buildConstraintMatrix(const ConstraintParams* cParams,
                                        DataMatrixDeriv &cMatrix,
                                        unsigned int &cIndex,
                                        const DataVecCoord &x) override;
 
-    virtual void getConstraintViolation(const ConstraintParams* cParams,
-                                        BaseVector *resV,
-                                        const DataVecCoord &xfree,
-                                        const DataVecDeriv &vfree) override;
+    void getConstraintViolation(const ConstraintParams* cParams,
+                                BaseVector *resV,
+                                const BaseVector *Jdx) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from BaseConstraint ////////////////
-    virtual void storeLambda(const ConstraintParams* cParams,
+    void storeLambda(const ConstraintParams* cParams,
                              core::MultiVecDerivId res,
                              const BaseVector* lambda) override;
     /////////////////////////////////////////////////////////////////////////
@@ -139,8 +138,6 @@ protected:
     Data<Real>                          d_showVisuScaleDepracated;
     //
 
-    unsigned int                m_columnId;
-
 
 protected:
 
@@ -158,6 +155,7 @@ protected:
     using SoftRobotsConstraint<DataTypes>::m_state ;
     using SoftRobotsConstraint<DataTypes>::getContext ;
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
+    using SoftRobotsConstraint<DataTypes>::m_constraintId ;
     using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 

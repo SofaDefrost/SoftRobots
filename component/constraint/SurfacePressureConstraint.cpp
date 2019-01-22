@@ -70,16 +70,23 @@ void SurfacePressureConstraintResolution::resolution(int line, double** w, doubl
     SOFA_UNUSED(d);
     SOFA_UNUSED(dfree);
 
-    force[line] = m_imposedPressure ;
 
-    double volumeGrowth = m_wActuatorActuator*force[line];
+    double volumeGrowth = m_wActuatorActuator*m_imposedPressure + d[line];
 
     if(volumeGrowth<m_minVolumeGrowth)
+    {
         volumeGrowth = m_minVolumeGrowth;
+        force[line] -= (d[line]-volumeGrowth) / m_wActuatorActuator ;
+    }
     if(volumeGrowth>m_maxVolumeGrowth)
+    {
         volumeGrowth = m_maxVolumeGrowth;
+        force[line] -= (d[line]-volumeGrowth) / m_wActuatorActuator ;
+    }
+    else
+        force[line] = m_imposedPressure ;
 
-    force[line] -= (d[line]-volumeGrowth) / m_wActuatorActuator ;
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////

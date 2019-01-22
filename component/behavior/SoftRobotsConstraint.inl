@@ -31,7 +31,7 @@
 #define SOFA_CORE_BEHAVIOR_SoftRobotsConstraint_INL
 
 #include "SoftRobotsConstraint.h"
-#include <sofa/helper/logging/Messaging.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 
 namespace sofa
 {
@@ -41,6 +41,8 @@ namespace core
 
 namespace behavior
 {
+
+using component::linearsolver::FullVector;
 
 template<class DataTypes>
 SoftRobotsConstraint<DataTypes>::SoftRobotsConstraint(MechanicalState<DataTypes> *mm)
@@ -73,7 +75,7 @@ void SoftRobotsConstraint<DataTypes>::init()
     /// This throw a LogicException (logic exception are not meant for users but for
     /// developpers).
     if(getContext()==nullptr)
-        dmsg_error(this) << "An actuator constraint assume that there is a valid"
+        dmsg_error() << "An actuator constraint assume that there is a valid"
                             " context. please fix your code. " ;
 
     m_state = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
@@ -82,39 +84,63 @@ void SoftRobotsConstraint<DataTypes>::init()
 
 template<class DataTypes>
 void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
-                                                                 BaseVector *vfree)
+                                                             BaseVector *resV)
 {
     if (cParams)
     {
-        getConstraintViolation(cParams, vfree, *cParams->readX(m_state), *cParams->readV(m_state));
+        const DataVecCoord& xfree = *cParams->readX(m_state);
+        const VecCoord& x = m_state->read(VecCoordId::position())->getValue();
+        const VecDeriv& v = m_state->read(VecDerivId::velocity())->getValue();
+
+        VecDeriv dx(v);
+        for(unsigned int i=0; i<dx.size(); i++)
+            dx[i] = DataTypes::coordDifference(xfree.getValue()[i],x[i]);
+
+        const Data<MatrixDeriv> *J = cParams->j()[m_state].read();
+        FullVector<Real> Jdx;
+        Jdx.resize(m_nbLines);
+        Jdx.clear();
+        for(unsigned int i=0; i<m_nbLines; i++)
+        {
+            MatrixDerivRowConstIterator rowIt = J->getValue().readLine(m_constraintId+i);
+            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
+                Jdx.add(i, colIt.val() * dx[colIt.index()]);
+        }
+
+        getConstraintViolation(cParams, resV, &Jdx);
     }
 }
 
 
 template<class DataTypes>
 void SoftRobotsConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams,
-                                                                MultiMatrixDerivId cId,
-                                                                unsigned int &cIndex)
+                                                            MultiMatrixDerivId cId,
+                                                            unsigned int &cIndex)
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[m_state].write(), cIndex, *cParams->readX(m_state));
+        buildConstraintMatrix(cParams, *cId[m_state].write(), cIndex, m_state->readPositions().ref());
+        // Give *cParams->readX(m_state) -> xfree
+        //buildConstraintMatrix(cParams, *cId[m_state].write(), cIndex, *cParams->readX(m_state));
     }
 }
 
 
 template<class DataTypes>
-void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda)
+void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
+                                                  MultiVecDerivId res,
+                                                  const BaseVector* lambda)
 {
     if (cParams)
-    {
         storeLambda(cParams, *res[m_state].write(), *cParams->readJ(m_state), lambda);
-    }
 }
 
 
 template<class DataTypes>
-void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& result, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda)
+void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
+                                                  Data<VecDeriv>& result,
+                                                  const Data<MatrixDeriv>& jacobian,
+                                                  const BaseVector* lambda)
 {
     auto res = sofa::helper::write(result, cParams);
     const MatrixDeriv& j = jacobian.getValue(cParams);

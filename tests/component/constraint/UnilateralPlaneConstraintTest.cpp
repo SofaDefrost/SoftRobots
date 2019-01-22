@@ -81,7 +81,7 @@ struct UnilateralPlaneConstraintTest : public Sofa_test<typename _DataTypes::Rea
     ////////////////////////////////////////////////////////////////////
     // Bring parents members in the current lookup context.
     // more info at: https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    using UnilateralPlaneConstraint<_DataTypes>::m_constraintIndex ;
+    using UnilateralPlaneConstraint<_DataTypes>::m_constraintId ;
     using UnilateralPlaneConstraint<_DataTypes>::d_flipNormal ;
     using UnilateralPlaneConstraint<_DataTypes>::d_indices ;
     /////////////////////////////////////////////////////////////////////
@@ -113,65 +113,6 @@ struct UnilateralPlaneConstraintTest : public Sofa_test<typename _DataTypes::Rea
         return ;
     }
 
-    bool buildMatrixTests(){
-        Simulation* simu;
-        setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
-
-        Node::SPtr node = simu->createNewGraph("root");
-        typename MechanicalObject<DataTypes>::SPtr mecaobject = New<MechanicalObject<DataTypes> >() ;
-        typename ThisClass::SPtr thisobject = New<ThisClass >() ;
-
-        node->addObject(mecaobject) ;
-        mecaobject->findData("position")->read("0. 0. 0.   1. 0. 0.   1. 1. 1.   1. -1. 1.");
-        mecaobject->init();
-        node->addObject(thisobject) ;
-        thisobject->findData("indices")->read("0 1 2 3");
-        thisobject->init();
-
-        core::ConstraintParams* cparams = NULL;
-        core::objectmodel::Data<MatrixDeriv> columns;
-        unsigned int columnsIndex;
-        core::objectmodel::Data<VecCoord> x;
-
-        columnsIndex = 0;
-
-        MatrixDeriv& column = *columns.beginEdit();
-        MatrixDerivRowIterator rowIterator = column.begin();
-
-        rowIterator = column.writeLine(columnsIndex);
-
-        rowIterator.setCol(0, Deriv(0,0,0));
-        rowIterator.setCol(1, Deriv(0,0,0));
-        rowIterator.setCol(2, Deriv(0,0,0));
-        rowIterator.setCol(3, Deriv(0,0,0));
-        columns.endEdit();
-
-        thisobject->buildConstraintMatrix(cparams, columns, columnsIndex, x);
-
-        MatrixDeriv columnExpected;
-        MatrixDerivRowIterator rowIteratorExpected = columnExpected.begin();
-
-        rowIteratorExpected = columnExpected.writeLine(0);
-
-        rowIteratorExpected.setCol(0, Deriv(2,0,0));
-        rowIteratorExpected.setCol(1, Deriv(-0.666667,0,0));
-        rowIteratorExpected.setCol(2, Deriv(-0.666667,0,0));
-        rowIteratorExpected.setCol(3, Deriv(-0.666667,0,0));
-
-        MatrixDerivRowConstIterator rowIt2 = columnExpected.readLine(0);
-        MatrixDerivColConstIterator rowEnd2 = rowIt2.end();
-
-        MatrixDerivRowConstIterator rowIt1 = column.readLine(0);
-        MatrixDerivColConstIterator rowEnd1 = rowIt1.end();
-
-        for (MatrixDerivColConstIterator colIt1 = rowIt1.begin(), colIt2 = rowIt2.begin(); colIt1 != rowEnd1 && colIt2 != rowEnd2; ++colIt1, colIt2++)
-        {
-            if(colIt1.val() != colIt2.val())
-                return false;
-        }
-
-        return true;
-    }
 
 };
 
@@ -183,10 +124,6 @@ TYPED_TEST_CASE(UnilateralPlaneConstraintTest, DataTypes);
 
 TYPED_TEST(UnilateralPlaneConstraintTest, NormalBehavior) {
     ASSERT_NO_THROW(this->normalTests()) ;
-}
-
-TYPED_TEST(UnilateralPlaneConstraintTest, BuildMatrixTests) {
-    EXPECT_TRUE(this->buildMatrixTests()) ;
 }
 
 }

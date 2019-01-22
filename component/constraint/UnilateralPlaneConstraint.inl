@@ -64,8 +64,6 @@ UnilateralPlaneConstraint<DataTypes>::UnilateralPlaneConstraint(MechanicalState*
                          "-The others to describe the plane"))
 
     , d_flipNormal(initData(&d_flipNormal,false,"flipNormal","The normal must be to the direction of the point"))
-
-    , m_constraintIndex(0)
 {
 }
 
@@ -82,7 +80,7 @@ void UnilateralPlaneConstraint<DataTypes>::init()
     m_componentstate = ComponentState::Invalid;
     Inherit1::init();
 
-    if(mstate == nullptr)
+    if(m_state == nullptr)
     {
         msg_error() << "There is no mechanical state associated with this node. Component deactivated."
                            "To remove this error message, fix your scene possibly by "
@@ -108,7 +106,7 @@ void UnilateralPlaneConstraint<DataTypes>::reinit()
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::checkIndicesRegardingState()
 {
-    ReadAccessor<Data<VecCoord> > positions = *mstate->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
     for(int i=0; i<4; i++)
     {
@@ -121,7 +119,7 @@ void UnilateralPlaneConstraint<DataTypes>::checkIndicesRegardingState()
 
 
 template<class DataTypes>
-void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* cParams,
+void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams,
                                                                   DataMatrixDeriv &cMatrix,
                                                                   unsigned int &cIndex,
                                                                  const DataVecCoord &x)
@@ -130,15 +128,14 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const core::Con
             return ;
 
     SOFA_UNUSED(cParams);
-    SOFA_UNUSED(x);
 
-    m_constraintIndex = cIndex;
+    m_constraintId = cIndex;
 
     MatrixDeriv& column = *cMatrix.beginEdit();
 
-    MatrixDerivRowIterator rowIterator = column.writeLine(m_constraintIndex);
+    MatrixDerivRowIterator rowIterator = column.writeLine(m_constraintId);
 
-    ReadAccessor<Data<VecCoord> > positions = *mstate->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = x;
     Coord p1 = positions[d_indices.getValue()[1]];
     Coord p2 = positions[d_indices.getValue()[2]];
     Coord p3 = positions[d_indices.getValue()[3]];
@@ -153,40 +150,40 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const core::Con
     rowIterator.setCol(d_indices.getValue()[3],  -normal/3.);
 
     cIndex++;
+    m_nbLines = cIndex - m_constraintId;
     cMatrix.endEdit();
 }
 
 
 template<class DataTypes>
-void UnilateralPlaneConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* cParams,
-                                                                   defaulttype::BaseVector *resV,
-                                                                   const DataVecCoord &xfree,
-                                                                   const DataVecDeriv &vfree)
+void UnilateralPlaneConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
+                                                                  BaseVector *resV,
+                                                                  const BaseVector *Jdx)
 {
     if(m_componentstate != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
-    SOFA_UNUSED(vfree);
 
-    Coord p0 = xfree.getValue()[d_indices.getValue()[0]];
-    Coord p1 = xfree.getValue()[d_indices.getValue()[1]];
-    Coord p2 = xfree.getValue()[d_indices.getValue()[2]];
-    Coord p3 = xfree.getValue()[d_indices.getValue()[3]];
+    ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
+
+    Coord p0 = x[d_indices.getValue()[0]];
+    Coord p1 = x[d_indices.getValue()[1]];
+    Coord p2 = x[d_indices.getValue()[2]];
+    Coord p3 = x[d_indices.getValue()[3]];
     Deriv normal = (p2-p1).cross(p3-p1);
 
     if(d_flipNormal.getValue())
         normal = -normal;
 
-    Real dfree = (p0-p1)*normal/normal.norm();
-
-    resV->set(m_constraintIndex, dfree );
+    Real dfree = Jdx->element(0) + (p0-p1)*normal/normal.norm();
+    resV->set(m_constraintId, dfree );
 }
 
 
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::getConstraintResolution(const ConstraintParams* cParams,
-                                                                   std::vector<core::behavior::ConstraintResolution*>& resTab,
+                                                                   std::vector<ConstraintResolution*>& resTab,
                                                                    unsigned int& offset)
 {
     if(m_componentstate != ComponentState::Valid)
@@ -216,7 +213,7 @@ void UnilateralPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::drawPoints(const VisualParams* vparams)
 {
-    ReadAccessor<Data<VecCoord> > positions = *mstate->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
     unsigned int nbPoints = 4;
     vector<Vector3> points(nbPoints);
@@ -229,7 +226,7 @@ void UnilateralPlaneConstraint<DataTypes>::drawPoints(const VisualParams* vparam
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::drawTriangles(const VisualParams* vparams)
 {
-    ReadAccessor<Data<VecCoord> > positions = *mstate->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
     vector<Vector3> points(3);
     for (unsigned int i=0; i<3; i++)
@@ -242,7 +239,7 @@ void UnilateralPlaneConstraint<DataTypes>::drawTriangles(const VisualParams* vpa
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::drawArrows(const VisualParams* vparams)
 {
-    ReadAccessor<Data<VecCoord> > positions = *mstate->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
     Coord p1 = positions[d_indices.getValue()[1]];
     Coord p2 = positions[d_indices.getValue()[2]];

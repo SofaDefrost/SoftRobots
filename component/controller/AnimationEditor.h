@@ -60,7 +60,7 @@ using core::visual::VisualParams;
 /**
  * This component is used to build an animation from key points motion, or typically to build effector goals trajectories.
  * Description can be found at:
- * https://project.inria.fr/softrobot/documentation/engine/AnimationEditor
+ * https://softrobotscomponents.readthedocs.io
  */
 template<class DataTypes>
 class SOFA_SOFTROBOTS_API AnimationEditor : public Controller

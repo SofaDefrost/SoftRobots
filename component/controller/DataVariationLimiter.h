@@ -46,7 +46,7 @@ namespace controller
 /**
  * This component interpolates between two consecutive inputs when a jump is detected.
  * Description can be found at:
- * https://project.inria.fr/softrobot/documentation/engine/DataVariationLimiter
+ * https://softrobotscomponents.readthedocs.io
  */
 template <class T>
 class SOFA_SOFTROBOTS_API DataVariationLimiter : public Controller

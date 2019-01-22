@@ -99,20 +99,20 @@ void CableForceConstraintResolution::resolution(int line, double** w, double* d,
     SOFA_UNUSED(dfree);
     SOFA_UNUSED(w);
 
-    lambda[line] = m_imposedForce;
-    double displacement = m_wActuatorActuator*lambda[line];
+    double displacement = m_wActuatorActuator*m_imposedForce + d[line];
 
     if (displacement<m_minDisplacement)
     {
         displacement=m_minDisplacement;
         lambda[line] -= (d[line]-displacement) / m_wActuatorActuator;
     }
-
-    if (displacement>m_maxDisplacement)
+    else if (displacement>m_maxDisplacement)
     {
         displacement=m_maxDisplacement;
         lambda[line] -= (d[line]-displacement) / m_wActuatorActuator;
     }
+    else
+        lambda[line] = m_imposedForce;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

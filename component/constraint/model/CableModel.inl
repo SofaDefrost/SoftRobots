@@ -56,11 +56,6 @@ using sofa::helper::vector;
 template<class DataTypes>
 CableModel<DataTypes>::CableModel(MechanicalState* object)
     : SoftRobotsConstraint<DataTypes>(object)
-    // To remove in SoftRobots v19.0
-    ,  d_indexDeprecated(initData(&d_indexDeprecated, "index",
-                                 "Deprecated, must be replaced by the field name [indices]"))
-    //
-
     , d_indices(initData(&d_indices, "indices",
                          "List of points connected by the cable (from extremity to actuated point). \n"
                          "If no indices are given, default value is 0. \n"
@@ -126,10 +121,6 @@ CableModel<DataTypes>::~CableModel()
 template<class DataTypes>
 void CableModel<DataTypes>::setUpData()
 {
-    // To remove in SoftRobots v19.0
-    d_indexDeprecated.setDisplayed(false);
-    //
-
     d_cableInitialLength.setReadOnly(true);
     d_cableLength.setReadOnly(true);
 
@@ -149,26 +140,12 @@ void CableModel<DataTypes>::init()
     m_componentstate = ComponentState::Invalid;
     SoftRobotsConstraint<DataTypes>::init();
 
-    // To remove in SoftRobots v19.0
-    if(d_indexDeprecated.isSet())
-        msg_warning(this) << "The field of the Cable component named 'index' is now deprecated. "
-                             "To remove this warning message, the field "
-                             "'index' should be replaced by the field 'indices'." ;
-    //
-
     if(m_state==nullptr)
     {
-        msg_error(this) << "There is no mechanical state associated with this node. "
+        msg_error() << "There is no mechanical state associated with this node. "
                            "The object is then deactivated. "
                            "To remove this error message, fix your scene possibly by "
                            "adding a MechanicalObject." ;
-        return;
-    }
-
-    if(m_state->read(VecCoordId::position())==nullptr)
-    {
-        msg_error(this) << "There is no position vector in the MechanicalState. "
-                             "The object is deactivated. " ;
         return;
     }
 
@@ -185,11 +162,11 @@ void CableModel<DataTypes>::bwdInit()
 
     // The initial length of the cable is computed in bwdInit so the mapping (if there is any)
     // will be considered
-    VecCoord positions = (*m_state->read(VecCoordId::position())).getValue();
-    VecCoord restPositions = (*m_state->read(VecCoordId::restPosition())).getValue();
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
+    ReadAccessor<Data<VecCoord>> restPositions = m_state->readRestPositions();
 
-    Real cableLength = getCableLength(positions);
-    Real initialCableLength = getCableLength(restPositions);
+    Real cableLength = getCableLength(positions.ref());
+    Real initialCableLength = getCableLength(restPositions.ref());
     d_cableInitialLength.setValue(initialCableLength);
     d_cableLength.setValue(cableLength);
 }
@@ -228,12 +205,12 @@ template<class DataTypes>
 void CableModel<DataTypes>::initActuatedPoints()
 {
     int nbIndices = d_indices.getValue().size();
-    ReadAccessor<Data<VecCoord> > positions = *m_state->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
     const SetIndexArray &indices = d_indices.getValue();
 
     if ( !d_hasPullPoint.getValue()){
         if (nbIndices<=1)
-            msg_error(this) <<"If no pull point, at least two indices of actuation should be given";
+            msg_error() <<"If no pull point, at least two indices of actuation should be given";
         else
         {
             nbIndices-=1;  // the first point of the list considered as the pull point
@@ -244,7 +221,7 @@ void CableModel<DataTypes>::initActuatedPoints()
     if (nbIndices == 0)
     {
         SetIndexArray &list = (*d_indices.beginEdit());
-        msg_warning(this) <<"No index of actuation given, set default 0";
+        msg_warning() <<"No index of actuation given, set default 0";
         list.push_back(0);
         d_indices.endEdit();
 
@@ -260,14 +237,14 @@ void CableModel<DataTypes>::initActuatedPoints()
 template<class DataTypes>
 void CableModel<DataTypes>::checkIndicesRegardingState()
 {
-    ReadAccessor<Data<VecCoord> > positions = *m_state->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
     for(unsigned int i=0; i<d_indices.getValue().size(); i++)
     {
         if (positions.size() <= d_indices.getValue()[i])
-            msg_error(this) << "Indices at index " << i << " is too large regarding mechanicalState [position] size" ;
+            msg_error() << "Indices at index " << i << " is too large regarding mechanicalState [position] size" ;
         if (d_indices.getValue()[i] < 0)
-            msg_error(this) << "Indices at index " << i << " is negative" ;
+            msg_error() << "Indices at index " << i << " is negative" ;
     }
 }
 
@@ -303,24 +280,25 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
     SOFA_UNUSED(cParams);
 
-    m_columnIndex = cIndex;
+    m_constraintId = cIndex;
 
     MatrixDeriv& matrix = *cMatrix.beginEdit();
 
-    MatrixDerivRowIterator rowIterator = matrix.writeLine(m_columnIndex);
+    MatrixDerivRowIterator rowIterator = matrix.writeLine(m_constraintId);
 
+    VecCoord positions = x.getValue();
     if(!m_hasSlidingPoint)
     {
 
         if ( d_hasPullPoint.getValue())
         {
-            Deriv direction = d_pullPoint.getValue() - x.getValue()[d_indices.getValue()[0]];
+            Deriv direction = d_pullPoint.getValue() - positions[d_indices.getValue()[0]];
             direction.normalize();
             rowIterator.setCol(d_indices.getValue()[0],  direction);
         }
         else
         {
-            Deriv direction = x.getValue()[d_indices.getValue()[1]] - x.getValue()[d_indices.getValue()[0]];
+            Deriv direction = positions[d_indices.getValue()[1]] - positions[d_indices.getValue()[0]];
             direction.normalize();
             rowIterator.setCol(d_indices.getValue()[1],  -direction);
             rowIterator.setCol(d_indices.getValue()[0],  direction);
@@ -341,9 +319,9 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 int currentIndex = indices[i];
                 int nextIndex    = indices[i+1];
 
-                previousPosition = (d_hasPullPoint.getValue()) ? d_pullPoint.getValue(): x.getValue()[d_indices.getValue()[0]];
-                currentPosition  = x.getValue()[currentIndex];
-                nextPosition     = x.getValue()[nextIndex];
+                previousPosition = (d_hasPullPoint.getValue()) ? d_pullPoint.getValue(): positions[d_indices.getValue()[0]];
+                currentPosition  = positions[currentIndex];
+                nextPosition     = positions[nextIndex];
 
                 Deriv directionBeyond = previousPosition - currentPosition;
                 directionBeyond.normalize();
@@ -363,9 +341,9 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 int currentIndex  = indices[i];
                 int nextIndex     = indices[i+1];
 
-                previousPosition = x.getValue()[previousIndex];
-                currentPosition  = x.getValue()[currentIndex];
-                nextPosition     = x.getValue()[nextIndex];
+                previousPosition = positions[previousIndex];
+                currentPosition  = positions[currentIndex];
+                nextPosition     = positions[nextIndex];
 
                 Deriv directionBeyond = previousPosition - currentPosition;
                 directionBeyond.normalize();
@@ -382,8 +360,8 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 int previousIndex = indices[i-1];
                 int currentIndex  = indices[i];
 
-                previousPosition = x.getValue()[previousIndex];
-                currentPosition  = x.getValue()[currentIndex];
+                previousPosition = positions[previousIndex];
+                currentPosition  = positions[currentIndex];
 
                 Deriv directionOfActuation = previousPosition - currentPosition;
                 directionOfActuation.normalize();
@@ -394,24 +372,24 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
     }
     cIndex++;
     cMatrix.endEdit();
-    m_nbLines = cIndex - m_columnIndex;
+    m_nbLines = cIndex - m_constraintId;
 }
 
 
 template<class DataTypes>
-void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, BaseVector *resV, const DataVecCoord &xfree, const DataVecDeriv &vfree)
+void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
+                                                   BaseVector *resV,
+                                                   const BaseVector *Jdx)
 {
     if(m_componentstate != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
-    SOFA_UNUSED(vfree);
-    const VecCoord& positions =  xfree.getValue();
 
-    Real currentLength = getCableLength(positions);
-
-    resV->set(m_columnIndex, (d_cableInitialLength.getValue() - currentLength) );
+    Real dfree = Jdx->element(0) + d_cableInitialLength.getValue() - d_cableLength.getValue();
+    resV->set(m_constraintId, dfree);
 }
+
 
 
 template<class DataTypes>
@@ -425,11 +403,11 @@ void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
     if(m_componentstate != ComponentState::Valid)
             return ;
 
-    d_force.setValue(lambda->element(m_columnIndex));
+    d_force.setValue(lambda->element(m_constraintId));
 
     // Compute actual cable length and displacement from updated positions of mechanical
-    const VecCoord& position = m_state->read(VecCoordId::position())->getValue();
-    d_cableLength.setValue(getCableLength(position));
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
+    d_cableLength.setValue(getCableLength(positions.ref()));
     d_displacement.setValue(d_cableInitialLength.getValue()-d_cableLength.getValue());
 }
 
@@ -460,7 +438,7 @@ void CableModel<DataTypes>::drawPullPoint(const VisualParams* vparams)
     points[0] = d_pullPoint.getValue();
     if(!d_hasPullPoint.getValue() && indices.size()>=1)
     {
-        ReadAccessor<Data<VecCoord> > positions = *m_state->read(core::ConstVecCoordId::position());
+        ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
         points[0] = positions[indices[0]];
     }
 
@@ -471,7 +449,7 @@ void CableModel<DataTypes>::drawPullPoint(const VisualParams* vparams)
 template<class DataTypes>
 void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
 {
-    ReadAccessor<Data<VecCoord> > positions = *m_state->read(core::ConstVecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
     const SetIndexArray &indices = d_indices.getValue();
 
     vector<Vector3> points(indices.size());
@@ -485,7 +463,7 @@ void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
 template<class DataTypes>
 void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
 {
-    ReadAccessor<Data<VecCoord> > positions = *m_state->read(core::ConstVecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
     const SetIndexArray &indices = d_indices.getValue();
 

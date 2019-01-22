@@ -43,9 +43,10 @@ namespace core
 
 namespace behavior
 {
-    using sofa::core::objectmodel::BaseContext ;
-    using sofa::core::objectmodel::BaseObjectDescription ;
-    using sofa::defaulttype::BaseVector;
+
+using sofa::core::objectmodel::BaseContext ;
+using sofa::core::objectmodel::BaseObjectDescription ;
+using sofa::defaulttype::BaseVector;
 
 /**
  *  \brief Component computing inverse problem constraints within a simulated body.
@@ -65,6 +66,8 @@ public:
     typedef typename DataTypes::VecCoord    VecCoord;
     typedef typename DataTypes::VecDeriv    VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowConstIterator MatrixDerivRowConstIterator;
+    typedef typename DataTypes::MatrixDeriv::ColConstIterator MatrixDerivColConstIterator;
 
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
@@ -90,24 +93,22 @@ public:
 
     /// Construct the constraint violations vector of each constraint
     ///
-    /// \param v is the result vector that contains the whole constraint violations
+    /// \param resV is the result vector that contains the whole constraint violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams,
-                                        BaseVector *vfree);
+    void getConstraintViolation(const ConstraintParams* cParams,
+                                BaseVector *resV) override;
 
     /// Construct the constraint violations vector of each constraint
     ///
     /// \param resV is the result vector that contains the whole constraint violations
-    /// \param x is the position vector used to compute contraint position violation
-    /// \param v is the velocity vector used to compute contraint velocity violation
+    /// \param Jdx = J(xfree - x) for the constraint, has the size of m_nbLines
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
     using SoftRobotsBaseConstraint::getConstraintViolation; // to avoid warning about hidden overloaded virtual function
     virtual void getConstraintViolation(const ConstraintParams* cParams,
                                         BaseVector *resV,
-                                        const DataVecCoord &xfree,
-                                        const DataVecDeriv &vfree) = 0;
+                                        const BaseVector *Jdx) = 0;
 
     /// Construct the Jacobian Matrix
     ///
@@ -116,9 +117,9 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// Warning: is constraint matrix is built with the current position. Free configuration available in cParams
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams,
-                                       MultiMatrixDerivId cId,
-                                       unsigned int &cIndex);
+    void buildConstraintMatrix(const ConstraintParams* cParams,
+                               MultiMatrixDerivId cId,
+                               unsigned int &cIndex) override;
 
     /// Construct the Jacobian Matrix
     ///
@@ -134,14 +135,14 @@ public:
                                        const DataVecCoord &x) = 0;
 
 
-    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
+    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const defaulttype::BaseVector* lambda) override;
 
 
 protected:
     Data<Real> d_endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
 
     SoftRobotsConstraint(MechanicalState<DataTypes> *mm = NULL);
-    virtual ~SoftRobotsConstraint();
+    ~SoftRobotsConstraint() override;
 
     MechanicalState<DataTypes> *m_state; ///< Associated mechanical state
 
@@ -149,16 +150,16 @@ private:
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda);
 };
 
+
 // Force template specialization for the most common sofa float related type.
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 
-extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Vec3Types>;
-extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Rigid3Types>;
-extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Rigid2Types>;
+extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Vec3Types>;
+extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Vec2Types>;
+extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Vec1Types>;
+extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Rigid3Types>;
 
 
 

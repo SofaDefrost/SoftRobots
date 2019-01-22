@@ -141,7 +141,7 @@ void AnimationEditor<DataTypes>::init()
     }
 
     m_keyFramesID.push_back(0);
-    m_animation.resize(1,m_state->read(core::ConstVecCoordId::position())->getValue());
+    m_animation.resize(1,m_state->readPositions().ref());
 
     if(d_load.getValue())
         loadAnimation();
@@ -682,14 +682,14 @@ void AnimationEditor<DataTypes>::updateAnimation(Status status)
     {
         if(nextKey != d_maxKeyFrame.getValue()+1) //Key after this new one
         {
-            m_animation[currentKey] = m_state->read(core::ConstVecCoordId::position())->getValue();
+            m_animation[currentKey] = m_state->readPositions().ref();
             if(currentKey!=0) updateAnimationWithInterpolation(previousKey, currentKey);
             updateAnimationWithInterpolation(currentKey, nextKey);
         }
         else //No key after this new one
         {
             m_animation.resize(currentKey+1);
-            m_animation[currentKey] = m_state->read(core::ConstVecCoordId::position())->getValue();
+            m_animation[currentKey] = m_state->readPositions().ref();
             if(currentKey!=0) updateAnimationWithInterpolation(previousKey, currentKey);
         }
         break;
@@ -734,7 +734,7 @@ void AnimationEditor<DataTypes>::updateAnimationWithInterpolation(const int star
         return;
     }
 
-    int nbPositions = m_state->read(core::ConstVecCoordId::position())->getValue().size();
+    int nbPositions = m_state->getSize();
     int nbStep = endKey - startKey;
 
     for (int i=0; i<nbStep; i++)

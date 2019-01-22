@@ -96,7 +96,7 @@ protected:
 /**
  * This component simulates a force exerted by a cable to solve an effector constraint.
  * Description can be found at:
- * https://project.inria.fr/softrobot/documentation/constraint/CableConstraint
+ * https://softrobotscomponents.readthedocs.io
 */
 template< class DataTypes >
 class CableConstraint : public CableModel<DataTypes>
