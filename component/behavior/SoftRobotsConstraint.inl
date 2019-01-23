@@ -43,6 +43,7 @@ namespace behavior
 {
 
 using component::linearsolver::FullVector;
+using helper::ReadAccessor;
 
 template<class DataTypes>
 SoftRobotsConstraint<DataTypes>::SoftRobotsConstraint(MechanicalState<DataTypes> *mm)
@@ -75,8 +76,7 @@ void SoftRobotsConstraint<DataTypes>::init()
     /// This throw a LogicException (logic exception are not meant for users but for
     /// developpers).
     if(getContext()==nullptr)
-        dmsg_error() << "An actuator constraint assume that there is a valid"
-                            " context. please fix your code. " ;
+        dmsg_error() << "A constraint assumes that there is a valid context. please fix your code. " ;
 
     m_state = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
@@ -89,10 +89,10 @@ void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const ConstraintPar
     if (cParams)
     {
         const DataVecCoord& xfree = *cParams->readX(m_state);
-        const VecCoord& x = m_state->read(VecCoordId::position())->getValue();
-        const VecDeriv& v = m_state->read(VecDerivId::velocity())->getValue();
+        ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
 
-        VecDeriv dx(v);
+        VecDeriv dx;
+        dx.resize(m_state->getSize());
         for(unsigned int i=0; i<dx.size(); i++)
             dx[i] = DataTypes::coordDifference(xfree.getValue()[i],x[i]);
 
