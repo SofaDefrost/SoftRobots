@@ -104,24 +104,14 @@ void SerialPortBridgeGeneric::init()
 
     if(d_packetOutDeprecated.isSet())
     {
-        msg_warning() << "Data field 'sentData' is now deprecated. You should use the field name 'packetOut', which is a vector of unsigned char.";
-        if(!d_packetOut.isSet())
-        {
-            vector<double> packetOutDouble = d_packetOutDeprecated.getValue();
-            vector<unsigned char> packetOut;
-            unsigned int packetSize = static_cast<unsigned int>(packetOutDouble.size());
-            packetOut.resize(packetSize);
-            for(unsigned int i=0; i<packetSize; i++)
-                packetOut[i] = static_cast<unsigned char>(packetOutDouble[i]);
-            d_packetOut.setValue(packetOut);
-        }
+        msg_warning() << "Data field 'sentData' is now deprecated. You should use the field name 'packetOut' instead, which is a vector of unsigned char.";
+        updateLinkToDeprecatedData();
     }
 
     if(d_packetInDeprecated.isSet())
     {
-        msg_warning() << "Data field 'receivedData' is now deprecated. You should use the field name 'packetIn', which is a vector of unsigned char.";if(!d_packetOut.isSet())
-        if(!d_packetIn.isSet())
-            d_packetIn.setValue(d_packetInDeprecated.getValue());
+        msg_warning() << "Data field 'receivedData' is now deprecated. You should use the field name 'packetIn' insteas, which is a vector of unsigned char.";if(!d_packetOut.isSet())
+        d_packetIn.setValue(d_packetInDeprecated.getValue());
     }
     // /////////////////////////////////////
 
@@ -171,6 +161,17 @@ void SerialPortBridgeGeneric::init()
         msg_warning() <<"No valid number of packets set in Redundancy, set automatically to 1";
         d_redundancy.setValue(1);
     }
+}
+
+void SerialPortBridgeGeneric::updateLinkToDeprecatedData()
+{
+    vector<double> packetOutDouble = d_packetOutDeprecated.getValue();
+    vector<unsigned char> packetOut;
+    unsigned int packetSize = static_cast<unsigned int>(packetOutDouble.size());
+    packetOut.resize(packetSize);
+    for(unsigned int i=0; i<packetSize; i++)
+        packetOut[i] = static_cast<unsigned char>(packetOutDouble[i]);
+    d_packetOut.setValue(packetOut);
 }
 
 
@@ -298,6 +299,9 @@ void SerialPortBridgeGeneric::checkData()
 {
     if(!d_size.isSet())
         msg_warning() <<"Size not set.";
+
+    if(d_packetOutDeprecated.isSet())
+        updateLinkToDeprecatedData();
 
     if(d_packetOut.getValue().size()!=d_size.getValue())
     {

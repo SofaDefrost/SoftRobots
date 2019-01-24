@@ -109,6 +109,8 @@ protected:
     void sendPacket();
     void sendPacketPrecise();
 
+    void updateLinkToDeprecatedData();
+
 };  //class SerialPortBridgeGeneric
 
 
