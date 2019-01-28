@@ -103,6 +103,7 @@ void initExternalModule()
                 }
                 PythonEnvironment::addPythonModulePath(line);
             }
+            break;
         }
     }
 #endif
