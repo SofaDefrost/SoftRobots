@@ -386,6 +386,7 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 
     SOFA_UNUSED(cParams);
 
+    d_cableLength.setValue(getCableLength(m_state->readPositions().ref()));
     Real dfree = Jdx->element(0) + d_cableInitialLength.getValue() - d_cableLength.getValue();
     resV->set(m_constraintId, dfree);
 }
@@ -406,8 +407,10 @@ void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
     d_force.setValue(lambda->element(m_constraintId));
 
     // Compute actual cable length and displacement from updated positions of mechanical
-    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
-    d_cableLength.setValue(getCableLength(positions.ref()));
+    // Eulalie.C: For now the position of the mechanical state is not up to date when storeLambda() is called
+    //            so the value of delta is one step behind...
+    //ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
+    //d_cableLength.setValue(getCableLength(positions.ref()));
     d_displacement.setValue(d_cableInitialLength.getValue()-d_cableLength.getValue());
 }
 

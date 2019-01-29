@@ -392,6 +392,7 @@ void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintPar
 
     SOFA_UNUSED(cParams);
 
+    d_cavityVolume.setValue(getCavityVolume(m_state->readPositions().ref()));
     Real dfree = Jdx->element(0) + d_cavityVolume.getValue() - d_initialCavityVolume.getValue();
     resV->set(m_constraintId, dfree);
 }
@@ -411,8 +412,10 @@ void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParam
     d_pressure.setValue(lambda->element(m_constraintId));
 
     // Compute actual cavity volume and volume growth from updated positions of mechanical
-    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
-    d_cavityVolume.setValue(getCavityVolume(positions.ref()));
+    // Eulalie.C: For now the position of the mechanical state is not up to date when storeLambda() is called
+    //            so the value of delta is one step behind...
+    //ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
+    //d_cavityVolume.setValue(getCavityVolume(positions.ref()));
     d_volumeGrowth.setValue(d_cavityVolume.getValue()-d_initialCavityVolume.getValue());
 }
 
