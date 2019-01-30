@@ -69,7 +69,7 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     // To remove before v20.0 of the plugin
     , d_packetOutDeprecated(initData(&d_packetOutDeprecated, "sentData", ""))
     , d_packetInDeprecated(initData(&d_packetInDeprecated, "receivedData", ""))
-    //
+    // ////////////////////////////////////
     , d_header(initData(&d_header, helper::vector<unsigned char>{255,254}, "header", "Vector of unsigned char. Only one value is espected, two values if splitPacket = 1."))
     , d_size(initData(&d_size,(unsigned int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
                                             "Will return a warning if sentData size does not match this value."))
@@ -82,7 +82,7 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     // To remove before v20.0 of the plugin
     d_packetOutDeprecated.setDisplayed(false);
     d_packetInDeprecated.setDisplayed(false);
-    //
+    // ////////////////////////////////////
 }
 
 
@@ -94,36 +94,8 @@ SerialPortBridgeGeneric::~SerialPortBridgeGeneric()
 void SerialPortBridgeGeneric::init()
 {
     m_componentstate = ComponentState::Valid;
+    dataDeprecationManagement();
     checkConnection();
-
-    // To remove before v20.0 of the plugin
-    msg_warning() << "An old implementation was using 245 as the default header for sentData. This is not the case anymore. The default header is now equal to 255.";
-
-    if(d_precise.getValue())
-        msg_warning() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
-
-    if(d_packetOutDeprecated.isSet())
-    {
-        msg_warning() << "Data field 'sentData' is now deprecated. You should use the field name 'packetOut', which is a vector of unsigned char.";
-        if(!d_packetOut.isSet())
-        {
-            vector<double> packetOutDouble = d_packetOutDeprecated.getValue();
-            vector<unsigned char> packetOut;
-            unsigned int packetSize = static_cast<unsigned int>(packetOutDouble.size());
-            packetOut.resize(packetSize);
-            for(unsigned int i=0; i<packetSize; i++)
-                packetOut[i] = static_cast<unsigned char>(packetOutDouble[i]);
-            d_packetOut.setValue(packetOut);
-        }
-    }
-
-    if(d_packetInDeprecated.isSet())
-    {
-        msg_warning() << "Data field 'receivedData' is now deprecated. You should use the field name 'packetIn', which is a vector of unsigned char.";if(!d_packetOut.isSet())
-        if(!d_packetIn.isSet())
-            d_packetIn.setValue(d_packetInDeprecated.getValue());
-    }
-    // /////////////////////////////////////
 
     if(d_splitPacket.getValue() && !d_precise.getValue())
     {
@@ -174,9 +146,52 @@ void SerialPortBridgeGeneric::init()
 }
 
 
+// To remove before v20.0 of the plugin
+void SerialPortBridgeGeneric::dataDeprecationManagement()
+{
+    msg_warning() << "An old implementation was using 245 as the default header for sentData. This is not the case anymore. The default header is now equal to 255.";
+
+    if(d_precise.getValue())
+        msg_warning() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
+
+    if(d_packetOutDeprecated.isSet())
+    {
+        if(d_packetOut.isSet())
+        {
+            msg_warning() << "Your are using both 'sentData' and 'packetOut' fields. You should use only 'packetOut', as sentData is now deprecated. \n"
+                          << "The component will switch to an invalid state to avoid any issues.";
+            m_componentstate = ComponentState::Invalid;
+        }
+        else
+            msg_warning() << "Data field 'sentData' is now deprecated. You should use the field name 'packetOut' instead, which is a vector of unsigned char.";
+
+        updateLinkToDeprecatedData();
+    }
+
+    if(d_packetInDeprecated.isSet())
+    {
+        msg_warning() << "Data field 'receivedData' is now deprecated. You should use the field name 'packetIn' insteas, which is a vector of unsigned char.";if(!d_packetOut.isSet())
+        d_packetIn.setValue(d_packetInDeprecated.getValue());
+    }
+}
+
+
+void SerialPortBridgeGeneric::updateLinkToDeprecatedData()
+{
+    vector<double> packetOutDouble = d_packetOutDeprecated.getValue();
+    vector<unsigned char> packetOut;
+    unsigned int packetSize = static_cast<unsigned int>(packetOutDouble.size());
+    packetOut.resize(packetSize);
+    for(unsigned int i=0; i<packetSize; i++)
+        packetOut[i] = static_cast<unsigned char>(packetOutDouble[i]);
+    d_packetOut.setValue(packetOut);
+}
+// /////////////////////////////////////
+
+
 void SerialPortBridgeGeneric::checkConnection()
 {
-    char status = m_serial.Open(d_port.getValue().c_str() , d_baudRate.getValue());
+    char status = m_serial.Open(d_port.getValue().c_str(), d_baudRate.getValue());
 
     if (status!=1)
     {
@@ -216,6 +231,9 @@ void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
         return;
 
     checkData();
+
+    if(m_componentstate == ComponentState::Invalid)
+        return;
 
     if(d_precise.getValue()) sendPacketPrecise();
     else                     sendPacket();
@@ -299,13 +317,28 @@ void SerialPortBridgeGeneric::checkData()
     if(!d_size.isSet())
         msg_warning() <<"Size not set.";
 
+    // To remove before v20.0 of the plugin
+    if(d_packetOutDeprecated.isSet())
+    {
+        if(d_packetOut.isSet())
+        {
+            msg_warning() << "Your are using both 'sentData' and 'packetOut' fields. You should use only 'packetOut', as sentData is now deprecated. \n"
+                          << "The component will switch to an invalid state to avoid any issues.";
+            m_componentstate = ComponentState::Invalid;
+        }
+        else
+            updateLinkToDeprecatedData();
+    }
+    // /////////////////////////////////////
+
     if(d_packetOut.getValue().size()!=d_size.getValue())
     {
-        msg_warning() <<"The user specified a size for sentData, size="<<d_size.getValue()
-                          <<" but sentData.size="<<d_packetOut.getValue().size()<<"."
-                          <<" To remove this warning you can either change the value of 'size' or 'sentData'."
-                          <<" Make sure the size and format of the data correspond to what the microcontroller in the robot is expecting.";
-        d_size.setValue(d_packetOut.getValue().size());
+        msg_warning() <<"The user specified a size for packetOut, size="<<d_size.getValue()
+                     <<" but packetOut.size="<<d_packetOut.getValue().size()<<"."
+                    <<" To remove this warning you can either change the value of 'size' or 'packetOut'."
+                   <<" Make sure the size and format of the data correspond to what the microcontroller in the robot is expecting."
+                  << "The component will switch to an invalid state to avoid any issues.";
+        m_componentstate = ComponentState::Invalid;
     }
 }
 

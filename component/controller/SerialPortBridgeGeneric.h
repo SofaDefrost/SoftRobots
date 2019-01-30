@@ -89,7 +89,7 @@ public:
     // To remove before v20.0 of the plugin
     Data<helper::vector<double>>        d_packetOutDeprecated;
     Data<helper::vector<unsigned char>> d_packetInDeprecated;
-    //
+    // ////////////////////////////////////
     Data<helper::vector<unsigned char>> d_header;
     Data<unsigned int>           d_size;
     Data<bool>                   d_precise;
@@ -108,6 +108,11 @@ protected:
     void receivePacket();
     void sendPacket();
     void sendPacketPrecise();
+
+    // To remove before v20.0 of the plugin
+    void dataDeprecationManagement();
+    void updateLinkToDeprecatedData();
+    // ////////////////////////////////////
 
 };  //class SerialPortBridgeGeneric
 
