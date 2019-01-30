@@ -634,9 +634,9 @@ bool AnimationEditor<DataTypes>::isCursorKeyFrame(int &index)
 
 
 template<class DataTypes>
-int AnimationEditor<DataTypes>::getMaxKeyFrameID()
+unsigned int AnimationEditor<DataTypes>::getMaxKeyFrameID()
 {
-    int maxID = 0;
+    unsigned int maxID = 0;
     for (unsigned int i=0; i<m_keyFramesID.size(); i++)
         if (maxID < m_keyFramesID[i])
             maxID = m_keyFramesID[i];
@@ -777,7 +777,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
 
 #ifdef SOFA_WITH_OPENGL
     glDisable(GL_LIGHTING);
-    int ratio = round(vparams->viewport()[2]/d_maxKeyFrame.getValue());
+    unsigned int ratio = round(vparams->viewport()[2]/d_maxKeyFrame.getValue());
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();

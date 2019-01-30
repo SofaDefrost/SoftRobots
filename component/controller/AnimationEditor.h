@@ -155,7 +155,7 @@ protected:
     void moveCursorWithdx();
 
     bool isCursorKeyFrame(int &index);
-    int getMaxKeyFrameID();
+    unsigned int getMaxKeyFrameID();
 
     void drawTimeline(const VisualParams* vparams);
     void drawTrajectory(const VisualParams* vparams);
