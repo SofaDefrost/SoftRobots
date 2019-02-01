@@ -158,7 +158,7 @@ void SerialPortBridgeGeneric::dataDeprecationManagement()
     {
         if(d_packetOut.isSet())
         {
-            msg_warning() << "Your are using both 'sentData' and 'packetOut' fields. You should use only 'packetOut', as sentData is now deprecated. \n"
+            msg_warning() << "You are using both 'sentData' and 'packetOut' fields. You should use only 'packetOut', as sentData is now deprecated. \n"
                           << "The component will switch to an invalid state to avoid any issues.";
             m_componentstate = ComponentState::Invalid;
         }
@@ -200,14 +200,6 @@ void SerialPortBridgeGeneric::checkConnection()
     }
     else
         msg_info() <<"Serial port found";
-}
-
-
-void SerialPortBridgeGeneric::reinit()
-{
-    m_serial.FlushReceiver();
-    m_serial.Close();
-    init();
 }
 
 
@@ -319,16 +311,7 @@ void SerialPortBridgeGeneric::checkData()
 
     // To remove before v20.0 of the plugin
     if(d_packetOutDeprecated.isSet())
-    {
-        if(d_packetOut.isSet())
-        {
-            msg_warning() << "Your are using both 'sentData' and 'packetOut' fields. You should use only 'packetOut', as sentData is now deprecated. \n"
-                          << "The component will switch to an invalid state to avoid any issues.";
-            m_componentstate = ComponentState::Invalid;
-        }
-        else
-            updateLinkToDeprecatedData();
-    }
+        updateLinkToDeprecatedData();
     // /////////////////////////////////////
 
     if(d_packetOut.getValue().size()!=d_size.getValue())
