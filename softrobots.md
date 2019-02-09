@@ -7,11 +7,11 @@ This plugin is provided as-is under the LGPL Licence.
 Tutorials:
 -----------
 
-* First step for Sofa newcommers. [Start the tutorial](docs/tutorials/FirstSteps/firststeps-tuto.html?sofafile=firststeps-tuto.pyscn)
+* First step for Sofa newcommers. [Start the tutorial](docs/tutorials/FirstSteps/firststeps-tuto.pyscn)
 
 * Make a soft-gripper actuated by cables. [Start the tutorial](docs/tutorials/CableGripper/cablegripper-tuto.pyscn)
 
-* Make a soft-gripper actuated by pneumatics. [Start the tutorial](docs/tutorials/PneunetGripper/pneunetgripper.pyscn)
+* Make a soft-gripper actuated by pneumatics. [Start the tutorial](docs/tutorials/PneunetGripper/pneunetgripper-tuto.pyscn)
 
 * Make a soft-tripod actuated by servo motors. [Start the tutorial](docs/tutorials/Tripod/tripod-tuto.pyscn)
 
@@ -20,7 +20,7 @@ Thematical documentations:
 -----------
 
 * T0: How to download and install the plugins.
-
+/home/dmarchal/projects/DEFROST/dev/sofa2/plugins/SoftRobots/docs/tutorials/CableGripper/cablegripper-tuto.pyscn
 * T1: Elements (tetrahedra, hexahedra, beam).
 In this tutorial you will find examples and documentation about the different element types available in Sofa: tetrahedra, hexahedra and beam.
 
