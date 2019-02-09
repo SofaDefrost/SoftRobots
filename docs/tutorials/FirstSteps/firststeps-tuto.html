@@ -50,7 +50,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <img src="../../images/pluginimage.png" style="width:100.0%" />
 
 </div>
-<p>function toggle(target) { d = document.getElementById(target); if(d.className === “show”) d.className = “hide” else d.className = “show” return false; }</p>
+<script language="javascript">
+function toggle(target) {
+    d = document.getElementById(target);
+    if(d.className === "show")
+        d.className = "hide"
+    else 
+        d.className = "show"
+    return false;
+}
+</script>
 <h2 id="first-steps-with-sofa-softrobots">First steps with Sofa &amp; SoftRobots</h2>
 <p>Welcome to Sofa and the SoftRobots plugins. This tutorial is intended for people who have never used Sofa, and aims at providing them quickly with the basis of scene modelling with Sofa.</p>
 <p>This tutorial describes how to set up a simulation environment, a scene, using <a href="https://www.sofa-framework.org/">Sofa</a> and how to use the Sofa Template Library <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> to add simulated elements.</p>
@@ -59,24 +68,37 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><p><a href="https://www.sofa-framework.org/">Sofa</a> and the library <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> are installed.</p></li>
 <li><p>you have basic knowledge of the <a href="https://www.python.org/">Python</a> programming language. If not, you can go to <a href="https://www.python.org/">Python</a>Tutorials.</p></li>
 </ul>
-<p>&lt;!– ### Step 1: Loading a scene on Sofa</p>
-<p>Sofa is loading the description of the simulation from <em>pyscn</em> files. Sofa is started with the command <code class="sourceCode bash"><span class="ex">runSofa</span></code> in the terminal.<br />
-To run a file <code>MyScene.pyscn</code>, use the following command:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">PATH_TO_SOFA_DIRECTORY/build/bin/runSofa</span> PATH_TO_SCENE_FILE/MyScene.pyscn</code></pre></div>
-<p>In order to be able to send data to a connected robot, one way is to start Sofa with administrator rights, using the command <code>sudo</code> (it requires the administrator password):</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.pyscn</code></pre></div>
-<p>–&gt;</p>
+<!-- ### Step 1: Loading a scene on Sofa
+
+Sofa is loading the description of the simulation from *pyscn* files. Sofa is started with the command `runSofa`{.bash} in the terminal.  
+To run a file `MyScene.pyscn`, use the following command:
+
+```bash
+PATH_TO_SOFA_DIRECTORY/build/bin/runSofa PATH_TO_SCENE_FILE/MyScene.pyscn
+```
+In order to be able to send data to a connected robot, one way is to start Sofa with administrator rights, using the command `sudo` (it requires the administrator password):  
+
+```bash
+sudo PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.pyscn
+```
+-->
 <h3 id="step-1-setting-up-a-simple-scene">Step 1: Setting up a simple scene</h3>
-<h4 id="at-the-end-of-this-step-you-will-be-able-to">At the end of this step, you will be able to:</h4>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to"><i>At the end of this step, you will be able to:</i></h4>
 <ul>
 <li>Write a simple scene in Sofa using built-in objects called <em>prefabs</em> (or <em>templates</em>)</li>
 <li>Modify the properties of these objects</li>
 <li>Conveniently reload the scene after each modification</li>
 </ul>
-<p>The content of the <code>pyscn</code> simulation files is in fact standard python code with at least one function named <code>createScene</code> taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation’s content and this is the place where you will type your scene’s description.<br />
-A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand’s child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called “rootNode”. Additional components can be added to the scene, that aren’t nodes (they cannot have children), related to the behaviour of the object (examples: <em>UniformMass</em> for vertexMass parameters definition, and <em>OGLModel</em> for the settings of the graphic display).</p>
-<p>Making a very simple scene:</p>
-<p>Try the scene in Sofa. Write it yourself. Show/Hide the code.</p>
+<p>The content of the <code>pyscn</code> simulation files is in fact standard python code with at least one function named <code>createScene</code> taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description.<br />
+A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called &quot;rootNode&quot;. Additional components can be added to the scene, that aren't nodes (they cannot have children), related to the behaviour of the object (examples: <em>UniformMass</em> for vertexMass parameters definition, and <em>OGLModel</em> for the settings of the graphic display).</p>
+Making a very simple scene:
+<div>
+<pre>
+<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="14px"/> Try the scene in Sofa.</a>
+<a href="myproject/mystep1.pyscn"> <img src="../../images/icons/play.png" width="14px"/> Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step1code');"> <img src="../../images/icons/play.png" width="14px"/> Show/Hide the code.</a>
+</pre>
+<div id="step1code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>
 <span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid
 <span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>
@@ -97,13 +119,15 @@ A scene is an ordered tree of nodes, representing objects (example of node: hand
 
 
     <span class="cf">return</span> rootNode</code></pre></div>
-<h4 id="remarks">Remarks</h4>
+</div>
+</div>
+<h4 id="remarks"><i>Remarks</i></h4>
 <ul>
 <li>Two nodes are attached to the main node (rootNode) in this scene: Floor and Cube (the two physical objects present in the scene).</li>
 <li>The rootNode includes two behaviour descriptions: <code>MainHeader</code> (defining gravity as the main force exercised on the objects, assuming the length is in centimeters) and <code>ContactHeader</code> (stating how a contact between the objects is handled: here the objects must not be able to go through one another). As I have defined them in the rootNode, these behaviours apply to all the nodes attached to it.</li>
 <li>Both the Cube and the Floor are built-in objects, <em>prefabs</em>, which means that they are already implemented simulation models, including components and child nodes.</li>
 </ul>
-<h4 id="exploring-the-scene">Exploring the scene</h4>
+<h4 id="exploring-the-scene"><i>Exploring the scene</i></h4>
 <ul>
 <li><p>The [<em>Animate</em>] button allows to start and stop playing the scene.</p></li>
 <li><p>All scene codes can be modified: right click anywhere in the <em>Graph</em> panel of the Sofa GUI, and click on <em>Open file in editor</em> in the dropdown menu. The modifications need to be saved ([<em>Save</em>] button) before reloading the scene.</p></li>
@@ -113,10 +137,17 @@ A scene is an ordered tree of nodes, representing objects (example of node: hand
 </ul>
 <p>You can try the following manipulations, in order to get familiar with Sofa environment:<br />
 (Click on the text to Show/Hide the solution)</p>
-<p>Change the position of the cube from the Sofa GUI Change the color of the cube, directly in the code</p>
-<p>In the <em>Graph</em> panel on the left, expand the ‘Cube’ menu and double-click on ‘MechanicalObject mstate’.<br />
-In the window that appears, go to the <em>Transformation</em> tab: the line ‘translation’ allows you to move the object in the scene.<br />
-Such changes don’t modify the code of the scene, and are only kept in memory as long as the scene is running.</p>
+<div>
+<pre>
+<a href="javascript:void" onclick="toggle('step1exo');"> <img src="../../images/icons/play.png" width="14px"/>Change the position of the cube from the Sofa GUI</a>
+<a href="javascript:void" onclick="toggle('step1exo2');"> <img src="../../images/icons/play.png" width="14px"/>Change the color of the cube, directly in the code</a>
+</pre>
+<div id="step1exo" class="hide">
+<p>In the <em>Graph</em> panel on the left, expand the 'Cube' menu and double-click on 'MechanicalObject mstate'.<br />
+In the window that appears, go to the <em>Transformation</em> tab: the line 'translation' allows you to move the object in the scene.<br />
+Such changes don't modify the code of the scene, and are only kept in memory as long as the scene is running.</p>
+</div>
+<div id="step1exo2" class="hide">
 <p>After having opened the code file, add the <code>color</code> argument to the <code>Cube</code> object.<br />
 The function becomes</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">Cube(rootNode,
@@ -124,27 +155,41 @@ The function becomes</p>
       uniformScale<span class="op">=</span><span class="fl">20.0</span>,
       color<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">1.0</span>])</code></pre></div>
 <p>The color vector is defined by percentages of [Red,Green,Blue].<br />
-Don’t forget to save and reload the scene.</p>
+Don't forget to save and reload the scene.</p>
+</div>
+</div>
+<!-- ca marche, voir si on veut mettre le txt de la solution en forme ou pas-->
 <h3 id="step-2-building-a-mechanical-model-for-an-object-simulation-its-visual-model">Step 2: Building a Mechanical model for an object simulation &amp; its Visual model</h3>
-<h4 id="at-the-end-of-this-step-you-will-be-able-to-1">At the end of this step, you will be able to:</h4>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to-1"><i>At the end of this step, you will be able to:</i></h4>
 <ul>
 <li>Build a simple mechanical model for a rigid object</li>
 <li>Build a corresponding visual object</li>
 <li>Add time integration and solving tools</li>
 <li>Understand the necessity for a collision management model</li>
 </ul>
-<p>Both the Cube and the Floor objects used in Step 2 are actually built-in objects called <em>prefabs</em>. In the following steps, a deeper insight into Sofa’s rigid object modeling is provided. The next two steps aim at recreating the <em>prefab</em> Cube used in Step 2. (For a more dynamic scene, the Floor prefab is still present.)<br />
+<p>Both the Cube and the Floor objects used in Step 2 are actually built-in objects called <em>prefabs</em>. In the following steps, a deeper insight into Sofa's rigid object modeling is provided. The next two steps aim at recreating the <em>prefab</em> Cube used in Step 2. (For a more dynamic scene, the Floor prefab is still present.)<br />
 The node Cube is defined and attached to the rootNode with the function <code>node.createChild()</code>.<br />
 In the particular case where the simulated object is rigid, like here, all of its points are moving together. This means that studying the movement of a single point - usually the center of gravity - is equivalent to studying the movement of all the points. The aim of the simulation is to compute, at each time step, the next position and velocity of this gravity center, based on the forces it is subjected to. The center of gravity can move in the three directions of space and rotate around these three axes. This means that it has 6 degrees of freedom (DOFs). All the positions and velocities that are computed are stored in what is called the <em>MechanicalObject</em>. The different objects of the Cube are added via the function <code>node.createObject()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">cube.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name, template, translation, rotation)</code></pre></div>
 <p>The physical properties of the object material, like its vertexMass distribution, are also implemented.</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name, vertexMass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])</code></pre></div>
 <p>A time integration scheme is then added and defines the system to be solved at each time step of the simulation (here the implicit Euler Method). A solving method is in turn added (here the Conjugate Gradient method), that solves the equations governing the model at each time step, and updates the <em>MechanicalObject</em>.</p>
-<p>This model alone is enough to run the simulation of the Cube’s fall under gravity force. However, to be able to view it on screen, a visual model of the object must be created. The visual model is defined in a new node. The virtual object is modeled with graphic vectors: the surface of the object is discretized, that is divided into small surface elements connected together by points (called nodes). The resulting set of points and their connections to each other (vectors) is called the <em>mesh</em>. Figure 1 below shows the initial mesh for the visual model: the outer surface of the cube has been split into triangular elements.</p>
-<p>Figure 1: A view of the cube’s mesh for the visual model as described in the file smCube27.obj</p>
-<p>At each time step, the <em>MechanicalObject</em> undergoes modifications (of its position, speed …).<br />
+This model alone is enough to run the simulation of the Cube's fall under gravity force. However, to be able to view it on screen, a visual model of the object must be created. The visual model is defined in a new node. The virtual object is modeled with graphic vectors: the surface of the object is discretized, that is divided into small surface elements connected together by points (called nodes). The resulting set of points and their connections to each other (vectors) is called the <em>mesh</em>. Figure 1 below shows the initial mesh for the visual model: the outer surface of the cube has been split into triangular elements.
+<figure>
+<img class="centered" src="CubeMeshViewer.png" alt="" width="200px"/>
+<figcaption>
+Figure 1: A view of the cube's mesh for the visual model as described in the file <i>smCube27.obj</i>
+</figcaption>
+</figure>
+<p>At each time step, the <em>MechanicalObject</em> undergoes modifications (of its position, speed ...).<br />
 Finally, in order to have the visual representation moving along with the mechanical one, a mapping tool is implemented: it builds the correspondance between the properties of the MechanicalObject (translation, rotation, velocity) and the nodes of the mesh.</p>
-<p>Try the scene in Sofa. Write it yourself. Show/Hide the code.</p>
+<div>
+<pre>
+<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/mystep2.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step2code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+</pre>
+<div id="step2code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> MainHeader
 <span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid
 <span class="im">from</span> stlib.solver <span class="im">import</span> DefaultSolver
@@ -194,15 +239,17 @@ Finally, in order to have the visual representation moving along with the mechan
 
 
   <span class="cf">return</span> rootNode</code></pre></div>
-<h4 id="remarks-1">Remarks</h4>
+</div>
+</div>
+<h4 id="remarks-1"><i>Remarks</i></h4>
 <ul>
 <li>The points of the mesh are called nodes, but this term has nothing to do with the <em>nodes</em> of Sofa, related to the hierarchy of the objects.</li>
 <li>The objects simulated in this tutorial are rigid. The additional components describing the internal forces of deformable objects will not be discussed in this introduction tutorial.</li>
 </ul>
-<h4 id="exploring-the-scene-1">Exploring the scene</h4>
+<h4 id="exploring-the-scene-1"><i>Exploring the scene</i></h4>
 <p>By clicking on the [<em>Animate</em>] button, the Cube can be seen falling endlessly, due to gravity force. It even goes through the Floor as if it were a ghost. The reason for this behaviour is that the two objects of the scene (the Cube and the Floor) have been modeled separately. No line code refers to the behaviour to adopt when they collide.</p>
 <h3 id="step-3-adding-interactions-between-objects---collision-modeling.">Step 3: Adding interactions between objects - collision modeling.</h3>
-<h4 id="at-the-end-of-this-step-you-will-be-able-to-2">At the end of this step, you will be able to:</h4>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to-2"><i>At the end of this step, you will be able to:</i></h4>
 <ul>
 <li>Add a collision model to the objects in a scene</li>
 <li>Understand the multi-model representation of the objects in Sofa</li>
@@ -211,7 +258,13 @@ Finally, in order to have the visual representation moving along with the mechan
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">cube.createObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</code></pre></div>
 <p>The constraints of the collision apply on the surface on the Cube. In our discretized representation of the cube, its outer surface is decomposed into triangular elements, and also shows some line elements and points. They represent the degrees of freedom of the collision model. The surface mesh is described based on the one used in the Visual model. In addition to a collision model, it is necessary to describe the rules of collision detection, and how they are handled when they occur. This is what the <code>ContactHeader</code> object is doing. As the rules apply for all the objects in the scene, it is positionned in the rootNode. Here the rules are as follows: potential collisions are looked for within an <code>AlarmDistance</code> radius from the objet. If a collision situation is detected, the collision model computes the behaviour of the objects, which are stopped at a <code>ContactDistance</code> from each other.<br />
 Finally, in order to map those collision DOFs with those of the mechanical model, a <code>RigidMapping</code> is used here as well.</p>
-<p>Try the scene in Sofa. Write it yourself. Show/Hide the code.</p>
+<div>
+<pre>
+<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/mystep3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step3code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+</pre>
+<div id="step3code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> MainHeader, ContactHeader
 <span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid
 <span class="im">from</span> stlib.solver <span class="im">import</span> DefaultSolver
@@ -280,17 +333,22 @@ Finally, in order to map those collision DOFs with those of the mechanical model
 
 
   <span class="cf">return</span> rootNode</code></pre></div>
-<h4 id="exploring-the-scene-2">Exploring the scene</h4>
+</div>
+</div>
+<h4 id="exploring-the-scene-2"><i>Exploring the scene</i></h4>
 <ul>
-<li>Thanks to the collision model, the Cube’s fall is now stopped by the Floor.<br />
+<li>Thanks to the collision model, the Cube's fall is now stopped by the Floor.<br />
 </li>
-<li>With the addition of the collision model, there are now three representations of the same Cube object: a mechanical one, a visual one, and a collision model representation (see Figure 2 below). This multi-model representation is characteristic of Sofa, along with the mapping functions to build correspondance between the representations.</li>
-</ul>
-<p>Figure 2: Multi-modal representation of the cube</p>
-<ul>
+<li>With the addition of the collision model, there are now three representations of the same Cube object: a mechanical one, a visual one, and a collision model representation (see Figure 2 below). This multi-model representation is characteristic of Sofa, along with the mapping functions to build correspondance between the representations.
+<figure>
+<img class="centered" src="MultiModalRep.png" alt="" width="600px"/>
+<figcaption>
+Figure 2: Multi-modal representation of the cube</i>
+</figcaption>
+</figure></li>
 <li>These representations are accessible via the <em>View</em> panel of the Sofa GUI, in which you can switch between those you want to display.</li>
 </ul>
-<h4 id="remarks-2">Remarks</h4>
+<h4 id="remarks-2"><i>Remarks</i></h4>
 <ul>
 <li>The code that was built in the last two steps in order to implement the Cube model constitutes the <code>Cube()</code> prefab. Such prefab objects allow great time savings, and a lighter code.<br />
 </li>
@@ -299,14 +357,26 @@ Finally, in order to map those collision DOFs with those of the mechanical model
 <li>By zooming in the simulation window (scroll the mouse wheel), a small gap can be observed between the cube and the floor: it corresponds to the <code>ContactDistance</code> at which the cube is stoppped from the floor. Because the time is discretized, it is important not to assign too small a value to the <code>AlarmDistance</code>; otherwise the risk is that, from an instant to the next one that is computed, the objects have already entered collision, in which case the collision would not be computed correctly.</li>
 </ul>
 <h3 id="step-4-use-prefabs-to-quickly-model-more-complex-scenes">Step 4: Use <em>prefabs</em> to quickly model more complex scenes</h3>
-<h4 id="at-the-end-of-this-step-you-will-be-able-to-3">At the end of this step, you will be able to:</h4>
+<h4 id="at-the-end-of-this-step-you-will-be-able-to-3"><i>At the end of this step, you will be able to:</i></h4>
 <ul>
 <li>Build a more complex scene with prefabs</li>
 <li>Use a loop structure to build several instances of the same object</li>
 </ul>
-<p>Based on the prefab object <code>Cube()</code> and <code>Foor()</code>, as well as the collision management function <code>ContactHeader()</code>, the aim of this step is to build rapidly the scene on Figure 3 below:</p>
-<p>Figure 3: Initial view of the simulation</p>
-<p>Try the scene in Sofa. Write it yourself. Show/Hide the code.</p>
+Based on the prefab object <code>Cube()</code> and <code>Foor()</code>, as well as the collision management function <code>ContactHeader()</code>, the aim of this step is to build rapidly the scene on Figure 3 below:<br />
+
+<figure>
+<img class="centered" src="result_step4.png" alt="" width="400px"/>
+<figcaption>
+Figure 3: Initial view of the simulation</i>
+</figcaption>
+</figure>
+<div>
+<pre>
+<a href="details/step4.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/mystep4.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void" onclick="toggle('step4code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+</pre>
+<div id="step4code" class="hide">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.scene <span class="im">import</span> MainHeader, ContactHeader
 <span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid
 <span class="im">from</span> stlib.physics.rigid <span class="im">import</span> Floor
@@ -341,7 +411,9 @@ Finally, in order to map those collision DOFs with those of the mechanical model
 
 
     <span class="cf">return</span> rootNode</code></pre></div>
-<h4 id="exploring-the-scene-3">Exploring the scene</h4>
+</div>
+</div>
+<h4 id="exploring-the-scene-3"><i>Exploring the scene</i></h4>
 <ul>
 <li>All seven cubes are similar in size and two of their coordinates are identical. A variable <code>c</code> is defined, in order to modify the translation parameter and the color of each cube. By using a loop structure, the Cube prefab function can be written only once.</li>
 <li>The collision model of this scene is more complex: collisions are possible between the cubes, between the central cubes and the intermediate green floor, and finally between the cubes and the yellow floor. The function <code>ContactHeader</code> applies to all the nodes attached to the rootNode, governing the whole collision possibilities with one call of the function in the rootNode.</li>
