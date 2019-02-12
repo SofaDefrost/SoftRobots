@@ -17,7 +17,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 find_package(SofaFramework REQUIRED)
 find_package(SofaCommon REQUIRED)
 find_package(SofaTest REQUIRED)
-find_package(SoftRobots REQUIRED)
+find_package(SofaGTestMain REQUIRED)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${SoftRobots_INCLUDE_DIRS}")
 

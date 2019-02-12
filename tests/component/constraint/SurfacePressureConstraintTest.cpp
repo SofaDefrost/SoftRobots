@@ -30,7 +30,7 @@
 
 #include <SofaTest/Sofa_test.h>
 
-#include "../../../component/constraint/SurfacePressureConstraint.h"
+#include <SoftRobots/component/constraint/SurfacePressureConstraint.h>
 using sofa::component::constraintset::SurfacePressureConstraint;
 
 #include <SofaBaseLinearSolver/FullVector.h>
