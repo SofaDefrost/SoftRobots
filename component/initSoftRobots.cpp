@@ -52,7 +52,6 @@ using sofa::simulation::PythonEnvironment;
 
 namespace sofa
 {
-
 namespace component
 {
 
@@ -74,38 +73,14 @@ void initExternalModule()
     }
     first = false;
 
-    /// Automatically load the SoftRobots.Inverse plugin if available.
-    if( !PluginManager::getInstance().findPlugin("SoftRobots.Inverse").empty() )
+    // Automatically load the STLIB plugin if available.
+    if( !PluginManager::getInstance().findPlugin("STLIB").empty() )
     {
-        PluginManager::getInstance().loadPlugin("SoftRobots.Inverse") ;
+        PluginManager::getInstance().loadPlugin("STLIB") ;
     }
 
 #ifdef SOFTROBOTS_PYTHON
-    std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
-    for( const auto& elem : map)
-    {
-        Plugin p = elem.second;
-        if ( p.getModuleName() == getModuleName() )
-        {
-            std::string moduleRoot = FileSystem::getParentDirectory(FileSystem::getParentDirectory(elem.first));
-            msg_info(getModuleName()) << "moduleRoot = " << moduleRoot;
-
-            // Read python config file to get python module path
-            // see PythonEnvironment::addPythonModulePathsFromConfigFile
-            std::string configFilePath = moduleRoot + "/etc/sofa/python.d/" + getModuleName();
-            std::ifstream configFile(configFilePath.c_str());
-            std::string line;
-            while(std::getline(configFile, line))
-            {
-                if (!FileSystem::isAbsolute(line))
-                {
-                    line = moduleRoot + "/" + line;
-                }
-                PythonEnvironment::addPythonModulePath(line);
-            }
-            break;
-        }
-    }
+    PythonEnvironment::addPythonModulePathsForPluginsByName(getModuleName());
 #endif
 }
 
@@ -136,9 +111,8 @@ const char* getModuleComponentList()
     return classes.c_str();
 }
 
-}
-
-}
+} // namespace component
+} // namespace sofa
 
 SOFA_LINK_CLASS(AnimationEditor)
 SOFA_LINK_CLASS(DataVariationLimiter)
