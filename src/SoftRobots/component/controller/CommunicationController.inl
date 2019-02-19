@@ -175,7 +175,6 @@ void CommunicationController<DataTypes>::openCommunication()
         // Set timeout: if reached, the communication will close and the component status will switch to invalid
         m_socket->setsockopt(ZMQ_RCVTIMEO,d_timeOut.getValue());
         m_socket->setsockopt(ZMQ_SNDTIMEO,d_timeOut.getValue());
-        m_socket->setsockopt(ZMQ_CONNECT_TIMEOUT,d_timeOut.getValue());
     }
 }
 
