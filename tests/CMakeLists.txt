@@ -1,23 +1,25 @@
-cmake_minimum_required(VERSION 3.0)
-# Force cmake to use the NEW policy regaringthe "VERSION" management.
-cmake_policy(SET CMP0048 NEW)
-
+cmake_minimum_required(VERSION 3.1)
 project(SoftRobots_test VERSION 1.0)
-
-set(SOURCE_FILES)
-set(HEADER_FILES)
-
-include(component/constraint/ConstraintTest.cmake)
-include(component/controller/ControllerTest.cmake)
-include(component/engine/EngineTest.cmake)
-include(component/forcefield/ForcefieldTest.cmake)
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaCommon REQUIRED)
 find_package(SofaTest REQUIRED)
 find_package(SofaGTestMain REQUIRED)
+
+set(HEADER_FILES)
+set(SOURCE_FILES
+    component/constraint/SurfacePressureConstraintTest.cpp
+    component/constraint/UnilateralPlaneConstraintTest.cpp
+    
+    component/controller/AnimationEditorTest.cpp
+    component/controller/DataVariationLimiterTest.cpp
+    component/controller/SerialPortBridgeGenericTest.cpp
+    
+    component/engine/VolumeFromTrianglesTest.cpp
+    component/engine/VolumeFromTetrahedronsTest.cpp
+    )
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${SoftRobots_INCLUDE_DIRS}")
 

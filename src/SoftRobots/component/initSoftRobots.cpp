@@ -32,16 +32,6 @@
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
-using sofa::helper::system::Plugin;
-
-#include <sofa/helper/system/DynamicLibrary.h>
-using sofa::helper::system::DynamicLibrary;
-
-#include <sofa/helper/system/FileSystem.h>
-using sofa::helper::system::FileSystem;
-
-#include <sofa/helper/Utils.h>
-using sofa::helper::Utils;
 
 #ifdef SOFTROBOTS_PYTHON
 #include <SofaPython/PythonEnvironment.h>
@@ -82,6 +72,7 @@ void initExternalModule()
 #ifdef SOFTROBOTS_PYTHON
     PythonEnvironment::addPythonModulePathsForPluginsByName(getModuleName());
 #endif
+    //SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > test;
 }
 
 const char* getModuleName()
