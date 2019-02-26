@@ -22,3 +22,21 @@ endif()
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
+
+## RPATH
+if(UNIX)
+    # RPATH is a field in ELF binaries that is used as a hint by the system
+    # loader to find needed shared libraries.
+    #
+    # In the build directory, cmake creates binaries with absolute paths in
+    # RPATH.  And by default, it strips RPATH from installed binaries.  Here we
+    # use CMAKE_INSTALL_RPATH to set a relative RPATH.  By doing so, we avoid
+    # the need to play with LD_LIBRARY_PATH to get applications to run.
+
+    # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
+    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$$ORIGIN/../lib")
+
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        set(CMAKE_MACOSX_RPATH ON)
+    endif()
+endif(UNIX)
