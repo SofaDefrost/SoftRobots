@@ -186,7 +186,7 @@ endif()
 
 
 # initSoftRobots.h
-configure_file(component/initSoftRobots.h.in "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h")
+configure_file(${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.h.in "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h" DESTINATION "include/SoftRobots" COMPONENT headers)
 
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
@@ -230,6 +230,7 @@ endif()
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_generate_package(NAME SoftRobots VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME}
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     INCLUDE_SOURCE_DIR src/SoftRobots)
 
 install(DIRECTORY docs DESTINATION share/sofa/${PROJECT_NAME})
