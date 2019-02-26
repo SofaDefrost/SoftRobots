@@ -22,7 +22,7 @@ class Maze(SofaObject):
         self.dofs = self.node.createObject("MechanicalObject", size=1,
                                           name="dofs",
                                           translation=translation, rotation=rotation, scale=scale,
-                                          template='Rigid', showObject=True, showObjectScale=15)
+                                          template="Rigid3", showObject=True, showObjectScale=15)
         totalMass = 1.0
         volume = 1.0
         inertiaMatrix = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]

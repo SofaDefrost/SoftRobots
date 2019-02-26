@@ -67,7 +67,7 @@ class ServoMotor(SofaObject):
         self.dofs = self.node.createObject("MechanicalObject", size=1,
                                           name="dofs",
                                           translation=translation, rotation=rotation, scale=scale,
-                                          template='Rigid', showObject=True, showObjectScale=15)
+                                          template="Rigid3", showObject=True, showObjectScale=15)
 
         self.servowheel = ServoWheel(self.node)
         self.controller = KinematicMotorController(self.node, self.dofs, self.servowheel.dofs,
@@ -84,7 +84,7 @@ class ServoMotor(SofaObject):
 class ServoWheel(SofaObject):
     def __init__(self, parentNode):
         self.node = Node(parentNode, "ServoWheel")
-        self.dofs = self.node.createObject("MechanicalObject", size=1, template='Rigid',
+        self.dofs = self.node.createObject("MechanicalObject", size=1, template="Rigid3",
                                            showObject=True, showObjectScale=15, name="dofs")
 
 class KinematicMotorController(Sofa.PythonScriptController):
