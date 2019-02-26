@@ -181,7 +181,7 @@ def createScene(rootNode):
                 Environment.createObject('OglTexture', textureUnit='2', repeat='true', name='color', srgbColorspace='false', id='DiffuseMap', textureFilename=pathMesh+'Cyclo_Diffuse_Map.png')
 
                 EyeLMO = accordion.createChild('EyeLMO')
-                EyeLMO.createObject('MechanicalObject', template="Rigid", name="MO" ,position="1 -1.5 3.5 0 0 0 1")
+                EyeLMO.createObject('MechanicalObject', template="Rigid3", name="MO" ,position="1 -1.5 3.5 0 0 0 1")
                 EyeLMO.createObject('BarycentricMapping', template="Vec3d,Rigid3d", output="@./MO", input="@../tetras")
                 EyeLVisu = EyeLMO.createChild('EyeLVisu')
                 EyeLVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Eye_Left.obj", name="loader")
@@ -200,7 +200,7 @@ def createScene(rootNode):
                 EyeLVisu.createObject('RigidMapping')
 
                 EyeRMO = accordion.createChild('EyeRMO')
-                EyeRMO.createObject('MechanicalObject', template="Rigid", position="-1 -1.5 3.5 0 0 0 1")
+                EyeRMO.createObject('MechanicalObject', template="Rigid3", position="-1 -1.5 3.5 0 0 0 1")
                 EyeRMO.createObject('BarycentricMapping')
                 EyeRVisu = EyeRMO.createChild('EyeRVisu')
                 EyeRVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Eye_Right.obj", name="loader")
@@ -219,7 +219,7 @@ def createScene(rootNode):
                 EyeRVisu.createObject('RigidMapping')
 
                 MouthMO = accordion.createChild('MouthMO')
-                MouthMO.createObject('MechanicalObject', template="Rigid", position="0 -1.5 1.5 0 0 0 1")
+                MouthMO.createObject('MechanicalObject', template="Rigid3", position="0 -1.5 1.5 0 0 0 1")
                 MouthMO.createObject('BarycentricMapping')
                 MouthVisu = MouthMO.createChild('EyeLVisu')
                 MouthVisu.createObject('MeshObjLoader', filename=pathMesh+"Springy_Cartoon_Mouth.obj", name="loader")
@@ -238,7 +238,7 @@ def createScene(rootNode):
                 MouthVisu.createObject('RigidMapping')
 
                 NoseMO = accordion.createChild('NoseMO')
-                NoseMO.createObject('MechanicalObject', template="Rigid", position="0 -1.5 2.5 0 0 0 1")
+                NoseMO.createObject('MechanicalObject', template="Rigid3", position="0 -1.5 2.5 0 0 0 1")
                 NoseMO.createObject('BarycentricMapping')
                 NoseVisu = NoseMO.createChild('NoseVisu')
                 NoseVisu.createObject('MeshObjLoader', filename=pathMesh+"Spring_Cartoon_Nose.obj", name="loader")

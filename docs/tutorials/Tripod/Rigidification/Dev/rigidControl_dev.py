@@ -78,25 +78,25 @@ class rigidControl(Sofa.PythonScriptController):
 
         # creation of the MechanicalObject
         self.rigidNode.createObject('PointSetTopologyContainer', position=posG_list)
-        self.rigidNode.createObject('MechanicalObject', template='Rigid',name='RigidFrames', position=pos_rigid, showObject='1', showObjectScale='5')
+        self.rigidNode.createObject('MechanicalObject', template="Rigid3",name='RigidFrames', position=pos_rigid, showObject='1', showObjectScale='5')
 
         # INVERSE
         PI=3.14159265359;
         if self.inverse:
             maxPDisp=0.4
             maxNDisp=0.6
-            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator1", template='Rigid', direction='0 0 0 1 0 0', indices='0',
+            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator1", template="Rigid3", direction='0 0 0 1 0 0', indices='0',
                                         maxPositiveDisp=maxPDisp, maxNegativeDisp=maxNDisp, maxDispVariation='0.05')
-            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator2", template='Rigid', direction=[0 ,0 ,0 ,cos(2*PI/3),-sin(2*PI/3) ,0], indices='1',
+            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator2", template="Rigid3", direction=[0 ,0 ,0 ,cos(2*PI/3),-sin(2*PI/3) ,0], indices='1',
                                         maxPositiveDisp=maxPDisp, maxNegativeDisp=maxNDisp, maxDispVariation='0.05')
-            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator3", template='Rigid', direction=[0 ,0 ,0 ,cos(4*PI/3),-sin(4*PI/3) ,0], indices='2',
+            self.rigidNode.createObject('SlidingActuator', name="SlidingActuator3", template="Rigid3", direction=[0 ,0 ,0 ,cos(4*PI/3),-sin(4*PI/3) ,0], indices='2',
                                         maxPositiveDisp=maxPDisp, maxNegativeDisp=maxNDisp, maxDispVariation='0.05')
         else:
             self.rigidNode.createObject('PythonScriptController', filename=path2+'TripodController.py', classname='controller')
 
 
-        self.rigidNode.createObject('RestShapeSpringsForceField', name="RestShapeSpringsForceField1", template='Rigid', points=[0], angularStiffness='1e8', stiffness='1e8')
-        self.rigidNode.createObject('RestShapeSpringsForceField', name="RestShapeSpringsForceField2", template='Rigid', points=[1,2], angularStiffness='1e8', stiffness='1e8')
+        self.rigidNode.createObject('RestShapeSpringsForceField', name="RestShapeSpringsForceField1", template="Rigid3", points=[0], angularStiffness='1e8', stiffness='1e8')
+        self.rigidNode.createObject('RestShapeSpringsForceField', name="RestShapeSpringsForceField2", template="Rigid3", points=[1,2], angularStiffness='1e8', stiffness='1e8')
 
         ##########
         # mapping of effector point
