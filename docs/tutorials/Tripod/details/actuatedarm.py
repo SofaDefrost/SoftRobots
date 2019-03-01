@@ -37,7 +37,7 @@ class ServoArm(object):
         self.node.createObject("MechanicalObject",
                                            name="dofs",
                                            size=1,
-                                           template='Rigid',
+                                           template="Rigid3",
                                            showObject=True,
                                            showObjectScale=15)
 
@@ -71,7 +71,7 @@ class ActuatedArm(object):
         r=Transform(translation, eulerRotation=eulerRotation)
 
         self.node.createObject("MechanicalObject", name="dofs", size=1, position=r.toSofaRepr(),
-                          template='Rigid', showObject=True, showObjectScale=15)
+                          template="Rigid3", showObject=True, showObjectScale=15)
 
         servomotor = ServoMotor(self.node)
         servomotor.createObject("RigidRigidMapping", name="mapping")

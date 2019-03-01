@@ -190,7 +190,7 @@ def createScene(rootNode):
   inertiaMatrix = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
 
 
-  cube.createObject('MechanicalObject', name="DOF", template="Rigid", translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
+  cube.createObject('MechanicalObject', name="DOF", template="Rigid3", translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
   cube.createObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
 
   # The following line defines the material behaviour when submitted to constraints; it is not necessary in this step, as no interaction between objects has been defined
@@ -278,7 +278,7 @@ def createScene(rootNode):
   inertiaMatrix = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
 
 
-  cube.createObject('MechanicalObject', name="DOF", template="Rigid", translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
+  cube.createObject('MechanicalObject', name="DOF", template="Rigid3", translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
   cube.createObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
 
   # Material behaviour when submitted to constraints
