@@ -219,13 +219,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BIN
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping)
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
     # Config files and install rules for pythons scripts
-    sofa_set_python_directory(${PROJECT_NAME} "python")
+    sofa_set_python_directory(${PROJECT_NAME} "python" "python")
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
@@ -233,7 +234,7 @@ sofa_generate_package(NAME SoftRobots VERSION ${PROJECT_VERSION} TARGETS ${PROJE
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     INCLUDE_SOURCE_DIR src/SoftRobots)
 
-install(DIRECTORY docs DESTINATION share/sofa/${PROJECT_NAME})
+install(DIRECTORY docs DESTINATION .)
 install(FILES "README.md" "LICENSE" "CHANGELOG" DESTINATION .)
 
 if(SOFA_BUILD_TESTS)
