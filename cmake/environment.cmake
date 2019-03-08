@@ -1,6 +1,8 @@
 # CMake modules path, for our FindXXX.cmake modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
 
 ## Default build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -36,9 +38,19 @@ if(UNIX)
     # the need to play with LD_LIBRARY_PATH to get applications to run.
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$$ORIGIN/../lib")
+    set(CMAKE_INSTALL_RPATH
+        "$ORIGIN/../lib"
+        "$$ORIGIN/../lib"
+        )
 
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
+        list(APPEND CMAKE_INSTALL_RPATH
+            "@loader_path"
+            "@loader_path/../lib"
+            "@executable_path"
+            "@executable_path/../lib"
+            )
+        set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
 endif(UNIX)
