@@ -5,6 +5,6 @@
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
-
+set(@PROJECT_NAME@_INCLUDE_DIRS  @CMAKE_CURRENT_SOURCE_DIR@/src/)
 check_required_components(@PROJECT_NAME@)
 

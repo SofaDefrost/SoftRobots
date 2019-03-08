@@ -129,7 +129,7 @@ In this scene, we create the object to grab and define it as rigid. This implies
 cube = rootNode.createChild('cube')
 cube.createObject('EulerImplicit', name='odesolver')
 cube.createObject('SparseLDLSolver', name='linearSolver')
-cube.createObject('MechanicalObject', template="Rigid", scale="4", position='-23 16 0 0 0 0 1')
+cube.createObject('MechanicalObject', template="Rigid3", scale="4", position='-23 16 0 0 0 0 1')
 cube.createObject('UniformMass', vertexMass='0.0008  74088  0.2352 0 0  0 0.2352 0  0 0 0.2352')                cube.createObject('UncoupledConstraintCorrection')
 ```
 
@@ -243,7 +243,7 @@ def createScene(rootNode):
                 cube = rootNode.createChild('cube')
                 cube.createObject('EulerImplicit', name='odesolver')
                 cube.createObject('SparseLDLSolver', name='linearSolver')
-                cube.createObject('MechanicalObject', template="Rigid", scale="4", position='-23 16 0 0 0 0 1')#, dx="47.0", dy="10", dz="8", rx="10" ,ry="10")
+                cube.createObject('MechanicalObject', template="Rigid3", scale="4", position='-23 16 0 0 0 0 1')#, dx="47.0", dy="10", dz="8", rx="10" ,ry="10")
                 #cube.createObject('UniformMass', vertexMass='0.0008  74088  0.2352 0 0  0 0.2352 0  0 0 0.2352')
                 cube.createObject('UniformMass', vertexMass='0.0008')
                 cube.createObject('UncoupledConstraintCorrection')

@@ -5,6 +5,8 @@ cmake_policy(SET CMP0048 NEW)
 
 project(SoftRobots VERSION 1.0)
 
+find_package(SofaFramework REQUIRED)
+
 option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
 
 if(SOFA_USE_MASK AND NOT SOFTROBOTS_IGNORE_ERRORS)
@@ -46,13 +48,14 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
+set(SOFTROBOTS_SOURCE_DIR src/SoftRobots)
 
 set(HEADER_FILES
-    component/initSoftRobots.h
+    ${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.h
         )
 
 set(SOURCE_FILES
-    component/initSoftRobots.cpp
+    ${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.cpp
         )
 
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
@@ -60,30 +63,23 @@ file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah"
 include(cmake/environment.cmake)
 include(cmake/utils.cmake)
 
-include(component/behavior/Behavior_Files.cmake)
-include(component/constraint/Constraint_Files.cmake)
-include(component/controller/Controller_Files.cmake)
-include(component/engine/Engine_Files.cmake)
-include(component/forcefield/Forcefield_Files.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/behavior/Behavior_Files.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/constraint/Constraint_Files.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/controller/Controller_Files.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/engine/Engine_Files.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/forcefield/Forcefield_Files.cmake)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${DOC_FILES} ${RESOURCE_FILES})
 
-include(component/behavior/Behavior_Links.cmake)
-include(component/constraint/Constraint_Links.cmake)
-include(component/controller/Controller_Links.cmake)
-include(component/engine/Engine_Links.cmake)
-include(component/forcefield/Forcefield_Links.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/behavior/Behavior_Links.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/constraint/Constraint_Links.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/controller/Controller_Links.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/engine/Engine_Links.cmake)
+include(${SOFTROBOTS_SOURCE_DIR}/component/forcefield/Forcefield_Links.cmake)
+
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-
-### dmarchal@eulalie there is a problem with this line.
-## It makes the softrobots package leaking its parent path which is problematic.
-## The only fix I know (the one we use in Sofa) is to move all the source code
-## into a directory called:
-## src/SoftRobots/
-## and set the 'src' as the include location
-## target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 
@@ -96,7 +92,7 @@ target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics 
 sofa_set_python_directory(${PROJECT_NAME} "python")
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_create_package(SoftRobots ${PROJECT_VERSION} ${PROJECT_NAME} SoftRobots)
+sofa_generate_package(NAME SoftRobots VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME} INCLUDE_ROOT_DIR SoftRobots)
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(tests)
