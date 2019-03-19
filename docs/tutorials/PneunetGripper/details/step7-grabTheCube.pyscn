@@ -42,7 +42,7 @@ def createScene(rootNode):
 				cube = rootNode.createChild('cube')
 				cube.createObject('EulerImplicit', name='odesolver')
 				cube.createObject('SparseLDLSolver', name='linearSolver')
-				cube.createObject('MechanicalObject', template="Rigid", position='-100 70 0 0 0 0 1')
+				cube.createObject('MechanicalObject', template="Rigid3", position='-100 70 0 0 0 0 1')
 				cube.createObject('UniformMass', totalMass='0.001')
 				cube.createObject('UncoupledConstraintCorrection')
 

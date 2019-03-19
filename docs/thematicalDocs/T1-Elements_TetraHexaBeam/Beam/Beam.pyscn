@@ -31,7 +31,7 @@ def createScene(rootNode):
                 beam.createObject('EulerImplicit')
                 beam.createObject('SparseLDLSolver')
                 beam.createObject('Mesh', edges=edgesList)
-                beam.createObject('MechanicalObject', template='Rigid', position=positionsList, name='frame')
+                beam.createObject('MechanicalObject', template="Rigid3", position=positionsList, name='frame')
                 beam.createObject('BeamInterpolation', name='interpol', crossSectionShape='rectangular', lengthY='5', lengthZ='5', defaultYoungModulus='1.8e6')
                 beam.createObject('AdaptiveBeamForceFieldAndMass',  name="BeamForceField", computeMass="1", massDensity="0.001")
                 beam.createObject('RestShapeSpringsForceField', points="0", stiffness="100e10",  angularStiffness="100e10")

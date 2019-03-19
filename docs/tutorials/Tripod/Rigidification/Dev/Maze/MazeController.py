@@ -239,7 +239,7 @@ class MazeControl(Sofa.PythonScriptController):
         #self.robot = self.simutripod.getChild("robot")
         self.robot = self.rootNode.getChild("robot")
 
-        self.rigid = self.robot.getChild("Rigid")
+        self.rigid = self.robot.getChild("Rigid3")
         self.rigidified = self.rigid.getChild("Rigidified")
         self.nodefem = self.rigidified.getChild("nodeFEM")
 
