@@ -80,7 +80,7 @@ class ActuatedArm(object):
         if attachingTo != None:
             constraint = self.addConstraint(attachingTo.dofs.getData("rest_position"), translation, eulerRotation)
             attachingTo.createObject('RestShapeSpringsForceField',
-                                     points = constraint.BoxRoi.getData("indices"),
+                                     points = constraint.BoxROI.getData("indices"),
                                      external_rest_shape = constraint.dofs,
                                      stiffness='1e12')
 
@@ -91,7 +91,7 @@ class ActuatedArm(object):
                                           eulerRotation=eulerRotation, scale=[45,15,30])
 
         o.drawSize = 5
-        t= constraint.createObject("TransformEngine", input_position="@BoxRoi.pointsInROI",
+        t= constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
                                                         translation=translation, rotation=eulerRotation, inverse=True )
 
         constraint.createObject("MechanicalObject", name="dofs",
