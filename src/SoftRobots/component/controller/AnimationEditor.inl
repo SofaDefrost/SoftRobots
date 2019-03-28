@@ -141,7 +141,7 @@ void AnimationEditor<DataTypes>::init()
     }
 
     m_keyFramesID.push_back(0);
-    m_animation.resize(1,m_state->read(core::ConstVecCoordId::position())->getValue());
+    m_animation.resize(1,m_state->readPositions().ref());
 
     if(d_load.getValue())
         loadAnimation();
@@ -634,9 +634,9 @@ bool AnimationEditor<DataTypes>::isCursorKeyFrame(int &index)
 
 
 template<class DataTypes>
-int AnimationEditor<DataTypes>::getMaxKeyFrameID()
+unsigned int AnimationEditor<DataTypes>::getMaxKeyFrameID()
 {
-    int maxID = 0;
+    unsigned int maxID = 0;
     for (unsigned int i=0; i<m_keyFramesID.size(); i++)
         if (maxID < m_keyFramesID[i])
             maxID = m_keyFramesID[i];
@@ -682,14 +682,14 @@ void AnimationEditor<DataTypes>::updateAnimation(Status status)
     {
         if(nextKey != d_maxKeyFrame.getValue()+1) //Key after this new one
         {
-            m_animation[currentKey] = m_state->read(core::ConstVecCoordId::position())->getValue();
+            m_animation[currentKey] = m_state->readPositions().ref();
             if(currentKey!=0) updateAnimationWithInterpolation(previousKey, currentKey);
             updateAnimationWithInterpolation(currentKey, nextKey);
         }
         else //No key after this new one
         {
             m_animation.resize(currentKey+1);
-            m_animation[currentKey] = m_state->read(core::ConstVecCoordId::position())->getValue();
+            m_animation[currentKey] = m_state->readPositions().ref();
             if(currentKey!=0) updateAnimationWithInterpolation(previousKey, currentKey);
         }
         break;
@@ -734,7 +734,7 @@ void AnimationEditor<DataTypes>::updateAnimationWithInterpolation(const int star
         return;
     }
 
-    int nbPositions = m_state->read(core::ConstVecCoordId::position())->getValue().size();
+    int nbPositions = m_state->getSize();
     int nbStep = endKey - startKey;
 
     for (int i=0; i<nbStep; i++)
@@ -777,7 +777,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
 
 #ifdef SOFA_WITH_OPENGL
     glDisable(GL_LIGHTING);
-    int ratio = round(vparams->viewport()[2]/d_maxKeyFrame.getValue());
+    unsigned int ratio = round(vparams->viewport()[2]/d_maxKeyFrame.getValue());
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();

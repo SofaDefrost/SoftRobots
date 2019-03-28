@@ -157,11 +157,11 @@ void SurfacePressureModel<DataTypes>::init()
 
     // To remove in SoftRobots v20.0
     if(d_visualizationDepracated.isSet())
-        msg_warning(this) << "The field named 'visualization' is now deprecated. "
+        msg_warning() << "The field named 'visualization' is now deprecated. "
                              "To remove this warning message, the field "
                              "'visualization' should be replaced by the field 'drawPressure'." ;
     if(d_showVisuScaleDepracated.isSet())
-        msg_warning(this) << "The field named 'showVisuScale' is now deprecated. "
+        msg_warning() << "The field named 'showVisuScale' is now deprecated. "
                              "To remove this warning message, the field "
                              "'showVisuScale' should be replaced by the field 'drawScale'." ;
     //
@@ -215,30 +215,24 @@ void SurfacePressureModel<DataTypes>::internalInit()
 {
     if(m_state==nullptr)
     {
-        msg_error(this) << "There is no mechanical state associated with this node. "
+        msg_error() << "There is no mechanical state associated with this node. "
                            "The object is then deactivated. "
                            "To remove this error message, fix your scene possibly by "
                            "adding a MechanicalObject." ;
         return;
     }
 
-    if(m_state->read(VecCoordId::position())==nullptr)
-    {
-        msg_error(this) << "There is no position vector in the MechanicalState. "
-                             "The object is deactivated. " ;
-        return;
-    }
 
     /// Check that the triangles and quads datafield contain something, otherwise get context
     /// topology
     if(d_triangles.getValue().size() == 0 && d_quads.getValue().size() == 0)
     {
-        msg_info(this) <<"No triangles and quads given. Get context topology.";
+        msg_info() <<"No triangles and quads given. Get context topology.";
         BaseMeshTopology* topology = getContext()->getMeshTopology();
 
         if(topology==nullptr)
         {
-            msg_error(this) << "There is no topology state associated with this node. "
+            msg_error() << "There is no topology state associated with this node. "
                                "To remove this error message, fix your scene possibly by "
                                "adding a Topology in the parent node or by giving a list of triangles"
                                "indices or a list of quads indices as nodes parameters ." ;
@@ -256,17 +250,17 @@ void SurfacePressureModel<DataTypes>::internalInit()
 
     /// Check that the triangles datafield does not contains indices that would crash the
     /// component.
-    ReadAccessor<Data<VecCoord> > positions = *m_state->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
     int numTris = d_triangles.getValue().size() ;
     auto triangles = d_triangles.getValue() ;
     for(int i=0;i<numTris;i++){
         for(int j=0;j<3;j++){
             if( triangles[i][j] < 0 )
-                msg_error(this) << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
+                msg_error() << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
                                    <<". is too small regarding mechanicalState size of(" << positions.size() << ")" ;
 
             if( triangles[i][j] >= positions.size() )
-                msg_error(this) << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
+                msg_error() << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
                                    <<". is too large regarding mechanicalState size of(" << positions.size() << ")" ;
         }
     }
@@ -278,12 +272,12 @@ void SurfacePressureModel<DataTypes>::internalInit()
     for(int i=0;i<numQuads;i++){
         for(int j=0;j<4;j++){
             if( quads[i][j] < 0 )
-                msg_error(this) << "quads [" <<i << "][" << j << "]=" << quads[i][j]
+                msg_error() << "quads [" <<i << "][" << j << "]=" << quads[i][j]
                                    << " is too small regarding mechanicalState size of("
                                    << positions.size() << ")" ;
 
             if( quads[i][j] >= positions.size() )
-                msg_error(this) << "quads [" <<i << "][" << j << "]=" << quads[i][j]
+                msg_error() << "quads [" <<i << "][" << j << "]=" << quads[i][j]
                                    << " is too large regarding mechanicalState size of("
                                    << positions.size() << ")" ;
         }
@@ -336,31 +330,31 @@ SReal SurfacePressureModel<DataTypes>::getCavityVolume(const VecCoord& positions
 
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams,
-                                                               DataMatrixDeriv &cMatrix,
-                                                               unsigned int &columnIndex,
-                                                               const DataVecCoord &x)
+                                                            DataMatrixDeriv &cMatrix,
+                                                            unsigned int &constraintIndex,
+                                                            const DataVecCoord &x)
 {
     if(m_componentstate != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
 
-    m_columnId = columnIndex;
+    m_constraintId = constraintIndex;
 
-    ReadAccessor<Data<VecCoord>>         position = x;
     ReadAccessor<Data<vector<Quad>>>     quadList = d_quads;
     ReadAccessor<Data<vector<Triangle>>> triList  = d_triangles;
 
     MatrixDeriv& matrix = *cMatrix.beginEdit();
     matrix.begin();
-    MatrixDerivRowIterator rowIterator = matrix.writeLine(m_columnId);
+    MatrixDerivRowIterator rowIterator = matrix.writeLine(m_constraintId);
 
-    columnIndex++;
+    constraintIndex++;
 
+    VecCoord positions = x.getValue();
     for (Quad quad :  quadList)
     {
-        Deriv triangle1Normal = cross(position[quad[1]] - position[quad[0]], position[quad[3]] - position[quad[0]])/2.0;
-        Deriv triangle2Normal = cross(position[quad[3]] - position[quad[2]], position[quad[1]] - position[quad[2]])/2.0;
+        Deriv triangle1Normal = cross(positions[quad[1]] - positions[quad[0]], positions[quad[3]] - positions[quad[0]])/2.0;
+        Deriv triangle2Normal = cross(positions[quad[3]] - positions[quad[2]], positions[quad[1]] - positions[quad[2]])/2.0;
         Deriv quadNormal      = triangle1Normal + triangle2Normal;
         if(d_flipNormal.getValue())
             quadNormal = -quadNormal;
@@ -373,7 +367,7 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
 
     for (Triangle triangle : triList)
     {
-        Deriv triangleNormal = cross(position[triangle[1]]- position[triangle[0]], position[triangle[2]] -position[triangle[0]])/2.0;
+        Deriv triangleNormal = cross(positions[triangle[1]]- positions[triangle[0]], positions[triangle[2]] -positions[triangle[0]])/2.0;
         if(d_flipNormal.getValue())
             triangleNormal = -triangleNormal;
 
@@ -384,24 +378,23 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
     }
 
     cMatrix.endEdit();
-    m_nbLines = columnIndex - m_columnId;
+    m_nbLines = constraintIndex - m_constraintId;
 }
 
 
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
-                                                                BaseVector *resV,
-                                                                const DataVecCoord &xfree,
-                                                                const DataVecDeriv &vfree)
+                                                             BaseVector *resV,
+                                                             const BaseVector *Jdx)
 {
     if(m_componentstate != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
-    SOFA_UNUSED(vfree);
 
-    Real dfree = SurfacePressureModel<DataTypes>::getCavityVolume(xfree.getValue());
-    resV->set(m_columnId, dfree - d_initialCavityVolume.getValue());
+    d_cavityVolume.setValue(getCavityVolume(m_state->readPositions().ref()));
+    Real dfree = Jdx->element(0) + d_cavityVolume.getValue() - d_initialCavityVolume.getValue();
+    resV->set(m_constraintId, dfree);
 }
 
 
@@ -416,11 +409,13 @@ void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParam
     if(m_componentstate != ComponentState::Valid)
             return ;
 
-    d_pressure.setValue(lambda->element(m_columnId));
+    d_pressure.setValue(lambda->element(m_constraintId));
 
     // Compute actual cavity volume and volume growth from updated positions of mechanical
-    const VecCoord& position = m_state->read(VecCoordId::position())->getValue();
-    d_cavityVolume.setValue(getCavityVolume(position));
+    // Eulalie.C: For now the position of the mechanical state is not up to date when storeLambda() is called
+    //            so the value of delta is one step behind...
+    //ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
+    //d_cavityVolume.setValue(getCavityVolume(positions.ref()));
     d_volumeGrowth.setValue(d_cavityVolume.getValue()-d_initialCavityVolume.getValue());
 }
 
@@ -472,7 +467,7 @@ string SurfacePressureModel<DataTypes>::getValueString(Real pressure)
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::drawQuads(const VisualParams* vparams, float red, float green, float blue)
 {
-    ReadAccessor<Data<VecCoord>> x = *m_state->read(ConstVecCoordId::position());
+    ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
     ReadAccessor<Data<vector<Quad>>>   quadList = d_quads;
 
     vector<Vector3> points(quadList.size()*4);
@@ -491,7 +486,7 @@ void SurfacePressureModel<DataTypes>::drawQuads(const VisualParams* vparams, flo
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::drawTriangles(const VisualParams* vparams, float red, float green, float blue)
 {
-    ReadAccessor<Data<VecCoord>> x = *m_state->read(ConstVecCoordId::position());
+    ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
     ReadAccessor<Data<vector<Triangle>>> triList  = d_triangles;
 
     vector<Vector3> points(triList.size()*3);
@@ -509,7 +504,7 @@ void SurfacePressureModel<DataTypes>::drawTriangles(const VisualParams* vparams,
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::drawLines(const VisualParams* vparams, float red, float green, float blue)
 {
-    ReadAccessor<Data<VecCoord>> x = *m_state->read(ConstVecCoordId::position());
+    ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
 
     for (Edge e : m_edges)
     {

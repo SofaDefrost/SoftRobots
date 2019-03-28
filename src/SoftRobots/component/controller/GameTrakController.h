@@ -48,7 +48,11 @@ namespace component
 namespace controller
 {
 
-
+/**
+ * Interface for GameTrak device.
+ * Description can be found at:
+ * https://softrobotscomponents.readthedocs.io
+ */
 class GameTrakController : public Controller
 {
 public:

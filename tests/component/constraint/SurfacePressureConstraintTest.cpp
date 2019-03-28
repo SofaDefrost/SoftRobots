@@ -77,73 +77,6 @@ namespace sofa {
 
         typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
 
-        bool testBuildConstraintMatrix() {
-
-            core::ConstraintParams* cparams = NULL;
-            core::objectmodel::Data<MatrixDeriv> columns;
-            unsigned int columnsIndex = 0;
-            core::objectmodel::Data<VecCoord> x;
-
-            helper::WriteAccessor<Data<VecCoord> > positions = x;
-            positions.clear();
-            positions.push_back(Coord(0,0,0));
-            positions.push_back(Coord(0,1,0));
-            positions.push_back(Coord(1,1,0));
-            positions.push_back(Coord(1,0,0));
-            positions.push_back(Coord(0,0,1));
-            positions.push_back(Coord(1,0,1));
-            positions.push_back(Coord(1,1,1));
-            positions.push_back(Coord(0,1,1));
-
-            helper::WriteAccessor<Data<sofa::helper::vector<Quad> > > quads = this->d_quads;
-            quads.clear();
-            quads.push_back(Quad(0,1,2,3));
-            quads.push_back(Quad(4,5,6,7));
-            quads.push_back(Quad(2,6,5,3));
-            quads.push_back(Quad(7,1,0,4));
-            quads.push_back(Quad(4,0,3,5));
-            quads.push_back(Quad(1,7,6,2));
-
-            MatrixDeriv& column = *columns.beginEdit();
-            columns.endEdit();
-
-            m_componentstate = ComponentState::Valid;
-            this->buildConstraintMatrix(cparams, columns, columnsIndex, x);
-
-            MatrixDeriv columnExpected;
-            MatrixDerivRowIterator rowIteratorExpected = columnExpected.begin();
-
-            rowIteratorExpected = columnExpected.writeLine(0);
-
-            rowIteratorExpected.setCol(0, Deriv(-0.25,-0.25,-0.25));
-            rowIteratorExpected.setCol(1, Deriv(-0.25, 0.25,-0.25));
-            rowIteratorExpected.setCol(2, Deriv( 0.25, 0.25,-0.25));
-            rowIteratorExpected.setCol(3, Deriv( 0.25,-0.25,-0.25));
-            rowIteratorExpected.setCol(4, Deriv(-0.25,-0.25, 0.25));
-            rowIteratorExpected.setCol(5, Deriv( 0.25,-0.25, 0.25));
-            rowIteratorExpected.setCol(6, Deriv( 0.25, 0.25, 0.25));
-            rowIteratorExpected.setCol(7, Deriv(-0.25, 0.25, 0.25));
-
-
-            MatrixDerivRowConstIterator rowIt2 = columnExpected.readLine(0);
-            MatrixDerivColConstIterator rowEnd2 = rowIt2.end();
-
-            MatrixDerivRowConstIterator rowIt1 = column.readLine(0);
-            MatrixDerivColConstIterator rowEnd1 = rowIt1.end();
-
-            for (MatrixDerivColConstIterator colIt1 = rowIt1.begin(), colIt2 = rowIt2.begin(); colIt1 != rowEnd1, colIt2 != rowEnd2; ++colIt1, colIt2++)
-            {
-                if(colIt1.val() != colIt2.val())
-                    return false;
-            }
-
-            if(columnsIndex != 1)
-                return false;
-
-            return true;
-        }
-
-
         void SetUp()
         {
             simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
@@ -198,10 +131,6 @@ namespace sofa {
     typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
     TYPED_TEST_CASE(SurfacePressureConstraintTest, DataTypes);
-
-    TYPED_TEST(SurfacePressureConstraintTest, BuildConstraintMatrixTest) {
-        ASSERT_TRUE( this->testBuildConstraintMatrix() );
-    }
 
     TYPED_TEST(SurfacePressureConstraintTest, behaviorTests) {
         EXPECT_NO_THROW( this->behaviorTests() );

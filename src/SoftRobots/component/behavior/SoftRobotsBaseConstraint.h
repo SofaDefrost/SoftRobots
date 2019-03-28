@@ -156,6 +156,7 @@ protected:
 
     double m_epsilon;
 
+    unsigned int m_constraintId; ///< Constraint index in the constraints matrix
     unsigned int m_nbLines; ///< Constraint nbLines in the constraints matrix
 
 };

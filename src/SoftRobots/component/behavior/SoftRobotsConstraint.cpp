@@ -40,12 +40,8 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 
-// Force template specialization for the most common sofa float related type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 
-// Force template specialization for the most common sofa double related type.
+// Force template specialization for the most common sofa float related type.
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
@@ -53,7 +49,6 @@ template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec3Types>;
 template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec2Types>;
 template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec1Types>;
 template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid3Types>;
-template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid2Types>;
 
 
 } // namespace behavior

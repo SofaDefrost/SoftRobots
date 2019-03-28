@@ -164,7 +164,7 @@ void VolumeFromTriangles<DataTypes>::doUpdate()
 
     if(m_state && d_doUpdate.getValue())
     {
-        ReadAccessor<Data<VecCoord> > positions = m_state->read(ConstVecCoordId::position());
+        ReadAccessor<Data<VecCoord> > positions = m_state->readPositions();
         d_positions.setValue(positions.ref());
         updateVolume();
     }

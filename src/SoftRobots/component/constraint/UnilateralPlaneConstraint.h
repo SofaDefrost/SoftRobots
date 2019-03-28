@@ -32,12 +32,12 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALPLANECONSTRAINT_H
 
 
-#include <sofa/core/behavior/Constraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 
+#include "../behavior/SoftRobotsConstraint.h"
 #include "../initSoftRobots.h"
 
 namespace sofa
@@ -50,7 +50,7 @@ namespace constraintset
 {
 
 using sofa::core::visual::VisualParams;
-using sofa::core::behavior::Constraint;
+using sofa::core::behavior::SoftRobotsConstraint;
 using sofa::core::ConstraintParams;
 using sofa::defaulttype::BaseVector;
 using sofa::defaulttype::Vec;
@@ -77,13 +77,13 @@ public:
  * by the three other points (in the direction of the plane normal). All the four points, the triangle and the normal can be
  * seen by allowing the "Collision Model" in the "View" tab.
  * Description can be found at:
- * https://project.inria.fr/softrobot/documentation/constraint/UnilateralPlaneConstraint
+ * https://softrobotscomponents.readthedocs.io
 */
 template< class DataTypes >
-class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint : public Constraint<DataTypes>
+class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint : public SoftRobotsConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UnilateralPlaneConstraint,DataTypes), SOFA_TEMPLATE(Constraint,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(UnilateralPlaneConstraint,DataTypes), SOFA_TEMPLATE(SoftRobotsConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord            VecCoord;
     typedef typename DataTypes::VecDeriv            VecDeriv;
@@ -116,8 +116,7 @@ public:
 
     void getConstraintViolation(const ConstraintParams* cParams ,
                                 BaseVector *resV,
-                                const DataVecCoord &xfree,
-                                const DataVecDeriv &vfree) override;
+                                const BaseVector *Jdx) override;
 
     void getConstraintResolution(const ConstraintParams* cParams,
                                  std::vector<core::behavior::ConstraintResolution*>& resTab,
@@ -126,9 +125,19 @@ public:
 
 protected:
 
+    ////////////////////////// Inherited attributes ////////////////////////////
+    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    /// Bring inherited attributes and function in the current lookup context.
+    /// otherwise any access to the base::attribute would require
+    /// the "this->" approach.
+    using SoftRobotsConstraint<DataTypes>::m_state ;
+    using SoftRobotsConstraint<DataTypes>::m_constraintId ;
+    using SoftRobotsConstraint<DataTypes>::m_nbLines ;
+    using SoftRobotsConstraint<DataTypes>::m_componentstate ;
+    ////////////////////////////////////////////////////////////////////////////
+
     Data<Vec<4,unsigned int>>   d_indices;
     Data<bool>         d_flipNormal;
-    int                m_columnIndex;
 
     void drawPoints(const VisualParams* vparams);
     void drawTriangles(const VisualParams* vparams);
@@ -136,15 +145,6 @@ protected:
 
 private:
     void checkIndicesRegardingState();
-
-    ////////////////////////// Inherited attributes ////////////////////////////
-    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    /// Bring inherited attributes and function in the current lookup context.
-    /// otherwise any access to the base::attribute would require
-    /// the "this->" approach.
-    using Constraint<DataTypes>::mstate ;
-    using Constraint<DataTypes>::m_componentstate ;
-    ////////////////////////////////////////////////////////////////////////////
 };
 
 // Declares template as extern to avoid the code generation of the template for

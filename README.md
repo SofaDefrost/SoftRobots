@@ -14,8 +14,8 @@ The plugin also provides scene templates that can be used to make the writing of
 A dedicated documentation can be found at this address: [https://softrobots.readthedocs.io](https://softrobots.readthedocs.io/en/latest/index.html)  
 And general templates for SOFA can be found at this address: [https://github.com/SofaDefrost/STLIB](https://github.com/SofaDefrost/STLIB)
 
-## Author 
+## Author
  - Team DEFROST (INRIA/CRISTAL), Lille
 
-## Licence 
+## Licence
  - LGPL
