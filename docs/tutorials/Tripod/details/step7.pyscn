@@ -35,7 +35,7 @@ class JumpController(Sofa.PythonScriptController):
 
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0,-9810,0])
-    scene.VisualStyle.displayFlags="showBehavior"
+    scene.VisualStyle.displayFlags="showForceFields"
 
     scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
     scene.createObject("OglModel", src="@loader")
@@ -46,7 +46,7 @@ def createScene(rootNode):
 
     model = scene.createChild("Model")
     Sphere(model, translation=[0.0,40.0,0.0],
-                  uniformScale=10,
+                  uniformScale=10.,
                   totalMass=0.0015)
 
     ## The new tripod prefab with the collision model on the top of the servomotors is implemented in the prefab TripodCollision in tripod.py and doesn't work yet

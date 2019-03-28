@@ -15,8 +15,10 @@ from stlib.physics.rigid import Sphere
 from tripod import Tripod
 from tripodcontroller import MyController
 
+
 class JumpController(Sofa.PythonScriptController):
     """Press Z/Q to play with the ball"""
+
     def __init__(self, node, actuators):
         self.actuators = actuators
         self.name = "JumpController"
@@ -28,13 +30,14 @@ class JumpController(Sofa.PythonScriptController):
         if key == Key.Q:
             apos = -3.14/3
 
-        if apos != None:
+        if apos is not None:
             for actuator in self.actuators:
                 actuator.ServoMotor.angle = apos
 
+
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0,-9810,0])
-    scene.VisualStyle.displayFlags="showBehavior"
+    scene = Scene(rootNode, gravity=[0, -9810, 0])
+    scene.VisualStyle.displayFlags = "showForceFields"
 
     scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
     scene.createObject("OglModel", src="@loader")
@@ -43,9 +46,9 @@ def createScene(rootNode):
                      contactDistance=2)
 
     model = scene.createChild("Model")
-    Sphere(model, translation=[0.0,40.0,0.0],
-                  uniformScale=10,
-                  totalMass=0.0015)
+    Sphere(model, translation=[0.0, 40.0, 0.0],
+           uniformScale=10,
+           totalMass=0.0015)
 
     tripod = Tripod(model)
 

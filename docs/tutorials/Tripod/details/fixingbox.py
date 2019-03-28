@@ -7,7 +7,7 @@ class FixingBox(SofaObject):
     def __init__(self, parent, target, name="FixingBox",
                  translation=[0.0,0.0,0.0], eulerRotation=[0.0,0.0,0.0], scale=[1.0,1.0,1.0]):
 
-        ob = getOrientedBoxFromTransform(translation, eulerRotation, scale)
+        ob = getOrientedBoxFromTransform(translation=translation, eulerRotation=eulerRotation, scale=scale)
 
         self.node = parent.createChild(name)
         self.node.createObject("BoxROI",
@@ -22,4 +22,3 @@ class FixingBox(SofaObject):
         c.createObject('RestShapeSpringsForceField',
                                                points=self.node.boxroi.getData("indices"),
                                                stiffness='1e12')
-

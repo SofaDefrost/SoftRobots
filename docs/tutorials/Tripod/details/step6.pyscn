@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 import Sofa
 from stlib.scene import Scene, Interaction
-from splib.numerics import sin,cos, to_radians, RigidDof
+from splib.numerics import RigidDof
 from splib.animation import animate
-from stlib.scene import Scene
 from splib.constants import Key
 from math import floor, pi
 from tripod import Tripod
 
 def setupanimation(actuators, step, angularstep, rayonMin, rayonMax, factor):
+
     for actuator in actuators:
             rigid = RigidDof( actuator.dofs )
-            rigid.setPosition( rigid.getRestPosition() + rigid.forward * (rayonMax-rayonMin) * factor )
+            rigid.translate( rigid.forward * step * factor )
             actuator.ServoMotor.angle += angularstep * factor
 
 class MyController(Sofa.PythonScriptController):
@@ -53,7 +53,7 @@ class MyController(Sofa.PythonScriptController):
 
 ## Description of how the communication is handled
 def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
-    return rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True)
+    return rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True, header=255)
 
 ## Data sending controller
 class SerialPortController(Sofa.PythonScriptController):
@@ -61,7 +61,7 @@ class SerialPortController(Sofa.PythonScriptController):
         self.name = "serialportcontroller"
         self.servos = inputs
         self.serialport = serialport
-        self.serialport.sentData = [150,150,150]
+        self.serialport.packetOut = [150,150,150]
         self.state = "init"
 
     def onEndAnimationStep(self, dt):
@@ -78,7 +78,7 @@ class SerialPortController(Sofa.PythonScriptController):
         for servo in self.servos:
             #conversion of the angle values from radians to degrees
             angleDegree = servo.angle*360/(2.0*pi)
-            angleByte = floor(angleDegree) + 179
+            angleByte = int(floor(angleDegree)) + 179
 
             #limitation of the angular position's command
             if angleByte < 60:
@@ -90,7 +90,7 @@ class SerialPortController(Sofa.PythonScriptController):
             angles.append( angleByte )
 
         # The controller board of the real robot receives `angles` values
-        self.serialport.sentData = angles
+        self.serialport.packetOut = angles
 
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0,-981.0,0.0], plugins=["SoftRobots"])

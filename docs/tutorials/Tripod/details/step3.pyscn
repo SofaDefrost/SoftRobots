@@ -51,7 +51,7 @@ def createScene(rootNode):
     fix = FixingBox(rootNode,
                     body.ElasticMaterialObject,
                     translation=[0.0,0.0,0.0],
-                    scale=[30,30,30])
+                    scale=[30.,30.,30.])
 
     # Changing the property of the Box ROI so that the constraint area appears on screen.
     fix.boxroi.drawBoxes=True
