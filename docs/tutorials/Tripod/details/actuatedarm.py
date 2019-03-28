@@ -79,7 +79,7 @@ class ActuatedArm(object):
 
         if attachingTo != None:
             constraint = self.addConstraint(attachingTo.dofs.getData("rest_position"), translation, eulerRotation)
-            attachingTo.createObject('RestShapeSpringsForceField',
+            attachingTo.createObject('RestShapeSpringsForceField', name="rssff"+name,
                                      points = constraint.BoxROI.getData("indices"),
                                      external_rest_shape = constraint.dofs,
                                      stiffness='1e12')

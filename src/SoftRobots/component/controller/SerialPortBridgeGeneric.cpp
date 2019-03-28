@@ -149,7 +149,8 @@ void SerialPortBridgeGeneric::init()
 // To remove before v20.0 of the plugin
 void SerialPortBridgeGeneric::dataDeprecationManagement()
 {
-    msg_warning() << "An old implementation was using 245 as the default header for sentData. This is not the case anymore. The default header is now equal to 255.";
+    if(!d_header.isSet())
+        msg_warning() << "An old implementation was using 245 as the default header for sentData. This is not the case anymore. The default header is now equal to 255.";
 
     if(d_precise.getValue())
         msg_warning() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
