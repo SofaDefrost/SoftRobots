@@ -10,14 +10,15 @@
 """
 import Sofa
 from splib.constants import Key
-from stlib.scene import Scene, Interaction, ContactHeader
+from stlib.scene import Scene, Interaction
 from stlib.physics.rigid import Sphere
-#from tripod import Tripod
-from tripod import TripodCollision
+from tripod import Tripod
 from tripodcontroller import MyController
+
 
 class JumpController(Sofa.PythonScriptController):
     """Press Z/Q to play with the ball"""
+
     def __init__(self, node, actuators):
         self.actuators = actuators
         self.name = "JumpController"
@@ -29,15 +30,17 @@ class JumpController(Sofa.PythonScriptController):
         if key == Key.Q:
             apos = -3.14/3
 
-        if apos != None:
+        if apos is not None:
             for actuator in self.actuators:
-                actuator.ServoMotor.angle = apos
+                actuator.servomotor.angle = apos
+
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0,-9810,0])
-    scene.VisualStyle.displayFlags="showForceFields"
+    scene = Scene(rootNode, gravity=[0, -9810, 0])
+    rootNode.dt = 0.01
+    scene.VisualStyle.displayFlags = "showForceFields"
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
     scene.createObject("OglModel", src="@loader")
 
     # Adding contact handling
@@ -45,26 +48,19 @@ def createScene(rootNode):
                      contactDistance=2)
 
     model = scene.createChild("Model")
-    Sphere(model, translation=[0.0,40.0,0.0],
-                  uniformScale=10.,
-                  totalMass=0.0015)
+    Sphere(model, translation=[0.0, 40.0, 0.0],
+           uniformScale=10.,
+           totalMass=0.005)
 
-    ## The new tripod prefab with the collision model on the top of the servomotors is implemented in the prefab TripodCollision in tripod.py and doesn't work yet
+    tripod = Tripod(model)
+    tripod.addCollision()
 
-    #tripod = Tripod(model)
-    MyTripod = TripodCollision(model)
-    # Problem with the collisions
-    #tous les 'tripod' changes en 'MyTripod'
     # The regular controller that is being used for the last 2 steps
-    MyController(rootNode, [MyTripod.ActuatedArm0,
-                            MyTripod.ActuatedArm1,
-                            MyTripod.ActuatedArm2])
+    MyController(rootNode, tripod.actuatedarms)
 
     # The additionnal controller that add two predefined positions for the three servomotors
-    JumpController(rootNode, [MyTripod.ActuatedArm0,
-                              MyTripod.ActuatedArm1,
-                              MyTripod.ActuatedArm2])
+    JumpController(rootNode, tripod.actuatedarms)
 
-    Interaction(rootNode, [MyTripod.ActuatedArm0,
-                           MyTripod.ActuatedArm1,
-                           MyTripod.ActuatedArm2])
+    Interaction(rootNode, [tripod.ActuatedArm0,
+                           tripod.ActuatedArm1,
+                           tripod.ActuatedArm2])

@@ -3,42 +3,46 @@
 Step 4: Adding the ActuatedArm prefab.
 This prefab is defining the servomotor, the servo-arm and the constraint that attaches the end of the arm to the deformable object.
 """
-from splib.numerics import sin,cos, to_radians, RigidDof
+from splib.numerics import sin, cos, to_radians
 from stlib.scene import Scene, Interaction
 from actuatedarm import ActuatedArm
 from tripod import ElasticBody
+from splib.objectmodel import SofaPrefab, SofaObject
 
-## Let's define a Tripod prefab now, that we can later call in the createScene function
-def Tripod(parent, name="Tripod", radius=55, numMotors=3, angleShift=180.0):
-    tripod = parent.createChild(name)
 
-    ## It is using the ElasticBody that was made in the previous step, and that has also been included in the tripod.py script.
-    body = ElasticBody(tripod)
+# Let's define a Tripod prefab now, that we can later call in the createScene function
+@SofaPrefab
+class Tripod(SofaObject):
 
-    ## The actuated arms are positionned around the silicone piece using a loop structure
-    dist = radius
-    numstep = numMotors
-    for i in range(0,numstep):
-        name = "ActuatedArm"+str(i)
-        fi = float(i)
-        fnumstep = float(numstep)
-        angle = fi*360/fnumstep
-        angle2 = fi*360/fnumstep+angleShift
-        eulerRotation = [0,angle,0]
-        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
+    def __init__(self, parent, name="Tripod", radius=60, numMotors=3, angleShift=180.0):
+        self.node = parent.createChild(name)
 
-        c = ActuatedArm(tripod, name=name,
+        # It is using the ElasticBody that was made in the previous step, and that has also been included in the tripod.py script.
+        body = ElasticBody(self.node)
+
+        # The actuated arms are positionned around the silicone piece using a loop structure
+        dist = radius
+        numstep = numMotors
+        for i in range(0, numstep):
+            name = "ActuatedArm"+str(i)
+            fi = float(i)
+            fnumstep = float(numstep)
+            angle = fi*360/fnumstep
+            angle2 = fi*360/fnumstep+angleShift
+            eulerRotation = [0, angle, 0]
+            translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
+
+            ActuatedArm(self.node, name=name,
                         translation=translation, eulerRotation=eulerRotation,
                         attachingTo=body.ElasticMaterialObject)
 
-    return tripod
-
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0,-981.0,0.0])
-    scene.VisualStyle.displayFlags="showBehavior"
+    scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0])
+    rootNode.dt = 0.025
+    scene.VisualStyle.displayFlags = "showBehavior"
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
     scene.createObject("OglModel", src="@loader")
 
     tripod = Tripod(rootNode)

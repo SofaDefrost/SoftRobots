@@ -2,39 +2,38 @@
 """
 Step 2: Introducing elastic material modelling
 """
-from stlib.physics.deformable import ElasticMaterialObject
 from stlib.scene import Scene
+
 
 def createScene(rootNode):
     rootNode.createObject("RequiredPlugin", name="SofaSparseSolver")
-    scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])
 
-    scene.dt = 0.001
+    scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0])
+    rootNode.dt = 0.01
 
-    ## Graphic modelling of the legends associated to the servomotors
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh2/blueprint.stl")
+    # Graphic modelling of the legends associated to the servomotors
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
     scene.createObject("OglModel", src="@loader")
 
-
-    ## To simulate an elastic object, we need:
-    ## - a deformation law (here linear elasticity)
-    ## - a solving method (here FEM)
-    ## - as we are using FEM we need a space discretization (here tetrahedron)
+    # To simulate an elastic object, we need:
+    # - a deformation law (here linear elasticity)
+    # - a solving method (here FEM)
+    # - as we are using FEM we need a space discretization (here tetrahedron)
     elasticbody = rootNode.createChild("ElasticBody")
 
     # Specific loader for the mechanical model
     elasticbody.createObject('GIDMeshLoader',
-                              name='loader',
-                              filename="data/mesh2/tripod_high.gidmsh")
+                             name='loader',
+                             filename="data/mesh/tripod_high.gidmsh")
     elasticbody.createObject('TetrahedronSetTopologyContainer',
-                              src='@loader',
-                              name='container')
+                             src='@loader',
+                             name='container')
     elasticbody.createObject("MechanicalObject",
-                              name="dofs",
-                              position=elasticbody.loader.position,
-                              rotation=[90.0,0.0,0.0],
-                              showObject=True,
-                              showObjectScale=5.0)
+                             name="dofs",
+                             position=elasticbody.loader.position,
+                             rotation=[90.0, 0.0, 0.0],
+                             showObject=True,
+                             showObjectScale=5.0)
     elasticbody.createObject("UniformMass", totalMass=0.032)
 
     elasticbody.createObject("EulerImplicitSolver")
@@ -42,23 +41,23 @@ def createScene(rootNode):
 
     # ForceField components
     elasticbody.createObject("TetrahedronFEMForceField",
-                              youngModulus=900,
-                              poissonRatio=0.45)
+                             youngModulus=800,
+                             poissonRatio=0.45)
     # It is possible to visualize the "forcefields" by doing
-    scene.VisualStyle.displayFlags="showForceFields"
+    scene.VisualStyle.displayFlags = "showForceFields"
 
-    ## Visual model
+    # Visual model
     visual = elasticbody.createChild("Visual")
 
     # Specific loader for the visual model
     visual.createObject("MeshSTLLoader",
-                         name="loader",
-                         filename="data/mesh2/tripod_mid.stl",
-                         rotation=[90,0,0])
+                        name="loader",
+                        filename="data/mesh/tripod_mid.stl",
+                        rotation=[90, 0, 0])
     visual.createObject("OglModel",
-                         src="@loader",
-                         name="renderer",
-                         color=[1.0,1.0,1.0,0.5])
+                        src="@loader",
+                        name="renderer",
+                        color=[1.0, 1.0, 1.0, 0.5])
 
     visual.createObject("BarycentricMapping",
                         input=elasticbody.dofs.getLinkPath(),

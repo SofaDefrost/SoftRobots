@@ -2,51 +2,73 @@ import Sofa
 from splib.numerics import RigidDof
 from splib.animation import animate
 from splib.constants import Key
+from stlib.scene import Scene, Interaction
+from tripod import Tripod
 
-def setupanimation(actuators, step, angularstep, rayonMin, rayonMax, factor):
-    """This functions is called repeatidely in an animation.
+
+def setupanimation(actuators, step, angularstep, factor):
+    """This function is called repeatidely in an animation.
        It moves the actuators by translating & rotating them according to the factor
        value.
     """
     for actuator in actuators:
-            rigid = RigidDof( actuator.dofs )
-            rigid.translate( rigid.forward * step * factor )
-            actuator.ServoMotor.angle += angularstep * factor
+            actuator.servomotor.Position.dofs.rotation = [0., 0., 0.]
+            actuator.servomotor.Position.dofs.translation = [0., 0., 0.]
+            rigid = RigidDof(actuator.servomotor.Position.dofs)
+            rigid.translate(rigid.forward * step * factor)
+            actuator.servomotor.angle += angularstep * factor
+
 
 class MyController(Sofa.PythonScriptController):
-    """This controller has two role:
-       - if user press up/left/right/down/plus/minus the servo motor angle
+    """This controller has two roles:
+       - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
-       - if user press A an animation is started to move the motor to the physical position
-         they are occupying in the real robot.
+       - if thr user presses A, an animation is started to move the servomotor to the initial position
+         of the real robot.
     """
+
     def __init__(self, node, actuators):
-        self.name = "TripodController"
         self.stepsize = 0.1
         self.actuators = actuators
 
     def onKeyPressed(self, key):
         if key == Key.uparrow:
-            self.actuators[0].ServoMotor.angle += self.stepsize
+            self.actuators[0].servomotor.angle += self.stepsize
         elif key == Key.downarrow:
-            self.actuators[0].ServoMotor.angle -= self.stepsize
+            self.actuators[0].servomotor.angle -= self.stepsize
 
         if key == Key.leftarrow:
-            self.actuators[1].ServoMotor.angle += self.stepsize
+            self.actuators[1].servomotor.angle += self.stepsize
         elif key == Key.rightarrow:
-            self.actuators[1].ServoMotor.angle -= self.stepsize
+            self.actuators[1].servomotor.angle -= self.stepsize
 
         if key == Key.plus:
-            self.actuators[2].ServoMotor.angle += self.stepsize
+            self.actuators[2].servomotor.angle += self.stepsize
         elif key == Key.minus:
-            self.actuators[2].ServoMotor.angle -= self.stepsize
+            self.actuators[2].servomotor.angle -= self.stepsize
 
         if key == Key.A:
-            animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
-                                    "angularstep" : -0.14, "rayonMax" : 65, "rayonMin" : 25}, duration=0.2)
+            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -0.14}, duration=0.2)
 
         for actuator in self.actuators:
-            if(actuator.ServoMotor.angle>-0.0225):
-                actuator.ServoMotor.angle = -0.0255
-            if(actuator.ServoMotor.angle<-2.0225):
-                actuator.ServoMotor.angle = -2.0225
+            if(actuator.servomotor.angle >- 0.0225):
+                actuator.servomotor.angle = -0.0255
+            if(actuator.servomotor.angle <- 2.0225):
+                actuator.servomotor.angle = -2.0225
+
+
+def createScene(rootNode):
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
+    scene.VisualStyle.displayFlags = "showBehavior"
+
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
+
+    model = scene.createChild("Model")
+    tripod = Tripod(model)
+
+    MyController(rootNode, tripod.actuatedarms)
+
+    Interaction(rootNode, targets=[tripod.ActuatedArm0,
+                                   tripod.ActuatedArm1,
+                                   tripod.ActuatedArm2])
