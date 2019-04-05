@@ -1,0 +1,69 @@
+# -*- coding: utf-8 -*-
+"""
+Step 8: we are showing how to control the tip position of the robot
+        by solving the inverse kinematics.
+"""
+from stlib.scene import Scene, Interaction
+from tripod import Tripod
+from tripodcontroller import MyController
+
+
+def EffectorTarget(parent, position=[0., 0., 0.]):
+
+    target = parent.createChild("EffectorTarget")
+    target.createObject("EulerImplicitSolver", firstOrder=True)
+    target.createObject("CGLinearSolver")
+    target.createObject("MechanicalObject", name="dofs", position=position, showObject=True, showObjectScale=10)
+    target.createObject("UncoupledConstraintCorrection")
+    return target
+
+
+def EffectorPosition(parent, position=[0., 0., 0.], effectorGoal=[0., 0., 0.]):
+
+    effector = parent.createChild("EffectorPosition")
+    effector.createObject("MechanicalObject", name="dofs", position=position)
+    effector.createObject("PositionEffector", indices=0, effectorGoal=effectorGoal)
+    effector.createObject("BarycentricMapping")
+    return effector
+
+
+def createScene(rootNode):
+    scene = Scene(rootNode, gravity=[0, -9810, 0], plugins=["SoftRobots"])
+    rootNode.dt = 0.01
+    scene.VisualStyle.displayFlags = "showForceFields"
+
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
+
+    # Add a target object for the effector
+    target = EffectorTarget(rootNode, position=[0., 50, 0])
+
+    # Adding contact handling
+    scene.addContact(alarmDistance=5,
+                     contactDistance=2)
+
+    # Set specific solver for inverse problem
+    scene.removeObject(scene.GenericConstraintSolver)
+    scene.createObject("QPInverseProblemSolver")
+
+    model = scene.createChild("Model")
+    tripod = Tripod(model)
+    tripod.addCollision()
+
+    # Replace the angle limits constraint by an actuator that will be optimized
+    for i in range(3):
+        tripod.actuatedarms[i].ServoMotor.Angle.removeObject(tripod.actuatedarms[i].ServoMotor.Angle.AngleLimits)
+        tripod.actuatedarms[i].ServoMotor.Angle.createObject("JointActuator", minEffort=-2.0225, maxEffort=-0.0255)
+
+    # Add a mechanical object for the effector position. We will minimize the distance between this point and its target
+    EffectorPosition(tripod.ElasticBody.ElasticMaterialObject, position=[0., 30, 0.], effectorGoal=target.dofs.findData("position"))
+    tripod.ElasticBody.ElasticMaterialObject.createObject("UncoupledConstraintCorrection")
+
+    MyController(rootNode, tripod.actuatedarms)
+
+    interaction = Interaction(rootNode, targets=[tripod.ActuatedArm0,
+                                                 tripod.ActuatedArm1,
+                                                 tripod.ActuatedArm2,
+                                                 tripod.RigidifiedStruture])
+    interaction.RigidifiedStruture.DeformableParts.createObject("UncoupledConstraintCorrection")
+    interaction.RigidifiedStruture.RigidParts.createObject("UncoupledConstraintCorrection")
