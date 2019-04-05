@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-    In Step 7 we are showing how to add collision detection
-    and contact management in our project.
+Step 7: we are showing how to add collision detection
+and contact management in our project.
 
-    The important component to see in the graph are:
-    - the ones added by the addContact function
-    - the one in the "Collision" part of the tripod object
-    - the one in the "Collision" part of the Sphere object
+The important component to see in the graph are:
+- the ones added by the addContact function
+- the one in the "Collision" part of the tripod object
+- the one in the "Collision" part of the Sphere object
 """
 import Sofa
 from splib.constants import Key

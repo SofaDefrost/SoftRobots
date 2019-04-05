@@ -32,6 +32,14 @@ class MyController(Sofa.PythonScriptController):
         self.actuators = actuators
 
     def onKeyPressed(self, key):
+        self.initTripod(key)
+        self.animateTripod(key)
+
+    def initTripod(self, key):
+        if key == Key.A:
+            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -0.14}, duration=0.2)
+
+    def animateTripod(self, key):
         if key == Key.uparrow:
             self.actuators[0].servomotor.angle += self.stepsize
         elif key == Key.downarrow:
@@ -46,9 +54,6 @@ class MyController(Sofa.PythonScriptController):
             self.actuators[2].servomotor.angle += self.stepsize
         elif key == Key.minus:
             self.actuators[2].servomotor.angle -= self.stepsize
-
-        if key == Key.A:
-            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -0.14}, duration=0.2)
 
         for actuator in self.actuators:
             if(actuator.servomotor.angle >- 0.0225):

@@ -1,64 +1,38 @@
 # -*- coding: utf-8 -*-
+"""
+Step 6: Here we are showing how to setup a communication with the servomotors
+"""
 import Sofa
 from stlib.scene import Scene, Interaction
-from splib.numerics import RigidDof
 from splib.animation import animate
 from splib.constants import Key
 from math import floor, pi
 from tripod import Tripod
+from tripodcontroller import MyController, setupanimation
 
 
-def setupanimation(actuators, step, angularstep, factor):
-    """This function is called repeatidely in an animation.
-       It moves the actuators by translating & rotating them according to the factor
-       value.
-    """
-    for actuator in actuators:
-            actuator.servomotor.Position.dofs.rotation = [0., 0., 0.]
-            actuator.servomotor.Position.dofs.translation = [0., 0., 0.]
-            rigid = RigidDof(actuator.servomotor.Position.dofs)
-            rigid.translate(rigid.forward * step * factor)
-            actuator.servomotor.angle += angularstep * factor
-
-
-class MyController(Sofa.PythonScriptController):
-    """This controller has two roles:
+class MyControllerWithCom(MyController):
+    """This controller has three roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
        - if thr user presses A, an animation is started to move the servomotor to the initial position
          of the real robot.
+       - if thr user presses B start the communication with controller card, send
+         servomotor commands
     """
 
     def __init__(self, node, actuators, serialportctrl):
-        self.stepsize = 0.1
-        self.actuators = actuators
+        MyController.__init__(self, node, actuators)
         self.serialportctrl = serialportctrl
 
-    def onKeyPressed(self, key):
-        if key == Key.uparrow:
-            self.actuators[0].servomotor.angle += self.stepsize
-        elif key == Key.downarrow:
-            self.actuators[0].servomotor.angle -= self.stepsize
-
-        if key == Key.leftarrow:
-            self.actuators[1].servomotor.angle += self.stepsize
-        elif key == Key.rightarrow:
-            self.actuators[1].servomotor.angle -= self.stepsize
-
-        if key == Key.plus:
-            self.actuators[2].servomotor.angle += self.stepsize
-        elif key == Key.minus:
-            self.actuators[2].servomotor.angle -= self.stepsize
-
+    def initTripod(self, key):
         if key == Key.A and self.serialportctrl.state == "init":
             self.serialportctrl.state = "no-comm"
             animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -0.14}, duration=0.2)
 
-        for actuator in self.actuators:
-            if(actuator.servomotor.angle >- 0.0225):
-                actuator.servomotor.angle = -0.0255
-            if(actuator.servomotor.angle <- 2.0225):
-                actuator.servomotor.angle = -2.0225
+        # Inclusion of the keystroke to start data sending = establishing communication ('comm')
+        if key == Key.B and self.serialportctrl.state == "no-comm":
+            self.serialportctrl.state = "comm"
 
 
 # Description of how the communication is handled
@@ -70,7 +44,7 @@ def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
 class SerialPortController(Sofa.PythonScriptController):
     def __init__(self, node, inputs, serialport):
         self.name = "serialportcontroller"
-        self.servos = inputs
+        self.actuatedarms = inputs
         self.serialport = serialport
         self.serialport.packetOut = [150, 150, 150]
         self.state = "init"
@@ -86,9 +60,9 @@ class SerialPortController(Sofa.PythonScriptController):
         # Vector storing the simulated servomotors' angular position
         angles = []
 
-        for servo in self.servos:
+        for arm in self.actuatedarms:
             # Conversion of the angle values from radians to degrees
-            angleDegree = servo.angle*360/(2.0*pi)
+            angleDegree = arm.servomotor.angle*360/(2.0*pi)
             angleByte = int(floor(angleDegree)) + 179
 
             # Limitation of the angular position's command
@@ -118,12 +92,10 @@ def createScene(rootNode):
     serial = SerialPortBridgeGeneric(rootNode)
 
     # The real robot receives data from the 3 actuators
-    serialportctrl = SerialPortController(rootNode, [tripod.ActuatedArm0.ServoMotor,
-                                                     tripod.ActuatedArm1.ServoMotor,
-                                                     tripod.ActuatedArm2.ServoMotor], serial)
+    serialportctrl = SerialPortController(rootNode, tripod.actuatedarms, serial)
 
     # The simulation's control with keystrokes is still available
-    MyController(rootNode, tripod.actuatedarms, serialportctrl)
+    MyControllerWithCom(rootNode, tripod.actuatedarms, serialportctrl)
 
     Interaction(rootNode, [tripod.ActuatedArm0,
                            tripod.ActuatedArm1,
