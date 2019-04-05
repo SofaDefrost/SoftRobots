@@ -16,7 +16,7 @@ def setupanimation(actuators, step, angularstep, factor):
             actuator.servomotor.Position.dofs.translation = [0., 0., 0.]
             rigid = RigidDof(actuator.servomotor.Position.dofs)
             rigid.translate(rigid.forward * step * factor)
-            actuator.servomotor.angle += angularstep * factor
+            actuator.servomotor.angle = angularstep * factor
 
 
 class MyController(Sofa.PythonScriptController):
@@ -37,7 +37,7 @@ class MyController(Sofa.PythonScriptController):
 
     def initTripod(self, key):
         if key == Key.A:
-            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -0.14}, duration=0.2)
+            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, duration=0.2)
 
     def animateTripod(self, key):
         if key == Key.uparrow:

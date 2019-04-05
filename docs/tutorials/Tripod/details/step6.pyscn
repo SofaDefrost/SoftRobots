@@ -28,7 +28,7 @@ class MyControllerWithCom(MyController):
     def initTripod(self, key):
         if key == Key.A and self.serialportctrl.state == "init":
             self.serialportctrl.state = "no-comm"
-            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -0.14}, duration=0.2)
+            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, duration=0.2)
 
         # Inclusion of the keystroke to start data sending = establishing communication ('comm')
         if key == Key.B and self.serialportctrl.state == "no-comm":

@@ -56,4 +56,4 @@ class Tripod(SofaObject):
         for i in range(0, numstep):
             CollisionMesh(self.actuatedarms[i].ServoMotor.ServoBody,
                           surfaceMeshFileName="data/mesh/servo_collision.stl",
-                          name="TopServoCollision", collisionGroup=1, mappingType='RigidMapping')
+                          name="TopServoCollision", mappingType='RigidMapping')
