@@ -32,12 +32,13 @@ class ServoArm(object):
                                size=1,
                                template="Rigid3",
                                showObject=True,
-                               showObjectScale=15)
+                               showObjectScale=5,
+                               translation2=[0, 25, 0])
 
         self.node.createObject('RigidRigidMapping',
                                name="mapping", input=mappingInput, index=indexInput)
 
-        visual = VisualModel(self.node, 'data/mesh/SG90_servoarm.stl', translation=[0., 0., 0.], color=[1., 1., 1., 0.75])
+        visual = VisualModel(self.node, 'data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.], color=[1., 1., 1., 0.75])
         visual.model.writeZTransparent = True
         visual.createObject('RigidMapping', name="mapping")
 
@@ -65,18 +66,18 @@ class ActuatedArm(object):
         self.node = parent.createChild(name)
 
         self.servomotor = ServoMotor(self.node, translation=translation, rotation=eulerRotation)
-        ServoArm(self.node, self.servomotor.ServoWheel.dofs)
+        self.servoarm = ServoArm(self.node, self.servomotor.ServoWheel.dofs)
 
         if attachingTo is not None:
-            constraint = self.addConstraint(attachingTo.dofs.getData("rest_position"), translation, eulerRotation)
+            constraint = self.addConstraint(attachingTo, translation, eulerRotation)
             attachingTo.createObject('RestShapeSpringsForceField', name="rssff"+name,
                                      points=constraint.BoxROI.getData("indices"),
                                      external_rest_shape=constraint.dofs,
                                      stiffness='1e12')
 
-    def addConstraint(self, position, translation, eulerRotation):
+    def addConstraint(self, deformableObject, translation, eulerRotation):
         constraint = self.node.createChild("Constraint")
-        o = addOrientedBoxRoi(constraint, position=position,
+        o = addOrientedBoxRoi(constraint, position=deformableObject.dofs.getData("rest_position"),
                               translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
                               eulerRotation=eulerRotation, scale=[45, 15, 30])
         o.drawSize = 1

@@ -28,6 +28,9 @@ def createScene(rootNode):
 
     MyController(rootNode, tripod.actuatedarms)
 
-    Interaction(rootNode, targets=[tripod.ActuatedArm0,
-                                   tripod.ActuatedArm1,
-                                   tripod.ActuatedArm2])
+    interaction = Interaction(rootNode, targets=[tripod.ActuatedArm0,
+                                                 tripod.ActuatedArm1,
+                                                 tripod.ActuatedArm2,
+                                                 tripod.RigidifiedStruture])
+    interaction.RigidifiedStruture.DeformableParts.createObject("UncoupledConstraintCorrection")
+    interaction.RigidifiedStruture.RigidParts.createObject("UncoupledConstraintCorrection")

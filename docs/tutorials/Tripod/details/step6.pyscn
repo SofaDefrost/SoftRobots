@@ -79,7 +79,7 @@ class SerialPortController(Sofa.PythonScriptController):
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    scene = Scene(rootNode, gravity=[0.0, -9810., 0.0], plugins=["SoftRobots"])
     rootNode.dt = 0.01
     scene.VisualStyle.displayFlags = "showBehavior"
 
@@ -100,6 +100,9 @@ def createScene(rootNode):
     # The simulation's control with keystrokes is still available
     MyControllerWithCom(rootNode, tripod.actuatedarms, serialportctrl)
 
-    Interaction(rootNode, [tripod.ActuatedArm0,
-                           tripod.ActuatedArm1,
-                           tripod.ActuatedArm2])
+    interaction = Interaction(rootNode, targets=[tripod.ActuatedArm0,
+                                                 tripod.ActuatedArm1,
+                                                 tripod.ActuatedArm2,
+                                                 tripod.RigidifiedStruture])
+    interaction.RigidifiedStruture.DeformableParts.createObject("UncoupledConstraintCorrection")
+    interaction.RigidifiedStruture.RigidParts.createObject("UncoupledConstraintCorrection")
