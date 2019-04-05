@@ -44,15 +44,16 @@ class ServoMotor(SofaObject):
       while the other is implementing the servo rotating wheel.
 
     The prefab has the following parameters:
-    - translation       to change default location of the servo (default [0.0,0.0,0.0])
-    - rotation          to change default rotation of the servo (default [0.0,0.0,0.0,1])
-    - scale             to change default scale of the servo (default 1)
-    - showServo         to control wether a visual model of the motor is added (default True)
-    - showWheel         to control wether the rotation axis of the motor is displayed (default False)
+    - translation           to change default location of the servo (default [0.0,0.0,0.0])
+    - rotation              to change default rotation of the servo (default [0.0,0.0,0.0,1])
+    - scale                 to change default scale of the servo (default 1)
+    - showServo             to control wether a visual model of the motor is added (default True)
+    - showWheel             to control wether the rotation axis of the motor is displayed (default False)
 
     The prefab have the following property:
-    - angle     use this to specify the angle of rotation of the servo motor
-    - position  use this to specify the position of the servo motor
+    - angle         use this to specify the angle of rotation of the servo motor
+    - angleLimits   use this to set a min and max value for the servo angle rotation
+    - position      use this to specify the position of the servo motor
 
     Example of use in a Sofa scene:
 
@@ -73,14 +74,16 @@ class ServoMotor(SofaObject):
         position = self.node.createChild("Position")
         position.createObject("MechanicalObject", name="dofs", template="Rigid3", position=[[0., 0., 0., 0., 0., 0., 1.], [0., 0., 0., 0., 0., 0., 1.]],
                               translation=translation, rotation=rotation, scale3d=scale)
-        self.position = position.dofs.findData("position")
 
         # Angle of the wheel
         angle = self.node.createChild("Angle")
         angle.createObject("MechanicalObject", name="dofs", template="Vec1d", position=0)
+        # This component is used to constrain the angle to lie between a maximum and minimum value,
+        # corresponding to the limit of the real servomotor
         angle.createObject("ArticulatedHierarchyContainer")
         angle.createObject("ArticulatedSystemMapping", input1=angle.dofs.getLinkPath(), output=position.dofs.getLinkPath())
-        # self.angle = angle.dofs.findData("position")
+        angle.createObject('StopperConstraint', name="AngleLimits", index=0)
+        angle.createObject("UncoupledConstraintCorrection")
 
         articulationCenter = angle.createChild("ArticulationCenter")
         articulationCenter.createObject("ArticulationCenter", parentIndex=0, childIndex=1, posOnParent=[0., 0., 0.], posOnChild=[0., 0., 0.])
@@ -99,12 +102,17 @@ class ServoMotor(SofaObject):
     def getAngle(self):
         return self.node.Angle.dofs.position[0][0]
 
+    def setAngleLimits(self, angleLimits):
+        self.node.Angle.AngleLimits.min = angleLimits[0]
+        self.node.Angle.AngleLimits.max = angleLimits[1]
+
     angle = property(getAngle, setAngle)
+    angleLimits = property(fset=setAngleLimits)
 
     def setX(self, x, index=0):
-        position = self.position.value
+        position = self.Position.dofs.position
         position[index][0] = x
-        self.position.value = position
+        self.Position.dofs.position = position
 
 
 def createScene(rootNode):
@@ -120,6 +128,10 @@ def createScene(rootNode):
     rootNode.dt = 0.003
     rootNode.gravity = [0., -9810., 0.]
     rootNode.createObject("VisualStyle", displayFlags="showBehaviorModels")
+
+    # Use these components on top of the scene to solve the constraint "StopperConstraint".
+    rootNode.createObject("FreeMotionAnimationLoop")
+    rootNode.createObject("GenericConstraintSolver", maxIterations=1e3, tolerance=1e-5)
 
     simulation = rootNode.createChild("Simulation")
     simulation.createObject("EulerImplicitSolver", rayleighStiffness=0.1, rayleighMass=0.1)

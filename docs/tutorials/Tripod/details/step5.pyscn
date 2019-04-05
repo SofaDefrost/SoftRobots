@@ -17,6 +17,9 @@ def createScene(rootNode):
     rootNode.dt = 0.01
     scene.VisualStyle.displayFlags = "showBehavior"
 
+    scene.createObject("FreeMotionAnimationLoop")
+    scene.createObject("GenericConstraintSolver", maxIterations=1e3, tolerance=1e-5)
+
     scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
     scene.createObject("OglModel", src="@loader")
 

@@ -55,12 +55,6 @@ class MyController(Sofa.PythonScriptController):
         elif key == Key.minus:
             self.actuators[2].servomotor.angle -= self.stepsize
 
-        for actuator in self.actuators:
-            if(actuator.servomotor.angle >- 0.0225):
-                actuator.servomotor.angle = -0.0255
-            if(actuator.servomotor.angle <- 2.0225):
-                actuator.servomotor.angle = -2.0225
-
 
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
