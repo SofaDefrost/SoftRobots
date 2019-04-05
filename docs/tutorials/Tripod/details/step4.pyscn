@@ -23,6 +23,7 @@ class Tripod(SofaObject):
         # The actuated arms are positionned around the silicone piece using a loop structure
         dist = radius
         numstep = numMotors
+        self.actuatedarms = []
         for i in range(0, numstep):
             name = "ActuatedArm"+str(i)
             fi = float(i)
@@ -32,9 +33,9 @@ class Tripod(SofaObject):
             eulerRotation = [0, angle, 0]
             translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
 
-            ActuatedArm(self.node, name=name,
-                        translation=translation, eulerRotation=eulerRotation,
-                        attachingTo=body.ElasticMaterialObject)
+            self.actuatedarms.append(ActuatedArm(self.node, name=name,
+                                                 translation=translation, eulerRotation=eulerRotation,
+                                                 attachingTo=body.ElasticMaterialObject))
 
 
 def createScene(rootNode):
@@ -46,6 +47,8 @@ def createScene(rootNode):
     scene.createObject("OglModel", src="@loader")
 
     tripod = Tripod(rootNode)
+    for arm in tripod.actuatedarms:
+        arm.Constraint.BoxROI.drawBoxes = True
 
     Interaction(rootNode, targets=[tripod.ActuatedArm0,
                                    tripod.ActuatedArm1,

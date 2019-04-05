@@ -80,6 +80,7 @@ class ActuatedArm(object):
                               translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
                               eulerRotation=eulerRotation, scale=[45, 15, 30])
         o.drawSize = 1
+        o.drawBoxes = False
 
         constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
                                 translation=translation, rotation=eulerRotation, inverse=True)

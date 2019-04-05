@@ -16,7 +16,7 @@ class FixingBox(SofaObject):
                                orientedBox=ob,
                                name="boxroi",
                                position=target.dofs.getData("rest_position"),
-                               drawBoxes=True)
+                               drawBoxes=False)
 
         c = self.node.createChild("Constraint")
         target.addChild(c)
