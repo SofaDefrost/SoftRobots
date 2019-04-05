@@ -3,6 +3,7 @@ from stlib.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 from stlib.physics.collision import CollisionMesh
 from splib.objectmodel import SofaPrefab, SofaObject
+from stlib.scene import Scene
 
 
 def ElasticBody(parent):
@@ -58,3 +59,16 @@ class Tripod(SofaObject):
             CollisionMesh(self.actuatedarms[i].ServoMotor.ServoBody,
                           surfaceMeshFileName="data/mesh/servo_collision.stl",
                           name="TopServoCollision", mappingType='RigidMapping')
+
+
+def createScene(rootNode):
+    scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0])
+    rootNode.dt = 0.025
+    scene.VisualStyle.displayFlags = "showBehavior"
+
+    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
+
+    tripod = Tripod(rootNode)
+    for arm in tripod.actuatedarms:
+        arm.Constraint.BoxROI.drawBoxes = True
