@@ -1,23 +1,35 @@
-# -*- coding: utf-8 -*-
-""" Sofa prefab for a S90 servo actuators with a default kinematic controller and visual model
+import os
+from splib.objectmodel import SofaObject, SofaPrefab
+from splib.animation import animate
+from stlib.scene import Scene
+dirPath = os.path.dirname(os.path.abspath(__file__))+'/'
 
-    This model is part of the SoftRobot toolkit available at:
-        https://github.com/SofaDefrost/SoftRobots
 
-    Available prefab:
-        - ServoMotor
+def ServoBody(parent, position=[0., 0., 0., 0., 0., 0., 1.], showServo=True):
 
-    Available python object:
-        - KinematicMotorController
-        - ServoWheel
-"""
-import Sofa
-from splib.numerics import RigidDof
-from splib.objectmodel import *
+    servobody = parent.createChild("ServoBody")
+    servobody.createObject("MechanicalObject", template="Rigid3d", name="dofs", position=position)
+    servobody.createObject("MeshTopology")
 
-from stlib.visuals import VisualModel
-from stlib.solver import DefaultSolver
-from stlib.scene import Scene, Node, get
+    if showServo:
+        visual = servobody.createChild("VisualModel")
+        visual.createObject("MeshSTLLoader", name="loader", filename=dirPath+"data/mesh/SG90_servomotor.stl")
+        visual.createObject("MeshTopology", src="@loader")
+        visual.createObject("OglModel", color=[0.15, 0.45, 0.75, 0.7], writeZTransparent=True)
+        visual.createObject("RigidMapping", index=0)
+
+    return servobody
+
+
+def ServoWheel(parent, showWheel=True):
+
+    servowheel = parent.createChild("ServoWheel")
+    servowheel.createObject("MechanicalObject", template="Rigid3d", name="dofs", position=[[0., 0., 0., 0., 0., 0., 1.]],
+                            showObject=showWheel, showObjectScale=10)
+    servowheel.createObject("MeshTopology")
+
+    return servowheel
+
 
 @SofaPrefab
 class ServoMotor(SofaObject):
@@ -30,17 +42,18 @@ class ServoMotor(SofaObject):
     - a visual model
     - a mechanical model composed two rigids. One rigid is for the motor body
       while the other is implementing the servo rotating wheel.
-    - a KinematicMotorController to compute from an input angle the new orientation of the
-      servo wheel according to its parent frame.
 
     The prefab has the following parameters:
-    - translation       to change default location of the servo (default [0.0,0.0,0.0])
-    - rotation          to change default rotation of the servo (default [0.0,0.0,0.0,1])
-    - scale             to change default scale of the servo (default 1)
-    - doAddVisualModel  to control wether a visual model is added (default True)
+    - translation           to change default location of the servo (default [0.0,0.0,0.0])
+    - rotation              to change default rotation of the servo (default [0.0,0.0,0.0,1])
+    - scale                 to change default scale of the servo (default 1)
+    - showServo             to control wether a visual model of the motor is added (default True)
+    - showWheel             to control wether the rotation axis of the motor is displayed (default False)
 
     The prefab have the following property:
-    - angle     use this to specify the angle of rotation of the servo motor
+    - angle         use this to specify the angle of rotation of the servo motor
+    - angleLimits   use this to set a min and max value for the servo angle rotation
+    - position      use this to specify the position of the servo motor
 
     Example of use in a Sofa scene:
 
@@ -49,84 +62,82 @@ class ServoMotor(SofaObject):
         servo = ServoMotor(root)
 
         ## Direct access to the components
-        servo.node.angle = 1.0
-        servo.dofs.showObjects = False
-
-        ## Indirect access to the components
-        get(servo.node, "dofs.showObjects").value = False
-        get(servo.node, "servowheel.dofs.showObjects").value = False
+        servo.angle.value = 1.0
     """
+
     def __init__(self, parent,
-                 translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0], scale=[1.0,1.0,1.0], doAddVisualModel=True):
-        self.node = Node(parent, "ServoMotor")
-        self.node.addNewData("angle",
-                             "ServoMotor Properties",
-                             "The angular position of the motor (in radians)","double", 0.0)
-        self.angle=self.node.findData("angle")
+                 translation=[0.0, 0.0, 0.0], rotation=[0.0, 0.0, 0.0], scale=[1.0, 1.0, 1.0], showServo=True, showWheel=False):
 
-        self.dofs = self.node.createObject("MechanicalObject", size=1,
-                                          name="dofs",
-                                          translation=translation, rotation=rotation, scale=scale,
-                                          template="Rigid3", showObject=True, showObjectScale=15)
+        self.node = parent.createChild("ServoMotor")
 
-        self.servowheel = ServoWheel(self.node)
-        self.controller = KinematicMotorController(self.node, self.dofs, self.servowheel.dofs,
-                                                   angleValue=self.angle.getLinkPath())
+        # Two positions (rigid): first one for the servo body, second for the servo wheel
+        position = self.node.createChild("Position")
+        position.createObject("MechanicalObject", name="dofs", template="Rigid3", position=[[0., 0., 0., 0., 0., 0., 1.], [0., 0., 0., 0., 0., 0., 1.]],
+                              translation=translation, rotation=rotation, scale3d=scale)
 
-        if doAddVisualModel:
-            self.addVisualModel()
+        # Angle of the wheel
+        angle = self.node.createChild("Angle")
+        angle.createObject("MechanicalObject", name="dofs", template="Vec1d", position=0)
+        # This component is used to constrain the angle to lie between a maximum and minimum value,
+        # corresponding to the limit of the real servomotor
+        angle.createObject("ArticulatedHierarchyContainer")
+        angle.createObject("ArticulatedSystemMapping", input1=angle.dofs.getLinkPath(), output=position.dofs.getLinkPath())
+        angle.createObject('StopperConstraint', name="AngleLimits", index=0)
+        angle.createObject("UncoupledConstraintCorrection")
 
-    def addVisualModel(self):
-        self.visualmodel = VisualModel(self.node, 'data/mesh2/SG90_servomotor.stl')
-        self.visualmodel.node.createObject('RigidMapping', name = "mapping")
+        articulationCenter = angle.createChild("ArticulationCenter")
+        articulationCenter.createObject("ArticulationCenter", parentIndex=0, childIndex=1, posOnParent=[0., 0., 0.], posOnChild=[0., 0., 0.])
+        articulation = articulationCenter.createChild("Articulations")
+        articulation.createObject("Articulation", translation=False, rotation=True, rotationAxis=[1, 0, 0], articulationIndex=0)
 
+        # ServoBody and ServoWheel objects with visual
+        servobody = ServoBody(self.node, showServo=showServo)
+        servobody.createObject("RigidRigidMapping", input=self.node.Position.dofs.getLinkPath(), output=servobody.dofs.getLinkPath(), index=0)
+        servowheel = ServoWheel(self.node, showWheel=showWheel)
+        servowheel.createObject("RigidRigidMapping", input=self.node.Position.dofs.getLinkPath(), output=servowheel.dofs.getLinkPath(), index=1)
 
-class ServoWheel(SofaObject):
-    def __init__(self, parentNode):
-        self.node = Node(parentNode, "ServoWheel")
-        self.dofs = self.node.createObject("MechanicalObject", size=1, template="Rigid3",
-                                           showObject=True, showObjectScale=15, name="dofs")
+    def setAngle(self, angle):
+        self.node.Angle.dofs.position = angle
 
-class KinematicMotorController(Sofa.PythonScriptController):
-    """
-        This controller is in charge of transforming the angular 'positional' control of the
-        of the ServoWheel.
-    """
-    def __init__(self, node, parentframe, target, angleValue):
-        self.name = "controller"
-        self.parentframe = parentframe
-        self.node = node
-        self.target = target
-        self.addNewData("angle", "Properties", "The angular position of the motor (in radians)","double", angleValue)
+    def getAngle(self):
+        return self.node.Angle.dofs.position[0][0]
 
-    def applyAngleToServoWheel(self, angle):
-        rigidparent = RigidDof(self.parentframe)
-        rigidtarget = RigidDof(self.target)
+    def setAngleLimits(self, angleLimits):
+        self.node.Angle.AngleLimits.min = angleLimits[0]
+        self.node.Angle.AngleLimits.max = angleLimits[1]
 
-        rigidtarget.copyFrom( rigidparent )
-        rigidtarget.rotateAround( rigidparent.left, angle)
+    angle = property(getAngle, setAngle)
+    angleLimits = property(fset=setAngleLimits)
 
-    def bwdInitGraph(self, root):
-        self.applyAngleToServoWheel(self.angle)
-
-    def onBeginAnimationStep(self, dt):
-        self.applyAngleToServoWheel(self.angle)
+    def setX(self, x, index=0):
+        position = self.Position.dofs.position
+        position[index][0] = x
+        self.Position.dofs.position = position
 
 
 def createScene(rootNode):
-    from splib.animation import animate
-    from splib.animation.easing import LinearRamp
-    from splib.scenegraph import get
 
-    from stlib.scene import MainHeader
+    import math
+
+    def animation(target, factor):
+        target.angle = math.cos(factor * 2 * math.pi)
+        target.setX(math.cos(factor * 2 * math.pi))
+
     Scene(rootNode)
-    s=DefaultSolver(rootNode)
 
-    ### Test a assembly that also implements a KinematicMotorController
-    ## The angle of the KinematicMotorController is dynamically changed using a
-    ## animation function
-    servomotor = ServoMotor(rootNode, translation=[2,0,0])
-    def myAnimation(motorctrl, factor):
-        motorctrl.angle = LinearRamp(-3.14/2, 3.14/2, factor)
+    rootNode.dt = 0.003
+    rootNode.gravity = [0., -9810., 0.]
+    rootNode.createObject("VisualStyle", displayFlags="showBehaviorModels")
 
-    animate(myAnimation, {"motorctrl" : servomotor.node }, duration=1.0, mode="pingpong")
+    # Use these components on top of the scene to solve the constraint "StopperConstraint".
+    rootNode.createObject("FreeMotionAnimationLoop")
+    rootNode.createObject("GenericConstraintSolver", maxIterations=1e3, tolerance=1e-5)
+
+    simulation = rootNode.createChild("Simulation")
+    simulation.createObject("EulerImplicitSolver", rayleighStiffness=0.1, rayleighMass=0.1)
+    simulation.createObject("CGLinearSolver", name="precond")
+
+    servomotor = ServoMotor(simulation, showWheel=True)
+    animate(animation, {"target": servomotor}, duration=5., mode="loop")
+
+    return rootNode

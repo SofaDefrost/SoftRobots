@@ -6,42 +6,43 @@ time integration and a mechanical object to the scene .
 """
 from stlib.scene import Scene
 
+
 def createScene(rootNode):
-    ## Setting the gravity, assuming the length unit is in centimeters
     rootNode.createObject("RequiredPlugin", name="SofaSparseSolver")
 
-    scene = Scene(rootNode, gravity=[0.0,-981.0,0.0])
+    # Setting the gravity, assuming the length unit is in millimeters
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
 
-    ## Setting the timestep in seconds
-    scene.dt = 0.001
+    # Setting the timestep in seconds
+    rootNode.dt = 0.001
 
-    ## Graphic modelling of the legends associated to the servomotors
-    scene.createObject("MeshSTLLoader", name="loader1", filename="data/mesh2/blueprint.stl")
+    # Graphic modelling of the legends associated to the servomotors
+    scene.createObject("MeshSTLLoader", name="loader1", filename="data/mesh/blueprint.stl")
     scene.createObject("OglModel", src="@loader1")
 
-    ## Tool to load the mesh file of the silicone piece. It will be used for both the mechnical and the visual models.
-    rootNode.createObject("MeshSTLLoader", name="loader2", filename="data/mesh2/tripod_mid.stl")
+    # Tool to load the mesh file of the silicone piece. It will be used for both the mechanical and the visual models.
+    rootNode.createObject("MeshSTLLoader", name="loader2", filename="data/mesh/tripod_mid.stl")
 
-    ## Basic mechanical modelling of the silicone piece
-    elasticbody = rootNode.createChild("ElasticBody")
+    # Basic mechanical modelling of the silicone piece
+    elasticbody = rootNode.createChild("MechanicalBody")
     elasticbody.createObject("MechanicalObject", name="dofs",
                              position=rootNode.loader2.position,
                              showObject=True, showObjectScale=5.0,
-                             rotation=[90.0,0.0,0.0])
+                             rotation=[90.0, 0.0, 0.0])
     elasticbody.createObject("UniformMass")
 
     elasticbody.createObject("EulerImplicitSolver")
     elasticbody.createObject("SparseLDLSolver")
 
-    ## Visual object
+    # Visual object
     visual = rootNode.createChild("Visual")
     # The mesh used for the Visual object is the same as the one for the MechanicalObject, and has been introduced in the rootNode
     visual.createObject("OglModel", name="renderer",
-        src='@../loader2',
-        color=[1.0,1.0,1.0,0.5])
+                        src='@../loader2',
+                        color=[1.0, 1.0, 1.0, 0.5])
 
-    ## A mapping applies the deformations computed on the mechanical model (the input parameter)
-    ## to the visual model (the output parameter).
+    # A mapping applies the deformations computed on the mechanical model (the input parameter)
+    # to the visual model (the output parameter).
     elasticbody.createObject("IdentityMapping",
                              input=elasticbody.dofs.getLinkPath(),
                              output=visual.renderer.getLinkPath())
