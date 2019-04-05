@@ -12,10 +12,17 @@ def setupanimation(actuators, step, angularstep, factor):
        value.
     """
     for actuator in actuators:
-            actuator.servomotor.Position.dofs.rotation = [0., 0., 0.]
-            actuator.servomotor.Position.dofs.translation = [0., 0., 0.]
-            rigid = RigidDof(actuator.servomotor.Position.dofs)
-            rigid.translate(rigid.forward * step * factor)
+            #rigid = RigidDof(actuator.servomotor.BaseFrame.dofs)
+            #actuator.servomotor.BaseFrame.dofs.init()
+            #p = actuator.servomotor.BaseFrame.dofs.position[0]
+            #c = p[:3]
+            #r = p[3:]
+            
+            #print("TOTO:", p)
+            #c[0] = c[0]+1
+            #actuator.servomotor.BaseFrame.dofs.position = c+r
+            
+            #rigid.translate(rigid.forward * step * factor)
             actuator.servomotor.angle = angularstep * factor
 
 

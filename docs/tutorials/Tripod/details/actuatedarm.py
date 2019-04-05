@@ -8,7 +8,7 @@
         - ActuatedArm
         - ServoArm
 """
-from splib.numerics import vec3
+from splib.numerics import vec3, RigidDof
 from splib.objectmodel import SofaPrefab
 from stlib.visuals import VisualModel
 from stlib.components import addOrientedBoxRoi
@@ -18,7 +18,7 @@ from s90servo import ServoMotor
 
 @SofaPrefab
 class ServoArm(object):
-    def __init__(self, parent, mappingInput, name="ServoArm", indexInput=0):
+    def __init__(self, parent, mappingInput, name="ServoArm", indexInput=1):
         """ServoArm is a reusable sofa model of a servo arm for the S90 servo motor
 
            Parameters:
@@ -65,7 +65,7 @@ class ActuatedArm(object):
         self.node = parent.createChild(name)
 
         self.servomotor = ServoMotor(self.node, translation=translation, rotation=eulerRotation)
-        ServoArm(self.node, self.servomotor.ServoWheel.dofs)
+        ServoArm(self.node, self.servomotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs)
 
         if attachingTo is not None:
             constraint = self.addConstraint(attachingTo.dofs.getData("rest_position"), translation, eulerRotation)
@@ -81,15 +81,17 @@ class ActuatedArm(object):
                               eulerRotation=eulerRotation, scale=[45, 15, 30])
         o.drawSize = 1
         o.drawBoxes = False
-
+       
         constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
-                                translation=translation, rotation=eulerRotation, inverse=True)
+                                translation=vec3.vadd(translation, [0.0, 0.0, 0.0]), 
+                                rotation=eulerRotation, inverse=True)
 
         constraint.createObject("MechanicalObject", name="dofs",
                                 template="Vec3d", position="@TransformEngine.output_position",
                                 showObject=True, showObjectScale=5.0)
 
-        constraint.createObject('RigidMapping', name="mapping", input=self.node.ServoMotor.ServoWheel.dofs, output="@./")
+        constraint.createObject('RigidMapping', name="mapping", input=self.node.ServoMotor.BaseFrame.ArticulatedJoint.WheelFrame, output="@./", index=1,
+                                globalToLocalCoords=True)
 
         return constraint
 
@@ -108,7 +110,11 @@ def createScene(rootNode):
     simulation.createObject("EulerImplicitSolver", rayleighStiffness=0.1, rayleighMass=0.1)
     simulation.createObject("CGLinearSolver", name="precond")
 
-    arm = ActuatedArm(simulation, name="ActuatedArm", translation=[0.0, 0.0, 0.0])
+    arm = ActuatedArm(simulation, name="ActuatedArm", translation=[20.0, 40.0, 0.0])
+
+    setData(arm.ServoMotor.BaseFrame.dofs,  showObject=True, showObjectScale=10)
+    setData(arm.ServoMotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs,  showObject=True, showObjectScale=10)
+    
 
     def myanimate(target, factor):
         target.angle = math.cos(factor * 2 * math.pi)

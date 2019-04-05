@@ -52,6 +52,8 @@ class Tripod(SofaObject):
                                                  attachingTo=body.ElasticMaterialObject))
             self.actuatedarms[i].servomotor.angleLimits = [-2.0225, -0.0255]
 
+        #sself.node.init()
+
     def addCollision(self, numMotors=3):
 
         numstep = numMotors
