@@ -49,7 +49,7 @@ namespace engine
 /**
  * This class computes the volume of a given closed surfacic mesh.
  * Description can be found at:
- * https://project.inria.fr/softrobot/documentation/engine/CenterOfMass
+ * https://softrobotscomponents.readthedocs.io
  */
 template <class DataTypes>
 class SOFA_SOFTROBOTS_API CenterOfMass : public core::DataEngine

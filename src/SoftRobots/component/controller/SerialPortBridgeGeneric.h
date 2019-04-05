@@ -61,7 +61,7 @@ using std::string;
  * This component is used to send data (force, displacement, pressure…) through the usb port.
  * Used to send data to an Arduino card to control the real robot.
  * Description can be found at:
- * https://project.inria.fr/softrobot/documentation/controller/serialportbridgegeneric
+ * https://softrobotscomponents.readthedocs.io
  */
 class SOFA_SOFTROBOTS_API SerialPortBridgeGeneric : public Controller
 {

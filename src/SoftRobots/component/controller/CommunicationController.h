@@ -61,7 +61,7 @@ using sofa::helper::vectorData;
 /**
  * This component is used to build a communication between two simulations
  * Description can be found at:
- * https://project.inria.fr/softrobot/documentation/controller/CommunicationController
+ * https://softrobotscomponents.readthedocs.io
  */
 template< class DataTypes >
 class SOFA_SOFTROBOTS_API CommunicationController : public Controller

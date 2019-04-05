@@ -8,6 +8,8 @@ from stlib.scene import Scene
 
 def createScene(rootNode):
     ## Setting the gravity, assuming the length unit is in centimeters
+    rootNode.createObject("RequiredPlugin", name="SofaSparseSolver")
+
     scene = Scene(rootNode, gravity=[0.0,-981.0,0.0])
 
     ## Setting the timestep in seconds
@@ -28,7 +30,7 @@ def createScene(rootNode):
                              rotation=[90.0,0.0,0.0])
     elasticbody.createObject("UniformMass")
 
-    elasticbody.createObject("EulerImplicit")
+    elasticbody.createObject("EulerImplicitSolver")
     elasticbody.createObject("SparseLDLSolver")
 
     ## Visual object

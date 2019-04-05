@@ -10,7 +10,7 @@ def setupanimation(actuators, step, angularstep, rayonMin, rayonMax, factor):
     """
     for actuator in actuators:
             rigid = RigidDof( actuator.dofs )
-            rigid.setPosition( rigid.getRestPosition() + rigid.forward * (rayonMax-rayonMin) * factor )
+            rigid.translate( rigid.forward * step * factor )
             actuator.ServoMotor.angle += angularstep * factor
 
 class MyController(Sofa.PythonScriptController):

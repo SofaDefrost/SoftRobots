@@ -82,7 +82,7 @@ public:
 
 public:
     CableModel(MechanicalState* object = nullptr);
-    virtual ~CableModel();
+    ~CableModel() override;
 
     ////////////////////////// Inherited from BaseObject ////////////////////
     void init() override;
@@ -93,27 +93,23 @@ public:
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Actuator //////////////////////
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams,
-                                       DataMatrixDeriv &cMatrix,
-                                       unsigned int &cIndex,
-                                       const DataVecCoord &x) override;
+    void buildConstraintMatrix(const ConstraintParams* cParams,
+                               DataMatrixDeriv &cMatrix,
+                               unsigned int &cIndex,
+                               const DataVecCoord &x) override;
 
-    virtual void getConstraintViolation(const ConstraintParams* cParams,
-                                        BaseVector *resV,
-                                        const DataVecCoord &xfree,
-                                        const DataVecDeriv &vfree) override;
+    void getConstraintViolation(const ConstraintParams* cParams,
+                                BaseVector *resV,
+                                const BaseVector *Jdx) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from BaseConstraint ////////////////
-    virtual void storeLambda(const ConstraintParams* cParams,
-                             core::MultiVecDerivId res,
-                             const BaseVector* lambda) override;
+    void storeLambda(const ConstraintParams* cParams,
+                     core::MultiVecDerivId res,
+                     const BaseVector* lambda) override;
     /////////////////////////////////////////////////////////////////////////
 
 protected:
-    // To remove in SoftRobots v19.0
-    Data<SetIndexArray>         d_indexDeprecated ;
-    //
 
     Data<SetIndexArray>         d_indices;
     Data<Coord>                 d_pullPoint;
@@ -135,7 +131,6 @@ protected:
     Data<bool>                  d_drawPoints;
     Data<defaulttype::Vec4f>    d_color;
 
-    int                         m_columnIndex;
     bool                        m_hasSlidingPoint;
 
 
@@ -149,6 +144,7 @@ protected:
     /// otherwise any access to the base::attribute would require
     /// using the "this->" approach.
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
+    using SoftRobotsConstraint<DataTypes>::m_constraintId ;
     using SoftRobotsConstraint<DataTypes>::m_state ;
     using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////

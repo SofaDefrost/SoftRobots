@@ -49,7 +49,7 @@ namespace engine
 /**
  * This class returns the volumes of a given volumic mesh.
  * Description can be found at:
- * https://project.inria.fr/softrobot/documentation/engine/VolumeFromTetrahedrons
+ * https://softrobotscomponents.readthedocs.io
  */
 template <class DataTypes>
 class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons : public core::DataEngine

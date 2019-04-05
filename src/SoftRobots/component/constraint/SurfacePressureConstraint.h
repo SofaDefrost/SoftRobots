@@ -91,12 +91,8 @@ protected:
 /**
  * This component constrains a model by applying pressure on surfaces (for exemple cavities).
  * Description can be found at:
- * https://project.inria.fr/softrobot/documentation/constraint/SurfacePressureConstraint
+ * https://softrobotscomponents.readthedocs.io
 */
-
-
-using helper::vector;
-
 template< class DataTypes >
 class SOFA_SOFTROBOTS_API SurfacePressureConstraint : public SurfacePressureModel<DataTypes>
 {

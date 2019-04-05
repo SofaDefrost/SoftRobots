@@ -6,6 +6,7 @@ from stlib.physics.deformable import ElasticMaterialObject
 from stlib.scene import Scene
 
 def createScene(rootNode):
+    rootNode.createObject("RequiredPlugin", name="SofaSparseSolver")
     scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0])
 
     scene.dt = 0.001
@@ -36,7 +37,7 @@ def createScene(rootNode):
                               showObjectScale=5.0)
     elasticbody.createObject("UniformMass", totalMass=0.032)
 
-    elasticbody.createObject("EulerImplicit")
+    elasticbody.createObject("EulerImplicitSolver")
     elasticbody.createObject("SparseLDLSolver")
 
     # ForceField components
