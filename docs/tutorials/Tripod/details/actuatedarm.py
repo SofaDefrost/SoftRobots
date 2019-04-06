@@ -68,26 +68,22 @@ class ActuatedArm(object):
         ServoArm(self.node, self.servomotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs)
 
         if attachingTo is not None:
-            constraint = self.addConstraint(attachingTo.dofs.getData("rest_position"), translation, eulerRotation)
+            constraint = self.addConstraint(self.servomotor.BaseFrame.ArticulatedJoint.WheelFrame, attachingTo.dofs.getData("rest_position"), translation, eulerRotation)
             attachingTo.createObject('RestShapeSpringsForceField', name="rssff"+name,
                                      points=constraint.BoxROI.getData("indices"),
                                      external_rest_shape=constraint.dofs,
                                      stiffness='1e12')
 
-    def addConstraint(self, position, translation, eulerRotation):
-        constraint = self.node.createChild("Constraint")
+    def addConstraint(self, node, position, translation, eulerRotation):
+        constraint = node.createChild("Constraint")
         o = addOrientedBoxRoi(constraint, position=position,
                               translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
                               eulerRotation=eulerRotation, scale=[45, 15, 30])
         o.drawSize = 1
         o.drawBoxes = False
        
-        constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
-                                translation=vec3.vadd(translation, [0.0, 0.0, 0.0]), 
-                                rotation=eulerRotation, inverse=True)
-
         constraint.createObject("MechanicalObject", name="dofs",
-                                template="Vec3d", position="@TransformEngine.output_position",
+                                template="Vec3d", position="@BoxROI.pointsInROI",
                                 showObject=True, showObjectScale=5.0)
 
         constraint.createObject('RigidMapping', name="mapping", input=self.node.ServoMotor.BaseFrame.ArticulatedJoint.WheelFrame, output="@./", index=1,
@@ -112,8 +108,8 @@ def createScene(rootNode):
 
     arm = ActuatedArm(simulation, name="ActuatedArm", translation=[20.0, 40.0, 0.0])
 
-    setData(arm.ServoMotor.BaseFrame.dofs,  showObject=True, showObjectScale=10)
-    setData(arm.ServoMotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs,  showObject=True, showObjectScale=10)
+    #setData(arm.ServoMotor.BaseFrame.dofs,  showObject=True, showObjectScale=10)
+    #setData(arm.ServoMotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs,  showObject=True, showObjectScale=10)
     
 
     def myanimate(target, factor):
