@@ -2,7 +2,7 @@ from splib.numerics import sin, cos, to_radians
 from stlib.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 from stlib.physics.collision import CollisionMesh
-from splib.objectmodel import SofaPrefab, SofaObject
+from splib.objectmodel import SofaPrefab, SofaObject, setData
 from stlib.scene import Scene
 from stlib.physics.mixedmaterial import Rigidify
 from stlib.components import addOrientedBoxRoi
@@ -26,8 +26,6 @@ def ElasticBody(parent):
     visual.createObject("BarycentricMapping",
                         input=e.dofs.getLinkPath(),
                         output=visual.renderer.getLinkPath())
-
-    CollisionMesh(e, surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionModel", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
 
     return body
 
@@ -63,6 +61,8 @@ class Tripod(SofaObject):
         return translation, eulerRotation
 
     def addCollision(self, numMotors=3):
+
+        CollisionMesh(self.node.ElasticBody.ElasticMaterialObject, surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionModel", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
 
         numstep = numMotors
         for i in range(0, numstep):

@@ -37,18 +37,13 @@ def createScene(rootNode):
 
     # Add a target object for the effector
     target = EffectorTarget(rootNode, position=[0., 50, 0])
-
-    # Adding contact handling
-    scene.addContact(alarmDistance=5,
-                     contactDistance=2)
-
+    
     # Set specific solver for inverse problem
-    scene.removeObject(scene.GenericConstraintSolver)
+    scene.createObject("FreeMotionAnimationLoop")
     scene.createObject("QPInverseProblemSolver")
 
     model = scene.createChild("Model")
     tripod = Tripod(model)
-    tripod.addCollision()
 
     # Replace the angle limits constraint by an actuator that will be optimized
     for i in range(3):
@@ -57,7 +52,6 @@ def createScene(rootNode):
 
     # Add a mechanical object for the effector position. We will minimize the distance between this point and its target
     EffectorPosition(tripod.ElasticBody.ElasticMaterialObject, position=[0., 30, 0.], effectorGoal=target.dofs.findData("position"))
-    tripod.ElasticBody.ElasticMaterialObject.createObject("UncoupledConstraintCorrection")
 
     MyController(rootNode, tripod.actuatedarms)
 
@@ -65,5 +59,10 @@ def createScene(rootNode):
                                                  tripod.ActuatedArm1,
                                                  tripod.ActuatedArm2,
                                                  tripod.RigidifiedStruture])
-    interaction.RigidifiedStruture.DeformableParts.createObject("UncoupledConstraintCorrection")
-    interaction.RigidifiedStruture.RigidParts.createObject("UncoupledConstraintCorrection")
+    interaction.removeObject(interaction.CGLinearSolver)
+    interaction.createObject("SparseLDLSolver", name="LDL")
+    interaction.createObject("GenericConstraintCorrection", solverName="LDL")
+    interaction.createObject('MechanicalMatrixMapper', template='Vec3d,Rigid3',
+                             object1=interaction.RigidifiedStruture.DeformableParts.dofs.getLinkPath(),
+                             object2=interaction.RigidifiedStruture.RigidParts.dofs.getLinkPath(),
+                             nodeToParse=tripod.ElasticBody.ElasticMaterialObject.getLinkPath())
