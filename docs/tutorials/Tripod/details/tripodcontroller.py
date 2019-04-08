@@ -6,24 +6,15 @@ from stlib.scene import Scene, Interaction
 from tripod import Tripod
 
 
-def setupanimation(actuators, step, angularstep, factor):
+def setupanimation(actuators, step, angularstep, minRadius, maxRadius, factor):
     """This function is called repeatidely in an animation.
        It moves the actuators by translating & rotating them according to the factor
        value.
     """
     for actuator in actuators:
-            #rigid = RigidDof(actuator.servomotor.BaseFrame.dofs)
-            #actuator.servomotor.BaseFrame.dofs.init()
-            #p = actuator.servomotor.BaseFrame.dofs.position[0]
-            #c = p[:3]
-            #r = p[3:]
-            
-            #print("TOTO:", p)
-            #c[0] = c[0]+1
-            #actuator.servomotor.BaseFrame.dofs.position = c+r
-            
-            #rigid.translate(rigid.forward * step * factor)
-            actuator.servomotor.angle = angularstep * factor
+        rigid = RigidDof( actuator.node.ServoMotor.BaseFrame.dofs )
+        rigid.setPosition( rigid.rest_position + rigid.forward * (maxRadius-minRadius) * factor )
+        actuator.servomotor.angle = angularstep * factor
 
 
 class MyController(Sofa.PythonScriptController):
@@ -44,7 +35,11 @@ class MyController(Sofa.PythonScriptController):
 
     def initTripod(self, key):
         if key == Key.A:
-            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, duration=0.2)
+            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, 
+                                     "angularstep": -0.60,
+                                     "minRadius" : 10,
+                                     "maxRadius" : 40
+                                     }, duration=0.2)
 
     def animateTripod(self, key):
         if key == Key.uparrow:
