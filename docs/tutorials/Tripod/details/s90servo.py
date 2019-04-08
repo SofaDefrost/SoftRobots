@@ -1,26 +1,32 @@
 import os
 from splib.objectmodel import SofaObject, SofaPrefab, setData
+from splib.numerics import RigidDofZero
 from splib.animation import animate
 from stlib.scene import Scene
+import Sofa
 dirPath = os.path.dirname(os.path.abspath(__file__))+'/'
 
-
-RigidDofZero = [0.0,0.0,0.0,0.0,0.0,0.0,1.0]
-
-
-def VisualBody(parent, position=RigidDofZero):
-
-    #servobody = parent.createChild("Visual")
-    #servobody.createObject("MechanicalObject", template="Rigid3d", name="dofs", position=position)
-    
+def VisualBody(parent, position=RigidDofZero):    
     visual = parent.createChild("VisualModel")
-    visual.createObject("MeshTopology")
     visual.createObject("MeshSTLLoader", name="loader", filename=dirPath+"data/mesh/SG90_servomotor.stl")
     visual.createObject("MeshTopology", src="@loader")
     visual.createObject("OglModel", color=[0.15, 0.45, 0.75, 0.7], writeZTransparent=True)
     visual.createObject("RigidMapping", index=0)
-
     return visual
+
+#class DataEngine(Sofa.PythonScriptDataEngine):
+#        def __init__(self, owner, position, rotation):
+#                self.owner = owner 
+#                self.name = "dataupdate"
+
+#                self.addNewInput('position', datatype="Vec3d", value=position)       
+#                self.addNewInput('rotation', datatype="Vec3d", value=rotation)       
+#               self.rigiddof = self.addNewOutput("rigiddof", datatype="vector<double>", value=RigidDofZero)
+
+ #       def update(self):   
+ #               print("UPDATE")
+                #self.angleInDegree = self.angleInput[0][0] / (2 * 3.14) * 360
+
 
 @SofaPrefab
 class ServoMotor(SofaObject):
@@ -62,11 +68,20 @@ class ServoMotor(SofaObject):
 
         self.node = parent.createChild("ServoMotor")
 
+         ## The inputs
+        self.node.addNewData("angleIn", "S90Properties", "angle of rotation (in radians)", "float", 0)
+        #self.node.addNewData("positionIn", "S90Properties", "position of the basis of the servo", "Vec3d", [0,0,0])
+        #self.node.addNewData("rotationIn", "S90Properties", "position of the basis of the servo", "Vec3d", [0,0,0])
+
         # Two positions (rigid): first one for the servo body, second for the servo wheel
         position = self.node.createChild("BaseFrame")
+        #e = DataEngine(position, 
+        #               self.node.getData("positionIn").getLinkPath(), 
+        #               self.node.getData("rotationIn").getLinkPath())
+        
         position.createObject("MechanicalObject", name="dofs", 
                               template="Rigid3", 
-                              position=[RigidDofZero],
+                              #position=e.rigiddofs.getLinkPath(),
                               translation=translation, rotation=rotation,
                               #translation2=translation, rotation2=rotation, 
                               scale3d=scale)
@@ -75,7 +90,7 @@ class ServoMotor(SofaObject):
 
         # Angle of the wheel
         angle = position.createChild("ArticulatedJoint")
-        angle.createObject("MechanicalObject", name="dofs", template="Vec1d", position=0)
+        angle.createObject("MechanicalObject", name="dofs", template="Vec1d", position=self.node.getData("angleIn").getLinkPath())
 
         # This component is used to constrain the angle to lie between a maximum and minimum value,
         # corresponding to the limit of the real servomotor
@@ -93,42 +108,43 @@ class ServoMotor(SofaObject):
         articulation = articulationCenter.createChild("Articulations")
         articulation.createObject("Articulation", translation=False, rotation=True, rotationAxis=[1, 0, 0], articulationIndex=0)
 
+        s = self.node.addNewData("angleOut", "S90Properties", "angle of rotation (in degree)", "float", angle.dofs.getData("position").getLinkPath())
+
         # ServoBody and ServoWheel objects with visual
         servobody = VisualBody(self.BaseFrame)
-        #servobody.createObject("RigidRigidMapping", input=self.node.BaseFrame.dofs.getLinkPath(), output=servobody.dofs.getLinkPath(), index=0)
-
-        #servowheel = ServoWheel(self.node, showWheel=showWheel)
-        #servowheel.createObject("RigidRigidMapping", input=self.node.BaseFrame.dofs.getLinkPath(), output=servowheel.dofs.getLinkPath(), index=1)
 
         self.node.init()
         self.node.BaseFrame.dofs.translation = [0,0,0]
         self.node.BaseFrame.dofs.rotation = [0,0,0]
-        
-    def setAngle(self, angle):
-        self.node.BaseFrame.ArticulatedJoint.dofs.position = angle
-
-    def getAngle(self):
-        return self.node.BaseFrame.ArticulatedJoint.dofs.position[0][0]
 
     def setAngleLimits(self, angleLimits):
         self.node.BaseFrame.ArticulatedJoint.AngleLimits.min = angleLimits[0]
         self.node.BaseFrame.ArticulatedJoint.AngleLimits.max = angleLimits[1]
 
-    angle = property(getAngle, setAngle)
     angleLimits = property(fset=setAngleLimits)
-
-    def setX(self, x, index=0):
-        pass
-        #position = self.BaseFrame.dofs.position
-        #position[index][0] = x
-        #self.BaseFrame.dofs.position = position
-
-
+                
 def createScene(rootNode):
     import math
-    def animation(target, factor):
-        target.angle = math.cos(factor * 2 * math.pi)
-        #target.setX(math.cos(factor * 2 * math.pi))
+    import Sofa
+    from splib.constants import Key
+    from splib.animation import animate
+    
+    def animation(self, factor):
+        if self.doIncr:
+            self.target.angleIn = math.sin(factor * math.pi/4)
+            
+            print("AngleInput           : ", self.target.angleIn)
+            print("AngleOutput          : ", self.target.angleOut)                        
+
+    class KeyBoardActions(Sofa.PythonScriptController):        
+        def __init__(self, node, target):
+                self.target = target
+                self.doIncr = True
+                self.animation = animate(animation, {"self" : self}, duration=5., mode="loop")
+                
+        def onKeyPressed(self, key):
+            if key == Key.A:
+                self.doIncr = not self.doIncr
 
     Scene(rootNode)
 
@@ -144,10 +160,10 @@ def createScene(rootNode):
     simulation.createObject("EulerImplicitSolver", rayleighStiffness=0.1, rayleighMass=0.1)
     simulation.createObject("CGLinearSolver", name="precond")
 
-    servomotor = ServoMotor(simulation, showWheel=True)
-    animate(animation, {"target": servomotor}, duration=5., mode="loop")
+    ServoMotor(simulation, showWheel=True)
+    KeyBoardActions(simulation, simulation.ServoMotor)
 
-    setData(servomotor.BaseFrame.dofs,  showObject=True, showObjectScale=10)
-    setData(servomotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs,  showObject=True, showObjectScale=10)
+    setData(simulation.ServoMotor.BaseFrame.dofs,  showObject=True, showObjectScale=10)
+    setData(simulation.ServoMotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs,  showObject=True, showObjectScale=10)
 
     return rootNode

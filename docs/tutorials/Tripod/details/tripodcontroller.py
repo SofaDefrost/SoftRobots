@@ -12,12 +12,12 @@ def setupanimation(actuators, step, angularstep, minRadius, maxRadius, factor):
        value.
     """
     for actuator in actuators:
-        rigid = RigidDof( actuator.node.ServoMotor.BaseFrame.dofs )
+        rigid = RigidDof( actuator.ServoMotor.BaseFrame.dofs )
         rigid.setPosition( rigid.rest_position + rigid.forward * (maxRadius-minRadius) * factor )
-        actuator.servomotor.angle = angularstep * factor
+        actuator.angleIn = angularstep * factor
 
 
-class MyController(Sofa.PythonScriptController):
+class TripodController(Sofa.PythonScriptController):
     """This controller has two roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
@@ -26,7 +26,7 @@ class MyController(Sofa.PythonScriptController):
     """
 
     def __init__(self, node, actuators):
-        self.stepsize = 0.1
+        self.stepsize = 0.01
         self.actuators = actuators
 
     def onKeyPressed(self, key):
@@ -36,26 +36,26 @@ class MyController(Sofa.PythonScriptController):
     def initTripod(self, key):
         if key == Key.A:
             animate(setupanimation, {"actuators": self.actuators, "step": 35.0, 
-                                     "angularstep": -0.60,
+                                     "angularstep": -0.25,
                                      "minRadius" : 10,
                                      "maxRadius" : 40
                                      }, duration=0.2)
 
     def animateTripod(self, key):
         if key == Key.uparrow:
-            self.actuators[0].servomotor.angle += self.stepsize
+            self.actuators[0].angleIn += self.stepsize
         elif key == Key.downarrow:
-            self.actuators[0].servomotor.angle -= self.stepsize
+            self.actuators[0].angleIn -= self.stepsize
 
         if key == Key.leftarrow:
-            self.actuators[1].servomotor.angle += self.stepsize
+            self.actuators[1].angleIn += self.stepsize
         elif key == Key.rightarrow:
-            self.actuators[1].servomotor.angle -= self.stepsize
+            self.actuators[1].angleIn -= self.stepsize
 
         if key == Key.plus:
-            self.actuators[2].servomotor.angle += self.stepsize
+            self.actuators[2].angleIn += self.stepsize
         elif key == Key.minus:
-            self.actuators[2].servomotor.angle -= self.stepsize
+            self.actuators[2].angleIn -= self.stepsize
 
 
 def createScene(rootNode):

@@ -12,9 +12,7 @@ from splib.numerics import vec3, RigidDof
 from splib.objectmodel import SofaPrefab
 from stlib.visuals import VisualModel
 from stlib.components import addOrientedBoxRoi
-
 from s90servo import ServoMotor
-
 
 @SofaPrefab
 class ServoArm(object):
@@ -64,8 +62,14 @@ class ActuatedArm(object):
 
         self.node = parent.createChild(name)
 
+        
         self.servomotor = ServoMotor(self.node, translation=translation, rotation=eulerRotation)
         ServoArm(self.node, self.servomotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs)
+
+        ## Create a public attribute and connect it to the private one.
+        self.node.addNewData("angleIn", "ArmProperties", "angle of rotation (in radians) of the arm", "float", 0)      
+        self.node.ServoMotor.getData("angleIn").setParent(self.node.getData("angleIn"))
+
 
         if attachingTo is not None:
             constraint = self.addConstraint(self.servomotor.BaseFrame.ArticulatedJoint.WheelFrame, 
@@ -140,7 +144,8 @@ def createScene(rootNode):
     setData(arm.ServoArm.dofs,  showObject=True, showObjectScale=10)
     
     def myanimate(target, factor):
-        target.angle = math.cos(factor * 2 * math.pi)
-        target.setX(math.cos(factor * 2 * math.pi))
+        factor = math.cos(factor*2*math.pi)
+        target.angleIn = math.sin(factor*0.2 )
+        RigidDof(target.ServoMotor.BaseFrame.dofs).setPosition( [math.cos(factor * math.pi), 0.0, 0.0] )
 
-    animate(myanimate, {"target": arm.servomotor}, duration=5, mode="loop")
+    animate(myanimate, {"target": simulation.ActuatedArm}, duration=1, mode="loop")
