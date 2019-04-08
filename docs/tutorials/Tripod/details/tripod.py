@@ -23,8 +23,9 @@ def ElasticBody(parent):
                         input=e.dofs.getLinkPath(),
                         output=visual.renderer.getLinkPath())
 
-    CollisionMesh(e, surfaceMeshFileName="data/mesh/tripod_low.stl", name="silicone", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
+    CollisionMesh(e, surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionMesh", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
 
+    body.init()    
     return body
 
 

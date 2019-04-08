@@ -68,11 +68,36 @@ class ActuatedArm(object):
         ServoArm(self.node, self.servomotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs)
 
         if attachingTo is not None:
-            constraint = self.addConstraint(self.servomotor.BaseFrame.ArticulatedJoint.WheelFrame, attachingTo.dofs.getData("rest_position"), translation, eulerRotation)
+            constraint = self.addConstraint(self.servomotor.BaseFrame.ArticulatedJoint.WheelFrame, 
+                                            attachingTo.dofs.getData("rest_position"), translation, eulerRotation)
             attachingTo.createObject('RestShapeSpringsForceField', name="rssff"+name,
                                      points=constraint.BoxROI.getData("indices"),
                                      external_rest_shape=constraint.dofs,
                                      stiffness='1e12')
+
+        self.node.init()
+
+    def addHandle(self, translation,eulerRotation=None):
+        constraint = self.node.createChild("Handler")
+        o = addOrientedBoxRoi(constraint, 
+                              name="boxroi",
+                              position=[0.0,0.0,0.0],
+                              translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
+                              eulerRotation=eulerRotation, scale=[45, 15, 30])
+        
+        m = constraint.createObject("MechanicalObject", name="slavedofs", template="Rigid3", position=[0.0,25.0,0.0,0,0,0,1])
+        constraint.createObject("RigidRigidMapping", 
+                               input=self.servomotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs.getLinkPath(), index=1, 
+                               output=m.getLinkPath())
+        
+        m.showObject=True
+        m.showObjectScale=10.0
+        m.drawMode = 4
+        o.drawSize = 1
+        o.drawBoxes = False
+        
+        constraint.init()
+        return constraint    
 
     def addConstraint(self, node, position, translation, eulerRotation):
         constraint = node.createChild("Constraint")
@@ -95,6 +120,7 @@ class ActuatedArm(object):
 def createScene(rootNode):
     from splib.animation import animate
     from stlib.scene import Scene
+    from splib.objectmodel import setData
     import math
 
     scene = Scene(rootNode)
@@ -107,11 +133,12 @@ def createScene(rootNode):
     simulation.createObject("CGLinearSolver", name="precond")
 
     arm = ActuatedArm(simulation, name="ActuatedArm", translation=[20.0, 40.0, 0.0])
-
-    #setData(arm.ServoMotor.BaseFrame.dofs,  showObject=True, showObjectScale=10)
-    #setData(arm.ServoMotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs,  showObject=True, showObjectScale=10)
+    arm.addHandle(translation=[0,0,0])
     
-
+    setData(arm.ServoMotor.BaseFrame.dofs,  showObject=True, showObjectScale=10)
+    setData(arm.ServoMotor.BaseFrame.ArticulatedJoint.WheelFrame.slavedofs,  showObject=True, showObjectScale=10)
+    setData(arm.ServoArm.dofs,  showObject=True, showObjectScale=10)
+    
     def myanimate(target, factor):
         target.angle = math.cos(factor * 2 * math.pi)
         target.setX(math.cos(factor * 2 * math.pi))

@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Step 4: Adding the ActuatedArm prefab.
+Step 4: Adding the ActuatedArm prefab and connect it to the deformable object.
 This prefab is defining the servomotor, the servo-arm and the constraint that attaches the end of the arm to the deformable object.
 """
 from splib.numerics import sin, cos, to_radians
 from stlib.scene import Scene, Interaction
+from splib.animation import animate
 from actuatedarm import ActuatedArm
 from tripod import ElasticBody
 from splib.objectmodel import SofaPrefab, SofaObject
-
+from fixingbox import FixingBox
 
 # Let's define a Tripod prefab now, that we can later call in the createScene function
 @SofaPrefab
@@ -19,6 +20,13 @@ class Tripod(SofaObject):
 
         # It is using the ElasticBody that was made in the previous step, and that has also been included in the tripod.py script.
         body = ElasticBody(self.node)
+
+        # Instanciating the FixingBox prefab into the graph, constraining the mechanical object of the ElasticBody.
+        fix = FixingBox(parent,
+                    body.ElasticMaterialObject,
+                    translation=[0.0, 25.0, 0.0],
+                    scale=[10., 10., 10.])
+        parent.FixingBox.boxroi.drawBoxes = True
 
         # The actuated arms are positionned around the silicone piece using a loop structure
         dist = radius
@@ -34,8 +42,7 @@ class Tripod(SofaObject):
             translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
 
             self.actuatedarms.append(ActuatedArm(self.node, name=name,
-                                                 translation=translation, eulerRotation=eulerRotation,
-                                                 attachingTo=body.ElasticMaterialObject))
+                                                 translation=translation, eulerRotation=eulerRotation))
 
 
 def createScene(rootNode):
@@ -47,9 +54,18 @@ def createScene(rootNode):
     scene.createObject("OglModel", src="@loader")
 
     tripod = Tripod(rootNode)
-    for arm in tripod.actuatedarms:
-        arm.Constraint.BoxROI.drawBoxes = True
+    #for arm in tripod.actuatedarms:
+    #    arm.Constraint.BoxROI.drawBoxes = True
 
+    def myanimate(targets, factor):
+        import math
+        for arm in targets:
+                arm.ServoMotor.BaseFrame.ArticulatedJoint.dofs.position = math.sin( -factor*0.5 )     
+    
+    animate(myanimate, {"targets":[tripod.ActuatedArm0,
+                                   tripod.ActuatedArm1,
+                                   tripod.ActuatedArm2]}, duration=4)
+        
     Interaction(rootNode, targets=[tripod.ActuatedArm0,
                                    tripod.ActuatedArm1,
                                    tripod.ActuatedArm2])
