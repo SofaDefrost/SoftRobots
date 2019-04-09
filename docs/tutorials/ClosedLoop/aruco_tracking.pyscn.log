@@ -1,0 +1,9 @@
+
+--- NEW SESSION: 10/04/2019 00:11:21 ---
+/Modelling/Tripod/ActuatedArm0/ServoMotor/BaseFrame/dofs.position = 7.34788e-15 -1.35 -60 0 0 0 1
+
+--- NEW SESSION: 10/04/2019 00:13:32 ---
+/Modelling/Tripod/ActuatedArm0/ServoMotor/BaseFrame/dofs.velocity = -85.8021 -176.558 210.727 0 0 0
+/Modelling/Tripod/ActuatedArm0/ServoMotor/BaseFrame/dofs.force = 0 0 0 0 0 0
+/Modelling/Tripod/ActuatedArm0/ServoMotor/BaseFrame/dofs.externalForce = 
+/Modelling/Tripod/ActuatedArm0/ServoMotor/BaseFrame/dofs.10(V_DERIV) = 0 0 0 0 0 0

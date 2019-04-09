@@ -3,6 +3,7 @@ from splib.numerics import RigidDof
 from splib.animation import animate
 from splib.constants import Key
 from stlib.scene import Scene, Interaction
+from tutorial import *
 from tripod import Tripod
 
 
@@ -16,6 +17,13 @@ def setupanimation(actuators, step, angularstep, minRadius, maxRadius, factor):
         rigid.setPosition( rigid.rest_position + rigid.forward * (maxRadius-minRadius) * factor )
         actuator.angleIn = angularstep * factor
 
+def saveTripodPosition(actuators, step, angularstep, minRadius, maxRadius, factor):
+        t = []
+        for actuator in actuators:
+                t.append(actuator.ServoMotor.BaseFrame.dofs.getData("position"))
+                t.append(actuator.ServoMotor.getData("angleIn"))
+
+        dumpPosition(t, "tripodRestPosition.json")
 
 class TripodController(Sofa.PythonScriptController):
     """This controller has two roles:
@@ -39,7 +47,7 @@ class TripodController(Sofa.PythonScriptController):
                                      "angularstep": -0.25,
                                      "minRadius" : 10,
                                      "maxRadius" : 40
-                                     }, duration=0.2)
+                                     }, duration=0.2, onDone=saveTripodPosition)
 
     def animateTripod(self, key):
         if key == Key.uparrow:

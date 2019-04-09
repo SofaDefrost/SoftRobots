@@ -1,0 +1,42 @@
+# coding: utf8
+import sys, os
+sys.path.append("../Tripod/details")
+from splib.objectmodel import setData, setTreeData
+import sofaros
+import numpy
+from tutorial import *
+from tripod import Tripod
+
+  
+def recv(data, datafield):
+        t = data.tolist()
+        print("VALUes: "+str(data))
+        datafield.value = [-t[0]*1000, -t[1]*1000, -t[2]*1000]
+
+
+def createScene(rootNode):    
+        sofaros.init("SofaNode")
+        
+        scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0])
+        setData(scene, dt=0.025)
+        setData(scene.VisualStyle, displayFlags = "showBehavior")
+
+        # Instanciate the Tripod
+        Tripod(scene.Modelling)
+        loadPosition(scene.Modelling, "tripodRestPosition.json")
+                        
+        scene.Simulation.addChild(scene.Modelling.Tripod)
+
+        # The tracking. 
+        a=rootNode.createChild("Tracking")
+        a.createObject("MechanicalObject", name="receiver", position=[0.0,0.0,0.0])
+        setData(a.receiver, showObject=True, showObjectScale=10.0)
+        
+        ## Create a data receiver attached in the tracking node 
+        ## Listening on the ROS topic: "/aruco/sender/position"
+        ## The data are floating points values. 
+        ## Use the recv method to convert the data from ROS to sofa. 
+        sofaros.RosReceiver(a, "/aruco/sender/position", 
+                            a.receiver.findData("position"), sofaros.numpy_msg(sofaros.Floats), recv)
+        
+        return rootNode
