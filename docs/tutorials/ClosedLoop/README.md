@@ -1,4 +1,5 @@
 Install ros,
+git clone https://github.com/njanirudh/Aruco_Tracker
 
 To run the example:
 - source it,
