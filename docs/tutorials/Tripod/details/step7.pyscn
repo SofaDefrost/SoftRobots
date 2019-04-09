@@ -10,10 +10,10 @@ The important component to see in the graph are:
 """
 import Sofa
 from splib.constants import Key
-from stlib.scene import Scene, Interaction
 from stlib.physics.rigid import Sphere
+from tutorial import *
 from tripod import Tripod
-from tripodcontroller import MyController
+from tripodcontroller import TripodController
 
 
 class JumpController(Sofa.PythonScriptController):
@@ -36,31 +36,28 @@ class JumpController(Sofa.PythonScriptController):
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0, -9810, 0])
-    rootNode.dt = 0.01
-    scene.VisualStyle.displayFlags = "showForceFields"
-
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
-
+    scene = Scene(rootNode)
+    
     # Adding contact handling
-    scene.addContact(alarmDistance=5,
-                     contactDistance=2)
+    addContact(scene, alarmDistance=5, contactDistance=2)
 
-    model = scene.createChild("Model")
-    Sphere(model, translation=[0.0, 40.0, 0.0],
+    Sphere(scene.Modelling, 
+           translation=[0.0, 40.0, 0.0],
            uniformScale=10.,
-           totalMass=0.005)
+           totalMass=0.01)
 
-    tripod = Tripod(model)
-    tripod.addCollision()
+    tripod = Tripod(scene.Modelling)    
+    TripodController(scene.Modelling, [tripod.ActuatedArm0,tripod.ActuatedArm1, tripod.ActuatedArm2])
 
-    # The regular controller that is being used for the last 2 steps
-    MyController(rootNode, tripod.actuatedarms)
+    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    scene.Simulation.addChild(scene.Modelling.Sphere)
+    motors = scene.Simulation.createChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)
+   
+    setTreeData(scene.Modelling, "Rigidified.*/dofs", 
+                showObject = True, 
+                showObjectScale = 5.0)
 
-    # The additionnal controller that add two predefined positions for the three servomotors
-    JumpController(rootNode, tripod.actuatedarms)
-
-    Interaction(rootNode, [tripod.ActuatedArm0,
-                           tripod.ActuatedArm1,
-                           tripod.ActuatedArm2])
+    
