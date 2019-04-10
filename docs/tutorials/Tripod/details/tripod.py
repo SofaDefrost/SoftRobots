@@ -94,19 +94,19 @@ class Tripod(SofaObject):
         rigidifiedstruct.DeformableParts.createObject("UncoupledConstraintCorrection")
         rigidifiedstruct.RigidParts.createObject("UncoupledConstraintCorrection")
 
-        # Attach arms
-        for i in range(0, numstep):
-            rigidifiedstruct.RigidParts.createObject('RestShapeSpringsForceField', name="rssff"+str(i),
-                                                     points=i,
-                                                     external_rest_shape=self.actuatedarms[i].servoarm.dofs,
-                                                     stiffness='1e12', angularStiffness='1e12')
-
         # Use this to activate some rendering on the rigidified object ######################################
         # setData(rigidifiedstruct.RigidParts.dofs, showObject=True, showObjectScale=10, drawMode=2)
         # setData(rigidifiedstruct.RigidParts.RigidifiedParticules.dofs, showObject=True, showObjectScale=1,
         #         drawMode=1, showColor=[1., 1., 0., 1.])
         # setData(rigidifiedstruct.DeformableParts.dofs, showObject=True, showObjectScale=1, drawMode=2)
         #####################################################################################################
+
+        # Attach arms
+        for i in range(0, numstep):
+            rigidifiedstruct.RigidParts.createObject('RestShapeSpringsForceField', name="rssff"+str(i),
+                                                     points=i,
+                                                     external_rest_shape=self.actuatedarms[i].servoarm.dofs,
+                                                     stiffness='1e12', angularStiffness='1e12')
 
 
 def createScene(rootNode):

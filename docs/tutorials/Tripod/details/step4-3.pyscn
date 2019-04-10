@@ -95,6 +95,13 @@ class Tripod(SofaObject):
                 drawMode=1, showColor=[1., 1., 0., 1.])
         setData(rigidifiedstruct.DeformableParts.dofs, showObject=True, showObjectScale=1, drawMode=2)
 
+        # Attach arms
+        for i in range(0, numstep):
+            rigidifiedstruct.RigidParts.createObject('RestShapeSpringsForceField', name="rssff"+str(i),
+                                                     points=i,
+                                                     external_rest_shape=self.actuatedarms[i].servoarm.dofs,
+                                                     stiffness='1e12', angularStiffness='1e12')
+
 
 def createScene(rootNode):
     from splib.animation import animate
@@ -108,9 +115,6 @@ def createScene(rootNode):
     tripod = Tripod(scene.Modelling)
     FixingBox(tripod, tripod.ElasticBody.ElasticMaterialObject, scale=[10, 10, 10], translation=[0., 25, 0.])
     tripod.FixingBox.BoxROI.drawBoxes = True
-    tripod.BoxROI0.drawBoxes = True
-    tripod.BoxROI1.drawBoxes = True
-    tripod.BoxROI2.drawBoxes = True
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
     motors = scene.Simulation.createChild("Motors")
