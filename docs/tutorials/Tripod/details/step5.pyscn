@@ -3,34 +3,26 @@
 Step 5: Adding a controller.
 The controller will connect user actions to the simulated behaviour.
 """
-from stlib.scene import Scene, Interaction
+from tutorial import *
 from tripod import Tripod
 
 """
 The controller is implemented in this file: tripodcontroller.py
 """
-from tripodcontroller import MyController
+from tripodcontroller import TripodController
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
-    rootNode.dt = 0.01
+    scene = Scene(rootNode)
+
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    scene.createObject("FreeMotionAnimationLoop")
-    scene.createObject("GenericConstraintSolver", maxIterations=1e3, tolerance=1e-5)
+    tripod = Tripod(scene.Modelling)
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
+    TripodController(scene, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
 
-    model = scene.createChild("Model")
-    tripod = Tripod(model)
-
-    MyController(rootNode, tripod.actuatedarms)
-
-    interaction = Interaction(rootNode, targets=[tripod.ActuatedArm0,
-                                                 tripod.ActuatedArm1,
-                                                 tripod.ActuatedArm2,
-                                                 tripod.RigidifiedStruture])
-    interaction.RigidifiedStruture.DeformableParts.createObject("UncoupledConstraintCorrection")
-    interaction.RigidifiedStruture.RigidParts.createObject("UncoupledConstraintCorrection")
+    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    motors = scene.Simulation.createChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)

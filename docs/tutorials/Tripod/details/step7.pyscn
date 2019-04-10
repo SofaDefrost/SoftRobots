@@ -10,10 +10,10 @@ The important component to see in the graph are:
 """
 import Sofa
 from splib.constants import Key
-from stlib.scene import Scene, Interaction
 from stlib.physics.rigid import Sphere
 from tripod import Tripod
-from tripodcontroller import MyController
+from tripodcontroller import TripodController
+from tutorial import *
 
 
 class JumpController(Sofa.PythonScriptController):
@@ -32,38 +32,31 @@ class JumpController(Sofa.PythonScriptController):
 
         if apos is not None:
             for actuator in self.actuators:
-                actuator.servomotor.angle = apos
+                actuator.ServoMotor.angleIn = apos
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0, -9810, 0])
-    rootNode.dt = 0.01
+    scene = Scene(rootNode, plugins=["SoftRobots"])
+
     scene.VisualStyle.displayFlags = "showForceFields"
-
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
-
     # Adding contact handling
-    scene.addContact(alarmDistance=5,
-                     contactDistance=2)
+    addContact(scene, alarmDistance=5, contactDistance=1)
 
-    model = scene.createChild("Model")
-    Sphere(model, translation=[0.0, 40.0, 0.0],
-           uniformScale=10.,
-           totalMass=0.005)
-
-    tripod = Tripod(model)
+    tripod = Tripod(scene.Modelling)
     tripod.addCollision()
 
+    Sphere(scene, translation=[0.0, 40.0, 0.0],
+           uniformScale=10.,
+           totalMass=5)
+
     # The regular controller that is being used for the last 2 steps
-    MyController(rootNode, tripod.actuatedarms)
+    TripodController(scene, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
 
     # The additionnal controller that add two predefined positions for the three servomotors
-    JumpController(rootNode, tripod.actuatedarms)
+    JumpController(scene, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
 
-    interaction = Interaction(rootNode, targets=[tripod.ActuatedArm0,
-                                                 tripod.ActuatedArm1,
-                                                 tripod.ActuatedArm2,
-                                                 tripod.RigidifiedStruture])
-    interaction.RigidifiedStruture.DeformableParts.createObject("UncoupledConstraintCorrection")
-    interaction.RigidifiedStruture.RigidParts.createObject("UncoupledConstraintCorrection")
+    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    motors = scene.Simulation.createChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)

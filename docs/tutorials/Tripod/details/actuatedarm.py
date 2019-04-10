@@ -112,7 +112,6 @@ def createScene(rootNode):
     arm = ActuatedArm(simulation, name="ActuatedArm", translation=[0.0, 0.0, 0.0])
 
     def myanimate(target, factor):
-        target.angle = math.cos(factor * 2 * math.pi)
-        target.setX(math.cos(factor * 2 * math.pi))
+        target.angleIn = math.cos(factor * 2 * math.pi)
 
-    animate(myanimate, {"target": arm.servomotor}, duration=5, mode="loop")
+    animate(myanimate, {"target": arm.ServoMotor}, duration=5, mode="loop")

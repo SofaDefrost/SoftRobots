@@ -3,15 +3,15 @@
 Step 6: Here we are showing how to setup a communication with the servomotors
 """
 import Sofa
-from stlib.scene import Scene, Interaction
+from tutorial import *
 from splib.animation import animate
 from splib.constants import Key
 from math import floor, pi
 from tripod import Tripod
-from tripodcontroller import MyController, setupanimation
+from tripodcontroller import TripodController, setupanimation
 
 
-class MyControllerWithCom(MyController):
+class TripodControllerWithCom(TripodController):
     """This controller has three roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
@@ -22,7 +22,7 @@ class MyControllerWithCom(MyController):
     """
 
     def __init__(self, node, actuators, serialportctrl):
-        MyController.__init__(self, node, actuators)
+        TripodController.__init__(self, node, actuators)
         self.serialportctrl = serialportctrl
 
     def initTripod(self, key):
@@ -62,7 +62,7 @@ class SerialPortController(Sofa.PythonScriptController):
 
         for arm in self.actuatedarms:
             # Conversion of the angle values from radians to degrees
-            angleDegree = arm.servomotor.angle*360/(2.0*pi)
+            angleDegree = arm.ServoMotor.angleOut*360/(2.0*pi)
             angleByte = int(floor(angleDegree)) + 179
 
             # Limitation of the angular position's command
@@ -79,30 +79,21 @@ class SerialPortController(Sofa.PythonScriptController):
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810., 0.0], plugins=["SoftRobots"])
-    rootNode.dt = 0.01
+    scene = Scene(rootNode, plugins=["SoftRobots"])
+
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    scene.createObject("FreeMotionAnimationLoop")
-    scene.createObject("GenericConstraintSolver", maxIterations=1e3, tolerance=1e-5)
+    tripod = Tripod(scene.Modelling)
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
-
-    model = scene.createChild("Model")
-    tripod = Tripod(model)
-
-    serial = SerialPortBridgeGeneric(rootNode)
+    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    motors = scene.Simulation.createChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)
 
     # The real robot receives data from the 3 actuators
-    serialportctrl = SerialPortController(rootNode, tripod.actuatedarms, serial)
+    serial = SerialPortBridgeGeneric(scene)
+    serialportctrl = SerialPortController(scene, tripod.actuatedarms, serial)
 
     # The simulation's control with keystrokes is still available
-    MyControllerWithCom(rootNode, tripod.actuatedarms, serialportctrl)
-
-    interaction = Interaction(rootNode, targets=[tripod.ActuatedArm0,
-                                                 tripod.ActuatedArm1,
-                                                 tripod.ActuatedArm2,
-                                                 tripod.RigidifiedStruture])
-    interaction.RigidifiedStruture.DeformableParts.createObject("UncoupledConstraintCorrection")
-    interaction.RigidifiedStruture.RigidParts.createObject("UncoupledConstraintCorrection")
+    TripodControllerWithCom(scene, tripod.actuatedarms, serialportctrl)

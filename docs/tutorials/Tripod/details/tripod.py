@@ -2,12 +2,12 @@ from splib.numerics import sin, cos, to_radians
 from stlib.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 from stlib.physics.collision import CollisionMesh
-from splib.objectmodel import SofaPrefab, SofaObject, setData
-from stlib.scene import Scene
+from splib.objectmodel import SofaPrefab, SofaObject
 from stlib.physics.mixedmaterial import Rigidify
 from stlib.components import addOrientedBoxRoi
 from splib.numerics import vec3
 from splib.numerics.quat import Quat
+from tutorial import *
 
 
 def ElasticBody(parent):
@@ -43,14 +43,16 @@ class Tripod(SofaObject):
         for i in range(0, numstep):
             name = "ActuatedArm"+str(i)
             translation, eulerRotation = self.__getTransform(i, numstep, angleShift, radius, dist)
-            self.actuatedarms.append(ActuatedArm(self.node, name=name,
-                                                 translation=translation, eulerRotation=eulerRotation))
-            self.actuatedarms[i].servomotor.angleLimits = [-2.0225, -0.0255]
+            arm = ActuatedArm(self.node, name=name,
+                              translation=translation, eulerRotation=eulerRotation)
+            self.actuatedarms.append(arm)
+            # Add limits to angle that correspond to limits on real robot
+            arm.ServoMotor.minAngle = -2.0225
+            arm.ServoMotor.maxAngle = -0.0255
 
         self.__attachToActuatedArms(radius, numMotors, angleShift)
 
     def __getTransform(self, index, numstep, angleShift, radius, dist):
-
         fi = float(index)
         fnumstep = float(numstep)
         angle = fi*360/fnumstep
@@ -60,18 +62,15 @@ class Tripod(SofaObject):
 
         return translation, eulerRotation
 
-    def addCollision(self, numMotors=3):
-
+    def addCollision(self):
         CollisionMesh(self.node.ElasticBody.ElasticMaterialObject, surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionModel", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
 
-        numstep = numMotors
-        for i in range(0, numstep):
-            CollisionMesh(self.actuatedarms[i].ServoMotor.ServoBody,
+        for arm in self.actuatedarms:
+            CollisionMesh(arm.ServoMotor.ServoBody,
                           surfaceMeshFileName="data/mesh/servo_collision.stl",
                           name="TopServoCollision", mappingType='RigidMapping')
 
     def __attachToActuatedArms(self, radius=60, numMotors=3, angleShift=180.0):
-
         deformableObject = self.node.ElasticBody.ElasticMaterialObject
 
         dist = radius
@@ -90,8 +89,12 @@ class Tripod(SofaObject):
             groupIndices.append([ind[0] for ind in box.indices])
             frames.append(vec3.vadd(translation, [0.0, 25.0, 0.0]) + list(Quat.createFromEuler([0, float(i)*360/float(numstep), 0], inDegree=True)))
 
-        rigidifiedstruct = Rigidify(self.node, deformableObject, groupIndices=groupIndices, frames=frames, name="RigidifiedStruture")
+        # Rigidify the deformable part at extremity to attach arms
+        rigidifiedstruct = Rigidify(self.node, deformableObject, groupIndices=groupIndices, frames=frames, name="RigidifiedStructure")
+        rigidifiedstruct.DeformableParts.createObject("UncoupledConstraintCorrection")
+        rigidifiedstruct.RigidParts.createObject("UncoupledConstraintCorrection")
 
+        # Attach arms
         for i in range(0, numstep):
             rigidifiedstruct.RigidParts.createObject('RestShapeSpringsForceField', name="rssff"+str(i),
                                                      points=i,
@@ -107,16 +110,14 @@ class Tripod(SofaObject):
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0])
-    rootNode.dt = 0.025
+    scene = Scene(rootNode)
+
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
+    tripod = Tripod(scene.Modelling)
 
-    tripod = Tripod(rootNode)
-    tripod.createObject("EulerImplicitSolver")
-    tripod.createObject("CGLinearSolver")
-    tripod.BoxROI0.drawBoxes = True
-    tripod.BoxROI1.drawBoxes = True
-    tripod.BoxROI2.drawBoxes = True
+    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    motors = scene.Simulation.createChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)

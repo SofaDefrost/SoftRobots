@@ -3,25 +3,23 @@
 Step 4: Adding the ActuatedArm prefab.
 This prefab is defining the servomotor, the servo-arm and the constraint that attaches the end of the arm to the deformable object.
 """
-from stlib.scene import Scene, Interaction
+from tutorial import *
 # Let's define a Tripod prefab in tripod.py, that we can later call in the createScene function
 from tripod import Tripod
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0])
-    rootNode.dt = 0.025
+    scene = Scene(rootNode)
+
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
-
-    tripod = Tripod(rootNode)
+    tripod = Tripod(scene.Modelling)
     tripod.BoxROI0.drawBoxes = True
     tripod.BoxROI1.drawBoxes = True
     tripod.BoxROI2.drawBoxes = True
 
-    Interaction(rootNode, targets=[tripod.ActuatedArm0,
-                                   tripod.ActuatedArm1,
-                                   tripod.ActuatedArm2,
-                                   tripod.RigidifiedStruture])
+    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    motors = scene.Simulation.createChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)
