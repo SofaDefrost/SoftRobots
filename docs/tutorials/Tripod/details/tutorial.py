@@ -2,9 +2,10 @@
 from stlib.scene import Scene as stScene, ContactHeader
 from splib.objectmodel import setData, setTreeData
 from splib.loaders import getLoadingLocation
+from splib.constants import Key
+from splib.animation import animate
 import functools
 import Sofa
-
 
 def dumpPosition(fields, filename):
     import json
@@ -36,6 +37,7 @@ def loadPosition(root, filename):
         def setMatchingData(target):
             for field in target.getListOfDataFields():
                 if field.getLinkPath() in data:
+                    print("SET: "+field.getLinkPath())
                     field.value = data[field.getLinkPath()]
 
         for k, v in enumerate(data):
@@ -76,9 +78,54 @@ def Scene(parent, **kwargs):
     ctx = scene.Config
     ctx.createObject("MeshSTLLoader", name="loader", filename=getLoadingLocation("data/mesh/blueprint.stl", __file__))
     ctx.createObject("OglModel", src="@loader")
-    ctx.createObject("AddResourceRepository", path=os.path.abspath(os.path.dirname(__file__)))
+    ctx.createObject("AddDataRepository", path=os.path.abspath(os.path.dirname(__file__)))
 
     return parent
+
+
+
+# Description of how the communication is handled
+def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
+    return rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True, header=255)
+
+
+# Data sending controller
+class SerialPortController(Sofa.PythonScriptController):
+    def __init__(self, node, inputs, serialport):
+        self.name = "serialportcontroller"
+        self.actuatedarms = inputs
+        self.serialport = serialport
+        self.serialport.packetOut = [150, 150, 150]
+        self.state = "init"
+
+    def onEndAnimationStep(self, dt):
+        # Data sending if the robot is initializing or in the no-communication sate
+        if self.state == "init":
+            return
+
+        if self.state == "no-comm":
+            return
+
+        # Vector storing the simulated servomotors' angular position
+        angles = []
+
+        for arm in self.actuatedarms:
+            # Conversion of the angle values from radians to degrees
+            angleDegree = arm.ServoMotor.angleOut*360/(2.0*pi)
+            angleByte = int(floor(angleDegree)) + 179
+
+            # Limitation of the angular position's command
+            if angleByte < 60:
+                angleByte = 60
+            if angleByte > 180:
+                angleByte = 180
+
+            # Filling the list of the 3 angle values
+            angles.append(angleByte)
+
+        # The controller board of the real robot receives `angles` values
+        self.serialport.packetOut = angles
+
 
 
 def addContact(self, alarmDistance=5, contactDistance=2, frictionCoef=0.0):
