@@ -37,14 +37,13 @@ def ElasticBody(parent):
                         output=visual.renderer.getLinkPath())
     return body
 
-
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
     rootNode.dt = 0.025
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
+    scene.Config.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
+    scene.Config.createObject("OglModel", src="@loader")
 
     # Instanciating the prefab into the graph
     body = ElasticBody(rootNode)
@@ -54,6 +53,7 @@ def createScene(rootNode):
                     body.ElasticMaterialObject,
                     translation=[0.0, 0.0, 0.0],
                     scale=[30., 30., 30.])
+    
     fix.BoxROI.drawBoxes = True
 
     # Changing the property of the Box ROI so that the constraint area appears on screen.

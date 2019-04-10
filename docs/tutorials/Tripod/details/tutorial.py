@@ -66,18 +66,18 @@ def Scene(parent, **kwargs):
     scene = stScene(parent, **kwargs)
     setData(scene, dt=0.025)
     setData(scene, gravity=[0., -9810., 0.])
-    setData(scene.VisualStyle, displayFlags="showBehavior")
-
-    scene.createObject("MeshSTLLoader", name="loader", filename=getLoadingLocation("data/mesh/blueprint.stl", __file__))
-    scene.createObject("OglModel", src="@loader")
-
-    scene.createObject("AddResourceRepository", path=os.path.abspath(os.path.dirname(__file__)))
-
-    scene.createObject("FreeMotionAnimationLoop")
-    scene.createObject("GenericConstraintSolver", maxIterations=250, tolerance=1e-20)
+    setData(scene.VisualStyle, displayFlags="showBehavior showForceFields")
 
     Modelling(scene)
-    Simulation(scene)
+    s = Simulation(scene)
+    parent.createObject("FreeMotionAnimationLoop")
+    parent.createObject("GenericConstraintSolver", maxIterations=250, tolerance=1e-20)
+
+    ctx = scene.Config
+    ctx.createObject("MeshSTLLoader", name="loader", filename=getLoadingLocation("data/mesh/blueprint.stl", __file__))
+    ctx.createObject("OglModel", src="@loader")
+    ctx.createObject("AddResourceRepository", path=os.path.abspath(os.path.dirname(__file__)))
+
     return parent
 
 

@@ -74,10 +74,9 @@ def createScene(rootNode):
     FixingBox(tripod, tripod.ElasticBody.ElasticMaterialObject, scale=[10, 10, 10], translation=[0., 25, 0.])
     tripod.FixingBox.BoxROI.drawBoxes = True
 
-    motors = scene.Simulation.createChild("Motors")
-    motors.addChild(tripod.ActuatedArm0)
-    motors.addChild(tripod.ActuatedArm1)
-    motors.addChild(tripod.ActuatedArm2)
+    scene.Simulation.addChild(tripod.ActuatedArm0)
+    scene.Simulation.addChild(tripod.ActuatedArm1)
+    scene.Simulation.addChild(tripod.ActuatedArm2)
 
     def myanimate(targets, factor):
         for arm in targets:

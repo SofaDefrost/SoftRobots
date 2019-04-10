@@ -117,10 +117,9 @@ def createScene(rootNode):
     tripod.FixingBox.BoxROI.drawBoxes = True
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
-    motors = scene.Simulation.createChild("Motors")
-    motors.addChild(tripod.ActuatedArm0)
-    motors.addChild(tripod.ActuatedArm1)
-    motors.addChild(tripod.ActuatedArm2)
+    scene.Simulation.addChild(tripod.ActuatedArm0)
+    scene.Simulation.addChild(tripod.ActuatedArm1)
+    scene.Simulation.addChild(tripod.ActuatedArm2)
 
     def myanimate(targets, factor):
         for arm in targets:
