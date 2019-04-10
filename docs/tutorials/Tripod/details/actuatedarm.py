@@ -94,6 +94,13 @@ class ActuatedArm(object):
 
         return constraint
 
+    def addBox(self, position, translation, eulerRotation):
+        constraint = self.node.createChild("Box")
+        o = addOrientedBoxRoi(constraint, position=position,
+                              translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
+                              eulerRotation=eulerRotation, scale=[45, 15, 30])
+        o.init()
+
 
 def createScene(rootNode):
     from splib.animation import animate
