@@ -82,6 +82,7 @@ def createScene(rootNode):
     scene = Scene(rootNode, plugins=["SoftRobots"])
 
     tripod = Tripod(scene.Modelling)
+    arms  = [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
     scene.Simulation.addChild(tripod.ActuatedArm0)
@@ -90,7 +91,7 @@ def createScene(rootNode):
 
     # The real robot receives data from the 3 actuators
     serial = SerialPortBridgeGeneric(scene)
-    serialportctrl = SerialPortController(scene, tripod.actuatedarms, serial)
+    serialportctrl = SerialPortController(scene, arms, serial)
 
     # The simulation's control with keystrokes is still available
-    TripodControllerWithCom(scene, tripod.actuatedarms, serialportctrl)
+    TripodControllerWithCom(scene, arms, serialportctrl)

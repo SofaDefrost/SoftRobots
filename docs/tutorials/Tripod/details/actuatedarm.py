@@ -68,6 +68,14 @@ class ActuatedArm(object):
         self.servomotor = ServoMotor(self.node, translation=translation, rotation=eulerRotation)
         self.servoarm = ServoArm(self.node, self.servomotor.ServoWheel.dofs)
 
+        ## Create a public attribute and connect it to the private one.
+        self.node.addNewData("angleIn", "ArmProperties", "angle of rotation (in radians) of the arm", "float", 0)      
+        self.node.ServoMotor.getData("angleIn").setParent(self.node.getData("angleIn"))
+
+        ## Create a public attribute and connect it to the internal one.         
+        self.node.addNewData("angleOut", "ArmProperties", "angle of rotation (in radians) of the arm", "float", 0)      
+        self.node.getData("angleOut").setParent(self.node.ServoMotor.getData("angleOut"))
+
         if attachingTo is not None:
             constraint = self.addConstraint(attachingTo, translation, eulerRotation)
             attachingTo.createObject('RestShapeSpringsForceField', name="rssff"+name,

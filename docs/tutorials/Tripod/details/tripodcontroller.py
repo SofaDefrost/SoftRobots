@@ -12,12 +12,12 @@ def setupanimation(actuators, step, angularstep, factor):
        value.
     """
     for actuator in actuators:
-            actuator.ServoMotor.BaseFrame.dofs.rotation = [0., 0., 0.]
-            actuator.ServoMotor.BaseFrame.dofs.translation = [0., 0., 0.]
-            actuator.ServoMotor.BaseFrame.dofs.init()
-            rigid = RigidDof(actuator.ServoMotor.BaseFrame.dofs)
-            rigid.translate(rigid.forward * step * factor)
-            actuator.ServoMotor.angleIn = angularstep * factor
+        rigid = RigidDof( actuator.ServoMotor.BaseFrame.dofs )
+        rigid.setPosition( rigid.rest_position + rigid.forward * step * factor )
+        actuator.angleIn = angularstep * factor
+        
+def dumppose(actuators, step, angularstep, factor):
+        print("DO DUMP")
 
 
 class TripodController(Sofa.PythonScriptController):
@@ -38,7 +38,10 @@ class TripodController(Sofa.PythonScriptController):
 
     def initTripod(self, key):
         if key == Key.A:
-            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, duration=0.2)
+            animate(setupanimation, 
+                    {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, 
+                    duration=0.2,
+                    onDone=dumppose)
 
     def animateTripod(self, key):
         if key == Key.uparrow:
@@ -64,7 +67,9 @@ def createScene(rootNode):
 
     tripod = Tripod(scene.Modelling)
 
-    TripodController(scene, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
+    TripodController(scene, [tripod.ActuatedArm0, 
+                             tripod.ActuatedArm1, 
+                             tripod.ActuatedArm2])
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
     motors = scene.Simulation.createChild("Motors")

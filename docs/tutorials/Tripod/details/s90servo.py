@@ -104,6 +104,10 @@ class ServoMotor(SofaObject):
         # The output
         self.node.addNewData("angleOut", "S90Properties", "angle of rotation (in degree)", "float", angle.dofs.getData("position").getLinkPath())
 
+        self.node.BaseFrame.init()            
+        self.node.BaseFrame.dofs.rotation = [0., 0., 0.]
+        self.node.BaseFrame.dofs.translation = [0., 0., 0.]
+            
 
 def createScene(rootNode):
 
