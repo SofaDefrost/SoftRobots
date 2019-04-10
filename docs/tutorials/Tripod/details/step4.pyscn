@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Step 4: Adding the ActuatedArm prefab.
-This prefab is defining the servomotor, the servo-arm and the constraint that attaches the end of the arm to the deformable object.
+Step 4:
+4-1 Adding the ActuatedArm prefab.
+    This prefab is defining the servomotor, the servo-arm and the constraint that attaches the end of the arm to the deformable object.
+4-2 Rigidify extremity of deformable part to be able to fix it to the actuated arms
+4-3 Fix arms to deformable part
 """
 from tutorial import *
 # Let's define a Tripod prefab in tripod.py, that we can later call in the createScene function
