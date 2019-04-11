@@ -62,10 +62,10 @@ function toggle(target) {
 </script>
 <h2 id="first-steps-with-sofa-softrobots">First steps with Sofa &amp; SoftRobots</h2>
 <p>Welcome to Sofa and the SoftRobots plugins. This tutorial is intended for people who have never used Sofa, and aims at providing them quickly with the basis of scene modelling with Sofa.</p>
-<p>This tutorial describes how to set up a simulation environment, a scene, using <a href="https://www.sofa-framework.org/">Sofa</a> and how to use the Sofa Template Library <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> to add simulated elements.</p>
+<p>This tutorial describes how to set up a simulation environment, a scene, using Sofa and how to use the Sofa Template Library <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> to add simulated elements.</p>
 <p>Tutorials prequisites:</p>
 <ul>
-<li><p><a href="https://www.sofa-framework.org/">Sofa</a> and the library <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> are installed.</p></li>
+<li><p>Sofa and the library <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> are installed.</p></li>
 <li><p>you have basic knowledge of the <a href="https://www.python.org/">Python</a> programming language. If not, you can go to <a href="https://www.python.org/">Python</a>Tutorials.</p></li>
 </ul>
 <!-- ### Step 1: Loading a scene on Sofa
@@ -90,7 +90,7 @@ sudo PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.pyscn
 <li>Conveniently reload the scene after each modification</li>
 </ul>
 <p>The content of the <code>pyscn</code> simulation files is in fact standard python code with at least one function named <code>createScene</code> taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description.<br />
-A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called &quot;rootNode&quot;. Additional components can be added to the scene, that aren't nodes (they cannot have children), related to the behaviour of the object (examples: <em>UniformMass</em> for mass parameters definition, and <em>OGLModel</em> for the settings of the graphic display).</p>
+A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called &quot;rootNode&quot;. Additional components can be added to the scene, that aren't nodes (they cannot have children), related to the behaviour of the object (examples: <em>UniformMass</em> for vertexMass parameters definition, and <em>OGLModel</em> for the settings of the graphic display).</p>
 Making a very simple scene:
 <div>
 <pre>
@@ -132,7 +132,7 @@ Making a very simple scene:
 <li><p>The [<em>Animate</em>] button allows to start and stop playing the scene.</p></li>
 <li><p>All scene codes can be modified: right click anywhere in the <em>Graph</em> panel of the Sofa GUI, and click on <em>Open file in editor</em> in the dropdown menu. The modifications need to be saved ([<em>Save</em>] button) before reloading the scene.</p></li>
 <li><p>In order to reload the scene (after each modification of the code), press <em>Ctrl+R</em> or select <em>File &gt; Reload</em> in the menu bar.</p></li>
-<li><p>To automatically reload the scene when there are changes, add the option <code>-i</code> when first loading the scene in the terminal: <code class="sourceCode bash"><span class="kw">runSofa</span> firststeps.pyscn -i</code>.</p></li>
+<li><p>To automatically reload the scene when there are changes, add the option <code>-i</code> when first loading the scene in the terminal: <code class="sourceCode bash"><span class="ex">runSofa</span> firststeps.pyscn -i</code>.</p></li>
 <li><p>In order to vizualize the properties of the objects directly from the GUI, double-click on the wanted item in the <em>Graph</em> panel to open the corresponding settings window. The properties can be modified directly from this window (click on the [<em>Update</em>] button to reload the scene with the new parameters afterwards).</p></li>
 </ul>
 <p>You can try the following manipulations, in order to get familiar with Sofa environment:<br />
@@ -171,8 +171,8 @@ Don't forget to save and reload the scene.</p>
 The node Cube is defined and attached to the rootNode with the function <code>node.createChild()</code>.<br />
 In the particular case where the simulated object is rigid, like here, all of its points are moving together. This means that studying the movement of a single point - usually the center of gravity - is equivalent to studying the movement of all the points. The aim of the simulation is to compute, at each time step, the next position and velocity of this gravity center, based on the forces it is subjected to. The center of gravity can move in the three directions of space and rotate around these three axes. This means that it has 6 degrees of freedom (DOFs). All the positions and velocities that are computed are stored in what is called the <em>MechanicalObject</em>. The different objects of the Cube are added via the function <code>node.createObject()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">cube.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name, template, translation, rotation)</code></pre></div>
-<p>The physical properties of the object material, like its mass distribution, are also implemented.</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name, mass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])</code></pre></div>
+<p>The physical properties of the object material, like its vertexMass distribution, are also implemented.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name, vertexMass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])</code></pre></div>
 <p>A time integration scheme is then added and defines the system to be solved at each time step of the simulation (here the implicit Euler Method). A solving method is in turn added (here the Conjugate Gradient method), that solves the equations governing the model at each time step, and updates the <em>MechanicalObject</em>.</p>
 This model alone is enough to run the simulation of the Cube's fall under gravity force. However, to be able to view it on screen, a visual model of the object must be created. The visual model is defined in a new node. The virtual object is modeled with graphic vectors: the surface of the object is discretized, that is divided into small surface elements connected together by points (called nodes). The resulting set of points and their connections to each other (vectors) is called the <em>mesh</em>. Figure 1 below shows the initial mesh for the visual model: the outer surface of the cube has been split into triangular elements.
 <figure>
@@ -210,8 +210,8 @@ Finally, in order to have the visual representation moving along with the mechan
   inertiaMatrix <span class="op">=</span> [<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>]
 
 
-  cube.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&quot;DOF&quot;</span>, template<span class="op">=</span><span class="st">&quot;Rigid&quot;</span>, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])
-  cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name<span class="op">=</span><span class="st">&quot;mass&quot;</span>, mass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])
+  cube.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&quot;DOF&quot;</span>, template<span class="op">=</span><span class="st">&quot;Rigid3&quot;</span>, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])
+  cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name<span class="op">=</span><span class="st">&quot;vertexMass&quot;</span>, vertexMass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])
 
   <span class="co"># The following line defines the material behaviour when submitted to constraints; it is not necessary in this step, as no interaction between objects has been defined</span>
   <span class="co">#cube.createObject(&#39;UncoupledConstraintCorrection&#39;)</span>
@@ -231,7 +231,7 @@ Finally, in order to have the visual representation moving along with the mechan
   visual.createObject(<span class="st">&#39;RigidMapping&#39;</span>)
 
   <span class="co">########################################</span>
-  <span class="co">### Adding the Floor for more fun ;) ###</span>
+  <span class="co">### Adding the Floor for more fun ;) </span><span class="al">###</span>
   Floor(rootNode,
           translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">300.0</span>,<span class="fl">0.0</span>],
           uniformScale<span class="op">=</span><span class="fl">5.0</span>,
@@ -288,8 +288,8 @@ Finally, in order to map those collision DOFs with those of the mechanical model
   inertiaMatrix <span class="op">=</span> [<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>]
 
 
-  cube.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&quot;DOF&quot;</span>, template<span class="op">=</span><span class="st">&quot;Rigid&quot;</span>, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])
-  cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name<span class="op">=</span><span class="st">&quot;mass&quot;</span>, mass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])
+  cube.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&quot;DOF&quot;</span>, template<span class="op">=</span><span class="st">&quot;Rigid3&quot;</span>, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])
+  cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name<span class="op">=</span><span class="st">&quot;vertexMass&quot;</span>, vertexMass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])
 
   <span class="co"># Material behaviour when submitted to constraints</span>
   cube.createObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)
@@ -324,7 +324,7 @@ Finally, in order to map those collision DOFs with those of the mechanical model
 
 
   <span class="co">########################################</span>
-  <span class="co">### Adding the Floor for more fun ;) ###</span>
+  <span class="co">### Adding the Floor for more fun ;) </span><span class="al">###</span>
   floor <span class="op">=</span> Floor(rootNode,
       name<span class="op">=</span><span class="st">&quot;Floor&quot;</span>,
           translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">300.0</span>,<span class="fl">0.0</span>],
@@ -401,7 +401,7 @@ Figure 3: Initial view of the simulation</i>
              uniformScale<span class="op">=</span><span class="fl">0.8</span>,
              isAStaticObject<span class="op">=</span><span class="va">True</span>)
 
-    <span class="cf">for</span> c <span class="op">in</span> <span class="bu">range</span>(<span class="dv">7</span>):
+    <span class="cf">for</span> c <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>):
         Cube(rootNode,
        name<span class="op">=</span><span class="st">&quot;Cube&quot;</span><span class="op">+</span><span class="bu">str</span>(<span class="op">-</span><span class="dv">210</span><span class="op">+</span>c<span class="op">*</span><span class="dv">70</span>),
              translation<span class="op">=</span>[<span class="op">-</span><span class="dv">210</span><span class="op">+</span>c<span class="op">*</span><span class="dv">70</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],
