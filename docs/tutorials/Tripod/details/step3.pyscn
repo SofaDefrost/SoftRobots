@@ -53,8 +53,6 @@ def createScene(rootNode):
                     body.ElasticMaterialObject,
                     translation=[0.0, 0.0, 0.0],
                     scale=[30., 30., 30.])
-    
-    fix.BoxROI.drawBoxes = True
 
     # Changing the property of the Box ROI so that the constraint area appears on screen.
-    fix.boxroi.drawBoxes = True
+    fix.BoxROI.drawBoxes = True
