@@ -6,6 +6,7 @@ from splib.constants import Key
 from splib.animation import animate
 import functools
 import Sofa
+from math import *
 
 def dumpPosition(fields, filename):
     import json
