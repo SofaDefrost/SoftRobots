@@ -14,7 +14,7 @@ class FixingBox(SofaObject):
                                 orientedBox=ob,
                                 name="boxroi",
                                 position=target.dofs.getData("rest_position"),
-                                drawBoxes=True)
+                                drawBoxes=False)
 
         c = self.node.createChild("Constraint")
         target.addChild(c)
@@ -22,4 +22,3 @@ class FixingBox(SofaObject):
         c.createObject('RestShapeSpringsForceField',
                                                points=self.node.boxroi.getData("indices"),
                                                stiffness='1e12')
-

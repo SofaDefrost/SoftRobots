@@ -44,7 +44,7 @@ class ServoArm(object):
         self.node.createObject('RigidRigidMapping',
                                name="mapping", input=mappingInput, index=indexInput)
 
-        visual = VisualModel(self.node, 'data/mesh2/SG90_servoarm.stl')
+        visual = VisualModel(self.node, '../data/mesh/SG90_servoarm.stl')
         visual.createObject('RigidMapping', name="mapping")
 
 
@@ -86,34 +86,26 @@ class ActuatedArm(object):
                                      stiffness='1e12')
 
     def addFrameConstraint(self, frameDof, indice):
-        m = self.node.Box.createObject("RigidRigidMapping", name="mapping",
-                                       output=self.ServoMotor.ServoWheel.dofs.getLinkPath(), index=indice,
-                                       input=frameDof.getLinkPath())
+        self.node.Box.createObject("RigidRigidMapping", name="mapping",
+                                   output=self.ServoMotor.ServoWheel.dofs.getLinkPath(), index=indice,
+                                   input=frameDof.getLinkPath())
 
     def addBox(self, position, translation, eulerRotation):
         constraint = self.node.createChild("Box")
         o = addOrientedBoxRoi(constraint, position=position,
-                              translation=vec3.vadd(translation, [0.0,25.0,0.0]),
-                              eulerRotation=eulerRotation, scale=[45,15,50])
-
-        #d = constraint.createObject("MechanicalObject", name="dofs", template="Rigid3",
-        #                        position=[0.0,50.0,0.0,0.0,0.0,0.0,1.0],
-        #                        showObject=True, showObjectScale=10.0)
-        #rd = RigidDof(d)
-        #rd.translate(rd.up*50.0) ,
-
-        o.drawSize = 5
+                              translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
+                              eulerRotation=eulerRotation, scale=[45, 15, 30])
+        o.drawBoxes = False
         o.init()
 
     def addConstraint(self, position, translation, eulerRotation):
         constraint = self.node.createChild("Constraint")
-        o = addOrientedBoxRoi(constraint, position=position,
-                              translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
-                              eulerRotation=eulerRotation, scale=[45, 15, 30])
+        addOrientedBoxRoi(constraint, position=position,
+                          translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
+                          eulerRotation=eulerRotation, scale=[45, 15, 30])
 
-        o.drawSize = 5
-        t = constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
-                                   translation=translation, rotation=eulerRotation, inverse=True)
+        constraint.createObject("TransformEngine", input_position="@BoxROI.pointsInROI",
+                               translation=translation, rotation=eulerRotation, inverse=True)
 
         constraint.createObject("MechanicalObject", name="dofs",
                                 template="Vec3d", position="@TransformEngine.output_position",

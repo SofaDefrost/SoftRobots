@@ -78,8 +78,11 @@ class ServoMotor(SofaObject):
             self.addVisualModel()
 
     def addVisualModel(self):
-        self.visualmodel = VisualModel(self.node, 'data/mesh2/SG90_servomotor.stl')
-        self.visualmodel.node.createObject('RigidMapping', name="mapping")
+        visual = self.node.createChild("VisualModel")
+        visual.createObject("MeshSTLLoader", name="loader", filename="../data/mesh/SG90_servomotor.stl")
+        visual.createObject("MeshTopology", src="@loader")
+        visual.createObject("OglModel", color=[0.15, 0.45, 0.75, 0.7], writeZTransparent=True)
+        visual.createObject("RigidMapping", index=0)
 
 
 class ServoWheel(SofaObject):
