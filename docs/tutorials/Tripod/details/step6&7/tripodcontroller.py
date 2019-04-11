@@ -2,7 +2,7 @@ import Sofa
 from splib.numerics import RigidDof
 from splib.animation import animate
 from splib.constants import Key
-from stlib.scene import Scene, Interaction
+from tutorial import *
 from tripod import Tripod
 
 
@@ -58,17 +58,12 @@ class TripodController(Sofa.PythonScriptController):
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
-    scene.VisualStyle.displayFlags = "showBehavior"
+    scene = Scene(rootNode)
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
+    tripod = Tripod(scene.Modelling)
 
-    model = scene.createChild("Model")
-    tripod = Tripod(model)
+    TripodController(scene, tripod.actuatedarms)
 
-    TripodController(rootNode, tripod.actuatedarms)
-
-    Interaction(rootNode, targets=[tripod.ActuatedArm0,
-                                   tripod.ActuatedArm1,
-                                   tripod.ActuatedArm2])
+    scene.Simulation.addChild(tripod.ActuatedArm0)
+    scene.Simulation.addChild(tripod.ActuatedArm1)
+    scene.Simulation.addChild(tripod.ActuatedArm2)

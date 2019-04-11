@@ -10,7 +10,7 @@ The important component to see in the graph are:
 """
 import Sofa
 from splib.constants import Key
-from stlib.scene import Scene, Interaction
+from tutorial import *
 from stlib.physics.rigid import Sphere
 from tripod import Tripod
 from tripodcontroller import TripodController
@@ -36,31 +36,24 @@ class JumpController(Sofa.PythonScriptController):
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0, -9810, 0])
-    rootNode.dt = 0.01
-    scene.VisualStyle.displayFlags = "showForceFields"
-
-    scene.createObject("MeshSTLLoader", name="loader", filename="../data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
+    scene = Scene(rootNode)
 
     # Adding contact handling
-    scene.addContact(alarmDistance=5,
-                     contactDistance=2)
+    addContact(scene)
 
-    model = scene.createChild("Model")
-    Sphere(model, translation=[0.0, 40.0, 0.0],
+    Sphere(scene.Modelling, translation=[0.0, 40.0, 0.0],
            uniformScale=10.,
            totalMass=0.005)
 
-    tripod = Tripod(model)
+    tripod = Tripod(scene.Modelling)
     tripod.addCollision()
 
     # The regular controller that is being used for the last 2 steps
-    TripodController(rootNode, tripod.actuatedarms)
+    TripodController(scene, tripod.actuatedarms)
 
     # The additionnal controller that add two predefined positions for the three servomotors
-    JumpController(rootNode, tripod.actuatedarms)
+    JumpController(scene, tripod.actuatedarms)
 
-    Interaction(rootNode, [tripod.ActuatedArm0,
-                           tripod.ActuatedArm1,
-                           tripod.ActuatedArm2])
+    scene.Simulation.addChild(tripod.ActuatedArm0)
+    scene.Simulation.addChild(tripod.ActuatedArm1)
+    scene.Simulation.addChild(tripod.ActuatedArm2)

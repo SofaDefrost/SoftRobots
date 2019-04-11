@@ -3,7 +3,7 @@
 Step 6: Here we are showing how to setup a communication with the servomotors
 """
 import Sofa
-from stlib.scene import Scene, Interaction
+from tutorial import *
 from splib.animation import animate
 from splib.constants import Key
 from math import floor, pi
@@ -79,32 +79,22 @@ class SerialPortController(Sofa.PythonScriptController):
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
-    rootNode.dt = 0.01
-    scene.VisualStyle.displayFlags = "showForceFields"
-
-    scene.createObject("FreeMotionAnimationLoop")
-    scene.createObject("GenericConstraintSolver", maxIterations=1e3, tolerance=1e-5)
+    scene = Scene(rootNode, plugins=["SoftRobots"])
 
     # Adding contact handling
-    scene.addContact(alarmDistance=5,
-                     contactDistance=2)
+    addContact(scene)
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="../data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
-
-    model = scene.createChild("Model")
-    tripod = Tripod(model)
+    tripod = Tripod(scene.Modelling)
     tripod.addCollision()
 
-    serial = SerialPortBridgeGeneric(rootNode)
+    serial = SerialPortBridgeGeneric(scene)
 
     # The real robot receives data from the 3 actuators
-    serialportctrl = SerialPortController(rootNode, tripod.actuatedarms, serial)
+    serialportctrl = SerialPortController(scene, tripod.actuatedarms, serial)
 
     # The simulation's control with keystrokes is still available
-    TripodControllerWithCom(rootNode, tripod.actuatedarms, serialportctrl)
+    TripodControllerWithCom(scene, tripod.actuatedarms, serialportctrl)
 
-    Interaction(rootNode, [tripod.ActuatedArm0,
-                           tripod.ActuatedArm1,
-                           tripod.ActuatedArm2])
+    scene.Simulation.addChild(tripod.ActuatedArm0)
+    scene.Simulation.addChild(tripod.ActuatedArm1)
+    scene.Simulation.addChild(tripod.ActuatedArm2)
