@@ -10,10 +10,10 @@ The important component to see in the graph are:
 """
 import Sofa
 from splib.constants import Key
+from stlib.scene import Scene, Interaction
 from stlib.physics.rigid import Sphere
 from tripod import Tripod
 from tripodcontroller import TripodController
-from tutorial import *
 
 
 class JumpController(Sofa.PythonScriptController):
@@ -32,30 +32,35 @@ class JumpController(Sofa.PythonScriptController):
 
         if apos is not None:
             for actuator in self.actuators:
-                actuator.ServoMotor.angleIn = apos
+                actuator.servomotor.angle = apos
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, plugins=["SoftRobots"])
+    scene = Scene(rootNode, gravity=[0, -9810, 0])
+    rootNode.dt = 0.01
+    scene.VisualStyle.displayFlags = "showForceFields"
+
+    scene.createObject("MeshSTLLoader", name="loader", filename="../data/mesh/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
 
     # Adding contact handling
-    addContact(scene, alarmDistance=5, contactDistance=1)
+    scene.addContact(alarmDistance=5,
+                     contactDistance=2)
 
-    tripod = Tripod(scene.Modelling)
+    model = scene.createChild("Model")
+    Sphere(model, translation=[0.0, 40.0, 0.0],
+           uniformScale=10.,
+           totalMass=0.005)
+
+    tripod = Tripod(model)
     tripod.addCollision()
 
-    Sphere(scene.Modelling, 
-           translation=[0.0, 40.0, 0.0],
-           uniformScale=10.,
-           totalMass=5)
-
     # The regular controller that is being used for the last 2 steps
-    TripodController(scene, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
+    TripodController(rootNode, tripod.actuatedarms)
 
     # The additionnal controller that add two predefined positions for the three servomotors
-    JumpController(scene, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
+    JumpController(rootNode, tripod.actuatedarms)
 
-    scene.Simulation.addChild(tripod.RigidifiedStructure)
-    scene.Simulation.addChild(tripod.ActuatedArm0)
-    scene.Simulation.addChild(tripod.ActuatedArm1)
-    scene.Simulation.addChild(tripod.ActuatedArm2)
+    Interaction(rootNode, [tripod.ActuatedArm0,
+                           tripod.ActuatedArm1,
+                           tripod.ActuatedArm2])
