@@ -62,27 +62,14 @@ class DirectController(Sofa.PythonScriptController):
        - if user press A an animation is started to move the motor to the physical position
          they are occupying in the real robot.
     """
-    def __init__(self, node, actuators, serialportctrl):
+    def __init__(self, node, actuators, slidingactuators, serialportctrl):
         self.name = "TripodController"
         self.stepsize = 0.1
         self.actuators = actuators
+        self.slidingactuators = slidingactuators
         self.serialportctrl = serialportctrl
 
     def onKeyPressed(self, key):
-        if key == Key.uparrow:
-            self.actuators[0].ServoMotor.angle += self.stepsize
-        elif key == Key.downarrow:
-            self.actuators[0].ServoMotor.angle -= self.stepsize
-
-        if key == Key.leftarrow:
-            self.actuators[1].ServoMotor.angle += self.stepsize
-        elif key == Key.rightarrow:
-            self.actuators[1].ServoMotor.angle -= self.stepsize
-
-        if key == Key.plus:
-            self.actuators[2].ServoMotor.angle += self.stepsize
-        elif key == Key.minus:
-            self.actuators[2].ServoMotor.angle -= self.stepsize
 
         if key == Key.A and self.serialportctrl.state == "init":
             self.serialportctrl.state = "no-comm"
@@ -93,23 +80,22 @@ class DirectController(Sofa.PythonScriptController):
         if key == Key.B and self.serialportctrl.state == "no-comm":
             self.serialportctrl.state = "comm"
 
-        for actuator in self.actuators:
-            if(actuator.ServoMotor.angle>-0.0225):
-                actuator.ServoMotor.angle = -0.0255
-            if(actuator.ServoMotor.angle<-2.0225):
-                actuator.ServoMotor.angle = -2.0225
-
+    # def onBeginAnimationStep(self, dt):
+    #
+    #     if self.serialportctrl.state == "comm":
+    #         print(self.slidingactuators.SlidingActuator0.displacement)
+    #         self.actuators[0].ServoMotor.angle = self.slidingactuators.SlidingActuator0.displacement
+    #         self.actuators[1].ServoMotor.angle = self.slidingactuators.SlidingActuator1.displacement
+    #         self.actuators[2].ServoMotor.angle = self.slidingactuators.SlidingActuator2.displacement
 
 PI= 3.14159265359
 
 def EffectorGoal(node, position):
-    #goal
     goal = node.createChild('goal')
     goal.createObject('EulerImplicit', firstOrder='1')
     goal.createObject('CGLinearSolver', iterations='100',threshold="1e-5", tolerance="1e-5")
     goal.createObject('MechanicalObject', name='goalMO', template='Rigid3d',
                       position=str(position[0])+" "+ str(position[1]) + " " + str(position[2]) + " 0 0 0 1", showObject='1',showObjectScale='10')
-    #goal.createObject('UniformMass')
     spheres= goal.createChild('spheres')
     spheres.createObject('MechanicalObject', name='mo', position='0 0 0  10 0 0   0 10 0   0 0 10')
     spheres.createObject('Sphere', radius='5', group='1')
@@ -117,7 +103,7 @@ def EffectorGoal(node, position):
     goal.createObject('UncoupledConstraintCorrection')
     return goal
 
-## Description of how the communication is handled
+# Description of how the communication is handled
 def SerialPortBridgeGeneric(rootNode, serialport="/dev/cu.usbserial-1420"):
     return rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True)
 
@@ -140,8 +126,6 @@ class InverseController(Sofa.PythonScriptController):
         self.serialport.sentData = [150,150,150]
         self.state = "init"
         self.actuators = servomotors
-        #self.angleBuf;
-
         self.activate=0;
 
     def onKeyPressed(self, key):
@@ -199,7 +183,6 @@ class InverseController(Sofa.PythonScriptController):
 
             # The controller board of the real robot receives `AnglesDeg` values
             if(self.serialport):
-                print "send data to serial port"
                 self.serialport.sentData = [AnglesDeg[0]+0 , AnglesDeg[2]-0, AnglesDeg[1]]
 
 
@@ -263,9 +246,9 @@ def Tripod(parent, name="Tripod", radius=60, numMotors=3, angleShift=180.0, effe
 
     actuators = o.RigidParts.createChild('actuators')
 
-    actuator0 = actuators.createObject('SlidingActuator', template='Rigid3d', direction='0 0 0 1 0 0' , indices=0, maxForce='100000', minForce='-30000')
-    actuator1 = actuators.createObject('SlidingActuator', template='Rigid3d', direction='0 0 0 '+str(cos(4*PI/3))+' 0 '+str(sin(4*PI/3)) , indices=1, showDirection='1', showVisuScale='100', maxForce='100000', minForce='-30000')
-    actuator2 = actuators.createObject('SlidingActuator', template='Rigid3d', direction='0 0 0 '+str(cos(2*PI/3))+' 0 '+str(sin(2*PI/3)) , indices=2, showDirection='1',  showVisuScale='100', maxForce='100000', minForce='-30000')
+    actuator0 = actuators.createObject('SlidingActuator', name="SlidingActuator0", template='Rigid3d', direction='0 0 0 1 0 0' , indices=0, maxForce='100000', minForce='-30000')
+    actuator1 = actuators.createObject('SlidingActuator', name="SlidingActuator1", template='Rigid3d', direction='0 0 0 '+str(cos(4*PI/3))+' 0 '+str(sin(4*PI/3)) , indices=1, showDirection='1', showVisuScale='100', maxForce='100000', minForce='-30000')
+    actuator2 = actuators.createObject('SlidingActuator', name="SlidingActuator2", template='Rigid3d', direction='0 0 0 '+str(cos(2*PI/3))+' 0 '+str(sin(2*PI/3)) , indices=2, showDirection='1',  showVisuScale='100', maxForce='100000', minForce='-30000')
 
     if goalNode==None:
         Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal="10 40 0" )
@@ -338,7 +321,7 @@ def createScene(rootNode):
     # The regular controller that is being used for the last 2 steps
     DirectController(rootNode, [tripod.ActuatedArm0,
                             tripod.ActuatedArm1,
-                            tripod.ActuatedArm2], invCtr)
+                            tripod.ActuatedArm2], actuators, invCtr)
 
     simulation = scene.createChild("Simulation")
     simulation.createObject("EulerImplicitSolver", firstOrder=0, rayleighStiffness='0.01')
