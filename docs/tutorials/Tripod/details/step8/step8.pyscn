@@ -5,7 +5,7 @@ Step 9: Adding the rigidification to the tutorial.
 """
 from stlib.scene import Scene
 from tripod import Tripod
-from tripodcontroller import DirectController, InverseController
+from tripodcontroller import DirectController, InverseController, GoalController
 
 
 def EffectorGoal(node, position):
@@ -40,6 +40,9 @@ def createScene(rootNode):
     else:
         # inverse in position
         goalNode = EffectorGoal(rootNode, [0, 40, 0])
+
+    # You can add a GoalController and play with it
+    # GoalController(goalNode)
 
     # Scene set up
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])

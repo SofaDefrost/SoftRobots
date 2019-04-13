@@ -15,6 +15,35 @@ def setupanimation(actuators, step, angularstep, factor):
         actuator.ServoMotor.angle += angularstep * factor
 
 
+class GoalController(Sofa.PythonScriptController):
+    """This controller moves the goal position when the inverse control is activated
+    """
+
+    def __init__(self, goalNode):
+        self.name = "GoalController"
+        self.activated = False
+        self.time = 0
+        self.dy = 0.1
+        self.mo = goalNode.goalMO
+
+    def onKeyPressed(self, key):
+        if key == Key.I:
+            self.activated = True
+
+    def onBeginAnimationStep(self, dt):
+
+        if self.activated:
+            self.time = self.time+dt
+
+        if self.time >= 1:
+            self.time = 0;
+            self.dy = -self.dy
+
+        pos = [self.mo.position[0][0], self.mo.position[0][1], self.mo.position[0][2]]
+        pos[1] += self.dy
+        self.mo.position = [[pos[0], pos[1], pos[2], 0, 0, 0, 1]]
+
+
 class DirectController(Sofa.PythonScriptController):
     """This controller has two role:
        - if user press up/left/right/down/plus/minus the servo motor angle
