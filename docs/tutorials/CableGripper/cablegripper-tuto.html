@@ -52,10 +52,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <h2 id="simulating-a-cable-based-soft-gripper">Simulating a cable based soft gripper</h2>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <p>This tutorial describes how to set-up a simulation environment, a scene, using <a href="https://www.sofa-framework.org/">SOFA</a> and how to use the <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin to model a virtual soft gripper driven by cables. The design of the gripper we are going to model is from <a href="https://dl.acm.org/citation.cfm?id=2977533">Taimoor Hassan et al.</a>. Once modeled in Sofa the robot can be simulated and controlled as in:</p>
 =======
 <p>This tutorial describes how to set-up a simulation environment, a scene, using Sofa and how to use the <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin to model a virtual soft gripper driven by cables. The design of the gripper we are going to model is from <a href="https://dl.acm.org/citation.cfm?id=2977533">Taimoor Hassan et al.</a>. Once modeled in Sofa the robot can be simulated and controlled as in:</p>
 >>>>>>> [SoftRobots] Update the html docs.
+=======
+<p>This tutorial describes how to set-up a simulation environment, a scene, using SOFA and how to use the SoftRobots plugin to model a virtual soft gripper driven by cables. The design of the gripper we are going to model is from <a href="https://dl.acm.org/citation.cfm?id=2977533">Taimoor Hassan et al.</a>. Once modeled in Sofa the robot can be simulated and controlled as in:</p>
+>>>>>>> [MODIF]
 <center>
 <object style="width: 320px; height: 200px;" data="https://www.youtube.com/embed/9JOCe2pf34o?autoplay=0">
 </object>
@@ -63,10 +67,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Tutorials prequisites:</p>
 <ul>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <li><p>installed <a href="https://www.sofa-framework.org/">SOFA</a> with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> and <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugins.</p></li>
 =======
 <li><p>installed Sofa with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> and <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugins.</p></li>
 >>>>>>> [SoftRobots] Update the html docs.
+=======
+<li><p>installed SOFA with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> and <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugins.</p></li>
+>>>>>>> [MODIF]
 <li><p>you have basic knowledge of the <a href="https://www.python.org/">Python</a> programming language. If not you can go to <a href="https://www.python.org/">Python</a>Tutorials.</p></li>
 <li><p>you have basic knowledge of making scene with Sofa. If not, please complete the <a href="../FirstSteps/firststeps-tuto.html">FirstStep</a> first.</p></li>
 </ul>
@@ -124,11 +132,11 @@ A very simple scene may look like:
 <li><p>move the floor so that it is -160 along they y Axis.</p></li>
 </ul>
 <h3 id="step-2-modeling-and-simulating-the-grippers-finger-deformations">Step 2: Modeling and simulating the gripper's finger deformations</h3>
-<p>We will now add a deformable object to a scene. There exists a lot of different mechanical behavior and it is important to understand the one that approximates the behavior of the real object your want to simulate. In particular, it is important to know how soft or stiff the material is, if it has an elastic or more complex behaviour (Hyperelastic, plastic, etc...). In our case, the real material is silicon which we will approximate with an elastic deformation law and simulate using the Finite Element Method (<a href="https://en.wikipedia.org/wiki/Finite_element_method">FEM</a>). In sofa, the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a> from <em>stlib.physics.deformable</em> provides a scene template to easily add such an object in your scene.</p>
+<p>We will now add a deformable object to a scene. There exists a lot of different mechanical behavior and it is important to understand the one that approximates the behavior of the real object your want to simulate. In particular, it is important to know how soft or stiff the material is, if it has an elastic or more complex behaviour (Hyperelastic, plastic, etc...). In our case, the real material is silicon which we will approximate with an elastic deformation law and simulate using the Finite Element Method (FEM). In sofa, the <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a> from <em>stlib.physics.deformable</em> provides a scene template to easily add such an object in your scene.</p>
 <p>To compute the deformation of the object using the Finite Element Method a volumetric representation of shape must be provided. In our case we are using a tetrahedral mesh stored in a &quot;vtk&quot; file. In this tutorial we already provide the appropriate tetrahedral mesh in a file name &quot;<em>finger.vtk</em>&quot;.</p>
 Let's now work in <em>'finger.py'</em> to add:
 <div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.physics.deformable <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject">ElasticMaterialObject</a>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.physics.deformable <span class="im">import</span> ElasticMaterialObject
 
 <span class="kw">def</span> Finger(parentNode<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">&quot;Finger&quot;</span>,
            rotation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>], translation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],
@@ -154,8 +162,12 @@ Let's now work in <em>'finger.py'</em> to add:
 </div>
 </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <p>If you run the the scene you can see the tetrahedral mesh with blue-ish element. To control the visualization of this computation mesh you can either check the &quot;Force Fields&quot; option within the <em>View</em> panel in the runSofa GUI or, as we did, change the displayFlags property of the ..autolink::Sofa::VisualStyle. In case you want to learn more about volumetric mesh generation there is a dedicated tutorial called MeshGeneration.</p>
+=======
+<p>If you run the the scene you can see the tetrahedral mesh with blue-ish element. To control the visualization of this computation mesh you can either check the &quot;Force Fields&quot; option within the <em>View</em> panel in the runSofa GUI or, as we did, change the displayFlags property of the ..autolink::Sofa::VisualStyle. In case you want to learn more about volumetric mesh generation there is a dedicated tutorial called <a href="../../thematicalDocs/T2-FromMeshToSimulation/index.html">MeshGeneration</a>.</p>
+>>>>>>> [MODIF]
 <p>Still in the finger.py file we need to add a fixing box to avoid the free falling the finger under gravity. This can be done in the following way:</p>
 Let's now work in <em>'finger.py'</em> to add:
 <div>
@@ -200,7 +212,7 @@ Let's now work in <em>'finger.py'</em> to add:
 </ul>
 <h2 id="step-3-actuating-the-finger-with-a-cable">Step 3: Actuating the finger with a cable</h2>
 <p>In the previous step, we showed how to add a finger shape object made of silicone rubber. We will now actuate it using a 1d inelastic cable attached to the fingertip and passing through the object geomertry.</p>
-To model the cable you can use the <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a> template from the <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugin and use it in the following way:
+To model the cable you can use the <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a> template from the SoftRobots plugin and use it in the following way:
 <div>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co">### ... similar to previous step ....</span>
 <span class="im">from</span> softrobots.actuators <span class="im">import</span> <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>
@@ -210,7 +222,7 @@ To model the cable you can use the <a href="http://softrobots.readthedocs.io/en/
 <span class="kw">def</span> Finger(parentNode):
     <span class="co">### ... similar to previous step ....</span>
 
-    cable <span class="op">=</span> <a href="http://softrobots.readthedocs.io/en/documentation/_autosummary/softrobots.actuators.html#softrobots.actuators.PullingCable">PullingCable</a>(eobject, cableGeometry<span class="op">=</span>loadPointListFromFile(<span class="st">&quot;data/mesh/cable.json&quot;</span>))</code></pre></div>
+    cable <span class="op">=</span> PullingCable(eobject, cableGeometry<span class="op">=</span>loadPointListFromFile(<span class="st">&quot;data/mesh/cable.json&quot;</span>))</code></pre></div>
 <div>
 <pre>
 <a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
@@ -258,7 +270,7 @@ The controller can then be attached to the object <em>finger</em> it is supposed
 The finger.py file should now contains :
 <div>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co">## ... Same imports as in step 3 ...</span>
-<span class="im">from</span> stlib.physics.collision <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh">CollisionMesh</a>
+<span class="im">from</span> stlib.physics.collision <span class="im">import</span> CollisionMesh
 
 <span class="co">## ... Same as in step 3 ...</span>
 <span class="kw">def</span> Finger(parentNode):
@@ -442,7 +454,10 @@ Open the <em>'cablegripper.pyscn'</em> and add the Cube, the Floor and the Gripp
 </div>
 <h3 id="conclusion">Conclusion</h3>
 <p>Congratulation, you completed this tutorial. You are strongly encouraged to pursue with the other tutorial and read the thematical documentations.</p>
-<p>If you have any comments or suggestions, please submit issues on our github/SoftRobots page.</p>
+<p>If you have any comments or suggestions, please submit issues on our <a href="https://github.com/SofaDefrost">github/SoftRobots</a> page.</p>
 </body>
 </html>
+<<<<<<< HEAD
 >>>>>>> [SoftRobots] Update the html docs.
+=======
+>>>>>>> [MODIF]

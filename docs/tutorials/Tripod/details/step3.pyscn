@@ -18,7 +18,7 @@ def ElasticBody(parent):
     e = ElasticMaterialObject(body,
                               volumeMeshFileName="data/mesh/tripod_mid.gidmsh",
                               poissonRatio=0.45,
-                              youngModulus=800,
+                              youngModulus=100,
                               totalMass=0.032,
                               rotation=[90, 0, 0])
 
@@ -51,7 +51,7 @@ def createScene(rootNode):
     # Instanciating the FixingBox prefab into the graph, constraining the mechanical object of the ElasticBody.
     fix = FixingBox(rootNode,
                     body.ElasticMaterialObject,
-                    translation=[0.0, 0.0, 0.0],
+                    translation=[10.0, 0.0, 0.0],
                     scale=[30., 30., 30.])
 
     # Changing the property of the Box ROI so that the constraint area appears on screen.

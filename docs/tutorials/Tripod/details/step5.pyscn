@@ -11,6 +11,12 @@ The controller is implemented in this file: tripodcontroller.py
 """
 from tripodcontroller import TripodController
 
+class MyController(Sofa.PythonScriptController):
+        def __init__(self, node):
+                self.node = node
+                
+        def onKeyPressed(self, key):
+                print("Key Pressed")
 
 def createScene(rootNode):
     scene = Scene(rootNode)
@@ -18,7 +24,7 @@ def createScene(rootNode):
     tripod = Tripod(scene.Modelling)
 
     TripodController(scene, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
-
+    
     scene.Simulation.addChild(tripod.RigidifiedStructure)
     scene.Simulation.addChild(tripod.ActuatedArm0)
     scene.Simulation.addChild(tripod.ActuatedArm1)
