@@ -89,11 +89,11 @@ def Tripod(parent, name="Tripod", radius=60, numMotors=3, angleShift=180.0, effe
     actuator2 = actuators.createObject('SlidingActuator', name="SlidingActuator2", template='Rigid3d', direction='0 0 0 '+str(cos(2*math.pi/3))+' 0 '+str(sin(2*math.pi/3)) , indices=2, showDirection='1',  showVisuScale='100', maxForce='100000', minForce='-30000')
 
     if goalNode==None:
-        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal="10 40 0" )
+        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal="10 40 0", limitShiftToTarget=True, maxShiftToTarget=5 )
     elif use_orientation:
-        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='0 1 0 1 0 1', indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position")
+        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='0 1 0 1 0 1', indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position", limitShiftToTarget=True, maxShiftToTarget=5)
     else:
-        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal= goalNode.goalMO.getLinkPath()+".position")
+        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal= goalNode.goalMO.getLinkPath()+".position", limitShiftToTarget=True, maxShiftToTarget=5)
 
     actuators.activated = 0
     tripod.createObject('MechanicalMatrixMapper',
@@ -119,5 +119,5 @@ def Tripod(parent, name="Tripod", radius=60, numMotors=3, angleShift=180.0, effe
         arms[i].ServoMotor.ServoWheel.createObject("FixedConstraint")
 
     tripod.removeChild(body)
-    
+
     return tripod
