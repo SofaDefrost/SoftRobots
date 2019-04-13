@@ -67,7 +67,7 @@ class CircularRobot(SofaObject):
         if inverseMode:
             if effectorTarget is None:
                 Sofa.msg_warning("The prefab CircularRobot needs effectorTarget in inverseMode")
-            self.node.createObject('BarycentricCenterEffector',
+            self.node.createObject('BarycentricCenterEffector', limitShiftToTarget=True, maxShiftToTarget=5,
                                     effectorGoal=effectorTarget,
                                     axis="1 1 1")
         self.__addCables()
@@ -78,7 +78,7 @@ class CircularRobot(SofaObject):
             cable = self.node.createChild('cable'+str(i+1))
             cable.createObject('VisualStyle', displayFlags="showInteractionForceFields")
             cable.createObject('MechanicalObject' , position=cables[i*2]+" "+cables[i*2+1])
-            cable.createObject('CableActuator' if self.inverseMode else 'CableConstraint', name="cable", indices=[0, 1], hasPullPoint=0, minForce=0, maxPositiveDisp=12, maxDispVariation=1)
+            cable.createObject('CableActuator' if self.inverseMode else 'CableConstraint', name="cable", indices=[0, 1], hasPullPoint=0, minForce=0, maxPositiveDisp=12, maxDispVariation=1.5)
             cable.createObject('BarycentricMapping', name='mapping', mapForces=False, mapMasses=False)
 
     def addVisualModel(self, color=[1., 0., 0., 1.]):
