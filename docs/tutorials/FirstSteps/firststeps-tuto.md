@@ -54,7 +54,7 @@ Making a very simple scene:
 <div>
 <pre>
 <a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="14px"/> Try the scene in Sofa.</a>
-<a href="myproject/mystep1.pyscn"> <img src="../../images/icons/play.png" width="14px"/> Write it yourself.</a>
+<a href="myproject/mystep1.py"> <img src="../../images/icons/play.png" width="14px"/> Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step1code');"> <img src="../../images/icons/play.png" width="14px"/> Show/Hide the code.</a>
 </pre>
 <div id='step1code' class='hide'>
@@ -165,7 +165,7 @@ Finally, in order to have the visual representation moving along with the mechan
 <div>
 <pre>
 <a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
-<a href="myproject/mystep2.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/mystep2.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step2code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step2code' class='hide'>
@@ -250,7 +250,7 @@ Finally, in order to map those collision DOFs with those of the mechanical model
 <div>
 <pre>
 <a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
-<a href="myproject/mystep3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/mystep3.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step3code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
 <div id='step3code' class='hide'>
@@ -357,7 +357,7 @@ Based on the prefab object `Cube()` and `Foor()`, as well as the collision manag
 <div>
 <pre>
 <a href="details/step4.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
-<a href="myproject/mystep4.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/mystep4.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step4code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4code' class='hide'>

@@ -168,7 +168,7 @@ Such a function is defined at the beginning of the scene, and can be called as o
 
 <pre>
 <a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step3.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step3code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step3code' class='hide'>
@@ -248,7 +248,7 @@ Tripod(parent, name="Tripod", radius, numMotors, angleShift)
 
 <pre>
 <a href="details/step4-1.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step4.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step4-1code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-1code' class='hide'>
@@ -285,7 +285,7 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 
 <pre>
 <a href="details/step4-2.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step4-2.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step4-2code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-2code' class='hide'>
@@ -310,7 +310,7 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 
 <pre>
 <a href="details/step4-3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step4-3.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step4-3code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-3code' class='hide'>
@@ -359,7 +359,7 @@ The controller is added as another node in the scene.
 
 <pre>
 <a href="details/step5.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step5.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step5code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step5code' class='hide'>
