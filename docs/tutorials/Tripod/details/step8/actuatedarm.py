@@ -44,8 +44,8 @@ class ServoArm(object):
         self.node.createObject('RigidRigidMapping',
                                name="mapping", input=mappingInput, index=indexInput)
 
-        visual = VisualModel(self.node, '../data/mesh/SG90_servoarm.stl')
-        visual.createObject('RigidMapping', name="mapping")
+        # visual = VisualModel(self.node, '../data/mesh/SG90_servoarm.stl')
+        # visual.createObject('RigidMapping', name="mapping")
 
 
 @SofaPrefab

@@ -62,15 +62,13 @@ class DirectController(Sofa.PythonScriptController):
        - if user press A an animation is started to move the motor to the physical position
          they are occupying in the real robot.
     """
-    def __init__(self, node, actuators, slidingactuators, serialportctrl):
+    def __init__(self, node, actuators, serialportctrl):
         self.name = "TripodController"
         self.stepsize = 0.1
         self.actuators = actuators
-        self.slidingactuators = slidingactuators
         self.serialportctrl = serialportctrl
 
     def onKeyPressed(self, key):
-
         if key == Key.A and self.serialportctrl.state == "init":
             self.serialportctrl.state = "no-comm"
             animate(setupanimation,{"actuators" : self.actuators, "step" : 3.0,
@@ -80,13 +78,6 @@ class DirectController(Sofa.PythonScriptController):
         if key == Key.B and self.serialportctrl.state == "no-comm":
             self.serialportctrl.state = "comm"
 
-    # def onBeginAnimationStep(self, dt):
-    #
-    #     if self.serialportctrl.state == "comm":
-    #         print(self.slidingactuators.SlidingActuator0.displacement)
-    #         self.actuators[0].ServoMotor.angle = self.slidingactuators.SlidingActuator0.displacement
-    #         self.actuators[1].ServoMotor.angle = self.slidingactuators.SlidingActuator1.displacement
-    #         self.actuators[2].ServoMotor.angle = self.slidingactuators.SlidingActuator2.displacement
 
 PI= 3.14159265359
 
@@ -316,15 +307,22 @@ def createScene(rootNode):
     tripod = Tripod(rootNode, effectorPos=[0,30,0], use_orientation=orientation, goalNode=goalNode)
 
     actuators = tripod.RigidifiedStructure.RigidParts.actuators
-    invCtr = InverseController(rootNode, goalNode, actuators, actuators, tripod.RigidifiedStructure.RigidParts, tripod, serial, [tripod.ActuatedArm0, tripod.ActuatedArm1,tripod.ActuatedArm2])
+    invCtr = InverseController(rootNode, goalNode, actuators, actuators, tripod.RigidifiedStructure.RigidParts, tripod, serial, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
 
     # The regular controller that is being used for the last 2 steps
     DirectController(rootNode, [tripod.ActuatedArm0,
                             tripod.ActuatedArm1,
-                            tripod.ActuatedArm2], actuators, invCtr)
+                            tripod.ActuatedArm2], invCtr)
 
     simulation = scene.createChild("Simulation")
     simulation.createObject("EulerImplicitSolver", firstOrder=0, rayleighStiffness='0.01')
     simulation.createObject("SparseLDLSolver", name="sparseSolver")
     simulation.createObject("GenericConstraintCorrection", solverName='sparseSolver')
     simulation.addChild(tripod)
+
+    for i in range(3):
+        visual = tripod.RigidifiedStructure.RigidParts.createChild("VisualModel")
+        visual.createObject("MeshSTLLoader", name="loader", filename="../data/mesh/SG90_servoarm.stl")
+        visual.createObject("MeshTopology", src="@loader")
+        visual.createObject("OglModel", color=[0.75, 0.75, 0.75, 0.7], writeZTransparent=True)
+        visual.createObject("RigidMapping", index=i)
