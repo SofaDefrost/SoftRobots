@@ -9,7 +9,7 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 dirPath = os.path.dirname(os.path.abspath(__file__))+'/'
 
 
-def effectorTarget(parentNode, position=[0., 0., 175]):
+def effectorTarget(parentNode, position=[0., 0., 200]):
     target = parentNode.createChild("Target")
     target.createObject("EulerImplicitSolver", firstOrder=True)
     target.createObject("CGLinearSolver")
@@ -157,7 +157,7 @@ def createScene(rootNode):
     # For direct resolution, i.e direct control of the cable displacement
     # rootNode.createObject("GenericConstraintSolver", maxIterations=100, tolerance=1e-5)
     # For inverse resolution, i.e control of effectors position
-    rootNode.createObject("QPInverseProblemSolver")
+    rootNode.createObject("QPInverseProblemSolver", epsilon=1e-1)
 
     simulation = rootNode.createChild("Simulation")
 
