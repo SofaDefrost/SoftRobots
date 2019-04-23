@@ -13,25 +13,25 @@
             "name": "FEM",
             "url" : "https://en.wikipedia.org/wiki/Finite_element_method"
 	},
-	
+
 	"Sofa" : {
 	    "ns" : "",
-            "name": "Sofa",
+            "name": "SOFA",
             "url" : "https://www.sofa-framework.org/"
 	},
-	
+
 	"SoftRobots" : {
 	    "ns" : "",
             "name": "SoftRobots",
             "url" : "https://project.inria.fr/softrobot/"
 	},
-	
+
 	"Defrost" : {
 		"ns" : "",
         "name" : "Defrost",
 		"url" : "https://team.inria.fr/defrost/"
 	},
-	
+
 	"LGPL" : {
 	    "ns" : "",
 	    "name" : "LGPL",

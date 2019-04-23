@@ -70,19 +70,24 @@ class ServoMotor(SofaObject):
 
         self.node = parent.createChild("ServoMotor")
 
+        # The inputs
+        self.node.addNewData("minAngle", "S90Properties", "min angle of rotation (in radians)", "float", -100)
+        self.node.addNewData("maxAngle", "S90Properties", "max angle of rotation (in radians)", "float", 100)
+        self.node.addNewData("angleIn", "S90Properties", "angle of rotation (in radians)", "float", 0)
+
         # Two positions (rigid): first one for the servo body, second for the servo wheel
-        position = self.node.createChild("Position")
-        position.createObject("MechanicalObject", name="dofs", template="Rigid3", position=[[0., 0., 0., 0., 0., 0., 1.], [0., 0., 0., 0., 0., 0., 1.]],
-                              translation=translation, rotation=rotation, scale3d=scale)
+        baseFrame = self.node.createChild("BaseFrame")
+        baseFrame.createObject("MechanicalObject", name="dofs", template="Rigid3", position=[[0., 0., 0., 0., 0., 0., 1.], [0., 0., 0., 0., 0., 0., 1.]],
+                               translation=translation, rotation=rotation, scale3d=scale)
 
         # Angle of the wheel
         angle = self.node.createChild("Angle")
-        angle.createObject("MechanicalObject", name="dofs", template="Vec1d", position=0)
+        angle.createObject("MechanicalObject", name="dofs", template="Vec1d", position=self.node.getData("angleIn").getLinkPath())
         # This component is used to constrain the angle to lie between a maximum and minimum value,
         # corresponding to the limit of the real servomotor
         angle.createObject("ArticulatedHierarchyContainer")
-        angle.createObject("ArticulatedSystemMapping", input1=angle.dofs.getLinkPath(), output=position.dofs.getLinkPath())
-        angle.createObject('StopperConstraint', name="AngleLimits", index=0)
+        angle.createObject("ArticulatedSystemMapping", input1=angle.dofs.getLinkPath(), output=baseFrame.dofs.getLinkPath())
+        angle.createObject('StopperConstraint', name="AngleLimits", index=0, min=self.node.getData("minAngle").getLinkPath(), max=self.node.getData("maxAngle").getLinkPath())
         angle.createObject("UncoupledConstraintCorrection")
 
         articulationCenter = angle.createChild("ArticulationCenter")
@@ -91,37 +96,25 @@ class ServoMotor(SofaObject):
         articulation.createObject("Articulation", translation=False, rotation=True, rotationAxis=[1, 0, 0], articulationIndex=0)
 
         # ServoBody and ServoWheel objects with visual
-        servobody = ServoBody(self.node, showServo=showServo)
-        servobody.createObject("RigidRigidMapping", input=self.node.Position.dofs.getLinkPath(), output=servobody.dofs.getLinkPath(), index=0)
         servowheel = ServoWheel(self.node, showWheel=showWheel)
-        servowheel.createObject("RigidRigidMapping", input=self.node.Position.dofs.getLinkPath(), output=servowheel.dofs.getLinkPath(), index=1)
+        servowheel.createObject("RigidRigidMapping", input=self.node.BaseFrame.dofs.getLinkPath(), output=servowheel.dofs.getLinkPath(), index=1)
+        servobody = ServoBody(self.node, showServo=showServo)
+        servobody.createObject("RigidRigidMapping", input=self.node.BaseFrame.dofs.getLinkPath(), output=servobody.dofs.getLinkPath(), index=0)
 
-    def setAngle(self, angle):
-        self.node.Angle.dofs.position = angle
+        # The output
+        self.node.addNewData("angleOut", "S90Properties", "angle of rotation (in degree)", "float", angle.dofs.getData("position").getLinkPath())
 
-    def getAngle(self):
-        return self.node.Angle.dofs.position[0][0]
-
-    def setAngleLimits(self, angleLimits):
-        self.node.Angle.AngleLimits.min = angleLimits[0]
-        self.node.Angle.AngleLimits.max = angleLimits[1]
-
-    angle = property(getAngle, setAngle)
-    angleLimits = property(fset=setAngleLimits)
-
-    def setX(self, x, index=0):
-        position = self.Position.dofs.position
-        position[index][0] = x
-        self.Position.dofs.position = position
-
+        self.node.BaseFrame.init()            
+        self.node.BaseFrame.dofs.rotation = [0., 0., 0.]
+        self.node.BaseFrame.dofs.translation = [0., 0., 0.]
+            
 
 def createScene(rootNode):
 
     import math
 
     def animation(target, factor):
-        target.angle = math.cos(factor * 2 * math.pi)
-        target.setX(math.cos(factor * 2 * math.pi))
+        target.angleIn = math.cos(factor * 2 * math.pi)
 
     Scene(rootNode)
 
@@ -137,7 +130,7 @@ def createScene(rootNode):
     simulation.createObject("EulerImplicitSolver", rayleighStiffness=0.1, rayleighMass=0.1)
     simulation.createObject("CGLinearSolver", name="precond")
 
-    servomotor = ServoMotor(simulation, showWheel=True)
-    animate(animation, {"target": servomotor}, duration=5., mode="loop")
+    ServoMotor(simulation, showWheel=True)
+    animate(animation, {"target": simulation.ServoMotor}, duration=5., mode="loop")
 
     return rootNode

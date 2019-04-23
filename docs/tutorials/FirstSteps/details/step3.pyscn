@@ -29,7 +29,7 @@ def createScene(rootNode):
 
 	### Time integration and solver
 
-	cube.createObject('EulerImplicit', name='odesolver')
+	cube.createObject('EulerImplicitSolver', name='odesolver')
 	cube.createObject('CGLinearSolver', name='Solver')
 
 
@@ -37,7 +37,8 @@ def createScene(rootNode):
 
 	visual = cube.createChild("CubeVisual")
 	# Graphic model based on a mesh
-	visual.createObject('OglModel', name="Visual", fileMesh="mesh/smCube27.obj", color=[0.1,0.0,1.0], scale=20.0)
+	visual.createObject('MeshObjLoader', name="loader", filename="mesh/smCube27.obj", triangulate="true")
+	visual.createObject('OglModel', name="Visual", src="@loader", color=[0.1,0.0,1.0], scale=20.0)
 	# Building a correspondance between the mechanical and the graphical representation
 	visual.createObject('RigidMapping')
 
@@ -46,12 +47,12 @@ def createScene(rootNode):
 	collision = cube.createChild("CubeCollisionModel")
 	collision.createObject('MeshObjLoader', name="loader", filename="mesh/smCube27.obj", triangulate="true", scale=20.0)
 
-	collision.createObject('Mesh', src="@loader")
+	collision.createObject('MeshTopology', src="@loader")
 	collision.createObject('MechanicalObject')
 
-	collision.createObject('Triangle')
-	collision.createObject('Line')
-	collision.createObject('Point')
+	collision.createObject('TTriangleModel')
+	collision.createObject('TLineModel')
+	collision.createObject('TPointModel')
 
 	collision.createObject('RigidMapping')
 

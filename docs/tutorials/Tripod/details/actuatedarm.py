@@ -32,12 +32,13 @@ class ServoArm(object):
                                size=1,
                                template="Rigid3",
                                showObject=True,
-                               showObjectScale=15)
+                               showObjectScale=5,
+                               translation2=[0, 25, 0])
 
         self.node.createObject('RigidRigidMapping',
                                name="mapping", input=mappingInput, index=indexInput)
 
-        visual = VisualModel(self.node, 'data/mesh/SG90_servoarm.stl', translation=[0., 0., 0.], color=[1., 1., 1., 0.75])
+        visual = VisualModel(self.node, 'data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.], color=[1., 1., 1., 0.75])
         visual.model.writeZTransparent = True
         visual.createObject('RigidMapping', name="mapping")
 
@@ -65,18 +66,26 @@ class ActuatedArm(object):
         self.node = parent.createChild(name)
 
         self.servomotor = ServoMotor(self.node, translation=translation, rotation=eulerRotation)
-        ServoArm(self.node, self.servomotor.ServoWheel.dofs)
+        self.servoarm = ServoArm(self.node, self.servomotor.ServoWheel.dofs)
+
+        ## Create a public attribute and connect it to the private one.
+        self.node.addNewData("angleIn", "ArmProperties", "angle of rotation (in radians) of the arm", "float", 0)      
+        self.node.ServoMotor.getData("angleIn").setParent(self.node.getData("angleIn"))
+
+        ## Create a public attribute and connect it to the internal one.         
+        self.node.addNewData("angleOut", "ArmProperties", "angle of rotation (in radians) of the arm", "float", 0)      
+        self.node.getData("angleOut").setParent(self.node.ServoMotor.getData("angleOut"))
 
         if attachingTo is not None:
-            constraint = self.addConstraint(attachingTo.dofs.getData("rest_position"), translation, eulerRotation)
+            constraint = self.addConstraint(attachingTo, translation, eulerRotation)
             attachingTo.createObject('RestShapeSpringsForceField', name="rssff"+name,
                                      points=constraint.BoxROI.getData("indices"),
                                      external_rest_shape=constraint.dofs,
                                      stiffness='1e12')
 
-    def addConstraint(self, position, translation, eulerRotation):
+    def addConstraint(self, deformableObject, translation, eulerRotation):
         constraint = self.node.createChild("Constraint")
-        o = addOrientedBoxRoi(constraint, position=position,
+        o = addOrientedBoxRoi(constraint, position=deformableObject.dofs.getData("rest_position"),
                               translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
                               eulerRotation=eulerRotation, scale=[45, 15, 30])
         o.drawSize = 1
@@ -92,6 +101,13 @@ class ActuatedArm(object):
         constraint.createObject('RigidMapping', name="mapping", input=self.node.ServoMotor.ServoWheel.dofs, output="@./")
 
         return constraint
+
+    def addBox(self, position, translation, eulerRotation):
+        constraint = self.node.createChild("Box")
+        o = addOrientedBoxRoi(constraint, position=position,
+                              translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
+                              eulerRotation=eulerRotation, scale=[45, 15, 30])
+        o.init()
 
 
 def createScene(rootNode):
@@ -111,7 +127,6 @@ def createScene(rootNode):
     arm = ActuatedArm(simulation, name="ActuatedArm", translation=[0.0, 0.0, 0.0])
 
     def myanimate(target, factor):
-        target.angle = math.cos(factor * 2 * math.pi)
-        target.setX(math.cos(factor * 2 * math.pi))
+        target.angleIn = math.cos(factor * 2 * math.pi)
 
-    animate(myanimate, {"target": arm.servomotor}, duration=5, mode="loop")
+    animate(myanimate, {"target": arm.ServoMotor}, duration=5, mode="loop")

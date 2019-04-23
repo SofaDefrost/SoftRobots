@@ -61,7 +61,7 @@ def replaceStringInFile(aFile, outFile, aDictionary):
                         else:
                             url = aDictionary[aString]["url"]
                             try:
-                                ret = urllib2.urlopen(url)
+                                ret = urllib2.urlopen(url, timeout=0.5)
                                 if ret.code == 200:
                                     validUrl = True
                             except:
@@ -70,7 +70,7 @@ def replaceStringInFile(aFile, outFile, aDictionary):
                         if validUrl:
                             line = aDictionary[aString]["regex"].sub("<a href=\"" + url + "\">" + aDictionary[aString]["name"] + "</a>", line)
                         else:
-                            print("Cannot retrieve autlink target '"+aDictionary[aString]["name"]+"' in line "+str(lineno)+" pointing to: "+url )
+                            print("Cannot retrieve autlink target '"+str(aDictionary[aString]["name"])+"' in line "+str(lineno)+" pointing to: "+str(url) )
                             line = aDictionary[aString]["regex"].sub(aDictionary[aString]["name"], line)
 
                 m=re.search("..autolink::(.)*", line)

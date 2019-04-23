@@ -1,0 +1,285 @@
+# -*- coding: utf-8 -*-
+"""
+Step 8: Solve inverse model to control the end-effector position
+
+"""
+import Sofa
+from splib.objectmodel import setData
+from splib.numerics import sin, cos, to_radians, Quat
+from stlib.scene import Scene
+from stlib.physics.mixedmaterial import Rigidify
+from actuatedarm import ActuatedArm
+from tripod import ElasticBody
+from splib.constants import Key
+from tripocontrollerwithcom import TripodControllerWithCom, SerialPortController, SerialPortBridgeGeneric
+from tutorial import *
+
+
+class GoalController(Sofa.PythonScriptController):
+    """This controller moves the goal position when the inverse control is activated
+    """
+
+    def __init__(self, goalNode):
+        self.name = "GoalController"
+        self.activated = False
+        self.time = 0
+        self.dy = 0.1
+        self.mo = goalNode.goalMO
+
+    def onKeyPressed(self, key):
+        if key == Key.I:
+            self.activated = True
+
+    def onBeginAnimationStep(self, dt):
+
+        if self.activated:
+            self.time = self.time+dt
+
+            if self.time >= 1:
+                self.time = 0;
+                self.dy = -self.dy
+
+            pos = [self.mo.position[0][0], self.mo.position[0][1], self.mo.position[0][2]]
+            pos[1] += self.dy
+
+            self.mo.position = [[pos[0], pos[1], pos[2], 0, 0, 0, 1]]
+
+
+def EffectorGoal(node, position):
+    goal = node.createChild('goal')
+    goal.createObject('EulerImplicit', firstOrder='1')
+    goal.createObject('CGLinearSolver', iterations='100',threshold="1e-5", tolerance="1e-5")
+    goal.createObject('MechanicalObject', name='goalMO', template='Rigid3d',
+                      position=str(position[0])+" "+ str(position[1]) + " " + str(position[2]) + " 0 0 0 1", showObject='1',showObjectScale='10')
+    spheres = goal.createChild('spheres')
+    spheres.createObject('MechanicalObject', name='mo', position='0 0 0  10 0 0   0 10 0   0 0 10')
+    spheres.createObject('Sphere', radius='5', group='1')
+    spheres.createObject('RigidMapping')
+    goal.createObject('UncoupledConstraintCorrection')
+    return goal
+
+
+class InverseController(Sofa.PythonScriptController):
+    """This controller has two role:
+       - if user press up/left/right/down/plus/minus the servo motor angle
+         is changed.
+       - if user press A an animation is started to move the motor to the physical position
+         they are occupying in the real robot.
+    """
+
+    def __init__(self, node, nodeGoal, nodeEffector, nodeActuators, nodeDofRigid, nodeTripod, serialport=None, servomotors=None):
+        self.name = "InverseController"
+        self.nodeGoal = nodeGoal
+        self.nodeEffector = nodeEffector
+        self.nodeActuators = nodeActuators
+        self.nodeDofRigid = nodeDofRigid
+        self.nodeTripod = nodeTripod
+        self.serialport = serialport
+        self.serialport.packetOut = [150, 150, 150]
+        self.state = "init"
+        self.actuators = servomotors
+        self.activate = 0;
+
+    def onKeyPressed(self, key):
+        if key == Key.I:
+            print self.nodeActuators.activated
+            self.activate = 1
+
+    def onBeginAnimationStep(self, dt):
+        self.nodeActuators.activated = bool(self.activate)
+        self.nodeActuators.init()
+
+    def onEndAnimationStep(self, dt):
+        if self.state == "init":
+            return
+
+        if self.state == "no-comm":
+            return
+
+        if(self.nodeActuators.activated):
+
+            # position DOF = self.nodeDofRigid.dofs.position
+            W_R_Dof = [0]*4;
+            W_R_Ref = [0]*4;
+            Ndir = [[ ]]*3;
+            Angles = [0]*3;
+            for i in range(0, 4):
+                W_R_Dof[i] = self.nodeDofRigid.dofs.position[0][i+3]
+                W_R_Ref[i] = self.nodeTripod.ActuatedArm0.ServoArm.dofs.position[0][i+3]
+
+            [Ndir[0], Angles[0]] = Quat.product(Quat(W_R_Ref).getInverse(), Quat(W_R_Dof)).getAxisAngle()
+
+            for i in range(0, 4):
+                W_R_Dof[i] = self.nodeDofRigid.dofs.position[1][i+3]
+                W_R_Ref[i] = self.nodeTripod.ActuatedArm1.ServoArm.dofs.position[0][i+3]
+
+            [Ndir[1], Angles[1]] = Quat.product(Quat(W_R_Ref).getInverse(), Quat(W_R_Dof)).getAxisAngle()
+
+            for i in range(0, 4):
+                W_R_Dof[i] = self.nodeDofRigid.dofs.position[2][i+3]
+                W_R_Ref[i] = self.nodeTripod.ActuatedArm2.ServoArm.dofs.position[0][i+3]
+
+            [Ndir[2], Angles[2]] = Quat.product(Quat(W_R_Ref).getInverse(), Quat(W_R_Dof)).getAxisAngle()
+
+            # conversion to degree (centred on 150)
+            # envoie des infos aux servoMoteurs
+            AnglesDeg = [0]*3
+            for i in range(3):
+                if(Ndir[i][0]>0):
+                    AnglesDeg[i] = Angles[i]*180/3.14159265359 + 90
+                else:
+                    AnglesDeg[i] = -Angles[i]*180/3.14159265359 + 90
+
+                if AnglesDeg[i] < 60:
+                    AnglesDeg[i] = 60
+                if AnglesDeg[i] > 180:
+                    AnglesDeg[i] = 180
+
+            # The controller board of the real robot receives `AnglesDeg` values
+            if(self.serialport):
+                print "send data to serial port"
+                self.serialport.sentData = [AnglesDeg[0]+0, AnglesDeg[2]-0, AnglesDeg[1]]
+
+
+# Let's define a Tripod prefab now, that we can later call in the createScene
+# function
+def Tripod(parent, name="Tripod", radius=70, numMotors=3, angleShift=180.0, effectorPos=None, use_orientation=True, goalNode=None):
+    import math
+
+    tripod = parent.createChild(name)
+
+    # It is using the ElasticBody that was made in the previous step, and that
+    # has also been included in the tripod.py script.
+    body = ElasticBody(tripod)
+    body.init()
+    # The actuated arms are positionned around the silicone piece using a loop
+    # structure
+    dist = radius
+    numstep = numMotors
+    b = []
+    arms = []
+    angles = []
+    frames = []
+    for i in range(0, numstep):
+        name = "ActuatedArm"+str(i)
+        fi = float(i)
+        fnumstep = float(numstep)
+        angle = fi*360/fnumstep
+        angle2 = fi*360/fnumstep+angleShift
+        eulerRotation = [0, angle, 0]
+        angles.append([0, angle, 0])
+        translation = [dist*sin(to_radians(angle2)),
+                       -1.35,
+                       dist*cos(to_radians(angle2))]
+
+        frames.append([dist*sin(to_radians(angle2)),
+                       -1.35,
+                       dist*cos(to_radians(angle2)),
+                       0, angle, 0])
+
+        c = ActuatedArm(tripod, name=name,
+                        translation=translation, eulerRotation=eulerRotation)
+
+        c.addBox(body.ElasticMaterialObject.dofs.getData("rest_position"),
+                 translation, eulerRotation)
+        arms.append(c)
+        b.append(map(lambda x: x[0], c.Box.BoxROI.indices))
+
+    if len(effectorPos) == 3:
+        o = body.ElasticMaterialObject.createObject("SphereROI", name="roi", template="Rigid3",
+                                                    position=body.ElasticMaterialObject.dofs.getData("rest_position"),
+                                                    centers=effectorPos, radii=[7.5], drawSphere=True)
+        o.init()
+        b.append(map(lambda x: x[0], o.indices))
+        frames.append([effectorPos[0], effectorPos[1], effectorPos[2], 0, 0, 0])
+
+    o = Rigidify(tripod,
+                 body.ElasticMaterialObject,
+                 name="RigidifiedStructure",
+                 frames=frames,
+                 groupIndices=b)
+
+    actuators = o.RigidParts.createChild('actuators')
+
+    actuators.createObject('SlidingActuator', template='Rigid3', direction='0 0 0 1 0 0', indices=0, maxForce=100000, minForce=-30000)
+    actuators.createObject('SlidingActuator', template='Rigid3', direction='0 0 0 '+str(cos(4*math.pi/3))+' 0 '+str(sin(4*math.pi/3)),
+                           indices=1, showDirection='1', showVisuScale='100', maxForce='100000', minForce='-30000')
+    actuators.createObject('SlidingActuator', template='Rigid3', direction='0 0 0 '+str(cos(2*math.pi/3))+' 0 '+str(sin(2*math.pi/3)),
+                           indices=2, showDirection='1',  showVisuScale='100', maxForce='100000', minForce='-30000')
+
+    if goalNode is None:
+        actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal="10 40 0")
+    elif use_orientation:
+        actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='0 1 0 1 0 1', indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position")
+    else:
+        actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position")
+
+    actuators.activated = 0
+
+    tripod.createObject('MechanicalMatrixMapper',
+                        template='Vec3,Rigid3',
+                        object1=o.DeformableParts.getLinkPath(),
+                        object2=o.RigidParts.dofs.getLinkPath(),
+                        nodeToParse=o.RigidParts.RigidifiedParticules.ElasticMaterialObject.getLinkPath())
+
+    for i in range(0, numMotors):
+        a = arms[i].ServoMotor.BaseFrame.createChild("Attach")
+        a.createObject("MechanicalObject", template="Rigid3d", name="dofs",
+                       showObject=True, showObjectScale=10,
+                       position=[0.0, 25.0, 10.0, 0, 0, 0, 1])
+        a.createObject("RigidRigidMapping")
+
+        o.RigidParts.createObject('RestShapeSpringsForceField',
+                                  external_rest_shape=arms[i].ServoArm.dofs.getLinkPath(),
+                                  points=[i], external_points=[0],
+                                  angularStiffness=1e7, stiffness=1e10)
+
+    for i in range(0, numMotors):
+        arms[i].ServoMotor.BaseFrame.createObject("FixedConstraint")
+        arms[i].ServoMotor.ServoWheel.createObject("FixedConstraint")
+
+    setData(o.RigidParts.dofs,
+            showObject=True, showObjectScale=10.0, drawMode=0)
+    setData(o.RigidParts.RigidifiedParticules.dofs, showObject=True,
+            showObjectScale=5.0, drawMode=0, showColor=[1.0, 1.0, 0.0, 1.0])
+    setData(o.DeformableParts.dofs, showObject=True,
+            showObjectScale=1.0, drawMode=2)
+
+    tripod.removeChild(body)
+    return tripod
+
+
+def createScene(rootNode):
+    # position or orientation
+    orientation = False
+
+    if orientation:
+        # inverse in orientation
+        goalNode = EffectorGoal(rootNode, [0, 50, 50])
+    else:
+        # inverse in position
+        goalNode = EffectorGoal(rootNode, [0, 40, 0])
+
+    scene = Scene(rootNode, plugins=["SoftRobots"])
+    scene.VisualStyle.displayFlags = "showBehavior"
+
+    # serial port bridge
+    serial = SerialPortBridgeGeneric(scene)
+
+    # Create the tripod object.
+    tripod = Tripod(scene.Modelling, effectorPos=[0, 30, 0], use_orientation=orientation, goalNode=goalNode)
+
+    actuators = tripod.RigidifiedStructure.RigidParts.actuators
+    invCtr = InverseController(rootNode, goalNode, actuators, actuators, tripod.RigidifiedStructure.RigidParts, tripod, serial,
+                               [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
+
+    # The regular controller that is being used for the last 2 steps
+    TripodControllerWithCom(rootNode,
+                            [tripod.ActuatedArm0,
+                             tripod.ActuatedArm1,
+                             tripod.ActuatedArm2], invCtr)
+
+    scene.Simulation.removeObject(scene.Simulation.CGLinearSolver)
+    scene.Simulation.createObject("SparseLDLSolver")
+    scene.Simulation.createObject("GenericConstraintCorrection", solverName='SparseLDLSolver')
+    scene.Simulation.addChild(tripod)

@@ -1,0 +1,84 @@
+# -*- coding: utf-8 -*-
+"""
+Step 9: Adding the rigidification to the tutorial.
+
+"""
+from stlib.scene import Scene
+from tripod import Tripod
+from tripodcontroller import DirectController, InverseController, GoalController
+
+
+def EffectorGoal(node, position):
+    goal = node.createChild('goal')
+    goal.createObject('EulerImplicitSolver', firstOrder=True)
+    goal.createObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
+    goal.createObject('MechanicalObject', name='goalMO', template='Rigid3d',
+                      position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
+    spheres = goal.createChild('spheres')
+    spheres.createObject('MechanicalObject', name='mo', position='0 0 0  10 0 0   0 10 0   0 0 10')
+    spheres.createObject('Sphere', radius=5, group=1)
+    spheres.createObject('RigidMapping')
+    goal.createObject('UncoupledConstraintCorrection')
+    return goal
+
+
+# Description of how the communication is handled
+# CHANGE HERE the serialport that correspond to your computer
+# def SerialPortBridgeGeneric(rootNode, serialport="/dev/cu.usbserial-1420"):
+# def SerialPortBridgeGeneric(rootNode, serialport="..."):
+def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
+    return rootNode.createObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True)
+
+
+def createScene(rootNode):
+    # Choose here to control position or orientation of end-effector
+    orientation = False;
+
+    if orientation:
+        # inverse in orientation
+        goalNode = EffectorGoal(rootNode, [0, 50, 50])
+    else:
+        # inverse in position
+        goalNode = EffectorGoal(rootNode, [0, 40, 0])
+
+    # You can add a GoalController and play with it
+    # GoalController(goalNode)
+
+    # Scene set up
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
+    rootNode.createObject("RequiredPlugin", name="SoftRobots")
+    scene.VisualStyle.displayFlags = "showBehavior showCollision"
+    scene.createObject("MeshSTLLoader", name="loader",
+                       filename="../data/mesh/blueprint.stl")
+    scene.createObject("OglModel", src="@loader")
+
+    # Inverse Solver
+    rootNode.createObject("FreeMotionAnimationLoop")
+    rootNode.createObject('QPInverseProblemSolver', name="QP", printLog='0')
+
+    # Serial port bridge
+    serial = SerialPortBridgeGeneric(rootNode)
+
+    # Create the tripod object.
+    tripod = Tripod(rootNode, effectorPos=[0, 30, 0], use_orientation=orientation, goalNode=goalNode)
+
+    actuators = tripod.RigidifiedStructure.RigidParts.actuators
+    invCtr = InverseController(rootNode, goalNode, actuators, actuators, tripod.RigidifiedStructure.RigidParts, tripod, serial, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
+
+    # The regular controller that is being used for the last 2 steps
+    DirectController(rootNode, [tripod.ActuatedArm0,
+                                tripod.ActuatedArm1,
+                                tripod.ActuatedArm2], invCtr)
+
+    simulation = scene.createChild("Simulation")
+    simulation.createObject("EulerImplicitSolver", firstOrder=0, rayleighStiffness='0.01')
+    simulation.createObject("SparseLDLSolver", name="sparseSolver")
+    simulation.createObject("GenericConstraintCorrection", solverName='sparseSolver')
+    simulation.addChild(tripod)
+
+    for i in range(3):
+        visual = tripod.RigidifiedStructure.RigidParts.createChild("VisualModel")
+        visual.createObject("MeshSTLLoader", name="loader", filename="../data/mesh/SG90_servoarm.stl")
+        visual.createObject("MeshTopology", src="@loader")
+        visual.createObject("OglModel", color=[0.75, 0.75, 0.75, 0.7], writeZTransparent=True)
+        visual.createObject("RigidMapping", index=i)

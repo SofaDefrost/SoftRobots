@@ -18,7 +18,7 @@ def ElasticBody(parent):
     e = ElasticMaterialObject(body,
                               volumeMeshFileName="data/mesh/tripod_mid.gidmsh",
                               poissonRatio=0.45,
-                              youngModulus=800,
+                              youngModulus=100,
                               totalMass=0.032,
                               rotation=[90, 0, 0])
 
@@ -37,14 +37,13 @@ def ElasticBody(parent):
                         output=visual.renderer.getLinkPath())
     return body
 
-
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
     rootNode.dt = 0.025
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
+    scene.Config.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
+    scene.Config.createObject("OglModel", src="@loader")
 
     # Instanciating the prefab into the graph
     body = ElasticBody(rootNode)
@@ -52,8 +51,8 @@ def createScene(rootNode):
     # Instanciating the FixingBox prefab into the graph, constraining the mechanical object of the ElasticBody.
     fix = FixingBox(rootNode,
                     body.ElasticMaterialObject,
-                    translation=[0.0, 0.0, 0.0],
+                    translation=[10.0, 0.0, 0.0],
                     scale=[30., 30., 30.])
 
     # Changing the property of the Box ROI so that the constraint area appears on screen.
-    fix.boxroi.drawBoxes = True
+    fix.BoxROI.drawBoxes = True

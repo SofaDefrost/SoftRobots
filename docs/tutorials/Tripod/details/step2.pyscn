@@ -4,16 +4,13 @@ Step 2: Introducing elastic material modelling
 """
 from stlib.scene import Scene
 
-
 def createScene(rootNode):
-    rootNode.createObject("RequiredPlugin", name="SofaSparseSolver")
-
-    scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0])
+    scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0], plugins=["SofaSparseSolver"])
     rootNode.dt = 0.01
 
     # Graphic modelling of the legends associated to the servomotors
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
+    scene.Config.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
+    scene.Config.createObject("OglModel", src="@loader")
 
     # To simulate an elastic object, we need:
     # - a deformation law (here linear elasticity)

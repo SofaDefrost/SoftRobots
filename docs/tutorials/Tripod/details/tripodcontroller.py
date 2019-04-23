@@ -1,10 +1,9 @@
 import Sofa
+from tutorial import *
 from splib.numerics import RigidDof
 from splib.animation import animate
 from splib.constants import Key
-from stlib.scene import Scene, Interaction
 from tripod import Tripod
-
 
 def setupanimation(actuators, step, angularstep, factor):
     """This function is called repeatidely in an animation.
@@ -12,14 +11,20 @@ def setupanimation(actuators, step, angularstep, factor):
        value.
     """
     for actuator in actuators:
-            actuator.servomotor.Position.dofs.rotation = [0., 0., 0.]
-            actuator.servomotor.Position.dofs.translation = [0., 0., 0.]
-            rigid = RigidDof(actuator.servomotor.Position.dofs)
-            rigid.translate(rigid.forward * step * factor)
-            actuator.servomotor.angle = angularstep * factor
+        rigid = RigidDof( actuator.ServoMotor.BaseFrame.dofs )
+        rigid.setPosition( rigid.rest_position + rigid.forward * step * factor )
+        actuator.angleIn = angularstep * factor
+        
+def saveTripodPosition(actuators, step, angularstep, factor):
+        t = []
+        for actuator in actuators:
+                t.append(actuator.ServoMotor.BaseFrame.dofs.getData("position"))
+                t.append(actuator.ServoMotor.getData("angleIn"))
+
+        dumpPosition(t, "tripodRestPosition.json")
 
 
-class MyController(Sofa.PythonScriptController):
+class TripodController(Sofa.PythonScriptController):
     """This controller has two roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
@@ -37,37 +42,66 @@ class MyController(Sofa.PythonScriptController):
 
     def initTripod(self, key):
         if key == Key.A:
-            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, duration=0.2)
+            animate(setupanimation, 
+                    {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, 
+                    duration=0.2,
+                    onDone=saveTripodPosition)
 
     def animateTripod(self, key):
         if key == Key.uparrow:
-            self.actuators[0].servomotor.angle += self.stepsize
+            self.actuators[0].ServoMotor.angleIn = self.actuators[0].ServoMotor.angleOut + self.stepsize
         elif key == Key.downarrow:
-            self.actuators[0].servomotor.angle -= self.stepsize
+            self.actuators[0].ServoMotor.angleIn = self.actuators[0].ServoMotor.angleOut - self.stepsize
 
         if key == Key.leftarrow:
-            self.actuators[1].servomotor.angle += self.stepsize
+            self.actuators[1].ServoMotor.angleIn = self.actuators[1].ServoMotor.angleOut + self.stepsize
         elif key == Key.rightarrow:
-            self.actuators[1].servomotor.angle -= self.stepsize
+            self.actuators[1].ServoMotor.angleIn = self.actuators[1].ServoMotor.angleOut - self.stepsize
 
         if key == Key.plus:
-            self.actuators[2].servomotor.angle += self.stepsize
+            self.actuators[2].ServoMotor.angleIn = self.actuators[2].ServoMotor.angleOut + self.stepsize
         elif key == Key.minus:
-            self.actuators[2].servomotor.angle -= self.stepsize
+            self.actuators[2].ServoMotor.angleIn = self.actuators[2].ServoMotor.angleOut - self.stepsize
+
+
+class TripodControllerWithCom(TripodController):
+    """This controller has three roles:
+       - if the user presses up/left/right/down/plus/minus, the servomotor angle
+         is changed.
+       - if thr user presses A, an animation is started to move the servomotor to the initial position
+         of the real robot.
+       - if thr user presses B start the communication with controller card, send
+         servomotor commands
+    """
+
+    def __init__(self, node, actuators, serialportctrl):
+        TripodController.__init__(self, node, actuators)
+        self.serialportctrl = serialportctrl
+
+    def initTripod(self, key):
+        if key == Key.A and self.serialportctrl.state == "init":
+            self.serialportctrl.state = "no-comm"
+            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, duration=0.2)
+
+        # Inclusion of the keystroke to start data sending = establishing communication ('comm')
+        if key == Key.B and self.serialportctrl.state == "no-comm":
+            self.serialportctrl.state = "comm"
+
 
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
+
+    scene = Scene(rootNode)
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    scene.createObject("MeshSTLLoader", name="loader", filename="data/mesh/blueprint.stl")
-    scene.createObject("OglModel", src="@loader")
+    tripod = Tripod(scene.Modelling)
 
-    model = scene.createChild("Model")
-    tripod = Tripod(model)
+    TripodController(scene, [tripod.ActuatedArm0, 
+                             tripod.ActuatedArm1, 
+                             tripod.ActuatedArm2])
 
-    MyController(rootNode, tripod.actuatedarms)
-
-    Interaction(rootNode, targets=[tripod.ActuatedArm0,
-                                   tripod.ActuatedArm1,
-                                   tripod.ActuatedArm2])
+    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    motors = scene.Simulation.createChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)
