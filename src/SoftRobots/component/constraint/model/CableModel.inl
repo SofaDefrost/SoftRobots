@@ -70,7 +70,8 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
                               "If false, the pull point is not considered and the cable is entirely mapped \n"
                               " In that case, needs at least 2 different point in indices."))
 
-    , d_cableInitialLength(initData(&d_cableInitialLength, Real(0.0), "cableInitialLength"," "))
+    , d_cableInitialLength(initData(&d_cableInitialLength, Real(0.0), "cableInitialLength","This value can be defined by the user. \n"
+                                    "If not defined, it will correspond to the length of the cable at the start of the simulation"))
 
     , d_cableLength(initData(&d_cableLength, Real(0.0), "cableLength","Computation done at the end of the time step"))
 
@@ -121,7 +122,6 @@ CableModel<DataTypes>::~CableModel()
 template<class DataTypes>
 void CableModel<DataTypes>::setUpData()
 {
-    d_cableInitialLength.setReadOnly(true);
     d_cableLength.setReadOnly(true);
 
     d_force.setGroup("Vector");
@@ -160,15 +160,17 @@ void CableModel<DataTypes>::bwdInit()
     if(m_componentstate != ComponentState::Valid)
             return ;
 
-    // The initial length of the cable is computed in bwdInit so the mapping (if there is any)
+    // The initial length of the cable is set or computed in bwdInit so the mapping (if there is any)
     // will be considered
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
     ReadAccessor<Data<VecCoord>> restPositions = m_state->readRestPositions();
 
     Real cableLength = getCableLength(positions.ref());
-    Real initialCableLength = getCableLength(restPositions.ref());
-    if (d_cableInitialLength.getValue() == 0)
-      d_cableInitialLength.setValue(initialCableLength);
+
+    if (d_cableInitialLength.getValue() == 0){
+        Real initialCableLength = getCableLength(restPositions.ref());
+        d_cableInitialLength.setValue(initialCableLength);
+    }
     d_cableLength.setValue(cableLength);
 }
 
