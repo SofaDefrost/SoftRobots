@@ -167,7 +167,8 @@ void CableModel<DataTypes>::bwdInit()
 
     Real cableLength = getCableLength(positions.ref());
     Real initialCableLength = getCableLength(restPositions.ref());
-    d_cableInitialLength.setValue(initialCableLength);
+    if (d_cableInitialLength.getValue() == 0)
+      d_cableInitialLength.setValue(initialCableLength);
     d_cableLength.setValue(cableLength);
 }
 
