@@ -230,9 +230,14 @@ if(SofaPython_FOUND)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(NAME SoftRobots VERSION ${PROJECT_VERSION} TARGETS ${PROJECT_NAME}
+sofa_generate_package(
+    NAME SoftRobots
+    VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME}
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
-    INCLUDE_SOURCE_DIR src/SoftRobots)
+    INCLUDE_SOURCE_DIR src/SoftRobots
+    RELOCATABLE "plugins"
+    )
 
 install(DIRECTORY docs DESTINATION .)
 install(FILES "README.md" "LICENSE" "CHANGELOG" DESTINATION .)
