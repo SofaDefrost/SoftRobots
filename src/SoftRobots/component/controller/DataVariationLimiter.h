@@ -32,7 +32,7 @@
 #define SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_H
 
 #include <SofaUserInteraction/Controller.h>
-#include "../initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 
 namespace sofa
 {

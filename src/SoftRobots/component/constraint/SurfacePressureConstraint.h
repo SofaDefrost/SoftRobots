@@ -34,7 +34,7 @@
 #include "model/SurfacePressureModel.h"
 #include <sofa/helper/OptionsGroup.h>
 
-#include "../initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 
 namespace sofa
 {

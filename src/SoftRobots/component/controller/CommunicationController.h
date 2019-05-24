@@ -39,7 +39,7 @@
 #include <zmq.hpp>
 #include <string>
 
-#include "../initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 
 namespace sofa
 {

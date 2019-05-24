@@ -46,7 +46,6 @@
 #define NAN (INFINITY-INFINITY)
 #  define TRUE 1
 #  define FALSE 0
-#  define bool int
 //bool signbit(double num) { return _copysign(1.0, num) < 0; }
 #define signbit(x) ((x) < 0.0)
 #define truncf(x) floor(x)

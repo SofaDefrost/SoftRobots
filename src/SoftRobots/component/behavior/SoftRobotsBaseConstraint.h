@@ -32,7 +32,7 @@
 
 #include <sofa/core/behavior/BaseConstraint.h>
 
-#include "../initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 
 namespace sofa
 {

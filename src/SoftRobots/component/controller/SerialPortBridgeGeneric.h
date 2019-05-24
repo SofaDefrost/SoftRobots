@@ -34,7 +34,7 @@
 
 #include "modules/Serial.h"
 
-#include "../initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 
 #if defined (_WIN32) || defined( _WIN64)
 #define         DEVICE_PORT             "COM1"

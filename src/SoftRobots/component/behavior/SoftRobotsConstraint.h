@@ -33,7 +33,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include "SoftRobotsBaseConstraint.h"
 
-#include "../initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 
 namespace sofa
 {

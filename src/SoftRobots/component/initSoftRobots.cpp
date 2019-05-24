@@ -27,15 +27,21 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+using sofa::helper::system::PluginManager;
+
+#ifdef SOFTROBOTS_PYTHON
+#include <SofaPython/PythonEnvironment.h>
+using sofa::simulation::PythonEnvironment;
+#endif
+
+#include <fstream>
 
 namespace sofa
 {
-
 namespace component
 {
 
@@ -51,16 +57,22 @@ extern "C" {
 void initExternalModule()
 {    
     static bool first = true;
-    if (first)
+    if (!first)
     {
-        /// Automatically load the SoftRobots.Inverse plugin if available.
-        if( !PluginManager::getInstance().findPlugin("SoftRobots.Inverse").empty() )
-        {
-            PluginManager::getInstance().loadPlugin("SoftRobots.Inverse") ;
-        }
-
-        first = false;
+        return;
     }
+    first = false;
+
+    // Automatically load the STLIB plugin if available.
+    if( !PluginManager::getInstance().findPlugin("STLIB").empty() )
+    {
+        PluginManager::getInstance().loadPlugin("STLIB") ;
+    }
+
+#ifdef SOFTROBOTS_PYTHON
+    PythonEnvironment::addPythonModulePathsForPluginsByName(getModuleName());
+#endif
+    //SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > test;
 }
 
 const char* getModuleName()
@@ -90,9 +102,8 @@ const char* getModuleComponentList()
     return classes.c_str();
 }
 
-}
-
-}
+} // namespace component
+} // namespace sofa
 
 SOFA_LINK_CLASS(AnimationEditor)
 SOFA_LINK_CLASS(DataVariationLimiter)

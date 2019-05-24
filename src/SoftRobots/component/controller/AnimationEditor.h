@@ -35,7 +35,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include "../initSoftRobots.h"
+#include <SoftRobots/initSoftRobots.h>
 
 namespace sofa
 {
