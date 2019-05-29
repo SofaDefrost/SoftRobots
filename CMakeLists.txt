@@ -42,7 +42,7 @@ find_package(Qt5 REQUIRED COMPONENTS Network)
 if(WIN32)
     sofa_copy_libraries_from_targets(Qt5::Network)
 endif()
-sofa_install_libraries_from_targets(Qt5::Network)
+sofa_install_libraries(TARGETS Qt5::Network)
 
 find_package(STLIB QUIET)
 if(STLIB_FOUND)
@@ -226,7 +226,7 @@ target_link_libraries(${PROJECT_NAME} Qt5::Network)
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
     # Config files and install rules for pythons scripts
-    sofa_set_python_directory(${PROJECT_NAME} "python" "python")
+    sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
