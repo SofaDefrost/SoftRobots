@@ -36,6 +36,7 @@
 #ifdef WIN32
     #include <time.h>
     #include <sys/timeb.h>
+	#include <WinSock2.h>
 	#include <Windows.h>
 #else
     #include <sys/time.h>

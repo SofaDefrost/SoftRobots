@@ -191,11 +191,18 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h" DESTINAT
 
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
+IF(WIN32)
+	add_definitions(-D_WINSOCKAPI_)
+ENDIF(WIN32)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${DOC_FILES} ${RESOURCE_FILES})
 
 # COMMUNICATION CONTROLLER
 if(SOFTROBOTS_COMMUNICATIONCONTROLLER)
-    target_link_libraries(${PROJECT_NAME} "-lzmq")
+    find_package(ZMQ REQUIRED)
+	include_directories(${ZMQ_INCLUDE_DIR})
+
+	target_link_libraries(${PROJECT_NAME} ${ZMQ_LIBRARY})
 endif()
 
 # ROBOTINO CONTROLLER

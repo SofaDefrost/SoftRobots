@@ -322,18 +322,18 @@ void CommunicationController<DataTypes>::receiveData()
         sendRequest();
 
     zmq::message_t message;
-    unsigned int messageSize;
+    //unsigned int messageSize;
     bool status = m_socket->recv(&message);
     if(status)
     {
-        char messageChar[messageSize];
-        memcpy(&messageChar, message.data(), messageSize);
+        char* messageChar = new char[message.size()];
+        memcpy(messageChar, message.data(), message.size());
 
         stringstream stream;
         stringstream templateStream;
 
         unsigned int startId = 0;
-        for(unsigned int i=0; i<messageSize; i++)
+        for(unsigned int i=0; i<message.size(); i++)
         {
             if(messageChar[i]==' ')
             {
@@ -352,7 +352,7 @@ void CommunicationController<DataTypes>::receiveData()
             return;
         }
 
-        for(unsigned int i=startId; i<messageSize; i++)
+        for(unsigned int i=startId; i<message.size(); i++)
         {
             if(messageChar[i]==',')
                 messageChar[i]='.';
