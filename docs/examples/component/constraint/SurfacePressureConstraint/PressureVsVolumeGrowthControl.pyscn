@@ -1,0 +1,23 @@
+import Sofa
+
+#from Bunny import createBunny
+from softrobots.parts.bunny import createBunny
+import os
+
+path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
+
+def createScene(rootNode):
+
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
+
+                rootNode.createObject('FreeMotionAnimationLoop')
+                rootNode.createObject('GenericConstraintSolver', maxIterations='500', printLog='0', tolerance = '0.0000001')
+
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+
+                BunnyPressure = createBunny(rootNode, Name='BunnyPressure', InitialValue=5)
+
+                BunnyVolume = createBunny(rootNode,Translation=[15,0,0],ControlType='VolumeConstraint',Name='BunnyVolume ', InitialValue=40)
+
+                return rootNode

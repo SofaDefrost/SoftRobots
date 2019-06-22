@@ -2,11 +2,19 @@
 
 @PACKAGE_INIT@
 
-find_package(SofaGui REQUIRED)
-find_package(SofaGeneral REQUIRED)
-find_package(SofaMisc REQUIRED)
+find_package(SofaFramework REQUIRED)
+if(@SofaPython_FOUND@)
+    find_package(SofaPython)
+endif()
+if(@STLIB_FOUND@)
+    find_package(STLIB)
+endif()
+find_package(Qt5 QUIET REQUIRED COMPONENTS Network)
+include_directories("${Qt5Network_INCLUDE_DIRS}")
 
-set(@PROJECT_NAME@_INCLUDE_DIRS  @CMAKE_CURRENT_SOURCE_DIR@/../)
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
 
 check_required_components(@PROJECT_NAME@)
 

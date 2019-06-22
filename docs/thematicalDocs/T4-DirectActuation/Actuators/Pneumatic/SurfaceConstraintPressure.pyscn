@@ -23,7 +23,7 @@ def createScene(rootNode):
                 bunny.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
 
                 bunny.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
-                bunny.createObject('UniformMass', totalmass='0.5')
+                bunny.createObject('UniformMass', totalMass='0.5')
                 bunny.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
 
                 bunny.createObject('BoxROI', name='boxROI', box='-5 -15 -5  5 -4.5 5', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")

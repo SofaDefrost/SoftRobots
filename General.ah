@@ -1,0 +1,40 @@
+{
+        "Python" : {
+            "name": "Python",
+            "url": "https://www.python.org/"
+        },
+
+        "PythonTutorials" : {
+            "name": "PythonTutorials",
+            "url": "https://www.python.org/about/gettingstarted/"
+        },
+
+	"FEM" : {
+            "name": "FEM",
+            "url" : "https://en.wikipedia.org/wiki/Finite_element_method"
+	},
+
+	"Sofa" : {
+	    "ns" : "",
+            "name": "SOFA",
+            "url" : "https://www.sofa-framework.org/"
+	},
+
+	"SoftRobots" : {
+	    "ns" : "",
+            "name": "SoftRobots",
+            "url" : "https://project.inria.fr/softrobot/"
+	},
+
+	"Defrost" : {
+		"ns" : "",
+        "name" : "Defrost",
+		"url" : "https://team.inria.fr/defrost/"
+	},
+
+	"LGPL" : {
+	    "ns" : "",
+	    "name" : "LGPL",
+		"url" : "https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License"
+	}
+}

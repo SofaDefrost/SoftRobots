@@ -1,0 +1,65 @@
+{
+	"STLIB" : {
+	    "ns": "",
+	    "name" : "STLIB",
+	    "url" : "http://stlib.readthedocs.io/en/latest/"
+	},
+
+	"MainHeader" : {
+	    "name": "MainHeader",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader"
+	},
+
+    "ContactHeader" : {
+	    "name": "ContactHeader",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader"
+	},
+	
+    "ElasticMaterialObject" : {
+	    "name": "ElasticMaterialObject",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.deformable.html#stlib.physics.deformable.ElasticMaterialObject"
+	},
+	
+    "FixedBox" : {
+	    "name": "FixedBox",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.constraints.html#stlib.physics.constraints.FixedBox"
+	},
+
+    "CollisionMesh" : {
+	    "name": "CollisionMesh",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.collision.html#stlib.physics.collision.CollisionMesh"
+	},
+
+    "Cube" : {
+	    "name": "Cube",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube"
+	},
+
+    "Floor" : {
+	    "name": "Floor",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor"
+	},
+	
+	"RigidObject" : {
+	    "name": "RigidObject",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/_autosummary/stlib.physics.rigid.html#stlib.physics.rigid.RigidObject"
+	},
+
+	"Node": {
+	    "name": "Node",
+	    "url" : "http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.Node"
+	},
+
+    "youngModulus" : {
+       "ns" : "STLIB::PARAMS",
+       "name" : "youngModulus",
+       "url": "https://en.wikipedia.org/wiki/Young%27s_modulus"
+    },
+
+    "poissonRatio" : {
+       "ns" : "STLIB::PARAMS",
+       "name" : "poissonRatio",
+       "url": "https://en.wikipedia.org/wiki/Poisson%27s_ratio"
+    }
+
+}

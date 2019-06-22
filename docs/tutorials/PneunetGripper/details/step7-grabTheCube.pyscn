@@ -1,0 +1,136 @@
+import Sofa
+import math
+import os
+
+youngModulusFingers = 500
+youngModulusStiffLayerFingers = 1500
+
+radius = 70
+angle1 = 120*math.pi/180  # Angle between 1st and 2nd finger in radian
+angle2 = 240*math.pi/180  # Angle between 1st and 3rd finger in radian
+translateFinger1 = "0 0 0"
+translateFinger2 = "0 " + str(radius + radius*math.sin(angle1-math.pi/2)) + " " + str(radius*math.cos(angle1-math.pi/2))
+translateFinger3 = "0 " + str(radius + radius*math.sin(angle2-math.pi/2)) + " " + str(radius*math.cos(angle2-math.pi/2))
+translations= [translateFinger1,translateFinger2, translateFinger3]
+angles=[0,angle1, angle2]
+
+def createScene(rootNode):
+
+				rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+				rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
+				rootNode.findData('gravity').value='-9810 0 0';
+				rootNode.createObject('FreeMotionAnimationLoop')
+				rootNode.createObject('GenericConstraintSolver', tolerance="1e-12", maxIterations="10000")
+				rootNode.createObject('CollisionPipeline', verbose="0")
+				rootNode.createObject('BruteForceDetection', name="N2")
+				rootNode.createObject('CollisionResponse', response="FrictionContact", responseParams="mu=0.6")
+				rootNode.createObject('LocalMinDistance', name="Proximity", alarmDistance="5", contactDistance="1", angleCone="0.00")
+
+				rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+				rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+				rootNode.createObject('PythonScriptController', filename="pythonControllers/wholeGripperController.py", classname="controller")
+
+				planeNode = rootNode.createChild('Plane')
+				planeNode.createObject('MeshObjLoader', name='loader', filename="data/mesh/floorFlat.obj", triangulate="true", rotation="0 0 270", scale=10, translation="-122 0 0")
+				planeNode.createObject('Mesh', src="@loader")
+				planeNode.createObject('MechanicalObject', src="@loader")
+				planeNode.createObject('Triangle', simulated="0", moving="0")
+				planeNode.createObject('Line', simulated="0", moving="0")
+				planeNode.createObject('Point', simulated="0", moving="0")
+				planeNode.createObject('OglModel',name="Visual", src="@loader", color="1 0 0 1")
+
+				cube = rootNode.createChild('cube')
+				cube.createObject('EulerImplicit', name='odesolver')
+				cube.createObject('SparseLDLSolver', name='linearSolver')
+				cube.createObject('MechanicalObject', template="Rigid3", position='-100 70 0 0 0 0 1')
+				cube.createObject('UniformMass', totalMass='0.001')
+				cube.createObject('UncoupledConstraintCorrection')
+
+				#collision
+				cubeCollis = cube.createChild('cubeCollis')
+				cubeCollis.createObject('MeshObjLoader', name="loader", filename="data/mesh/smCube27.obj", triangulate="true",  scale="6")
+				cubeCollis.createObject('Mesh', src="@loader")
+				cubeCollis.createObject('MechanicalObject')
+				cubeCollis.createObject('Triangle')
+				cubeCollis.createObject('Line')
+				cubeCollis.createObject('Point')
+				cubeCollis.createObject('RigidMapping')
+
+				#visualization
+				cubeVisu = cube.createChild('cubeVisu')
+				cubeVisu.createObject('MeshObjLoader', name="loader", filename="data/mesh/smCube27.obj")
+				cubeVisu.createObject('OglModel', name="Visual", src="@loader", color="0.0 0.1 0.5", scale="6.2")
+				cubeVisu.createObject('RigidMapping')
+
+
+				for i in range(3):
+					##########################################
+					# Finger Model	 						 #
+					##########################################
+					finger = rootNode.createChild('finger'+str(i+1))
+					finger.createObject('EulerImplicit', name='odesolver', rayleighStiffness='0.1', rayleighMass='0.1')
+					finger.createObject('SparseLDLSolver', name='preconditioner')
+
+					finger.createObject('MeshVTKLoader', name='loader', filename='data/mesh/pneunetCutCoarse.vtk',rotation=str(360 - angles[i]*180/math.pi)+ " 0 0", translation = translations[i])
+					finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
+					finger.createObject('TetrahedronSetTopologyModifier')
+					finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
+					finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+
+					finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
+					finger.createObject('UniformMass', totalMass= 0.04)
+					finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio=0.3,  youngModulus=youngModulusFingers, drawAsEdges="1")
+
+					finger.createObject('BoxROI', name='boxROI', box='-10 0 -20 0 30 20', drawBoxes='true',doUpdate='0')
+					finger.createObject('BoxROI', name='boxROISubTopo', box='-100 22.5 -8 -19 28 8', drawBoxes='false')
+					if i == 0:
+						finger.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12', angularStiffness='1e12')
+					else:
+						finger.createObject('RestShapeSpringsForceField', points='@../finger1/boxROI.indices', stiffness='1e12', angularStiffness='1e12')
+
+					finger.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+
+					##########################################
+					# Sub topology						   #
+					##########################################
+					modelSubTopo = finger.createChild('modelSubTopo')
+					if i == 0:
+						modelSubTopo.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra="@boxROISubTopo.tetrahedraInROI", name='container')
+					else:
+						modelSubTopo.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra="@../../finger1/boxROISubTopo.tetrahedraInROI", name='container')
+					modelSubTopo.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus=str(youngModulusStiffLayerFingers-youngModulusFingers))
+
+
+					##########################################
+					# Constraint							 #
+					##########################################
+					cavity = finger.createChild('cavity')
+					cavity.createObject('MeshSTLLoader', name='loader', filename='data/mesh/pneunetCavityCut.stl',translation = translations[i],rotation=str(360 - angles[i]*180/math.pi)+ " 0 0")
+					cavity.createObject('Mesh', src='@loader', name='topo')
+					cavity.createObject('MechanicalObject', name='cavity')
+					cavity.createObject('SurfacePressureConstraint', name="SurfacePressureConstraint", template='Vec3d', value="0.0001", triangles='@topo.triangles', visualization='0', showVisuScale='0.0002', valueType="pressure")
+					cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+
+					##########################################
+					# Collision							  #
+					##########################################
+
+					collisionFinger = finger.createChild('collisionFinger')
+					collisionFinger.createObject('MeshSTLLoader', name='loader', filename='data/mesh/pneunetCut.stl', translation = translations[i],rotation=str(360 - angles[i]*180/math.pi)+ " 0 0")
+					collisionFinger.createObject('Mesh', src='@loader', name='topo')
+					collisionFinger.createObject('MechanicalObject', name='collisMech')
+					collisionFinger.createObject('Triangle', selfCollision="false")
+					collisionFinger.createObject('Line',selfCollision="false")
+					collisionFinger.createObject('Point', selfCollision="false")
+					collisionFinger.createObject('BarycentricMapping')
+
+
+					##########################################
+					# Visualization						  #
+					##########################################
+					modelVisu = finger.createChild('visu')
+					modelVisu.createObject('MeshSTLLoader', name="loader", filename="data/mesh/pneunetCut.stl")
+					modelVisu.createObject('OglModel', src="@loader", template='ExtVec3f', color='0.7 0.7 0.7 0.6',translation = translations[i],rotation=str(360 - angles[i]*180/math.pi)+ " 0 0")
+					modelVisu.createObject('BarycentricMapping')
+
+				return rootNode

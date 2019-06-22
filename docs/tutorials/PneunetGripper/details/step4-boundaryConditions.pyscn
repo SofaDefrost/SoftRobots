@@ -1,0 +1,24 @@
+import Sofa
+
+import os
+
+def createScene(rootNode):
+
+        rootNode.createObject('VisualStyle', displayFlags='showForceFields showBehaviorModels')
+        rootNode.createObject('RequiredPlugin', name='soft', pluginName='SoftRobots')
+        #rootNode.findData("bbox").value = "-100 -100 -100 100 100 100"
+        rootNode.findData('gravity').value='-9810 0 0';
+        
+        finger = rootNode.createChild('finger')
+        finger.createObject('MeshVTKLoader', name='loader', filename='data/mesh/pneunetCutCoarse.vtk')
+        finger.createObject('Mesh', src='@loader', name='container')
+        finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showObject='true', showObjectScale='1')
+        finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500', drawAsEdges="true")
+        finger.createObject('UniformMass', totalMass='0.0008')
+        finger.createObject('BoxROI', name='boxROISubTopo', box='-100 22.5 -8 -19 28 8')
+        finger.createObject('BoxROI', name='boxROI', box='-10 0 -20 0 30 20', drawBoxes='true')
+        finger.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12', angularStiffness='1e12')
+        
+        modelSubTopo = finger.createChild('modelSubTopo')
+        modelSubTopo.createObject('Mesh', position='@loader.position', tetrahedra="@boxROISubTopo.tetrahedraInROI", name='container')
+        modelSubTopo.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='1500')

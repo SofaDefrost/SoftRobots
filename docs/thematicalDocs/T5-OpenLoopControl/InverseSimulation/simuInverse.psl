@@ -40,7 +40,7 @@ Node : { name : "root"
         TetrahedronSetTopologyAlgorithms : {}
         TetrahedronSetGeometryAlgorithms : {}
         MechanicalObject : {name : "tetras"}
-        UniformMass : {totalmass : "0.4"}
+        UniformMass : {totalMass : "0.4"}
         TetrahedronFEMForceField : {name : "FEM" poissonRatio : "0.45" youngModulus : "600"}
         BoxROI : {name : "boxROI1" box : "-30 80 70 30 140 130"}
         PartialFixedConstraint : {name : "pfc1" indices : "@boxROI1.indices" fixedDirections : "1 1 0"}
