@@ -322,7 +322,6 @@ void CommunicationController<DataTypes>::receiveData()
 		sendRequest();
 
     zmq::message_t message;
-    //unsigned int messageSize;
     bool status = m_socket->recv(&message);
 
     if(status)
