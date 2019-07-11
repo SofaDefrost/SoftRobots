@@ -45,7 +45,7 @@ using sofa::core::behavior::ConstraintResolution;
 class SlidingDisplacementConstraintResolution : public ConstraintResolution
 {
 public:
-    SlidingDisplacementConstraintResolution(double& imposedDisplacement, double* force);
+    SlidingDisplacementConstraintResolution(double& imposedDisplacement);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
     void init(int line, double** w, double *lambda) override;
@@ -53,19 +53,16 @@ public:
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
-
-    void storeForce(int line, double* lambda);
-
+	
     double      m_wActuatorActuator;
     double      m_imposedDisplacement;
-    double*     m_force;
 
 };
 
 class SlidingForceConstraintResolution : public ConstraintResolution
 {
 public:
-    SlidingForceConstraintResolution(double& imposedForce, double* displacement);
+    SlidingForceConstraintResolution(double& imposedForce);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
     void init(int line, double** w, double *force) override;
@@ -73,12 +70,9 @@ public:
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
-
-    void storeDisplacement(int line, double* d);
-
+	
     double      m_wActuatorActuator;
     double      m_imposedForce;
-    double*     m_displacement;
 
 };
 
@@ -114,7 +108,7 @@ public:
     void init() override;
     void reinit() override;
 
-	void draw(const VisualParams* vparams) override;
+	//void draw(const VisualParams* vparams) override;
     ///////////////////////////////////////////////////////////////
 
 
@@ -144,12 +138,10 @@ protected:
 										
     void internalInit();
 
-    double m_displacement; // Check these MISK
-    double m_force;
 	double m_imposedValue;
 	std::string m_type;
 
-// TODO: Margaret Koehler: add displacement and force limits?
+// TODO: Margaret Koehler: add displacement and force limits
 
 };
 

@@ -53,7 +53,7 @@ SlidingActuatorConstraint<DataTypes>::SlidingActuatorConstraint(MechanicalState*
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(3,"displacement","force","stiffness"), "valueType",
+    , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
                                           "displacement = the contstraint will impose the displacement provided in data d_value[d_valueIndex] \n"
                                           "force = the constraint will impose the force provided in data d_value[d_valueIndex] \n"
                                           "If unspecified, the default value is displacement"))
@@ -122,35 +122,14 @@ void SlidingActuatorConstraint<DataTypes>::getConstraintResolution(const Constra
             if(imposed_value < displacement && imposed_value-displacement<-d_maxDispVariation.getValue())
 				m_imposedValue = displacement-d_maxDispVariation.getValue();
         }
-		SlidingDisplacementConstraintResolution *cr = new SlidingDisplacementConstraintResolution(imposed_value, &m_force);
+		SlidingDisplacementConstraintResolution *cr = new SlidingDisplacementConstraintResolution(imposed_value);
         resTab[offset++] =cr;       
     }
     else // force
     {
-        SlidingForceConstraintResolution *cr = new SlidingForceConstraintResolution(imposed_value, &m_displacement);
+        SlidingForceConstraintResolution *cr = new SlidingForceConstraintResolution(imposed_value);
         resTab[offset++] =cr;        
     }
-}
-
-template<class DataTypes>
-void SlidingActuatorConstraint<DataTypes>::draw(const VisualParams* vparams)
-{
-	if (m_type == "displacement")
-	{
-		d_displacement.setValue(m_imposedValue);
-		d_force.setValue(m_force);
-	}
-	else if (m_type == "force")
-	{
-		d_force.setValue(m_imposedValue);
-		d_displacement.setValue(m_displacement);
-	}
-	else
-	{
-		d_displacement.setValue(m_displacement);
-		d_force.setValue(m_force);
-	}
-	
 }
 
 } // namespace constraintset

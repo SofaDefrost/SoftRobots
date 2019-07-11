@@ -28,8 +28,6 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGMODEL_H
 
 #include "../../behavior/SoftRobotsConstraint.h"
-//#include <sofa/core/behavior/MechanicalState.h>
-//#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -101,10 +99,16 @@ public:
                                         BaseVector *resV,
 										const BaseVector *Jdx) override;
     /////////////////////////////////////////////////////////////////////////
+	
+	/////////////// Inherited from BaseConstraint /////////////
+	void storeLambda(const ConstraintParams* cParams,
+		core::MultiVecDerivId res,
+		const BaseVector* lambda) override;
+	/////////////////////////////////////////////////////////////
 
 	/////////////// Inherited from BaseSoftRobotsConstraint /////////////
-	void storeResults(helper::vector<double> &lambda,
-			helper::vector<double> &delta) override;
+	/*void storeResults(helper::vector<double> &lambda,
+			helper::vector<double> &delta) override;*/
 	/////////////////////////////////////////////////////////////
 
 protected:
@@ -138,6 +142,9 @@ protected:
 	Data<Real>                  d_maxForce;
 	Data<Real>                  d_minForce;
 
+	Data<Real>					d_initProjectedDisplacement;
+	Data<Real>					d_projectedDisplacement;
+
 	Data<Deriv>                 d_direction;
 	Data<SetIndexArray>         d_indices;
 
@@ -146,6 +153,9 @@ protected:
 
 	Data<bool>                  d_showDirection;
 	Data<double>                d_showVisuScale;
+
+protected:
+	SReal getProjectedDisplacement(const VecCoord &positions, const VecCoord &restPositions);
 
 
 private:

@@ -77,6 +77,12 @@ SlidingModel<DataTypes>::SlidingModel(MechanicalState* object)
                           "Indices of the nodes subjected to the force. \n"
                           "If no indices given, mechanical context considered."))
 
+	, d_initProjectedDisplacement(initData(&d_initProjectedDisplacement, "initialProjectedDisplacement",
+									"Displacement in the direction at the rest position (cannot be changed by user)."))
+
+	, d_projectedDisplacement(initData(&d_projectedDisplacement, "projectedDisplacement",
+									"Displacement in the direction at the current position."))
+	
     , d_force(initData(&d_force,(double)0.0, "force",
                           "Output force."))
 
@@ -96,11 +102,16 @@ SlidingModel<DataTypes>::SlidingModel(MechanicalState* object)
 	d_maxForce.setGroup("Input");
 	d_minForce.setGroup("Input");
 
+	d_initProjectedDisplacement.setReadOnly(true);
+	d_projectedDisplacement.setReadOnly(true);
+
 	d_direction.setGroup("Input");
 	d_indices.setGroup("Input");
 
 	d_force.setGroup("Output");
 	d_displacement.setGroup("Output");
+	d_force.setReadOnly(true);
+	d_displacement.setReadOnly(true);
 
 	d_showDirection.setGroup("Visualization");
 	d_showVisuScale.setGroup("Visualization");
@@ -147,6 +158,15 @@ void SlidingModel<DataTypes>::init()
 template<class DataTypes>
 void SlidingModel<DataTypes>::bwdInit()
 {
+	if (m_componentstate != ComponentState::Valid)
+		return;
+	ReadAccessor<Data<VecCoord> > positions = m_state->readPositions();
+	ReadAccessor<Data<VecCoord> > restPositions = m_state->readRestPositions();
+	Real projectedDisplacement = getProjectedDisplacement(positions.ref(), restPositions.ref());
+	Real initProjectedDisplacement = getProjectedDisplacement(restPositions.ref(), restPositions.ref());
+	d_initProjectedDisplacement.setValue(initProjectedDisplacement);
+	d_projectedDisplacement.setValue(projectedDisplacement);
+	
 }
 
 template<class DataTypes>
@@ -203,6 +223,23 @@ void SlidingModel<DataTypes>::checkIndicesRegardingState()
 }
 
 template<class DataTypes>
+SReal SlidingModel<DataTypes>::getProjectedDisplacement(const VecCoord &positions, const VecCoord &restPositions)
+{
+	const SetIndexArray &indices = d_indices.getValue();
+	const Deriv         &direction = d_direction.getValue();
+
+	// Projection of the global displacement along the direction (normalized) of the actuation
+	Deriv d = DataTypes::coordDifference(positions[indices[0]], restPositions[indices[0]]);
+	const int size = Deriv::total_size;
+
+	Real projection = 0.;
+	for (unsigned int i = 0; i<size; i++)
+		projection += d[i]*direction[i];
+
+	return projection;
+}
+
+template<class DataTypes>
 void SlidingModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &cMatrix, unsigned int &cIndex, const DataVecCoord &x)
 {
 	SOFA_UNUSED(cParams);
@@ -241,23 +278,21 @@ void SlidingModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPa
 
 	ReadAccessor<Data<VecCoord> > positions = m_state->readPositions();
 	ReadAccessor<Data<VecCoord> > restPositions = m_state->readRestPositions();
+	Real projection = getProjectedDisplacement(positions.ref(), restPositions.ref());
+	d_projectedDisplacement.setValue(projection);
+	
+	const int size = Deriv::total_size;
 	const SetIndexArray &indices = d_indices.getValue();
 	const Deriv         &direction = d_direction.getValue();
-
-	// Projection of the global displacement along the direction (normalized) of the actuation
-	Deriv d = DataTypes::coordDifference(positions[indices[0]], restPositions[indices[0]]);
-	const int size = Deriv::total_size;
-
-	Real n = 0.;
 	for (unsigned int i = 0; i<size; i++)
-		n += (d[i] + Jdx->element(i))*direction[i];
-
+		projection += Jdx->element(i)*direction[i];
+	
 	if (indices.size())
-		resV->set(m_constraintId, n);
+		resV->set(m_constraintId, projection);
 }
 
 
-template<class DataTypes>
+/*template<class DataTypes>
 void SlidingModel<DataTypes>::storeResults(helper::vector<double> &lambda,
 	helper::vector<double> &delta)
 {
@@ -265,7 +300,22 @@ void SlidingModel<DataTypes>::storeResults(helper::vector<double> &lambda,
 		return;
 
 	d_force.setValue(lambda[0]);
-	d_displacement.setValue(delta[0]);
+	d_displacement.setValue(delta[0]); // MISK: check this -> should recompute?, should this be storeLambda instead? who calls storeresults and how do they compute delta
+
+}*/
+template<class DataTypes>
+void SlidingModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
+	core::MultiVecDerivId res,
+	const sofa::defaulttype::BaseVector* lambda)
+{
+	SOFA_UNUSED(res);
+	SOFA_UNUSED(cParams);
+	if (m_componentstate != ComponentState::Valid)
+		return;
+
+	d_force.setValue(lambda->element(m_constraintId));
+	d_displacement.setValue(d_projectedDisplacement.getValue() - d_initProjectedDisplacement.getValue());
+	//d_displacement.setValue(delta[0]); // MISK: check this -> should recompute?, should this be storeLambda instead? who calls storeresults and how do they compute delta
 
 }
 

@@ -44,10 +44,9 @@ using namespace sofa::helper;
 using namespace sofa::core;
 
 //----------- Displacement constraint --------------
-SlidingDisplacementConstraintResolution::SlidingDisplacementConstraintResolution(double& imposedDisplacement, double* force)
+SlidingDisplacementConstraintResolution::SlidingDisplacementConstraintResolution(double& imposedDisplacement)
     : ConstraintResolution(1)
 	, m_imposedDisplacement(imposedDisplacement)
-    , m_force(force)
 { }
 
 
@@ -68,22 +67,13 @@ void SlidingDisplacementConstraintResolution::resolution(int line, double** w, d
     // da=Waa*(lambda_a) + Sum Wai * lambda_i  = m_imposedDisplacement
 
     lambda[line] -= (d[line]-m_imposedDisplacement) / m_wActuatorActuator;
-
-    storeForce(line, lambda);
-}
-
-
-void SlidingDisplacementConstraintResolution::storeForce(int line,  double* lambda)
-{
-    *m_force = lambda[line];
 }
 
 
 //--------------- Force constraint -------------
-SlidingForceConstraintResolution::SlidingForceConstraintResolution(double& imposedForce, double *displacement)
+SlidingForceConstraintResolution::SlidingForceConstraintResolution(double& imposedForce)
 	: ConstraintResolution(1)
 	, m_imposedForce(imposedForce)
-    , m_displacement(displacement)
 { }
 
 
@@ -99,16 +89,10 @@ void SlidingForceConstraintResolution::resolution(int line, double** w, double* 
     SOFA_UNUSED(dfree);
 	SOFA_UNUSED(w);
 
-	double lastLambda = lambda[line];
+	//double lastLambda = lambda[line];
     lambda[line] = m_imposedForce;
-	d[line] += m_wActuatorActuator * (lambda[line] - lastLambda);
-    storeDisplacement(line, d);
-}
+	//d[line] += m_wActuatorActuator * (lambda[line] - lastLambda);
 
-
-void SlidingForceConstraintResolution::storeDisplacement(int line,  double* d)
-{
-    *m_displacement = d[line];
 }
 
 
