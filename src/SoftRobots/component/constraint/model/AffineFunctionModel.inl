@@ -187,7 +187,6 @@ SReal AffineFunctionModel<DataTypes>::getAffineFunctionValue(const VecCoord &pos
     {
         Coord currentPosition  = positions[indices[i]];
 		Deriv positionAxisAngle = DataTypes::coordDifference(currentPosition, zero);
-		std::cout << positionAxisAngle << std::endl;
 		Deriv coefficients = coefficientsList[i];
 		value += positionAxisAngle*coefficients;
     }

@@ -107,8 +107,8 @@ public:
 	/////////////////////////////////////////////////////////////
 
 	/////////////// Inherited from BaseSoftRobotsConstraint /////////////
-	/*void storeResults(helper::vector<double> &lambda,
-			helper::vector<double> &delta) override;*/
+	//void storeResults(helper::vector<double> &lambda,
+		//	helper::vector<double> &delta) override;
 	/////////////////////////////////////////////////////////////
 
 protected:
@@ -155,7 +155,7 @@ protected:
 	Data<double>                d_showVisuScale;
 
 protected:
-	SReal getProjectedDisplacement(const VecCoord &positions, const VecCoord &restPositions);
+	SReal getProjectedDisplacement(const VecCoord &positions);
 
 
 private:

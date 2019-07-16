@@ -278,17 +278,16 @@ void SlidingModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPa
 
 	ReadAccessor<Data<VecCoord> > positions = m_state->readPositions();
 	ReadAccessor<Data<VecCoord> > restPositions = m_state->readRestPositions();
-	Real projection = getProjectedDisplacement(positions.ref(), restPositions.ref());
-	d_projectedDisplacement.setValue(projection);
-	
+	d_projectedDisplacement.setValue(getProjectedDisplacement(positions.ref(), restPositions.ref()));
+	Real dfree;
 	const int size = Deriv::total_size;
 	const SetIndexArray &indices = d_indices.getValue();
 	const Deriv         &direction = d_direction.getValue();
 	for (unsigned int i = 0; i<size; i++)
-		projection += Jdx->element(i)*direction[i];
-	
+		dfree += Jdx->element(i)*direction[i];
+	dfree += d_projectedDisplacement.getValue() - d_initProjectedDisplacement.getValue();
 	if (indices.size())
-		resV->set(m_constraintId, projection);
+		resV->set(m_constraintId, dfree);
 }
 
 
@@ -314,6 +313,7 @@ void SlidingModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
 		return;
 
 	d_force.setValue(lambda->element(m_constraintId));
+	// this is probably a bit behind
 	d_displacement.setValue(d_projectedDisplacement.getValue() - d_initProjectedDisplacement.getValue());
 	//d_displacement.setValue(delta[0]); // MISK: check this -> should recompute?, should this be storeLambda instead? who calls storeresults and how do they compute delta
 

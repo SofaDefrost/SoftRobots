@@ -80,7 +80,7 @@ protected:
 /**
  * This component simulates a force exerted by a motor/linear actuator to solve an effector constraint.
  * Description needs to be added: 
- * https://project.inria.fr/softrobot/documentation/constraint/CableConstraint
+ * https://project.inria.fr/softrobot/documentation/constraint/SlidingActuatorConstraint
 */
 template< class DataTypes >
 class SlidingActuatorConstraint : public SlidingModel<DataTypes>

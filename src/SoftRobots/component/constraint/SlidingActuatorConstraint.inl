@@ -108,20 +108,20 @@ void SlidingActuatorConstraint<DataTypes>::getConstraintResolution(const Constra
 	SOFA_UNUSED(cParam);
 	
     double imposed_value=d_value.getValue()[d_valueIndex.getValue()];
-	m_imposedValue = imposed_value;
+	//m_imposedValue = imposed_value;
 	m_type = d_valueType.getValue().getSelectedItem();
 	
     if(m_type == "displacement") // displacement
     {
-        if(d_maxDispVariation.isSet())
+       /*if(d_maxDispVariation.isSet())
         {
             double displacement = d_displacement.getValue();
             if(imposed_value > displacement && imposed_value-displacement>d_maxDispVariation.getValue())
-                m_imposedValue = displacement+d_maxDispVariation.getValue();
+                imposed_value = displacement+d_maxDispVariation.getValue();
 
             if(imposed_value < displacement && imposed_value-displacement<-d_maxDispVariation.getValue())
-				m_imposedValue = displacement-d_maxDispVariation.getValue();
-        }
+				imposed_value = displacement-d_maxDispVariation.getValue();
+        }*/
 		SlidingDisplacementConstraintResolution *cr = new SlidingDisplacementConstraintResolution(imposed_value);
         resTab[offset++] =cr;       
     }
