@@ -30,6 +30,10 @@
 
 #include "SlidingModel.inl"
 
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+using namespace sofa::core;
+
 namespace sofa
 {
 
@@ -38,13 +42,11 @@ namespace component
 
 namespace constraintset
 {
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core;
+
 using sofa::defaulttype::Rigid3Types;
 
 template<>
-void SlidingModel<Rigid3dTypes>::initDatas()
+void SlidingModel<Rigid3Types>::initDatas()
 {
 	if (!d_direction.isSet())
 	{

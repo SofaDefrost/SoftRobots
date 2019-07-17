@@ -126,6 +126,7 @@ public:
     using SlidingModel<DataTypes>::d_maxDispVariation ;
     using SlidingModel<DataTypes>::d_force ;
     using SlidingModel<DataTypes>::d_displacement ;
+    using SlidingModel<DataTypes>::m_componentstate ;
     ///////////////////////////////////////////////////////////////////////////
 
 protected:

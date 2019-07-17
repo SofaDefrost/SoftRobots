@@ -118,19 +118,10 @@ protected:
 	/// Bring inherited attributes and function in the current lookup context.
 	/// otherwise any access to the base::attribute would require
 	/// the "this->" approach.
-	using SoftRobotsBaseConstraint::m_hasDeltaMax;
-	using SoftRobotsBaseConstraint::m_hasDeltaMin;
-	using SoftRobotsBaseConstraint::m_deltaMax;
-	using SoftRobotsBaseConstraint::m_deltaMin;
 
-	using SoftRobotsBaseConstraint::m_hasLambdaMax;
-	using SoftRobotsBaseConstraint::m_hasLambdaMin;
-	using SoftRobotsBaseConstraint::m_lambdaMax;
-	using SoftRobotsBaseConstraint::m_lambdaMin;
-
-	using SoftRobotsBaseConstraint::m_nbLines;
-	using SoftRobotsBaseConstraint::m_constraintId;
-	using SoftRobotsBaseConstraint::m_componentstate;
+	using SoftRobotsConstraint<DataTypes>::m_nbLines;
+	using SoftRobotsConstraint<DataTypes>::m_constraintId;
+	using SoftRobotsConstraint<DataTypes>::m_componentstate;
 
 	using SoftRobotsConstraint<DataTypes>::m_state;
 	////////////////////////////////////////////////////////////////////////////
@@ -166,8 +157,8 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class SlidingModel<defaulttype::Vec3Types>;
-extern template class SlidingModel<defaulttype::Rigid3Types>;
+extern template class SlidingModel<sofa::defaulttype::Vec3Types>;
+extern template class SlidingModel<sofa::defaulttype::Rigid3Types>;
 
 
 } // namespace constraintset

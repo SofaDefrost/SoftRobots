@@ -30,6 +30,7 @@
 #include "SlidingActuatorConstraint.h"
 
 using sofa::helper::OptionsGroup;
+using sofa::helper::vector;
 
 namespace sofa
 {
