@@ -62,8 +62,6 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/CableConstraint.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/PartialRigidificationConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/PartialRigidificationConstraint.inl
-	${SOFTROBOTS_SOURCE_DIR}/component/constraint/SlidingActuatorConstraint.h
-    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SlidingActuatorConstraint.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.h
@@ -72,8 +70,6 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.inl
-	${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SlidingModel.h
-    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SlidingModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.inl
 
@@ -109,12 +105,10 @@ set(SOURCE_FILES
 
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/CableConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/PartialRigidificationConstraint.cpp
-	${SOFTROBOTS_SOURCE_DIR}/component/constraint/SlidingActuatorConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.cpp
-	${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SlidingModel.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.cpp
 
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/AnimationEditor.cpp
