@@ -155,7 +155,7 @@ protected:
 	Data<double>                d_showVisuScale;
 
 protected:
-	SReal getProjectedDisplacement(const VecCoord &positions);
+	SReal getProjectedDisplacement(const VecCoord &positions, const VecCoord &restPositions);
 
 
 private:
