@@ -214,7 +214,7 @@ void AffineFunctionModel<DataTypes>::buildConstraintMatrix(const ConstraintParam
 
 	for (unsigned int i = 0; i < indices.size(); i++)
 	{
-		rowIterator.setCol(indices[i], -coefficients[i]);
+		rowIterator.setCol(indices[i], coefficients[i]);
 	}
 
     
