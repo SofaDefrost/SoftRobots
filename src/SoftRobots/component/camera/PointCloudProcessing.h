@@ -1,0 +1,81 @@
+///******************************************************************************
+//*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+//*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+//*                                                                             *
+//* This library is free software; you can redistribute it and/or modify it     *
+//* under the terms of the GNU Lesser General Public License as published by    *
+//* the Free Software Foundation; either version 2.1 of the License, or (at     *
+//* your option) any later version.                                             *
+//*                                                                             *
+//* This library is distributed in the hope that it will be useful, but WITHOUT *
+//* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+//* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+//* for more details.                                                           *
+//*                                                                             *
+//* You should have received a copy of the GNU Lesser General Public License    *
+//* along with this library; if not, write to the Free Software Foundation,     *
+//* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+//*******************************************************************************
+//*                              SOFA :: Framework                              *
+//*                                                                             *
+//* Authors: The SOFA Team (see Authors.txt)                                    *
+//*                                                                             *
+//* Contact information: contact@sofa-framework.org                             *
+//******************************************************************************/
+#ifndef SOFA_CORE_CAMERA_POINTCLOUDPROCESSING_H
+#define SOFA_CORE_CAMERA_POINTCLOUDPROCESSING_H
+
+#include "PointCloudStreaming.h"
+#include <SoftRobots/initSoftRobots.h>
+
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/helper/vector.h>
+#include <sofa/defaulttype/Vec3Types.h>
+
+
+#include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace pointcloudprocessing
+{
+
+using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::Data;
+using sofa::defaulttype::Vec3dTypes;
+
+class PointCloudProcessing : public  BaseObject
+{
+    public:
+        typedef Vec3dTypes::VecCoord VecCoord;
+
+        SOFA_CLASS(PointCloudProcessing, BaseObject);
+
+    public:
+        PointCloudProcessing();
+        ~PointCloudProcessing() override {}
+
+        void handleEvent(core::objectmodel::Event *event) override;
+        void update();
+
+        Data<VecCoord> d_effectorPositions;
+        Data<VecCoord> d_goalPositions;
+        Data<VecCoord> d_normalDirections;
+        Data<helper::vector<int>> d_contactLocations;
+
+    private:
+        PointCloudStreaming pclcamera;
+};
+
+
+} // namespace pointcloudprocessing
+
+} // namespace component
+
+} // namespace sofa
+
+#endif //SOFA_CORE_CAMERA_POINTCLOUDPROCESSING_H
