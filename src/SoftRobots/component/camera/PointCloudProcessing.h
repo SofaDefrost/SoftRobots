@@ -32,6 +32,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Mat.h>
+#include <Eigen/Dense>
 
 
 #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
@@ -87,8 +88,24 @@ class PointCloudProcessing : public  BaseObject
         Data<int> d_minEuclidianClusterSize;
         Data<int> d_maxEuclidianClusterSize;
 
+        Data<unsigned> d_effectorNumber;
+
     private:
         PointCloudStreaming m_pclcamera;
+        void imageSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& filteredPoints,
+                               pcl::PointCloud<pcl::PointXYZRGB>::Ptr& contact_cluster,
+                               pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_cluster);
+        void computeEffectorsDirection(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_effectors,
+                                       pcl::PointCloud<pcl::Normal>::Ptr& cloud_normals);
+        void computeDesiredRobotPosition(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_cluster,
+                                         pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_effectors,
+                                         pcl::PointCloud<pcl::Normal>::Ptr& cloud_normals,
+                                         pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_desiredeffectors);
+        void locateContacts(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& contact_cluster,
+                            pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_cluster,
+                            pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_effectors,
+                            pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_ContactLocation,
+                            Eigen::VectorXd& indexContactLocation);
 };
 
 

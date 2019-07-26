@@ -58,7 +58,6 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include <Eigen/Dense>
 
 using sofa::helper::ReadAccessor;
 using sofa::helper::WriteOnlyAccessor;
@@ -96,7 +95,9 @@ PointCloudProcessing::PointCloudProcessing() :
 
     d_euclidianClusterTolerance(initData(&d_euclidianClusterTolerance, 0.005, "euclidianClusterTolerance", "sets the cluster's search radius to 5mm")),
     d_minEuclidianClusterSize(initData(&d_minEuclidianClusterSize, 10, "minEuclidianClusterSize", "minimum number of points per cluster")),
-    d_maxEuclidianClusterSize(initData(&d_maxEuclidianClusterSize, 2000, "maxEuclidianClusterSize", "maximum number of points per cluster"))
+    d_maxEuclidianClusterSize(initData(&d_maxEuclidianClusterSize, 2000, "maxEuclidianClusterSize", "maximum number of points per cluster")),
+
+    d_effectorNumber(initData(&d_effectorNumber, unsigned(51), "effectorNumber", "the total number of \"FEM effectors\" on the robot"))
 {
     d_distanceThreshold.setGroup("Segmentation");
     d_pointColorThreshold.setGroup("Segmentation");
@@ -124,13 +125,10 @@ void PointCloudProcessing::init()
     m_pclcamera.initCamera();
 }
 
-void PointCloudProcessing::update()
+//Color-based region growing segmentation
+// input: filteredPoints, output: contact_cluster, robot_cluster
+void PointCloudProcessing::imageSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& filteredpoints, pcl::PointCloud<pcl::PointXYZRGB>::Ptr& contact_cluster, pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_cluster)
 {
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr filteredpoints = m_pclcamera.updatePcl();
-
-
-    //////////////////////////////////////////////////////////////////Image segmentation/////////////////////////////////////////////////
-    //Color-based region growing segmentation
     pcl::search::KdTree<pcl::PointXYZRGB>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZRGB>);
     //This line is responsible for pcl::RegionGrowingRGB instantiation. This class has two parameters:
     //PointT - type of points to use(in the given example it is pcl::PointXYZRGB)
@@ -175,9 +173,6 @@ void PointCloudProcessing::update()
 
 
     //save the points of robot into robot_cluster
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr robot_cluster(new pcl::PointCloud<pcl::PointXYZRGB>);
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr contact_cluster(new pcl::PointCloud<pcl::PointXYZRGB>);
-
     robot_cluster->width = unsigned(clusters[cluster_number_robot].indices.size());
     robot_cluster->height = 1;
     robot_cluster->is_dense = true;
@@ -245,16 +240,12 @@ void PointCloudProcessing::update()
     ///////////////////convert the point cloud from the sensor coordinate system to robot coordinate system/////////////////////////////////
     pcl::transformPointCloud (*contact_cluster, *contact_cluster, m_transform);
     pcl::transformPointCloud (*robot_cluster, *robot_cluster, m_transform);
-    //////////////////////////////////////////////////////////////////Image segmentation end/////////////////////////////////////////////////
+}
 
-
-    ////////////////////////////////////////////////////////image processing begin////////////////////////////////////////////////////////////////////
-
-    ///////////////////////////////////////////////////compute the normal direction for each effector/////////////////////////////////////////////////
-
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr robot_effectors (new pcl::PointCloud<pcl::PointXYZRGB> ());
-    unsigned int EffectorNumber = 51;
-    robot_effectors->resize(EffectorNumber);//number of feature points
+//compute the normal direction for each effector
+void PointCloudProcessing::computeEffectorsDirection(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_effectors, pcl::PointCloud<pcl::Normal>::Ptr& cloud_normals)
+{
+    robot_effectors->resize(d_effectorNumber.getValue());//number of feature points
 
     ReadAccessor<Data<VecCoord>> effectors = d_effectorPositions; // the position vector of mechanical object
 
@@ -292,11 +283,15 @@ void PointCloudProcessing::update()
                         cloud_normals->points[i].normal_y,
                         cloud_normals->points[i].normal_z);
     }
+}
 
-    //////////////////////////////////////////////compute the desired 3D position (in real robot point cloud) for each FEMeffector/////////////////////////////////
-    //define desired position for each effector
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr robot_desiredeffectors (new pcl::PointCloud<pcl::PointXYZRGB> ());
-    robot_desiredeffectors->resize(EffectorNumber);//number of feature points
+//define desired position for each effector
+void PointCloudProcessing::computeDesiredRobotPosition(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_cluster,
+                                                       pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_effectors,
+                                                       pcl::PointCloud<pcl::Normal>::Ptr& cloud_normals,
+                                                       pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_desiredeffectors)
+{
+    robot_desiredeffectors->resize(d_effectorNumber.getValue());//number of feature points
 
     //detect the hinden effectors
     double REx;
@@ -310,7 +305,7 @@ void PointCloudProcessing::update()
     double RENz;
     double RENdistance;
 
-    for(unsigned int i=0; i<EffectorNumber; i++)
+    for(unsigned int i=0; i<d_effectorNumber.getValue(); i++)
     {
         double smallestRENdistance = 0.004;
         int IndexDesiredPoint = 0;
@@ -368,15 +363,17 @@ void PointCloudProcessing::update()
                      1000*robot_desiredeffectors->points[i].y,
                      1000*robot_desiredeffectors->points[i].z);
     }
+}
 
-    ///////////////////////////////////////////////////////compute the desired 3D position (in real robot point cloud) for each FEMeffector end////////////////////////////////////////////////////////////////
 
-
-    ///////////////////////////////////////////////////////////////////find if there are contacts and find the index of contact locations/////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////find if there are contacts and find the index of contact locations/////////////////////////////////////////////////////////////////////
+void PointCloudProcessing::locateContacts(pcl::PointCloud<pcl::PointXYZRGB>::Ptr& contact_cluster,
+                                          pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_cluster,
+                                          pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_effectors,
+                                          pcl::PointCloud<pcl::PointXYZRGB>::Ptr& robot_ContactLocation,
+                                          VectorXd& IndexContactLocation)
+{
     //define initial 6 contact locations [0,0,0,0,0,0]
-    unsigned int LargestNumContact = 51;
-    VectorXd IndexContactLocation;
+    unsigned int LargestNumContact = d_effectorNumber.getValue();
     IndexContactLocation.resize(LargestNumContact);
     for(unsigned int i = 0; i < LargestNumContact; i++)
     {
@@ -417,7 +414,6 @@ void PointCloudProcessing::update()
             }
         }
 
-        pcl::PointCloud<pcl::PointXYZRGB>::Ptr robot_ContactLocation (new pcl::PointCloud<pcl::PointXYZRGB> ());
         robot_ContactLocation->resize(NumberContacts);//number of feature points
 
         for(int i = 0; i < NumberContacts; i++)
@@ -429,7 +425,6 @@ void PointCloudProcessing::update()
             robot_ContactLocation->points[i].g = 0;
             robot_ContactLocation->points[i].b = 255;
         }
-
 
         //Euclidean Cluster Extraction
 
@@ -514,11 +509,48 @@ void PointCloudProcessing::update()
 
     }
 
+}
+
+
+
+void PointCloudProcessing::update()
+{
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr filteredpoints = m_pclcamera.updatePcl();
+
+    ////////////////////////////////Image segmentation//////////////////////////////
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr robot_cluster(new pcl::PointCloud<pcl::PointXYZRGB>);
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr contact_cluster(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+    imageSegmentation(filteredpoints, contact_cluster, robot_cluster);
+    ////////////////////////////////Image segmentation end//////////////////////////
+
+
+    ////////////////////////////////Image processing begin//////////////////////////
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr robot_effectors (new pcl::PointCloud<pcl::PointXYZRGB> ());
+    pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal>);
+
+    computeEffectorsDirection(robot_effectors, cloud_normals);
+
+    ///compute the desired 3D position (in real robot point cloud) for each FEMeffector///
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr robot_desiredeffectors (new pcl::PointCloud<pcl::PointXYZRGB> ());
+
+    computeDesiredRobotPosition(robot_cluster, robot_effectors, cloud_normals, robot_desiredeffectors);
+    ///compute the desired 3D position (in real robot point cloud) for each FEMeffector end///
+
+
+    ///////////////find if there are contacts and find the index of contact locations////////////
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr robot_ContactLocation (new pcl::PointCloud<pcl::PointXYZRGB> ());
+    VectorXd indexContactLocation;
+
+    locateContacts(contact_cluster, robot_cluster, robot_effectors, robot_ContactLocation, indexContactLocation);
+    ///////////find if there are contacts and find the index of contact locations end////////////
+
+
     WriteOnlyAccessor<decltype(d_contactLocations)> locations = d_contactLocations;
-    locations.resize(LargestNumContact);
-    for(unsigned int i = 0; i < LargestNumContact; i++)
+    locations.resize(d_effectorNumber.getValue());
+    for(unsigned int i = 0; i < d_effectorNumber.getValue(); i++)
     {
-        locations[i] = IndexContactLocation(i);
+        locations[i] = indexContactLocation(i);
     }
 
 }
