@@ -31,6 +31,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/Mat.h>
 
 
 #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
@@ -60,6 +61,7 @@ class PointCloudProcessing : public  BaseObject
         ~PointCloudProcessing() override {}
 
         void handleEvent(core::objectmodel::Event *event) override;
+        void init() override;
         void update();
 
         Data<VecCoord> d_effectorPositions;
@@ -67,8 +69,26 @@ class PointCloudProcessing : public  BaseObject
         Data<VecCoord> d_normalDirections;
         Data<helper::vector<int>> d_contactLocations;
 
+        Data<defaulttype::Mat3x4d> d_M;
+        Eigen::Matrix4d m_transform;
+
+        /// Region growing segmentation tuning
+        Data<float> d_distanceThreshold;
+        Data<float> d_pointColorThreshold;
+        Data<float> d_regionColorThreshold;
+        Data<int> d_minClusterSize;
+
+        /// K-NearestNeighbors
+        Data<double> d_radiusSearch;
+        Data<int> d_minNeighborsInRadius;
+
+        /// EuclidianClusterExtraction
+        Data<double> d_euclidianClusterTolerance;
+        Data<int> d_minEuclidianClusterSize;
+        Data<int> d_maxEuclidianClusterSize;
+
     private:
-        PointCloudStreaming pclcamera;
+        PointCloudStreaming m_pclcamera;
 };
 
 

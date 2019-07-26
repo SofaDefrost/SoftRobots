@@ -81,37 +81,52 @@ PointCloudProcessing::PointCloudProcessing() :
     d_effectorPositions(initData(&d_effectorPositions, "effectorPositions", "Position of effectors.")),
     d_goalPositions(initData(&d_goalPositions, "goalPositions", "Position of the contact forces.")),
     d_normalDirections(initData(&d_normalDirections, "normalDirection", "The normal directions of effectors")),
-    d_contactLocations(initData(&d_contactLocations, "contactLocations", "The index of contact locations"))
+    d_contactLocations(initData(&d_contactLocations, "contactLocations", "The index of contact locations")),
+    d_M(initData(&d_M, defaulttype::Mat3x4d(defaulttype::Matrix4::Line(-0.69419594, -0.71476897, 0.08483703, -14.18895169 / 1000.0),
+                                            defaulttype::Matrix4::Line(-0.7196964, 0.68741082, -0.09748567, 35.32077316 / 1000.0),
+                                            defaulttype::Matrix4::Line(0.01136184, -0.12873106, -0.99161445, 578.52358217 / 1000.0)
+                                            ),"R", "The camera's rotation matrix, in the robot's coordinate system")),
+    d_distanceThreshold(initData(&d_distanceThreshold, 0.01f, "distanceThreshold",  "It is used to determine whether the point is neighbouring or not. If the point is located at a distance less than the given threshold, then it is considered to be neighbouring.")),
+    d_pointColorThreshold(initData(&d_pointColorThreshold, 6.0f, "pointColorThreshold", "This line sets the color threshold. Just as angle threshold is used for testing points normals in pcl::RegionGrowing to determine if the point belongs to cluster, this value is used for testing points colors.")),
+    d_regionColorThreshold(initData(&d_regionColorThreshold, 4.0f, "regionColorThreshold", "Here the color threshold for clusters is set. This value is similar to the previous, but is used when the merging process takes place.")),
+    d_minClusterSize(initData(&d_minClusterSize, 100, "minClusterSize", "Used in the merging process. If cluster has less points than was set through setMinClusterSize method, then it will be merged with the nearest neighbour.")),
+
+    d_radiusSearch(initData(&d_radiusSearch, 0.005, "radiusSearch", "Radius of the sphere used for the neighbors search")),
+    d_minNeighborsInRadius(initData(&d_minNeighborsInRadius, 15, "minNeighborsInRadius", "minimum neighbors to be found (for each point) within radius to be considered as an inlier")),
+
+    d_euclidianClusterTolerance(initData(&d_euclidianClusterTolerance, 0.005, "euclidianClusterTolerance", "sets the cluster's search radius to 5mm")),
+    d_minEuclidianClusterSize(initData(&d_minEuclidianClusterSize, 10, "minEuclidianClusterSize", "minimum number of points per cluster")),
+    d_maxEuclidianClusterSize(initData(&d_maxEuclidianClusterSize, 2000, "maxEuclidianClusterSize", "maximum number of points per cluster"))
 {
-    pclcamera.initCamera();
+    d_distanceThreshold.setGroup("Segmentation");
+    d_pointColorThreshold.setGroup("Segmentation");
+    d_regionColorThreshold.setGroup("Segmentation");
+    d_minClusterSize.setGroup("Segmentation");
+
+    d_radiusSearch.setGroup("K-NearestNeighbors");
+    d_minNeighborsInRadius.setGroup("K-NearestNeighbors");
+
+    d_euclidianClusterTolerance.setGroup("EuclidianClusterExtraction");
+    d_minEuclidianClusterSize.setGroup("EuclidianClusterExtraction");
+    d_maxEuclidianClusterSize.setGroup("EuclidianClusterExtraction");
 }
 
+void PointCloudProcessing::init()
+{
+    //user-defined
+    //The following vector and matrix are the calibration matrix between the camera coordinate system and the robot coordinate system.
+    //build rotation matrix
+    const defaulttype::Mat3x4d& m = d_M.getValue();
+    m_transform = Eigen::Matrix4f::Identity();
+    for (int i =0 ; i < 3 ; ++i)
+        for (int j =0 ; j < 4 ; ++j)
+            m_transform(i,j) = m[i][size_t(j)];
+    m_pclcamera.initCamera();
+}
 
 void PointCloudProcessing::update()
 {
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr filteredpoints = pclcamera.updatePcl();
-
-    //user-defined
-    //The following vector and matrix are the calibration matrix between the camera coordinate system and the robot coordinate system.
-    double x0 = -14.18895169; //unit is millimeter
-    double y0 = 35.32077316; //unit is millimeter
-    double z0 = 578.52358217; //unit is millimeter
-    //build rotation matrix
-    Eigen::Matrix4f transform_1 = Eigen::Matrix4f::Identity();
-    // Define a rotation matrix (see https://en.wikipedia.org/wiki/Rotation_matrix)
-    transform_1 (0,0) = -0.69419594;
-    transform_1 (0,1) = -0.71476897;
-    transform_1 (0,2) = 0.08483703;
-    transform_1 (1,0) = -0.7196964;
-    transform_1 (1,1) = 0.68741082;
-    transform_1 (1,2) = -0.09748567;
-    transform_1 (2,0) = 0.01136184;
-    transform_1 (2,1) = -0.12873106;
-    transform_1 (2,2) = -0.99161445;
-    // Define a translation.
-    transform_1 (0,3) = x0/1000;
-    transform_1 (1,3) = y0/1000;
-    transform_1 (2,3) = z0/1000;
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr filteredpoints = m_pclcamera.updatePcl();
 
 
     //////////////////////////////////////////////////////////////////Image segmentation/////////////////////////////////////////////////
@@ -127,27 +142,27 @@ void PointCloudProcessing::update()
     // It is used to determine whether the point is neighbouring or not.
     // If the point is located at a distance less than the given threshold, then it is considered to be neighbouring.
     // It is used for clusters neighbours search.
-    reg.setDistanceThreshold (0.01);
+    reg.setDistanceThreshold (d_distanceThreshold.getValue());
     //This line sets the color threshold.
     //Just as angle threshold is used for testing points normals in pcl::RegionGrowing to determine if the point belongs to cluster, this value is used for testing points colors.
-    reg.setPointColorThreshold (6);
+    reg.setPointColorThreshold (d_pointColorThreshold.getValue());
     //Here the color threshold for clusters is set. This value is similar to the previous, but is used when the merging process takes place.
-    reg.setRegionColorThreshold (4);
+    reg.setRegionColorThreshold (d_regionColorThreshold.getValue());
     //it is used for merging process mentioned in the beginning. If cluster has less points than was set through setMinClusterSize method, then it will be merged with the nearest neighbour.
-    reg.setMinClusterSize (100); //set the size of the class
+    reg.setMinClusterSize (d_minClusterSize.getValue()); //set the size of the class
 
     //Here is the place where the algorithm is launched. It will return the array of clusters when the segmentation process will be over.
     std::vector <pcl::PointIndices> clusters;
     reg.extract (clusters);
 
-    std::cout << "Number of clusters is equal to " << clusters.size () << std::endl;
-    std::cout << "First cluster has " << clusters[0].indices.size () << " points." << endl;
+    msg_info(this) << "Number of clusters is equal to " << clusters.size ();
+    msg_info(this) << "First cluster has " << clusters[0].indices.size () << " points.";
 
 
     //The robot has the largest number of points
     //decide which cluster is the robot
-    unsigned int point_number_robot=0;
-    unsigned int cluster_number_robot=0;
+    size_t point_number_robot=0;
+    size_t cluster_number_robot=0;
     point_number_robot = clusters[0].indices.size();
     for (unsigned int i = 0; i < clusters.size(); ++i)
     {
@@ -163,13 +178,13 @@ void PointCloudProcessing::update()
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr robot_cluster(new pcl::PointCloud<pcl::PointXYZRGB>);
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr contact_cluster(new pcl::PointCloud<pcl::PointXYZRGB>);
 
-    robot_cluster->width = clusters[cluster_number_robot].indices.size();
+    robot_cluster->width = unsigned(clusters[cluster_number_robot].indices.size());
     robot_cluster->height = 1;
     robot_cluster->is_dense = true;
     for (unsigned int j = 0; j < clusters[cluster_number_robot].indices.size(); ++j)
     {
         //Take the corresponding point of the filtered cloud from the indices for the new pcl
-        robot_cluster->push_back(filteredpoints->at(clusters[cluster_number_robot].indices[j]));
+        robot_cluster->push_back(filteredpoints->at(size_t(clusters[cluster_number_robot].indices[j])));
     }
     //set the robot colour as blue
     for (unsigned int i = 0; i < robot_cluster->points.size(); i++)
@@ -223,13 +238,13 @@ void PointCloudProcessing::update()
         contact_cluster->points[i].b = 0;//red
     }
     sor_radius.setInputCloud(contact_cluster);
-    sor_radius.setRadiusSearch(0.005);
-    sor_radius.setMinNeighborsInRadius(15);
+    sor_radius.setRadiusSearch(d_radiusSearch.getValue());
+    sor_radius.setMinNeighborsInRadius(d_minNeighborsInRadius.getValue());
     sor_radius.filter(*contact_cluster);
 
     ///////////////////convert the point cloud from the sensor coordinate system to robot coordinate system/////////////////////////////////
-    pcl::transformPointCloud (*contact_cluster, *contact_cluster, transform_1);
-    pcl::transformPointCloud (*robot_cluster, *robot_cluster, transform_1);
+    pcl::transformPointCloud (*contact_cluster, *contact_cluster, m_transform);
+    pcl::transformPointCloud (*robot_cluster, *robot_cluster, m_transform);
     //////////////////////////////////////////////////////////////////Image segmentation end/////////////////////////////////////////////////
 
 
@@ -423,14 +438,14 @@ void PointCloudProcessing::update()
         treeEuclidean->setInputCloud (robot_ContactLocation);
         std::vector<pcl::PointIndices> cluster_indices;
         pcl::EuclideanClusterExtraction<pcl::PointXYZRGB> ec;
-        ec.setClusterTolerance (0.005); //set the search redius 5mm
-        ec.setMinClusterSize (10);//set the minimum number of points in one cluster 20
-        ec.setMaxClusterSize (2000);//set the maximum number of points in one cluster2000
+        ec.setClusterTolerance (d_euclidianClusterTolerance.getValue()); //set the search redius 5mm
+        ec.setMinClusterSize (d_minEuclidianClusterSize.getValue());//set the minimum number of points in one cluster 20
+        ec.setMaxClusterSize (d_maxEuclidianClusterSize.getValue());//set the maximum number of points in one cluster2000
         ec.setSearchMethod (treeEuclidean);//set the search method
         ec.setInputCloud (robot_ContactLocation);
         ec.extract (cluster_indices);//get the cluster from the point cloud and save the index in cluster_indices
 
-        std::cout << "number of  Cluster: " << cluster_indices.end() - cluster_indices.begin()<< std::endl;
+        msg_info() << "number of  Cluster: " << cluster_indices.end() - cluster_indices.begin();
 
         VectorXd ContactLocationfromRobot; //the location obtained from robot point cloud
         ContactLocationfromRobot.resize(3*(cluster_indices.end() - cluster_indices.begin()));
@@ -526,7 +541,7 @@ void PointCloudProcessing::handleEvent(core::objectmodel::Event *event)
 using namespace sofa::defaulttype;
 
 static int PointCloudProcessingClass = core::RegisterObject("Exposing a RealSense RGBD camera in the Sofa Scene")
-        .add<PointCloudProcessing>();\
+        .add<PointCloudProcessing>();
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
