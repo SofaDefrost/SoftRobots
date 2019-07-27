@@ -349,6 +349,7 @@ void CommunicationController<DataTypes>::receiveData()
             msg_error() << "The template of received data is not correct. Received " << templateStream.str() << ", while expecting " << getTemplateName()
                         << ". The component won't work anymore. ";
             m_componentstate = ComponentState::Invalid;
+			delete messageChar;
             return;
         }
 
@@ -360,6 +361,7 @@ void CommunicationController<DataTypes>::receiveData()
             stream << messageChar[i];
         }
         convertStringStreamToData(&stream);
+		delete messageChar;
     }
     else
     {
