@@ -33,10 +33,10 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
 
-#ifdef SOFTROBOTS_PYTHON
-#include <SofaPython/PythonEnvironment.h>
-using sofa::simulation::PythonEnvironment;
-#endif
+// #ifdef SOFTROBOTS_PYTHON
+// #include <SofaPython/PythonEnvironment.h>
+// using sofa::simulation::PythonEnvironment;
+// #endif
 
 #include <fstream>
 
@@ -63,15 +63,15 @@ void initExternalModule()
     }
     first = false;
 
-    // Automatically load the STLIB plugin if available.
-    if( !PluginManager::getInstance().findPlugin("STLIB").empty() )
-    {
-        PluginManager::getInstance().loadPlugin("STLIB") ;
-    }
+    // // Automatically load the STLIB plugin if available.
+    // if( !PluginManager::getInstance().findPlugin("STLIB").empty() )
+    // {
+    //     PluginManager::getInstance().loadPlugin("STLIB") ;
+    // }
 
-#ifdef SOFTROBOTS_PYTHON
-    PythonEnvironment::addPythonModulePathsForPluginsByName(getModuleName());
-#endif
+// #ifdef SOFTROBOTS_PYTHON
+//     PythonEnvironment::addPythonModulePathsForPluginsByName(getModuleName());
+// #endif
     //SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > test;
 }
 

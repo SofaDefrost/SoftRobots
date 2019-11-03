@@ -17,6 +17,7 @@ class FingerController(Sofa.Core.Controller):
         """
         Sofa.Core.Controller.__init__(self, *a, **kw)
         self.node = kw["node"]
+        self.addData(name="displacement", type="double", value=kw.get("displacement"), default=0)
         return
     
     def onKeypressedEvent(self,e):
@@ -26,6 +27,8 @@ class FingerController(Sofa.Core.Controller):
         The onXXXEvent method takes a dictionary as a parameter, containing the useful
         values stored in the event class, e.g. here, the pressed key
         """
+
+        print("keyPressed "+str(e))
         inputvalue = self.node.aCableActuator.value
         
         displacement = 0
