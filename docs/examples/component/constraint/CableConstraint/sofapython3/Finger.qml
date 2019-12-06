@@ -6,19 +6,33 @@ import SofaApplication 1.0
 
 Rectangle {
     id: root
-    property var cableController: null
+    property var cableController: SofaApplication.sofaScene.get("/finger/cable/aCableActuator")
+    property var scene: SofaApplication.sofaScene
+
+    function keyPressed(event) {
+        console.log(event)
+        console.log("KeyPressed in finger.qml")
+    }
+
     width: 40
     height: 20
     color: "transparent"
     RowLayout {
         anchors.fill: parent
 
+        Slider {
+            from: 0
+            to: 40
+            value: 0
+            onValueChanged: {
+                cableController.getData("value").value = [value]
+            }
+        }
+
         Button {
             text: "-"
             width: 20
             onClicked: {
-                if (cableController === null)
-                    cableController = SofaApplication.sofaScene.get("/finger/cable/aCableActuator")
                 var val = Number(cableController.getData("value").value[0])
                 val -= 1.0
                 console.log([val])
@@ -29,8 +43,6 @@ Rectangle {
             text: "+"
             width: 20
             onClicked: {
-                if (cableController === null)
-                    cableController = SofaApplication.sofaScene.get("/finger/cable/aCableActuator")
                 var val = Number(cableController.getData("value").value[0])
                 val += 1.0
                 console.log([val])

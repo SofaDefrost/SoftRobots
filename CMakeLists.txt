@@ -35,8 +35,8 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
     endif()
 endif()
 
-find_package(SofaPython QUIET)
-set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
+find_package(SofaPython3 QUIET)
+set(SOFTROBOTS_PYTHON ${SofaPython3_FOUND}) # config.h.in
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
 if(WIN32)
@@ -223,10 +223,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping)
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 
-if(SofaPython_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaPython)
+if(SofaPython3_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython3)
     # Config files and install rules for pythons scripts
-    sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
+    # sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
@@ -242,8 +242,8 @@ sofa_generate_package(
 install(DIRECTORY docs DESTINATION .)
 install(FILES "README.md" "LICENSE" "CHANGELOG" DESTINATION .)
 
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(tests)
-endif()
+# if(SOFA_BUILD_TESTS)
+#     add_subdirectory(tests)
+# endif()
 
 include(cmake/packaging.cmake)
