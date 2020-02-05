@@ -360,6 +360,7 @@ void CommunicationController<DataTypes>::receiveData()
             stream << messageChar[i];
         }
         convertStringStreamToData(&stream);
+        delete messageChar;
     }
     else
     {

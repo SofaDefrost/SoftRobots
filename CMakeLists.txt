@@ -40,7 +40,7 @@ set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
 if(WIN32)
-    sofa_copy_libraries(TARGETS Qt5::Network)
+     sofa_copy_libraries(TARGETS Qt5::Network)
 endif()
 sofa_install_libraries(TARGETS Qt5::Network)
 
@@ -203,9 +203,8 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${DOC_FILES} 
 # COMMUNICATION CONTROLLER
 if(SOFTROBOTS_COMMUNICATIONCONTROLLER)
     find_package(ZMQ REQUIRED)
-	include_directories(${ZMQ_INCLUDE_DIR})
-
-	target_link_libraries(${PROJECT_NAME} ${ZMQ_LIBRARY})
+    include_directories(${ZMQ_INCLUDE_DIR})
+    target_link_libraries(${PROJECT_NAME} ${ZMQ_LIBRARY})
 endif()
 
 # ROBOTINO CONTROLLER
