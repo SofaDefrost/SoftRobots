@@ -39,9 +39,6 @@ find_package(SofaPython QUIET)
 set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
-if(WIN32)
-    sofa_copy_libraries_from_targets(Qt5::Network)
-endif()
 sofa_install_libraries(TARGETS Qt5::Network)
 
 find_package(STLIB QUIET)
