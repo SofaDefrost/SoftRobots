@@ -22,6 +22,7 @@ def createScene(rootNode):
                 rootNode.dt="0.01"
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
                 rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+                rootNode.addObject('Camera', position="-40 30 100", orientation="0 0 0 1", zFar=130)
 
                 ##########################################
                 # FEM Model                              #
@@ -44,11 +45,11 @@ def createScene(rootNode):
                 finger.createObject('UniformMass', totalMass='0.075')
 
                 # Add a TetrahedronFEMForceField componant which implement an elastic material model solved using the Finite Element Method on
-                # tetrahedrons.
+                # tetrahedrons.
                 finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.45',  youngModulus='600')
 
                 # To facilitate the selection of DoFs, SOFA has a concept called ROI (Region of Interest).
-		        # The idea is that ROI component "select" all DoFS that are enclosed by their "region".
+		# The idea is that ROI component "select" all DoFS that are enclosed by their "region".
                 # We use ROI here to select a group of finger's DoFs that will be constrained to stay
                 # at a fixed position.
                 # You can either use "BoxROI"...
@@ -73,9 +74,9 @@ def createScene(rootNode):
                 #  This create a new node in the scene. This node is appended to the finger's node.
                 cable = finger.createChild('cable')
 
-                # This create a MechanicalObject, a componant holding the degree of freedom of our
+                # This create a MechanicalObject, a componant holding the degree of freedom of our
                 # mechanical modelling. In the case of a cable it is a set of positions specifying
-                # the points where the cable is passing by.
+                # the points where the cable is passing by.
                 cable.createObject('MechanicalObject',
                         position=(
                                 "-17.5 12.5 2.5 " +
@@ -95,6 +96,7 @@ def createScene(rootNode):
                                 "-32.5 12.5 12.5 " +
                                 "-17.5 12.5 12.5 " ))
 
+
                 # Create a CableConstraint object with a name.
                 # the indices are referring to the MechanicalObject's positions.
                 # The last indice is where the pullPoint is connected.
@@ -104,20 +106,20 @@ def createScene(rootNode):
                         pullPoint="0.0 12.5 2.5")
 
                 # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
-                # between the cable's DoFs and the finger's ones so that movements of the cable's DoFs will be mapped
-                # to the finger and vice-versa;
+                # between the cable's DoFs and the finger's ones so that movements of the cable's DoFs will be mapped
+                # to the finger and vice-versa;
                 cable.createObject('BarycentricMapping')
 
                 # This create a PythonScriptController that permits to programatically implement new behavior
-                # or interactions using the Python programming langage. The controller is referring to a
-                # file named "controller.py".
+                # or interactions using the Python programming langage. The controller is referring to a
+                # file named "controller.py".
                 cable.createObject('PythonScriptController', filename="controller/FingerController.py", classname="controller")
 
                 ##########################################
                 # Visualization                          #
                 ##########################################
                 # In Sofa, visualization is handled by adding a rendering model.
-                # Create an empty child node to store this rendering model.
+                # Create an empty child node to store this rendering model.
                 fingerVisu = finger.createChild('visu')
 
                 # Add to this empty node a rendering model made of triangles and loaded from an stl file.

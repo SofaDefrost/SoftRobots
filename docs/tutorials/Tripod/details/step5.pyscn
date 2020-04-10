@@ -1,31 +1,28 @@
-# -*- coding: utf-8 -*-
-"""
-Step 5: Adding a controller.
-The controller will connect user actions to the simulated behaviour.
-"""
-from tutorial import *
-from tripod import Tripod
+""" type: SofaContent """
+import sys
+import os
+# all Paths
+# all Modules:
 
-"""
-The controller is implemented in this file: tripodcontroller.py
-"""
-from tripodcontroller import TripodController
 
-class MyController(Sofa.PythonScriptController):
-        def __init__(self, node):
-                self.node = node
-                
-        def onKeyPressed(self, key):
-                print("Key Pressed")
+def createScene(root):
+    root.addObject('DefaultAnimationLoop', name='defaultAnimationLoop')
+    root.addObject('DefaultVisualManagerLoop', name='defaultVisualManagerLoop')
+    ####################### Node: tripod_arm #########################
+    root.addChild('tripod_arm')
+    root.tripod_arm.addObject('MeshSTLLoader', name='loader', filename='/home/bruno/dev/similar/AZ/assets/resources/tripod_arm.stl')
+    ### THERE WAS A LINK. @/tripod_arm/loader.position=>@/tripod_arm/vmodel.position
+    ### THERE WAS A LINK. @/tripod_arm/loader.edges=>@/tripod_arm/vmodel.edges
+    ### THERE WAS A LINK. @/tripod_arm/loader.triangles=>@/tripod_arm/vmodel.triangles
+    ### THERE WAS A LINK. @/tripod_arm/loader.quads=>@/tripod_arm/vmodel.quads
+    root.tripod_arm.addObject('OglModel', name='vmodel', position='@loader.position', edges='@loader.edges', triangles='@loader.triangles', quads='@loader.quads')
 
-def createScene(rootNode):
-    scene = Scene(rootNode)
+    ####################### Node: tripod_high #########################
+    root.addChild('tripod_high')
+    root.tripod_high.addObject('MeshSTLLoader', name='loader', filename='/home/bruno/dev/similar/AZ/assets/resources/tripod_high.stl')
+    ### THERE WAS A LINK. @/tripod_high/loader.position=>@/tripod_high/vmodel.position
+    ### THERE WAS A LINK. @/tripod_high/loader.edges=>@/tripod_high/vmodel.edges
+    ### THERE WAS A LINK. @/tripod_high/loader.triangles=>@/tripod_high/vmodel.triangles
+    ### THERE WAS A LINK. @/tripod_high/loader.quads=>@/tripod_high/vmodel.quads
+    root.tripod_high.addObject('OglModel', name='vmodel', position='@loader.position', edges='@loader.edges', triangles='@loader.triangles', quads='@loader.quads', material='Default Diffuse 1 0.75 0.75 0.75 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45 ', sfactor='GL_ZERO', dfactor='GL_ZERO')
 
-    tripod = Tripod(scene.Modelling)
-
-    TripodController(scene, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
-    
-    scene.Simulation.addChild(tripod.RigidifiedStructure)
-    scene.Simulation.addChild(tripod.ActuatedArm0)
-    scene.Simulation.addChild(tripod.ActuatedArm1)
-    scene.Simulation.addChild(tripod.ActuatedArm2)

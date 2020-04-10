@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""type: SofaContent"""
+
 import Sofa.Core
 
 class FingerController(Sofa.Core.Controller):
@@ -17,9 +19,19 @@ class FingerController(Sofa.Core.Controller):
         """
         Sofa.Core.Controller.__init__(self, *a, **kw)
         self.node = kw["node"]
-        self.addData(name="displacement", type="double", value=kw.get("displacement"), default=0)
         return
     
+    def onAnimateBeginEvent(self, e):
+        inputvalue = self.node.aCableActuator.value
+
+        displacement = inputvalue.value[0] + 0.1
+
+        if displacement > 45:
+            inputvalue.value = [0.0]
+        else:
+            inputvalue.value = [displacement]
+
+
     def onKeypressedEvent(self,e):
         """
         Events methods are named after the actual event names (Event::GetClassName() in C++),
@@ -28,16 +40,16 @@ class FingerController(Sofa.Core.Controller):
         values stored in the event class, e.g. here, the pressed key
         """
 
-        print("keyPressed "+str(e))
         inputvalue = self.node.aCableActuator.value
         
         displacement = 0
         if (e["key"] == "+"):
-            displacement = inputvalue.value[0] + 1.0
+            displacement = inputvalue.value[0] + 3.0
         elif (e["key"] == "-"):
-            displacement = inputvalue.value[0] - 1.0
+            displacement = inputvalue.value[0] - 3.0
             if(displacement < 0):
                 displacement = 0
-                
+        else:
+            return
         inputvalue.value = [displacement]
         return

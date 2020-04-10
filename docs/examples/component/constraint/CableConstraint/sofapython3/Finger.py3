@@ -5,7 +5,7 @@ import Sofa.Core
 
 import os
 
-path = os.path.dirname(os.path.abspath(__file__))+'../mesh/'
+path = '../mesh/'
 from FingerController import FingerController
 
 def createScene(rootNode):

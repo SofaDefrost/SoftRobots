@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+"""type: SofaContent"""
+
 import Sofa
 import Sofa.Core
 
@@ -26,7 +28,7 @@ def createScene(rootNode):
                 rootNode.gravity = [0, -9810, 0]
                 rootNode.dt=0.01
                 rootNode.addObject('BackgroundSetting', color='0 0.168627 0.211765')
-                rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+                # rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
                 rootNode.addObject('Camera', position="-40 30 100", orientation="0 0 0 1", zFar=130)
 
                 ##########################################
