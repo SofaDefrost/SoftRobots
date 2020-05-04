@@ -70,7 +70,7 @@ void initExternalModule()
     }
 
 #ifdef SOFTROBOTS_PYTHON
-    PythonEnvironment::addPythonModulePathsForPluginsByName(getModuleName());
+    PythonEnvironment::addPythonModulePathsForPluginsByName("SoftRobots");
 #endif
     //SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > test;
 }
