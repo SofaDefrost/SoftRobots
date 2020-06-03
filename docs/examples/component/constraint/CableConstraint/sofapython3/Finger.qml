@@ -8,91 +8,48 @@ import QtGraphicalEffects 1.0
 
 SofaCanvas {
     id: root
-    // The data we manipulate in the GUI:
-    property var cableControllerValue: SofaApplication.sofaScene.get("/finger/cable/aCableActuator").getData("value")
+    property var cableController: SofaApplication.sofaScene.get("/finger/cable/aCableActuator")
+    property var scene: SofaApplication.sofaScene
 
-    // Simple helper function for later...
-    function setValue(val) {
-        cableControllerValue.value = [val]
+    function keyPressed(event) {
+        console.log(event)
+        console.log("KeyPressed in finger.qml")
     }
 
-    implicitWidth: 200
-    implicitHeight: 100
-
+    width: 40
+    height: 20
     color: "transparent"
     ColumnLayout {
         anchors.fill: parent
         spacing: 10
 
-
-
-
-//        /// Colored Sprite of the finger showing white, orange, red depending on cable displacement
-//        Image {
-//            id: stencil
-//            source: "fingerStencil.png"
-//            sourceSize: Qt.size(160,60)
-//            ColorOverlay {
-//                id: overlay
-//                anchors.fill: stencil
-//                source: stencil
-//                color: "white"
-//                function updateColor() {
-//                    if (cableControllerValue.value[0] > 30)
-//                        color = "red"
-//                    else if (cableControllerValue.value[0] > 15)
-//                        color = "orange"
-//                    else
-//                        color = "white"
-//                }
-//                Connections
-//                {
-//                    target: cableControllerValue
-//                    onValueChanged: {
-//                        overlay.updateColor() // updates the stencil color
-//                    }
-//                }
-//            }
-//        }
-
-
-
-
-
-//        /// BUTTONS
-//        RowLayout {
-//            Layout.fillWidth: true
-//            Button {
-//                Layout.fillWidth: true
-//                text: "unwind"
-//                onClicked: {
-//                    var val = Number(cableControllerValue.value[0])
-//                    setValue(val - 1.0)
-//                }
-//            }
-//            Button {
-//                Layout.fillWidth: true
-//                text: "wind"
-//                onClicked: {
-//                    var val = Number(cableControllerValue.value[0])
-//                    setValue(val + 1.0)
-//                }
-//            }
-//        }
-
-
-
-
-
-        /// SLIDER
         Slider {
-            Layout.fillWidth: true
-            value: Number(cableControllerValue.value[0])
             from: 0
-            to: 45
+            to: 40
+            value: 0
             onValueChanged: {
-                if (pressed)
-                    setValue(value)
+                cableController.getData("value").value = [value]
+            }
+        }
+
+        Button {
+            text: "-"
+            width: 20
+            onClicked: {
+                var val = Number(cableController.getData("value").value[0])
+                val -= 1.0
+                console.log([val])
+                cableController.getData("value").value = [val]
+            }
+        }
+        Button {
+            text: "+"
+            width: 20
+            onClicked: {
+                var val = Number(cableController.getData("value").value[0])
+                val += 1.0
+                console.log([val])
+                cableController.getData("value").value = [val]
             }
         }
 
