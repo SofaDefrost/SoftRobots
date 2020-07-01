@@ -51,6 +51,8 @@ endif()
 set(SOFTROBOTS_SOURCE_DIR src/SoftRobots)
 
 set(HEADER_FILES
+    ${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.h.in
+
     ${SOFTROBOTS_SOURCE_DIR}/component/behavior/SoftRobotsBaseConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/behavior/SoftRobotsConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/behavior/SoftRobotsConstraint.inl
@@ -211,12 +213,6 @@ if(SOFTROBOTS_GAMETRAKCONTROLLER)
     target_link_libraries(${PROJECT_NAME} ${HIDAPI_LIBRARIES} ${BOOST_THREAD_LIBRARY})
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping)
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 
@@ -231,8 +227,8 @@ sofa_generate_package(
     NAME SoftRobots
     VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
+    INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
-    INCLUDE_SOURCE_DIR src/SoftRobots
     RELOCATABLE "plugins"
     )
 

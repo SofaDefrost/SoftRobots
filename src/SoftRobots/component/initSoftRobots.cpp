@@ -27,7 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include <SoftRobots/initSoftRobots.h>
+#include <SoftRobots/component/initSoftRobots.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/helper/system/PluginManager.h>
