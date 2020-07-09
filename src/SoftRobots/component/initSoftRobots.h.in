@@ -31,7 +31,7 @@
 #define INITSOFTROBOTS_H
 
 
-#include <sofa/helper/system/config.h>
+#include <sofa/helper/config.h>
 
 #ifdef SOFA_BUILD_SOFTROBOTS
 #define SOFA_TARGET SoftRobots

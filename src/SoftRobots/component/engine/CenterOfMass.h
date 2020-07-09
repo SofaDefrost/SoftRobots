@@ -35,7 +35,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/Mass.h>
 
-#include <SoftRobots/initSoftRobots.h>
+#include <SoftRobots/component/initSoftRobots.h>
 
 namespace sofa
 {
