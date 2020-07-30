@@ -137,7 +137,7 @@ void CableModel<DataTypes>::setUpData()
 template<class DataTypes>
 void CableModel<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
     SoftRobotsConstraint<DataTypes>::init();
 
     if(m_state==nullptr)
@@ -150,14 +150,14 @@ void CableModel<DataTypes>::init()
     }
 
     internalInit();
-    m_componentstate = ComponentState::Valid;
+    d_componentState = ComponentState::Valid;
 }
 
 
 template<class DataTypes>
 void CableModel<DataTypes>::bwdInit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     // The initial length of the cable is set or computed in bwdInit so the mapping (if there is any)
@@ -178,7 +178,7 @@ void CableModel<DataTypes>::bwdInit()
 template<class DataTypes>
 void CableModel<DataTypes>::reinit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     internalInit();
@@ -188,7 +188,7 @@ void CableModel<DataTypes>::reinit()
 template<class DataTypes>
 void CableModel<DataTypes>::reset()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
         return ;
 
     d_cableLength.setValue(d_cableInitialLength.getValue());
@@ -278,7 +278,7 @@ SReal CableModel<DataTypes>::getCableLength(const VecCoord &positions)
 template<class DataTypes>
 void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &cMatrix, unsigned int &cIndex, const DataVecCoord &x)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -384,7 +384,7 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
                                                    BaseVector *resV,
                                                    const BaseVector *Jdx)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -404,7 +404,7 @@ void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);
 
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     d_force.setValue(lambda->element(m_constraintId));
@@ -420,7 +420,7 @@ void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
 template<class DataTypes>
 void CableModel<DataTypes>::draw(const VisualParams* vparams)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;

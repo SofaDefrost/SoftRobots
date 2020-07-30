@@ -10,6 +10,7 @@ def createScene(rootNode):
 
                 rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
                 rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
+                rootNode.dt=0.001
 
                 rootNode.createObject('FreeMotionAnimationLoop')
                 rootNode.createObject('GenericConstraintSolver', maxIterations='500', printLog='0', tolerance = '0.0000001')

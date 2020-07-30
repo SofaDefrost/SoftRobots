@@ -77,7 +77,7 @@ UnilateralPlaneConstraint<DataTypes>::~UnilateralPlaneConstraint()
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
     Inherit1::init();
 
     if(m_state == nullptr)
@@ -89,14 +89,14 @@ void UnilateralPlaneConstraint<DataTypes>::init()
     }
 
     checkIndicesRegardingState();
-    m_componentstate = ComponentState::Valid;
+    d_componentState = ComponentState::Valid;
 }
 
 
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::reinit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     checkIndicesRegardingState();
@@ -124,7 +124,7 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const Constrain
                                                                   unsigned int &cIndex,
                                                                  const DataVecCoord &x)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -160,7 +160,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintViolation(const Constrai
                                                                   BaseVector *resV,
                                                                   const BaseVector *Jdx)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -186,7 +186,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintResolution(const Constra
                                                                    std::vector<ConstraintResolution*>& resTab,
                                                                    unsigned int& offset)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -199,7 +199,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintResolution(const Constra
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if (!vparams->displayFlags().getShowCollisionModels())

@@ -146,7 +146,7 @@ protected:
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::m_constraintId ;
     using SoftRobotsConstraint<DataTypes>::m_state ;
-    using SoftRobotsConstraint<DataTypes>::m_componentstate ;
+    using SoftRobotsConstraint<DataTypes>::d_componentState ;
     ////////////////////////////////////////////////////////////////////////////
 
 private:
