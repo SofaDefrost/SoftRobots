@@ -146,7 +146,7 @@ protected:
     using SurfacePressureModel<DataTypes>::d_minVolumeGrowth ;
     using SurfacePressureModel<DataTypes>::d_maxPressure ;
     using SurfacePressureModel<DataTypes>::d_minPressure ;
-    using SoftRobotsConstraint<DataTypes>::m_componentstate;
+    using SoftRobotsConstraint<DataTypes>::d_componentState;
     ////////////////////////////////////////////////////////////////////////////
 
 private:
