@@ -11,11 +11,13 @@ from tripodcontroller import DirectController, InverseController, GoalController
 def EffectorGoal(node, position):
     goal = node.createChild('goal')
     goal.createObject('EulerImplicitSolver', firstOrder=True)
-    goal.createObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
+    goal.createObject('CGLinearSolver', iterations=100,
+                      threshold=1e-5, tolerance=1e-5)
     goal.createObject('MechanicalObject', name='goalMO', template='Rigid3d',
                       position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
     spheres = goal.createChild('spheres')
-    spheres.createObject('MechanicalObject', name='mo', position='0 0 0  10 0 0   0 10 0   0 0 10')
+    spheres.createObject('MechanicalObject', name='mo',
+                         position='0 0 0  10 0 0   0 10 0   0 0 10')
     spheres.createObject('Sphere', radius=5, group=1)
     spheres.createObject('RigidMapping')
     goal.createObject('UncoupledConstraintCorrection')
@@ -32,7 +34,7 @@ def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
 
 def createScene(rootNode):
     # Choose here to control position or orientation of end-effector
-    orientation = False;
+    orientation = False
 
     if orientation:
         # inverse in orientation
@@ -46,7 +48,8 @@ def createScene(rootNode):
 
     # Scene set up
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
-    rootNode.createObject("RequiredPlugin", name="SoftRobots")
+    rootNode.createObject(
+        'RequiredPlugin', pluginName='SoftRobots SoftRobots.Inverse')
     scene.VisualStyle.displayFlags = "showBehavior showCollision"
     scene.createObject("MeshSTLLoader", name="loader",
                        filename="../data/mesh/blueprint.stl")
@@ -60,10 +63,12 @@ def createScene(rootNode):
     serial = SerialPortBridgeGeneric(rootNode)
 
     # Create the tripod object.
-    tripod = Tripod(rootNode, effectorPos=[0, 30, 0], use_orientation=orientation, goalNode=goalNode)
+    tripod = Tripod(rootNode, effectorPos=[
+                    0, 30, 0], use_orientation=orientation, goalNode=goalNode)
 
     actuators = tripod.RigidifiedStructure.RigidParts.actuators
-    invCtr = InverseController(rootNode, goalNode, actuators, actuators, tripod.RigidifiedStructure.RigidParts, tripod, serial, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
+    invCtr = InverseController(rootNode, goalNode, actuators, actuators, tripod.RigidifiedStructure.RigidParts, tripod, serial, [
+                               tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
 
     # The regular controller that is being used for the last 2 steps
     DirectController(rootNode, [tripod.ActuatedArm0,
@@ -71,14 +76,19 @@ def createScene(rootNode):
                                 tripod.ActuatedArm2], invCtr)
 
     simulation = scene.createChild("Simulation")
-    simulation.createObject("EulerImplicitSolver", firstOrder=0, rayleighStiffness='0.01')
+    simulation.createObject("EulerImplicitSolver",
+                            firstOrder=0, rayleighStiffness='0.01')
     simulation.createObject("SparseLDLSolver", name="sparseSolver")
-    simulation.createObject("GenericConstraintCorrection", solverName='sparseSolver')
+    simulation.createObject("GenericConstraintCorrection",
+                            solverName='sparseSolver')
     simulation.addChild(tripod)
 
     for i in range(3):
-        visual = tripod.RigidifiedStructure.RigidParts.createChild("VisualModel")
-        visual.createObject("MeshSTLLoader", name="loader", filename="../data/mesh/SG90_servoarm.stl")
+        visual = tripod.RigidifiedStructure.RigidParts.createChild(
+            "VisualModel")
+        visual.createObject("MeshSTLLoader", name="loader",
+                            filename="../data/mesh/SG90_servoarm.stl")
         visual.createObject("MeshTopology", src="@loader")
-        visual.createObject("OglModel", color=[0.75, 0.75, 0.75, 0.7], writeZTransparent=True)
+        visual.createObject("OglModel", color=[
+                            0.75, 0.75, 0.75, 0.7], writeZTransparent=True)
         visual.createObject("RigidMapping", index=i)

@@ -13,7 +13,8 @@ def effectorTarget(parentNode, position=[0., 0., 200]):
     target = parentNode.createChild("Target")
     target.createObject("EulerImplicitSolver", firstOrder=True)
     target.createObject("CGLinearSolver")
-    target.createObject("MechanicalObject", name="dofs", position=position, showObject=True, showObjectScale=8, drawMode=2, showColor=[1., 1., 1., 1.])
+    target.createObject("MechanicalObject", name="dofs", position=position,
+                        showObject=True, showObjectScale=8, drawMode=2, showColor=[1., 1., 1., 1.])
     target.createObject("UncoupledConstraintCorrection")
     return target
 
@@ -48,15 +49,19 @@ class Trunk(SofaObject):
         self.inverseMode = inverseMode
         self.node = parentNode.createChild('Trunk')
 
-        self.node.createObject('MeshVTKLoader', name='loader', filename=path+'trunk.vtk')
-        self.node.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
+        self.node.createObject(
+            'MeshVTKLoader', name='loader', filename=path+'trunk.vtk')
+        self.node.createObject(
+            'TetrahedronSetTopologyContainer', src='@loader', name='container')
         self.node.createObject('TetrahedronSetTopologyModifier')
         self.node.createObject('TetrahedronSetTopologyAlgorithms')
         self.node.createObject('TetrahedronSetGeometryAlgorithms')
 
-        self.node.createObject('MechanicalObject', name='dofs', template='Vec3d', showIndices='false', showIndicesScale='4e-5')
+        self.node.createObject('MechanicalObject', name='dofs',
+                               template='Vec3d', showIndices='false', showIndicesScale='4e-5')
         self.node.createObject('UniformMass', totalMass=totalMass)
-        self.node.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio=poissonRatio,  youngModulus=youngModulus)
+        self.node.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM',
+                               method='large', poissonRatio=poissonRatio,  youngModulus=youngModulus)
 
         self.__addCables()
 
@@ -65,7 +70,8 @@ class Trunk(SofaObject):
         length2 = 2.
         lengthTrunk = 195.
 
-        pullPoint = [[0., length1, 0.], [-length1, 0., 0.], [0., -length1, 0.], [length1, 0., 0.]]
+        pullPoint = [[0., length1, 0.], [-length1, 0., 0.],
+                     [0., -length1, 0.], [length1, 0., 0.]]
         direction = Vec3(0., length2-length1, lengthTrunk)
         direction.normalize()
 
@@ -76,9 +82,11 @@ class Trunk(SofaObject):
 
             position = [[0., 0., 0.]]*20
             for k in range(0, 20, 2):
-                v = Vec3(direction[0], direction[1]*17.5*(k/2)+length1, direction[2]*17.5*(k/2)+21)
+                v = Vec3(direction[0], direction[1]*17.5 *
+                         (k/2)+length1, direction[2]*17.5*(k/2)+21)
                 position[k] = v.rotateFromQuat(q)
-                v = Vec3(direction[0], direction[1]*17.5*(k/2)+length1, direction[2]*17.5*(k/2)+27)
+                v = Vec3(direction[0], direction[1]*17.5 *
+                         (k/2)+length1, direction[2]*17.5*(k/2)+27)
                 position[k+1] = v.rotateFromQuat(q)
 
             cableL = self.node.createChild('cableL'+str(i))
@@ -90,7 +98,8 @@ class Trunk(SofaObject):
                                 maxPositiveDisp='70',
                                 maxDispVariation="1",
                                 minForce=0)
-            cableL.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+            cableL.createObject(
+                'BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
 
         for i in range(0, nbCables):
             theta = 1.57*i
@@ -98,9 +107,11 @@ class Trunk(SofaObject):
 
             position = [[0., 0., 0.]]*10
             for k in range(0, 9, 2):
-                v = Vec3(direction[0], direction[1]*17.5*(k/2)+length1, direction[2]*17.5*(k/2)+21)
+                v = Vec3(direction[0], direction[1]*17.5 *
+                         (k/2)+length1, direction[2]*17.5*(k/2)+21)
                 position[k] = v.rotateFromQuat(q)
-                v = Vec3(direction[0], direction[1]*17.5*(k/2)+length1, direction[2]*17.5*(k/2)+27)
+                v = Vec3(direction[0], direction[1]*17.5 *
+                         (k/2)+length1, direction[2]*17.5*(k/2)+27)
                 position[k+1] = v.rotateFromQuat(q)
 
             cableS = self.node.createChild('cableS'+str(i))
@@ -112,7 +123,8 @@ class Trunk(SofaObject):
                                 maxPositiveDisp='40',
                                 maxDispVariation="1",
                                 minForce=0)
-            cableS.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+            cableS.createObject(
+                'BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
 
     def addVisualModel(self, color=[1., 1., 1., 1.]):
         trunkVisu = self.node.createChild('VisualModel')
@@ -124,28 +136,37 @@ class Trunk(SofaObject):
         trunkColli = self.node.createChild('CollisionModel')
         for i in range(2):
             part = trunkColli.createChild("Part"+str(i+1))
-            part.createObject('MeshSTLLoader', name="loader", filename=path+"trunk_colli"+str(i+1)+".stl")
+            part.createObject('MeshSTLLoader', name="loader",
+                              filename=path+"trunk_colli"+str(i+1)+".stl")
             part.createObject('MeshTopology', src="@loader")
             part.createObject('MechanicalObject')
-            part.createObject('TTriangleModel', group=1 if not selfCollision else i)
-            part.createObject('TLineModel', group=1 if not selfCollision else i)
-            part.createObject('TPointModel', group=1 if not selfCollision else i)
+            part.createObject('TTriangleModel',
+                              group=1 if not selfCollision else i)
+            part.createObject(
+                'TLineModel', group=1 if not selfCollision else i)
+            part.createObject(
+                'TPointModel', group=1 if not selfCollision else i)
             part.createObject('BarycentricMapping')
 
     def fixExtremity(self):
-        self.node.createObject('BoxROI', name='boxROI', box=[[-20, -20, 0], [20, 20, 20]], drawBoxes=False)
-        self.node.createObject('PartialFixedConstraint', fixedDirections="1 1 1", indices="@boxROI.indices")
+        self.node.createObject('BoxROI', name='boxROI', box=[
+                               [-20, -20, 0], [20, 20, 20]], drawBoxes=False)
+        self.node.createObject(
+            'PartialFixedConstraint', fixedDirections="1 1 1", indices="@boxROI.indices")
 
     def addEffectors(self, target, position=[0., 0., 195.]):
         effectors = self.node.createChild("Effectors")
         effectors.createObject("MechanicalObject", position=position)
-        effectors.createObject("PositionEffector", indices=range(len(position)), effectorGoal=target)
-        effectors.createObject("BarycentricMapping", mapForces=False, mapMasses=False)
+        effectors.createObject("PositionEffector", indices=range(
+            len(position)), effectorGoal=target)
+        effectors.createObject("BarycentricMapping",
+                               mapForces=False, mapMasses=False)
 
 
 def createScene(rootNode):
 
-    rootNode.createObject("RequiredPlugin", name="SoftRobots")
+    rootNode.createObject(
+        'RequiredPlugin', pluginName='SoftRobots SoftRobots.Inverse')
     rootNode.createObject("RequiredPlugin", name="SofaSparseSolver")
     rootNode.createObject("RequiredPlugin", name="SofaPreconditioner")
     rootNode.createObject("RequiredPlugin", name="SofaPython")
@@ -161,16 +182,20 @@ def createScene(rootNode):
 
     simulation = rootNode.createChild("Simulation")
 
-    simulation.createObject('EulerImplicitSolver', name='odesolver', firstOrder="0", rayleighMass="0.1", rayleighStiffness="0.1")
-    simulation.createObject('ShewchukPCGLinearSolver', name='linearSolver', iterations='500', tolerance='1.0e-18', preconditioners="precond")
+    simulation.createObject('EulerImplicitSolver', name='odesolver',
+                            firstOrder="0", rayleighMass="0.1", rayleighStiffness="0.1")
+    simulation.createObject('ShewchukPCGLinearSolver', name='linearSolver',
+                            iterations='500', tolerance='1.0e-18', preconditioners="precond")
     simulation.createObject('SparseLDLSolver', name='precond')
-    simulation.createObject('GenericConstraintCorrection', solverName="precond")
+    simulation.createObject(
+        'GenericConstraintCorrection', solverName="precond")
 
     trunk = Trunk(simulation, inverseMode=True)
     trunk.addVisualModel(color=[1., 1., 1., 0.8])
     trunk.fixExtremity()
     target = effectorTarget(rootNode)
-    trunk.addEffectors(target=target.dofs.getData("position").getLinkPath(), position=[[0., 0., 195]])
+    trunk.addEffectors(target=target.dofs.getData(
+        "position").getLinkPath(), position=[[0., 0., 195]])
 
     # Use this in direct mode as an example of animation ############
     # def cableanimation(target, factor):

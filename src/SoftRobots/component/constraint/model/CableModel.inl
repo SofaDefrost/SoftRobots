@@ -242,6 +242,8 @@ void CableModel<DataTypes>::checkIndicesRegardingState()
 {
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
+    std::cout << "The size of the mstats is : " << positions.size() << std::endl;
+
     for(unsigned int i=0; i<d_indices.getValue().size(); i++)
     {
         if (positions.size() <= d_indices.getValue()[i])

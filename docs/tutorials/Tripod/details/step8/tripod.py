@@ -10,17 +10,18 @@ def ElasticBody(parent):
 
     e = ElasticMaterialObject(body,
                               volumeMeshFileName="../data/mesh/tripod_mid.gidmsh",
-                              translation=[0.0,30,0.0], rotation=[90,0,0],
+                              translation=[0.0, 30, 0.0], rotation=[90, 0, 0],
                               youngModulus=600, poissonRatio=0.45, totalMass=0.4)
 
     visual = body.createChild("Visual")
-    visual.createObject("MeshSTLLoader", name="loader", filename="../data/mesh/tripod_mid.stl")
+    visual.createObject("MeshSTLLoader", name="loader",
+                        filename="../data/mesh/tripod_mid.stl")
     visual.createObject("OglModel", name="renderer", src="@loader", color=[1.0, 1.0, 1.0, 0.5],
                         rotation=[90, 0, 0], translation=[0, 30, 0])
 
     visual.createObject("BarycentricMapping",
-                         input=e.dofs.getLinkPath(),
-                         output=visual.renderer.getLinkPath())
+                        input=e.dofs.getLinkPath(),
+                        output=visual.renderer.getLinkPath())
     return body
 
 
@@ -66,41 +67,48 @@ def Tripod(parent, name="Tripod", radius=60, numMotors=3, angleShift=180.0, effe
         arms.append(c)
         b.append(map(lambda x: x[0], c.Box.BoxROI.indices))
 
-
     if len(effectorPos) == 3:
         o = body.ElasticMaterialObject.createObject("SphereROI", name="roi", template="Rigid3",
-                    position=body.ElasticMaterialObject.dofs.getData("rest_position"),
-                    centers=effectorPos, radii=[7.5], drawSphere=True)
+                                                    position=body.ElasticMaterialObject.dofs.getData(
+                                                        "rest_position"),
+                                                    centers=effectorPos, radii=[7.5], drawSphere=True)
         o.init()
         b.append(map(lambda x: x[0], o.indices))
 
-        frames.append([effectorPos[0],effectorPos[1],effectorPos[2],0,0,0])
+        frames.append([effectorPos[0], effectorPos[1],
+                       effectorPos[2], 0, 0, 0])
 
     o = Rigidify(tripod,
-                body.ElasticMaterialObject,
-                name="RigidifiedStructure",
-                frames=frames,
-                groupIndices=b)
+                 body.ElasticMaterialObject,
+                 name="RigidifiedStructure",
+                 frames=frames,
+                 groupIndices=b)
 
     actuators = o.RigidParts.createChild('actuators')
 
-    actuator0 = actuators.createObject('SlidingActuator', name="SlidingActuator0", template='Rigid3d', direction='0 0 0 1 0 0' , indices=0, maxForce='100000', minForce='-30000')
-    actuator1 = actuators.createObject('SlidingActuator', name="SlidingActuator1", template='Rigid3d', direction='0 0 0 '+str(cos(4*math.pi/3))+' 0 '+str(sin(4*math.pi/3)) , indices=1, showDirection='1', showVisuScale='100', maxForce='100000', minForce='-30000')
-    actuator2 = actuators.createObject('SlidingActuator', name="SlidingActuator2", template='Rigid3d', direction='0 0 0 '+str(cos(2*math.pi/3))+' 0 '+str(sin(2*math.pi/3)) , indices=2, showDirection='1',  showVisuScale='100', maxForce='100000', minForce='-30000')
+    actuator0 = actuators.createObject('SlidingActuator', name="SlidingActuator0", template='Rigid3d',
+                                       direction='0 0 0 1 0 0', indices=0, maxForce='100000', minForce='-30000')
+    actuator1 = actuators.createObject('SlidingActuator', name="SlidingActuator1", template='Rigid3d', direction='0 0 0 '+str(cos(
+        4*math.pi/3))+' 0 '+str(sin(4*math.pi/3)), indices=1, showDirection='1', showVisuScale='100', maxForce='100000', minForce='-30000')
+    actuator2 = actuators.createObject('SlidingActuator', name="SlidingActuator2", template='Rigid3d', direction='0 0 0 '+str(cos(
+        2*math.pi/3))+' 0 '+str(sin(2*math.pi/3)), indices=2, showDirection='1',  showVisuScale='100', maxForce='100000', minForce='-30000')
 
-    if goalNode==None:
-        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal="10 40 0", limitShiftToTarget=True, maxShiftToTarget=5 )
+    if goalNode == None:
+        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0',
+                                          indices='3', effectorGoal="10 40 0", limitShiftToTarget=True, maxShiftToTarget=5)
     elif use_orientation:
-        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='0 1 0 1 0 1', indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position", limitShiftToTarget=True, maxShiftToTarget=5)
+        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='0 1 0 1 0 1',
+                                          indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position", limitShiftToTarget=True, maxShiftToTarget=5)
     else:
-        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal= goalNode.goalMO.getLinkPath()+".position", limitShiftToTarget=True, maxShiftToTarget=5)
+        Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0',
+                                          indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position", limitShiftToTarget=True, maxShiftToTarget=5)
 
     actuators.activated = 0
     tripod.createObject('MechanicalMatrixMapper',
                         template='Vec3,Rigid3',
                         object1=o.DeformableParts.getLinkPath(),
                         object2=o.RigidParts.dofs.getLinkPath(),
-                        nodeToParse = o.RigidParts.RigidifiedParticules.ElasticMaterialObject.getLinkPath())
+                        nodeToParse=o.RigidParts.RigidifiedParticules.ElasticMaterialObject.getLinkPath())
 
     for i in range(0, numMotors):
         a = arms[i].ServoMotor.createChild("Attach")
@@ -110,7 +118,8 @@ def Tripod(parent, name="Tripod", radius=60, numMotors=3, angleShift=180.0, effe
         a.createObject("RigidRigidMapping")
 
         o.RigidParts.createObject('RestShapeSpringsForceField',
-                                  external_rest_shape=arms[i].ServoArm.dofs.getLinkPath(),
+                                  external_rest_shape=arms[i].ServoArm.dofs.getLinkPath(
+                                  ),
                                   points=[i], external_points=[0],
                                   angularStiffness=1e7, stiffness=1e10)
 
