@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.1)
-project(SoftRobots VERSION 1.0)
+project(SoftRobots VERSION 3.0)
 
 include(cmake/environment.cmake)
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaCommon REQUIRED) # SofaRigid
 find_package(SofaMisc REQUIRED) # SofaMiscMapping
+find_package(SofaSparseSolver REQUIRED) 
 
 option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
 if(NOT SOFTROBOTS_IGNORE_ERRORS)
@@ -15,38 +16,12 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
             Most components will not work correctly.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
-    if(NOT SOFA_BUILD_METIS)
-        message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling SOFA_BUILD_METIS.
-            Most examples will run slowly.
-            To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
-    endif()
-    if(NOT PLUGIN_SOFAPYTHON)
-        message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling PLUGIN_SOFAPYTHON.
-            Most examples will not be loadable.
-            To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
-    endif()
-    if(NOT MODULE_SOFASPARSESOLVER)
-        message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling MODULE_SOFASPARSESOLVER.
-            Most examples and some tests will not work.
-            To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
-    endif()
 endif()
 
-find_package(SofaPython QUIET)
-set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
 sofa_install_libraries(TARGETS Qt5::Network)
 
-find_package(STLIB QUIET)
-if(STLIB_FOUND)
-    message("-- Found dependency : 'STLIB' plugin .")
-else()
-    message("-- The higly recommanded 'STLIB' plugin is missing. You can compile SoftRobots but most of the provided examples will not work. ")
-endif()
 
 set(SOFTROBOTS_SOURCE_DIR src/SoftRobots)
 
@@ -223,10 +198,10 @@ if(SofaPython_FOUND)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(
-    NAME SoftRobots
-    VERSION ${PROJECT_VERSION}
-    TARGETS ${PROJECT_NAME}
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     RELOCATABLE "plugins"
