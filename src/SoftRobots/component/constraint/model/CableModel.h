@@ -123,8 +123,10 @@ protected:
 
     Data<Real>                  d_maxForce;
     Data<Real>                  d_minForce;
+    Data<Real>                  d_eqForce;
     Data<Real>                  d_maxPositiveDisplacement;
     Data<Real>                  d_maxNegativeDisplacement;
+    Data<Real>                  d_eqDisplacement;
     Data<Real>                  d_maxDispVariation;
 
     Data<bool>                  d_drawPullPoint;
