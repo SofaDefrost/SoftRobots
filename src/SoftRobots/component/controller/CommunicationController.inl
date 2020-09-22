@@ -92,7 +92,7 @@ CommunicationController<DataTypes>::~CommunicationController()
 template<class DataTypes>
 void CommunicationController<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
 
     // Should drop sent messages if exceed HWM.
     // WARNING: does not work
@@ -107,7 +107,7 @@ void CommunicationController<DataTypes>::init()
     d_data.resize(d_nbDataField.getValue());
     openCommunication();
 
-    m_componentstate = ComponentState::Valid;
+    d_componentState = ComponentState::Valid;
 }
 
 template<class DataTypes>
@@ -217,7 +217,7 @@ void CommunicationController<DataTypes>::onBeginAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
         return;
 
     if(d_beginAt.getValue()>m_time)
@@ -239,7 +239,7 @@ void CommunicationController<DataTypes>::onEndAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
         return;
 
     if(d_beginAt.getValue()>m_time)
@@ -310,7 +310,7 @@ void CommunicationController<DataTypes>::sendData()
         msg_warning() << "A problem with the communication has been detected. The component won't work anymore. "
                       << "If a timeOut has been set, you may consider a greater value.";
         closeCommunication();
-        m_componentstate = ComponentState::Invalid;
+        d_componentState = ComponentState::Invalid;
     }
 }
 
@@ -318,22 +318,22 @@ void CommunicationController<DataTypes>::sendData()
 template<class DataTypes>
 void CommunicationController<DataTypes>::receiveData()
 {
-    if(d_pattern.getValue().getSelectedItem() == "request/reply")
-        sendRequest();
+	if (d_pattern.getValue().getSelectedItem() == "request/reply")
+		sendRequest();
 
     zmq::message_t message;
-    unsigned int messageSize;
     bool status = m_socket->recv(&message);
+
     if(status)
     {
-        char messageChar[messageSize];
-        memcpy(&messageChar, message.data(), messageSize);
+        char* messageChar = new char[message.size()];
+        memcpy(messageChar, message.data(), message.size());
 
         stringstream stream;
         stringstream templateStream;
 
         unsigned int startId = 0;
-        for(unsigned int i=0; i<messageSize; i++)
+        for(unsigned int i=0; i<message.size(); i++)
         {
             if(messageChar[i]==' ')
             {
@@ -348,26 +348,26 @@ void CommunicationController<DataTypes>::receiveData()
         {
             msg_error() << "The template of received data is not correct. Received " << templateStream.str() << ", while expecting " << getTemplateName()
                         << ". The component won't work anymore. ";
-            m_componentstate = ComponentState::Invalid;
+            d_componentState = ComponentState::Invalid;
             return;
         }
 
-        for(unsigned int i=startId; i<messageSize; i++)
+        for(unsigned int i=startId; i<message.size(); i++)
         {
             if(messageChar[i]==',')
                 messageChar[i]='.';
 
-            stream << messageChar[i];              
+            stream << messageChar[i];
         }
-
         convertStringStreamToData(&stream);
+        delete messageChar;
     }
     else
     {
         msg_warning() << "A problem with the communication has been detected. The component won't work anymore. "
                       << "If a timeOut has been set, you may consider a greater value.";
         closeCommunication();
-        m_componentstate = ComponentState::Invalid;
+        d_componentState = ComponentState::Invalid;
     }
 }
 

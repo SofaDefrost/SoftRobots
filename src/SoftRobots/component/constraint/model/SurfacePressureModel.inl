@@ -152,7 +152,7 @@ void SurfacePressureModel<DataTypes>::setUpData()
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
     SoftRobotsConstraint<DataTypes>::init();
 
     // To remove in SoftRobots v20.0
@@ -174,13 +174,13 @@ void SurfacePressureModel<DataTypes>::init()
     d_initialCavityVolume.setValue(volume);
     d_cavityVolume.setValue(volume);
 
-    m_componentstate = ComponentState::Valid;
+    d_componentState = ComponentState::Valid;
 }
 
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::bwdInit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     // The initial volume is computed in bwdInit so the mapping (if there is any)
@@ -195,7 +195,7 @@ void SurfacePressureModel<DataTypes>::bwdInit()
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::reinit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     internalInit();
@@ -204,7 +204,7 @@ void SurfacePressureModel<DataTypes>::reinit()
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::reset()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     d_cavityVolume.setValue(d_initialCavityVolume.getValue());
@@ -334,7 +334,7 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
                                                             unsigned int &constraintIndex,
                                                             const DataVecCoord &x)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -387,7 +387,7 @@ void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintPar
                                                              BaseVector *resV,
                                                              const BaseVector *Jdx)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -406,7 +406,7 @@ void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParam
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);
 
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     d_pressure.setValue(lambda->element(m_constraintId));
@@ -422,7 +422,7 @@ void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParam
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::draw(const VisualParams* vparams)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if (d_drawPressure.getValue()) drawValue(vparams);

@@ -70,7 +70,7 @@ VolumeFromTetrahedrons<DataTypes>::~VolumeFromTetrahedrons()
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
 
     addInput(&d_positions);
     addInput(&d_tetras);
@@ -95,7 +95,7 @@ void VolumeFromTetrahedrons<DataTypes>::init()
     checkTopology();
     updateVolume();
 
-    m_componentstate = ComponentState::Valid;
+    d_componentState = ComponentState::Valid;
 }
 
 
@@ -103,7 +103,7 @@ void VolumeFromTetrahedrons<DataTypes>::init()
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::reinit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     updateVolume();
@@ -162,7 +162,7 @@ void VolumeFromTetrahedrons<DataTypes>::checkTopology()
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::doUpdate()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if(m_state && d_doUpdate.getValue())

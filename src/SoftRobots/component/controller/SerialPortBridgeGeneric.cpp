@@ -93,7 +93,7 @@ SerialPortBridgeGeneric::~SerialPortBridgeGeneric()
 
 void SerialPortBridgeGeneric::init()
 {
-    m_componentstate = ComponentState::Valid;
+    d_componentState = ComponentState::Valid;
     dataDeprecationManagement();
     checkConnection();
 
@@ -161,7 +161,7 @@ void SerialPortBridgeGeneric::dataDeprecationManagement()
         {
             msg_warning() << "You are using both 'sentData' and 'packetOut' fields. You should use only 'packetOut', as sentData is now deprecated. \n"
                           << "The component will switch to an invalid state to avoid any issues.";
-            m_componentstate = ComponentState::Invalid;
+            d_componentState = ComponentState::Invalid;
         }
         else
             msg_warning() << "Data field 'sentData' is now deprecated. You should use the field name 'packetOut' instead, which is a vector of unsigned char.";
@@ -197,7 +197,7 @@ void SerialPortBridgeGeneric::checkConnection()
     if (status!=1)
     {
         msg_warning() <<"No serial port found";
-        m_componentstate = ComponentState::Invalid;
+        d_componentState = ComponentState::Invalid;
     }
     else
         msg_info() <<"Serial port found";
@@ -208,7 +208,7 @@ void SerialPortBridgeGeneric::onBeginAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
-    if(m_componentstate == ComponentState::Invalid)
+    if(d_componentState == ComponentState::Invalid)
         return;
 
     if(d_doReceive.getValue())
@@ -220,12 +220,12 @@ void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
-    if(m_componentstate == ComponentState::Invalid)
+    if(d_componentState == ComponentState::Invalid)
         return;
 
     checkData();
 
-    if(m_componentstate == ComponentState::Invalid)
+    if(d_componentState == ComponentState::Invalid)
         return;
 
     if(d_precise.getValue()) sendPacketPrecise();
@@ -322,7 +322,7 @@ void SerialPortBridgeGeneric::checkData()
                     <<" To remove this warning you can either change the value of 'size' or 'packetOut'."
                    <<" Make sure the size and format of the data correspond to what the microcontroller in the robot is expecting."
                   << "The component will switch to an invalid state to avoid any issues.";
-        m_componentstate = ComponentState::Invalid;
+        d_componentState = ComponentState::Invalid;
     }
 }
 
