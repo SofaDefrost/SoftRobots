@@ -75,7 +75,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
     using SerialPortBridgeGeneric::d_header ;
     using SerialPortBridgeGeneric::d_splitPacket ;
     using SerialPortBridgeGeneric::m_packetOut ;
-    using SerialPortBridgeGeneric::m_componentstate ;
+    using SerialPortBridgeGeneric::d_componentState ;
     ///////////////////////////////////////////////////////////////
 
 
@@ -130,9 +130,9 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
         packOut.resize(2);
         d_size.setValue(0);
 
-        m_componentstate = ComponentState::Valid;
+        d_componentState = ComponentState::Valid;
         checkData();
-        EXPECT_TRUE(m_componentstate==ComponentState::Invalid);
+        EXPECT_TRUE(d_componentState==ComponentState::Invalid);
     }
 
 
@@ -142,7 +142,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
         d_splitPacket.setValue(false);
 
         init();
-        EXPECT_TRUE(m_componentstate==ComponentState::Invalid);
+        EXPECT_TRUE(d_componentState==ComponentState::Invalid);
         EXPECT_EQ(m_packetOut.size(),5);
         EXPECT_EQ(m_packetOut[0],d_header.getValue()[0]);
         for(int i=1; i<5; i++)

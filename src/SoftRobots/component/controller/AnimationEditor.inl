@@ -126,7 +126,7 @@ AnimationEditor<DataTypes>::~AnimationEditor()
 template<class DataTypes>
 void AnimationEditor<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
 
     m_keyFramesID.clear();
 
@@ -146,14 +146,14 @@ void AnimationEditor<DataTypes>::init()
     if(d_load.getValue())
         loadAnimation();
 
-    m_componentstate = ComponentState::Valid;
+    d_componentState = ComponentState::Valid;
 }
 
 
 template<class DataTypes>
 void AnimationEditor<DataTypes>::reinit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if(d_maxKeyFrame.getValue()<=0)
@@ -180,7 +180,7 @@ void AnimationEditor<DataTypes>::bwdInit(){}
 template<class DataTypes>
 void AnimationEditor<DataTypes>::reset()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     d_cursor.setValue(0);
@@ -313,7 +313,7 @@ void AnimationEditor<DataTypes>::saveAnimation()
 template<class DataTypes>
 void AnimationEditor<DataTypes>::onBeginAnimationStep(const double dt)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if(d_dx.isSet())
@@ -360,7 +360,7 @@ void AnimationEditor<DataTypes>::onEndAnimationStep(const double dt)
 template<class DataTypes>
 void AnimationEditor<DataTypes>::handleEvent(Event *event)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if(!d_dx.isSet())
@@ -756,7 +756,7 @@ void AnimationEditor<DataTypes>::updateAnimationWithInterpolation(const int star
 template<class DataTypes>
 void AnimationEditor<DataTypes>::draw(const VisualParams* vparams)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if(d_drawTimeline.getValue())

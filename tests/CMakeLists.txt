@@ -23,7 +23,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${SoftRobots_INCLUDE_DIRS}")
 
-target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain SoftRobots SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaComponentCommon)
+target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain SoftRobots SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaCommon)
 add_definitions("-DSOFTROBOTS_TEST_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

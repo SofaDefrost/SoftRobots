@@ -69,7 +69,7 @@ VolumeFromTriangles<DataTypes>::~VolumeFromTriangles()
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
 
     addInput(&d_positions);
     addInput(&d_triangles);
@@ -94,14 +94,14 @@ void VolumeFromTriangles<DataTypes>::init()
     checkTopology();
     updateVolume();
 
-    m_componentstate = ComponentState::Valid;
+    d_componentState = ComponentState::Valid;
 }
 
 
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::reinit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     updateVolume();
@@ -159,7 +159,7 @@ void VolumeFromTriangles<DataTypes>::checkTopology()
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::doUpdate()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if(m_state && d_doUpdate.getValue())

@@ -125,7 +125,7 @@ template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
                                                                    unsigned int& offset)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     double imposedValue = d_value.getValue()[d_valueIndex.getValue()];

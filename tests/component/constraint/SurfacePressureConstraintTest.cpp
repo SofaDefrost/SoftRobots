@@ -59,7 +59,7 @@ namespace sofa {
     struct SurfacePressureConstraintTest : public Sofa_test<typename _DataTypes::Real>, SurfacePressureConstraint<_DataTypes>
     {
 
-        using SurfacePressureConstraint<_DataTypes>::m_componentstate;
+        using SurfacePressureConstraint<_DataTypes>::d_componentState;
 
         simulation::Node::SPtr m_root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
         simulation::Simulation* m_simulation;          ///< created by the constructor an re-used in the tests
