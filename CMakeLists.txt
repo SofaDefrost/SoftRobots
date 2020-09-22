@@ -30,6 +30,8 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
     endif()
 endif()
 
+option(SOFTROBOTS_WITH_CAMERA "Enable this option if you want to use the realsense cameras to perform force sensing, and point cloud processing." OFF)
+
 find_package(SofaPython QUIET)
 set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
 
@@ -185,6 +187,17 @@ if(SOFTROBOTS_ROBOTINOCONTROLLER)
 endif()
 
 
+if (SOFTROBOTS_WITH_CAMERA)
+  list(APPEND HEADER_FILES
+    ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudProcessing.h
+    ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudStreaming.h  
+    )  
+  list(APPEND SOURCE_FILES
+    ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudProcessing.cpp
+    ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudStreaming.cpp
+    )
+endif(SOFTROBOTS_WITH_CAMERA)
+
 # initSoftRobots.h
 configure_file(${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.h.in "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h" DESTINATION "include/SoftRobots" COMPONENT headers)
@@ -220,6 +233,34 @@ if(SOFTROBOTS_GAMETRAKCONTROLLER)
     target_link_libraries(${PROJECT_NAME} ${HIDAPI_LIBRARIES} ${BOOST_THREAD_LIBRARY})
 endif()
 
+if (SOFTROBOTS_WITH_CAMERA)
+  find_package( PCL QUIET )
+  find_library( REALSENSE_LIBRARY realsense2
+    DOC "The realsense2 SDK is required to compile SoftRobots with the camera module.")
+
+  if (NOT REALSENSE_LIBRARY)
+    message(FATAL_ERROR "The realsense2 SDK is REQUIRED to compile SoftRobots with the camera module. Please install it on your system")
+    endif(NOT REALSENSE_LIBRARY)
+  if (PCL_FOUND)
+    include_directories(${PCL_INCLUDE_DIRS})
+    add_definitions(${PCL_DEFINITIONS})
+    message(${PCL_LIBRARY_DIRS})
+    link_directories(${PCL_LIBRARY_DIRS})
+    
+    target_link_libraries(${PROJECT_NAME} ${PCL_LIBRARIES} ${REALSENSE_LIBRARY})
+  else (PCL_FOUND)
+    message( FATAL_ERROR "The Point Cloud Library (PCL) is required to compile SoftRobots with camera. Either turn off the SOFTROBOTS_WITH_CAMERA option, or provide the link to the PCL")
+  endif(PCL_FOUND)
+
+endif(SOFTROBOTS_WITH_CAMERA)
+
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping SofaSparseSolver)
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 

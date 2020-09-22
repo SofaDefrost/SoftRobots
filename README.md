@@ -14,6 +14,13 @@ The plugin also provides scene templates that can be used to make the writing of
 A dedicated documentation can be found at this address: [https://softrobots.readthedocs.io](https://softrobots.readthedocs.io/en/latest/index.html)  
 And general templates for SOFA can be found at this address: [https://github.com/SofaDefrost/STLIB](https://github.com/SofaDefrost/STLIB)
 
+## Realsense camera module
+This plugin also contains a component to retrieve and process point clouds coming from a realsense camera.   
+To use it, you need to:
+- download and install the latest release of the realsense2 SDK (instructions [on github](https://github.com/IntelRealSense/librealsense/) ). Instructions for linux can be found [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#linux-distribution). If your linux distribution is not supported, you will have to compile from sources. Of course you will also need the latest version of the firmware.
+- install the Point Cloud Library (`sudo apt install libpcl-dev` on ubuntu)
+- activate, in cmake, the following option for SoftRobots: `-DSOFTROBOTS_WITH_CAMERA=ON`
+
 ## Author
  - Team DEFROST (INRIA/CRISTAL), Lille
 
