@@ -18,7 +18,7 @@ class FingerController(Sofa.Core.Controller):
         Sofa.Core.Controller.__init__(self, *a, **kw)
         self.node = kw["node"]
         return
-    
+
     def onKeypressedEvent(self,e):
         """
         Events methods are named after the actual event names (Event::GetClassName() in C++),
@@ -27,14 +27,14 @@ class FingerController(Sofa.Core.Controller):
         values stored in the event class, e.g. here, the pressed key
         """
         inputvalue = self.node.aCableActuator.value
-        
+
         displacement = 0
-        if (e["key"] == "+"):
+        if (e["key"] == Sofa.constants.key_plus):
             displacement = inputvalue.value[0] + 1.0
-        elif (e["key"] == "-"):
+        elif (e["key"] == Sofa.constants.key_minus):
             displacement = inputvalue.value[0] - 1.0
             if(displacement < 0):
                 displacement = 0
-                
+
         inputvalue.value = [displacement]
         return
