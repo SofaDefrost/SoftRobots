@@ -34,6 +34,9 @@ find_package(SofaPython QUIET)
 set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
+if(WIN32)
+     sofa_copy_libraries(TARGETS Qt5::Network)
+endif()
 sofa_install_libraries(TARGETS Qt5::Network)
 
 find_package(STLIB QUIET)
@@ -60,6 +63,8 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.inl
+	${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.h
+    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.h
@@ -99,6 +104,7 @@ set(SOURCE_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/PartialRigidificationConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.cpp
+    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.cpp
 
@@ -185,11 +191,17 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h" DESTINAT
 
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
+IF(WIN32)
+	add_definitions(-D_WINSOCKAPI_)
+ENDIF(WIN32)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${DOC_FILES} ${RESOURCE_FILES})
 
 # COMMUNICATION CONTROLLER
 if(SOFTROBOTS_COMMUNICATIONCONTROLLER)
-    target_link_libraries(${PROJECT_NAME} "-lzmq")
+    find_package(ZMQ REQUIRED)
+    include_directories(${ZMQ_INCLUDE_DIR})
+    target_link_libraries(${PROJECT_NAME} ${ZMQ_LIBRARY})
 endif()
 
 # ROBOTINO CONTROLLER
