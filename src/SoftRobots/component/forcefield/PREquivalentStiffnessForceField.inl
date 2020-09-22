@@ -87,7 +87,7 @@ PREquivalentStiffnessForceField<DataTypes>::~PREquivalentStiffnessForceField()
 template<typename DataTypes>
 void PREquivalentStiffnessForceField<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
 
     Inherit1::init();
     const string& filename = d_complianceFile.getValue();
@@ -139,7 +139,7 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
         msg_warning() << "Can not find compliance matrices file : " << filename;
     }
 
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
 }
 
 template<typename DataTypes>
@@ -148,7 +148,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         const DataVecCoord& x,
         const DataVecDeriv& v)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(v);
@@ -304,7 +304,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
                                                            DataVecDeriv&  d_f ,
                                                            const DataVecDeriv&  d_x)
 {    
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     const VecDeriv& dx = d_x.getValue();
@@ -349,7 +349,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addKToMatrix(BaseMatrix* matrix
                                                               double kFact,
                                                               unsigned int& offset)
 {    
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     if( CSRMatB66* csrMat = dynamic_cast<CSRMatB66*>(matrix) ) {

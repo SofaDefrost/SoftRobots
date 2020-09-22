@@ -28,10 +28,11 @@
 *                                                                             *
 ******************************************************************************/
 
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
-#define SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
+#ifndef SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_H
+#define SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_H
 
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 #include "../../behavior/SoftRobotsConstraint.h"
 
@@ -49,6 +50,7 @@ using sofa::core::visual::VisualParams ;
 using sofa::core::objectmodel::Data ;
 using sofa::defaulttype::Vec3dTypes ;
 using sofa::defaulttype::Vec3fTypes ;
+using sofa::defaulttype::Rigid3dTypes ; 
 using sofa::defaulttype::BaseVector ;
 using sofa::core::ConstraintParams ;
 using sofa::helper::ReadAccessor ;
@@ -60,10 +62,10 @@ using sofa::core::VecCoordId ;
  * This class contains common implementation of cable constraints
 */
 template< class DataTypes >
-class SOFA_SOFTROBOTS_API CableModel : virtual public SoftRobotsConstraint<DataTypes>
+class SOFA_SOFTROBOTS_API AffineFunctionModel : virtual public SoftRobotsConstraint<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(CableModel,DataTypes),
+    SOFA_CLASS(SOFA_TEMPLATE(AffineFunctionModel,DataTypes),
                SOFA_TEMPLATE(SoftRobotsConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
@@ -81,15 +83,14 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
 
 public:
-    CableModel(MechanicalState* object = nullptr);
-    ~CableModel() override;
+    AffineFunctionModel(MechanicalState* object = nullptr);
+    ~AffineFunctionModel() override;
 
     ////////////////////////// Inherited from BaseObject ////////////////////
     void init() override;
     void bwdInit() override;
     void reinit() override;
     void reset() override;
-    void draw(const VisualParams* vparams) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Actuator //////////////////////
@@ -112,31 +113,18 @@ public:
 protected:
 
     Data<SetIndexArray>         d_indices;
-    Data<Coord>                 d_pullPoint;
-    Data<bool>                  d_hasPullPoint;
+	Data<VecDeriv>				d_coefficients;
+	Data<Real>					d_offset;
 
-    Data<Real>                  d_cableInitialLength;
-    Data<Real>                  d_cableLength;
+    Data<Real>                  d_initFunctionValue;
+	Data<Real>                  d_functionValue;
 
     Data<double>                d_force;
     Data<double>                d_displacement;
 
-    Data<Real>                  d_maxForce;
-    Data<Real>                  d_minForce;
-    Data<Real>                  d_maxPositiveDisplacement;
-    Data<Real>                  d_maxNegativeDisplacement;
-    Data<Real>                  d_maxDispVariation;
-
-    Data<bool>                  d_drawPullPoint;
-    Data<bool>                  d_drawPoints;
-    Data<defaulttype::Vec4f>    d_color;
-
-    bool                        m_hasSlidingPoint;
-
-
 protected:
 
-    SReal getCableLength(const VecCoord &positions);
+    SReal getAffineFunctionValue(const VecCoord &positions);
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
@@ -146,25 +134,20 @@ protected:
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::m_constraintId ;
     using SoftRobotsConstraint<DataTypes>::m_state ;
-    using SoftRobotsConstraint<DataTypes>::d_componentState ;
+    using SoftRobotsConstraint<DataTypes>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 
 private:
     void setUpData();
     void internalInit();
 
-    void checkIndicesRegardingState();
-    void initActuatedPoints();
-
-    void drawPullPoint(const VisualParams* vparams);
-    void drawPoints(const VisualParams* vparams);
-    void drawLinesBetweenPoints(const VisualParams* vparams);
+	void checkSizes();
 };
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class CableModel<defaulttype::Vec3Types>;
-
+extern template class AffineFunctionModel<defaulttype::Vec3Types>;
+extern template class AffineFunctionModel<defaulttype::Rigid3Types>;
 
 } // namespace constraintset
 
@@ -172,4 +155,4 @@ extern template class CableModel<defaulttype::Vec3Types>;
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
+#endif // SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_H

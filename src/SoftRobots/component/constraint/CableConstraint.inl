@@ -112,7 +112,7 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
                                                          std::vector<ConstraintResolution*>& resTab,
                                                          unsigned int& offset)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParam);

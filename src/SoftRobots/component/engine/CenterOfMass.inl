@@ -75,7 +75,7 @@ CenterOfMass<DataTypes>::~CenterOfMass()
 template <class DataTypes>
 void CenterOfMass<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState = ComponentState::Invalid;
 
     addInput(&d_positions);
     addOutput(&d_centerOfMass);
@@ -98,7 +98,7 @@ void CenterOfMass<DataTypes>::init()
     }
 
     computeCenterOfMass();
-    m_componentstate = ComponentState::Valid;
+    d_componentState = ComponentState::Valid;
 }
 
 
@@ -111,7 +111,7 @@ void CenterOfMass<DataTypes>::reinit()
 template <class DataTypes>
 void CenterOfMass<DataTypes>::doUpdate()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     computeCenterOfMass();
@@ -140,7 +140,7 @@ void CenterOfMass<DataTypes>::computeCenterOfMass()
 template<class DataTypes>
 void CenterOfMass<DataTypes>::draw(const VisualParams *vparams)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState != ComponentState::Valid)
             return ;
 
     vector<Vector3> points;

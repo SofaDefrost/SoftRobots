@@ -142,7 +142,7 @@ public:
     using CableModel<DataTypes>::d_maxForce ;
     using CableModel<DataTypes>::d_minForce ;
     using CableModel<DataTypes>::d_displacement ;
-    using CableModel<DataTypes>::m_componentstate ;
+    using CableModel<DataTypes>::d_componentState ;
     ///////////////////////////////////////////////////////////////////////////
 
 protected:

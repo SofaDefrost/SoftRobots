@@ -39,14 +39,17 @@ For the CommunicationController:
 	1.1- 
 	    #Debian/Ubuntu
 	    sudo apt-get install libzmq3-dev
-            #Fedora 
+        #Fedora 
 	    sudo dnf install zeromq-devel
 
 	#ON MAC
 	1.1- ...
 
 	#ON WINDOWS
-	1.1- ...
+	1.1- 
+		# Visual Studio
+		Download the Windows source of libzmq and build using Visual Studio
+		Put a copy of zmq.hpp from the cppzmq project (github) in the include folder of libzmq
 		
 2- In the cmake gui, enable: SOFTROBOTS_COMMUNICATIONCONTROLLER = true
 3- If you're working on Windows or OSX please improve this README
