@@ -6,6 +6,7 @@ include(cmake/environment.cmake)
 find_package(SofaFramework REQUIRED)
 find_package(SofaCommon REQUIRED) # SofaRigid
 find_package(SofaMisc REQUIRED) # SofaMiscMapping
+find_package(SofaSparseSolver REQUIRED)
 
 option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
 if(NOT SOFTROBOTS_IGNORE_ERRORS)
@@ -13,12 +14,6 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
         message(SEND_ERROR "
             You should not use the plugin SoftRobots with SOFA_USE_MASK enabled.
             Most components will not work correctly.
-            To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
-    endif()
-    if(NOT SOFA_BUILD_METIS)
-        message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling SOFA_BUILD_METIS.
-            Most examples will run slowly.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
     if(NOT PLUGIN_SOFAPYTHON)
@@ -213,7 +208,7 @@ if(SOFTROBOTS_GAMETRAKCONTROLLER)
     target_link_libraries(${PROJECT_NAME} ${HIDAPI_LIBRARIES} ${BOOST_THREAD_LIBRARY})
 endif()
 
-target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping SofaSparseSolver)
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 
 if(SofaPython_FOUND)
