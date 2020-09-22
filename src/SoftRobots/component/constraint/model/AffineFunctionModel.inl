@@ -89,7 +89,7 @@ void AffineFunctionModel<DataTypes>::setUpData()
 template<class DataTypes>
 void AffineFunctionModel<DataTypes>::init()
 {
-    m_componentstate = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
     SoftRobotsConstraint<DataTypes>::init();
 
     if(m_state==nullptr)
@@ -102,14 +102,14 @@ void AffineFunctionModel<DataTypes>::init()
     }
 
     internalInit();
-    m_componentstate = ComponentState::Valid;
+    d_componentState.setValue(ComponentState::Valid);
 }
 
 
 template<class DataTypes>
 void AffineFunctionModel<DataTypes>::bwdInit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     // The initial function value is set or computed in bwdInit so the mapping (if there is any)
@@ -127,7 +127,7 @@ void AffineFunctionModel<DataTypes>::bwdInit()
 template<class DataTypes>
 void AffineFunctionModel<DataTypes>::reinit()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     internalInit();
@@ -137,7 +137,7 @@ void AffineFunctionModel<DataTypes>::reinit()
 template<class DataTypes>
 void AffineFunctionModel<DataTypes>::reset()
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     d_functionValue.setValue(d_initFunctionValue.getValue());
@@ -198,7 +198,7 @@ SReal AffineFunctionModel<DataTypes>::getAffineFunctionValue(const VecCoord &pos
 template<class DataTypes>
 void AffineFunctionModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &cMatrix, unsigned int &cIndex, const DataVecCoord &x)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -229,7 +229,7 @@ void AffineFunctionModel<DataTypes>::getConstraintViolation(const ConstraintPara
                                                    BaseVector *resV,
                                                    const BaseVector *Jdx)
 {
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -249,7 +249,7 @@ void AffineFunctionModel<DataTypes>::storeLambda(const ConstraintParams* cParams
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);
 
-    if(m_componentstate != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     d_force.setValue(lambda->element(m_constraintId));
