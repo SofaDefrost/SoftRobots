@@ -157,7 +157,6 @@ void QPSlidingConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParam
     }
     cMatrix.endEdit();
     m_nbLines = cIndex - m_constraintId;
-    std::cout << " m_nbLines : "<< m_nbLines << std::endl;
 }
 
 

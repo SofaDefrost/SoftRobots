@@ -13,7 +13,7 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 #La scene est en centimetre
 
 def createScene(rootNode):
-    rootNode.createObject('RequiredPlugin', pluginName='SoftRobots');
+    rootNode.createObject('RequiredPlugin', pluginName=["SoftRobots", "SoftRobots.Inverse"]);
     rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields ');
 
     rootNode.findData('dt').value= 0.03;

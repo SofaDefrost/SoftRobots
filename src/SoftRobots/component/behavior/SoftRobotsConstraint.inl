@@ -88,7 +88,6 @@ void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const ConstraintPar
 {
     if (cParams)
     {
-        printf("########################## Inside SoftRobotsConstraint<DataTypes>::getConstraintViolation  \n");
         const DataVecCoord& xfree = *cParams->readX(m_state);
         ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
 
