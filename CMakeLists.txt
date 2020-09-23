@@ -6,6 +6,7 @@ include(cmake/environment.cmake)
 find_package(SofaFramework REQUIRED)
 find_package(SofaCommon REQUIRED) # SofaRigid
 find_package(SofaMisc REQUIRED) # SofaMiscMapping
+find_package(SofaSparseSolver REQUIRED)
 
 option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
 if(NOT SOFTROBOTS_IGNORE_ERRORS)
@@ -13,12 +14,6 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
         message(SEND_ERROR "
             You should not use the plugin SoftRobots with SOFA_USE_MASK enabled.
             Most components will not work correctly.
-            To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
-    endif()
-    if(NOT SOFA_BUILD_METIS)
-        message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling SOFA_BUILD_METIS.
-            Most examples will run slowly.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
     if(NOT PLUGIN_SOFAPYTHON)
@@ -35,10 +30,15 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
     endif()
 endif()
 
+option(SOFTROBOTS_WITH_CAMERA "Enable this option if you want to use the realsense cameras to perform force sensing, and point cloud processing." OFF)
+
 find_package(SofaPython QUIET)
 set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
+if(WIN32)
+     sofa_copy_libraries(TARGETS Qt5::Network)
+endif()
 sofa_install_libraries(TARGETS Qt5::Network)
 
 find_package(STLIB QUIET)
@@ -68,6 +68,8 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.inl
+	${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.h
+    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/QPSlidingConstraint.h
@@ -110,6 +112,7 @@ set(SOURCE_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/PartialRigidificationConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.cpp
+    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/QPSlidingConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.cpp
@@ -191,17 +194,34 @@ if(SOFTROBOTS_ROBOTINOCONTROLLER)
 endif()
 
 
+if (SOFTROBOTS_WITH_CAMERA)
+  list(APPEND HEADER_FILES
+    ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudProcessing.h
+    ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudStreaming.h  
+    )  
+  list(APPEND SOURCE_FILES
+    ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudProcessing.cpp
+    ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudStreaming.cpp
+    )
+endif(SOFTROBOTS_WITH_CAMERA)
+
 # initSoftRobots.h
 configure_file(${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.h.in "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h" DESTINATION "include/SoftRobots" COMPONENT headers)
 
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
+IF(WIN32)
+	add_definitions(-D_WINSOCKAPI_)
+ENDIF(WIN32)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${DOC_FILES} ${RESOURCE_FILES})
 
 # COMMUNICATION CONTROLLER
 if(SOFTROBOTS_COMMUNICATIONCONTROLLER)
-    target_link_libraries(${PROJECT_NAME} "-lzmq")
+    find_package(ZMQ REQUIRED)
+    include_directories(${ZMQ_INCLUDE_DIR})
+    target_link_libraries(${PROJECT_NAME} ${ZMQ_LIBRARY})
 endif()
 
 # ROBOTINO CONTROLLER
@@ -220,7 +240,35 @@ if(SOFTROBOTS_GAMETRAKCONTROLLER)
     target_link_libraries(${PROJECT_NAME} ${HIDAPI_LIBRARIES} ${BOOST_THREAD_LIBRARY})
 endif()
 
-target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping)
+if (SOFTROBOTS_WITH_CAMERA)
+  find_package( PCL QUIET )
+  find_library( REALSENSE_LIBRARY realsense2
+    DOC "The realsense2 SDK is required to compile SoftRobots with the camera module.")
+
+  if (NOT REALSENSE_LIBRARY)
+    message(FATAL_ERROR "The realsense2 SDK is REQUIRED to compile SoftRobots with the camera module. Please install it on your system")
+    endif(NOT REALSENSE_LIBRARY)
+  if (PCL_FOUND)
+    include_directories(${PCL_INCLUDE_DIRS})
+    add_definitions(${PCL_DEFINITIONS})
+    message(${PCL_LIBRARY_DIRS})
+    link_directories(${PCL_LIBRARY_DIRS})
+    
+    target_link_libraries(${PROJECT_NAME} ${PCL_LIBRARIES} ${REALSENSE_LIBRARY})
+  else (PCL_FOUND)
+    message( FATAL_ERROR "The Point Cloud Library (PCL) is required to compile SoftRobots with camera. Either turn off the SOFTROBOTS_WITH_CAMERA option, or provide the link to the PCL")
+  endif(PCL_FOUND)
+
+endif(SOFTROBOTS_WITH_CAMERA)
+
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping SofaSparseSolver)
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 
 if(SofaPython_FOUND)
