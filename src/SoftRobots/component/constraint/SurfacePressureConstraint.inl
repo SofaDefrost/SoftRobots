@@ -171,25 +171,37 @@ void SurfacePressureConstraint<DataTypes>::setUpVolumeLimits(double& imposedValu
         imposedValue = d_minVolumeGrowth.getValue();
 
     if(d_minPressure.isSet())
-        minPressure=d_minPressure.getValue();
+        minPressure = d_minPressure.getValue();
+
     if(d_maxPressure.isSet())
-        maxPressure=d_maxPressure.getValue();
+        maxPressure = d_maxPressure.getValue();
 }
 
 
 template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::setUpPressureLimits(double& imposedValue, double& minVolumeGrowth, double& maxVolumeGrowth)
 {
-    if(d_maxPressure.isSet() && imposedValue>d_maxPressure.getValue())
+    if (d_maxPressureVariation.isSet())
+    {
+        double pressure = d_pressure.getValue();
+        if (imposedValue > pressure && imposedValue - pressure > d_maxPressureVariation.getValue())
+            imposedValue = pressure + d_maxPressureVariation.getValue();
+
+        if (imposedValue < pressure && imposedValue - pressure < -d_maxPressureVariation.getValue())
+            imposedValue = pressure - d_maxPressureVariation.getValue();
+    }
+
+    if(d_maxPressure.isSet() && imposedValue > d_maxPressure.getValue())
         imposedValue = d_maxPressure.getValue();
 
-    if(d_minPressure.isSet() && imposedValue<d_minPressure.getValue())
+    if(d_minPressure.isSet() && imposedValue < d_minPressure.getValue())
         imposedValue = d_minPressure.getValue();
 
     if(d_minVolumeGrowth.isSet())
         minVolumeGrowth = d_minVolumeGrowth.getValue();
+
     if(d_maxVolumeGrowth.isSet())
-        maxVolumeGrowth =d_maxVolumeGrowth.getValue();
+        maxVolumeGrowth = d_maxVolumeGrowth.getValue();
 }
 
 }

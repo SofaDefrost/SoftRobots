@@ -126,6 +126,7 @@ protected:
     Data<double>                        d_pressure;
     Data<Real>                          d_maxPressure;
     Data<Real>                          d_minPressure;
+    Data<Real>                          d_maxPressureVariation;
     Data<double>                        d_volumeGrowth;
     Data<Real>                          d_maxVolumeGrowth;
     Data<Real>                          d_minVolumeGrowth;

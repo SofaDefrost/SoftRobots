@@ -93,6 +93,10 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                              "Minimum pressure allowed for actuation. If no value is set by user, no \n"
                              "minimum pressure constraint will be considered. A negative pressure will empty/drain the cavity."))
 
+    , d_maxPressureVariation(initData(&d_maxPressureVariation, Real(0.0), "maxPressureVariation",
+        "Maximum pressure variation allowed for actuation. If no value is set by user, no \n"
+        "maximum will be considered."))
+
     , d_volumeGrowth(initData(&d_volumeGrowth, double(0.0), "volumeGrowth",
                              "Output volume growth."))
 
