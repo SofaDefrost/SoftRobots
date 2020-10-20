@@ -43,7 +43,7 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using core::ConstraintParams;
 
-/////////////////// PositionEffectorPassiveConstraintResolution ///////////////////////////////////////
+/////////////////// UnilateralPlaneConstraintResolution ///////////////////////////////////////
 UnilateralPlaneConstraintResolution::UnilateralPlaneConstraintResolution(const unsigned int _nbLines)
 : ConstraintResolution(_nbLines)
 {
