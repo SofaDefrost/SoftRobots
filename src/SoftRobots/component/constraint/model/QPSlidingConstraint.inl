@@ -130,7 +130,6 @@ void QPSlidingConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParam
         return ;
 
     SOFA_UNUSED(cParams);
-
     MatrixDeriv& matrix = *cMatrix.beginEdit();
     VecCoord positions = x.getValue();
     m_constraintId= cIndex;
