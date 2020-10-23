@@ -145,6 +145,11 @@ class Trunk(SofaObject):
 
 def createScene(rootNode):
 
+    # Choose your resolution mode
+    # 1- inverseMode=True, solve the inverse problem and control the end effectors
+    # 2- inverseMode=False, solve the direct problem and set the cable displacements by hand
+    inverseMode = True
+
     rootNode.createObject("RequiredPlugin", name="SoftRobots")
     rootNode.createObject("RequiredPlugin", name="SofaSparseSolver")
     rootNode.createObject("RequiredPlugin", name="SofaPreconditioner")
@@ -154,10 +159,12 @@ def createScene(rootNode):
     rootNode.gravity = [0., -9810., 0.]
 
     rootNode.createObject("FreeMotionAnimationLoop")
-    # For direct resolution, i.e direct control of the cable displacement
-    # rootNode.createObject("GenericConstraintSolver", maxIterations=100, tolerance=1e-5)
-    # For inverse resolution, i.e control of effectors position
-    rootNode.createObject("QPInverseProblemSolver", epsilon=1e-1)
+    if inverseMode:
+        # For inverse resolution, i.e control of effectors position
+        rootNode.createObject("QPInverseProblemSolver", epsilon=1e-1)
+    else:
+        # For direct resolution, i.e direct control of the cable displacement
+        rootNode.createObject("GenericConstraintSolver", maxIterations=100, tolerance=1e-5)
 
     simulation = rootNode.createChild("Simulation")
 
@@ -166,11 +173,14 @@ def createScene(rootNode):
     simulation.createObject('SparseLDLSolver', name='precond')
     simulation.createObject('GenericConstraintCorrection', solverName="precond")
 
-    trunk = Trunk(simulation, inverseMode=True)
+    trunk = Trunk(simulation, inverseMode=inverseMode)
     trunk.addVisualModel(color=[1., 1., 1., 0.8])
     trunk.fixExtremity()
-    target = effectorTarget(rootNode)
-    trunk.addEffectors(target=target.dofs.getData("position").getLinkPath(), position=[[0., 0., 195]])
+
+    if inverseMode:
+        # For inverse resolution, set a constraint for the effector and a target
+        target = effectorTarget(rootNode)
+        trunk.addEffectors(target=target.dofs.getData("position").getLinkPath(), position=[[0., 0., 195]])
 
     # Use this in direct mode as an example of animation ############
     # def cableanimation(target, factor):
