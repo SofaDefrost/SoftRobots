@@ -5,11 +5,11 @@ import Sofa.Core
 
 import os
 
-path = os.path.dirname(os.path.abspath(__file__))+'../mesh/'
+path = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
 from FingerController import FingerController
 
 def createScene(rootNode):
-                rootNode.addObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaPython3')
                 rootNode.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
                 rootNode.addObject('FreeMotionAnimationLoop')
@@ -17,7 +17,7 @@ def createScene(rootNode):
                 # Add a QPInverseProblemSolver to the scene if you need to solve inverse problem like the one that involved
                 # when manipulating the robots by specifying their effector's position instead of by direct control
                 # of the actuator's parameters.
-                #rootNode.addObject('QPInverseProblemSolver', printLog='1')
+                #rootNode.addObject('QPInverseProblemSolver', printLog=False)
                 # Otherwise use a GenericConstraintSolver
                 rootNode.addObject('GenericConstraintSolver', tolerance=1e-5, maxIterations=100)
 
@@ -35,10 +35,7 @@ def createScene(rootNode):
 
 		        # Add a componant to load a VTK tetrahedral mesh and expose the resulting topology in the scene .
                 finger.addObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk')
-                finger.addObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
-                finger.addObject('TetrahedronSetTopologyModifier')
-                finger.addObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
-                finger.addObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                finger.addObject('MeshTopology', src='@loader', name='container')
 
                 # Create a mechanicaobject component to stores the DoFs of the model
                 finger.addObject('MechanicalObject', name='tetras', template='Vec3d', showIndices=False, showIndicesScale=4e-5)
@@ -54,19 +51,19 @@ def createScene(rootNode):
 		        # The idea is that ROI component "select" all DoFS that are enclosed by their "region".
                 # We use ROI here to select a group of finger's DoFs that will be constrained to stay
                 # at a fixed position.
-                # You can either use "BoxROI"...
-                finger.addObject('BoxROI', name='ROI1', box=[-15, 0, 0, 5, 10, 15], drawBoxes=True)
-                # Or "SphereROI"...
-                #finger.addObject('SphereROI', name='ROI', centers='0 0 0', radii='5')
+                # You can either use 'BoxROI'...
+                finger.addObject('BoxROI', name='roi', box=[-15, 0, 0, 5, 10, 15], drawBoxes=True)
+                # Or 'SphereROI'...
+                #finger.addObject('SphereROI', name='roi', centers=[0, 0, 0], radii=5)
 
                 # RestShapeSpringsForceField is one way in Sofa to implement fixed point constraint.
                 # Here the constraints are applied to the DoFs selected by the previously defined BoxROI
-                finger.addObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness=1e12)
+                finger.addObject('RestShapeSpringsForceField', points=finger.roi.indices.getLinkPath(), stiffness=1e12)
 
                 # It is also possible to simply set by hand the indices of the points you want to fix.
-                #finger.addObject('RestShapeSpringsForceField', points='0 1 2 11 55', stiffness='1e12')
+                #finger.addObject('RestShapeSpringsForceField', points=[0, 1, 2, 11, 55], stiffness=1e12)
 
-                finger.addObject('LinearSolverConstraintCorrection')
+                finger.addObject('GenericConstraintCorrection')
 
 
                 ##########################################
@@ -102,8 +99,8 @@ def createScene(rootNode):
                 # the indices are referring to the MechanicalObject's positions.
                 # The last indice is where the pullPoint is connected.
                 cable.addObject('CableConstraint', name="aCableActuator",
-                        #indices=range(0,14),
-                        indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                        indices=list(range(0,14)),
+                        # indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
                         pullPoint=[0.0, 12.5, 2.5])
 
                 # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
@@ -111,10 +108,10 @@ def createScene(rootNode):
                 # to the finger and vice-versa;
                 cable.addObject('BarycentricMapping')
 
-                # This create a PythonScriptController that permits to programatically implement new behavior
-                # or interactions using the Python programming langage. The controller is referring to a
-                # file named "controller.py".
-                cable.addObject(FingerController(node=cable))
+                # # This create a PythonScriptController that permits to programatically implement new behavior
+                # #  or interactions using the Python programming langage. The controller is referring to a
+                # #  file named "controller.py".
+                # cable.addObject(FingerController(node=cable))
 
                 ##########################################
                 # Visualization                          #
