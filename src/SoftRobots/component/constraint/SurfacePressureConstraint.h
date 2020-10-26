@@ -148,6 +148,7 @@ protected:
     using SurfacePressureModel<DataTypes>::d_minPressure ;
     using SurfacePressureModel<DataTypes>::d_maxPressureVariation;
     using SoftRobotsConstraint<DataTypes>::d_componentState;
+    using SurfacePressureModel<DataTypes>::d_pressure ;
     ////////////////////////////////////////////////////////////////////////////
 
 private:

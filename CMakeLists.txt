@@ -72,8 +72,6 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.inl
-    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/QPSlidingConstraint.h
-    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/QPSlidingConstraint.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.inl
 
@@ -114,7 +112,6 @@ set(SOURCE_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.cpp
-    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/QPSlidingConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.cpp
 
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/AnimationEditor.cpp
