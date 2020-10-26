@@ -149,7 +149,7 @@ Let's now work in <em>'finger.py'</em> to add:
 <p>Still in the finger.py file we need to add a fixing box to avoid the free falling the finger under gravity. This can be done in the following way:</p>
 Let's now work in <em>'finger.py'</em> to add:
 <div>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.physics.constraint <span class="im">import</span> FixedBox
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> stlib.physics.constraints <span class="im">import</span> FixedBox
 
 <span class="kw">def</span> Finger(parentNode<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="st">&quot;Finger&quot;</span>,
            rotation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>], translation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],

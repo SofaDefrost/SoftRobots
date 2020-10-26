@@ -47,9 +47,9 @@ class GripperController(Sofa.PythonScriptController):
             self.dt = self.node.findData('dt').value
             incr = self.dt*1000.0;
 
-            self.MecaObject1=self.finger1Node.getObject('MechanicalObject');
-            self.MecaObject2=self.finger2Node.getObject('MechanicalObject');
-            self.MecaObject3=self.finger3Node.getObject('MechanicalObject');
+            self.MecaObject1=self.finger1Node.getObject('dofs');
+            self.MecaObject2=self.finger2Node.getObject('dofs');
+            self.MecaObject3=self.finger3Node.getObject('dofs');
 
             self.pressureConstraint1 = self.pressureConstraint1Node.getObject('SurfacePressureConstraint')
             self.pressureConstraint2 = self.pressureConstraint2Node.getObject('SurfacePressureConstraint')

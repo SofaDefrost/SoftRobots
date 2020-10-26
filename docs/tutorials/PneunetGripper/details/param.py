@@ -3,7 +3,7 @@ import math
 
 ####################      USER PARAM       ##########################
 
-cubeParam = { 	'name' : "Cube", 
+cubeParam = { 	'name' : "Cube",
 				'totalMass' : 0.0008,
 				'translation' : [15.0,20.0,0.0],
 				'uniformScale' : 21}
@@ -53,20 +53,5 @@ fingersParameters = [
 			'rotation' : 			[360 - angle2*180/math.pi, 0.0, 90.0],
 			'translation' : 		[0.0, heightInitial, radius*math.cos(angle2-math.pi/2)],
 			'ROIBox' :				[100, heightInitial-10, -20, 70, heightInitial, 20],
-        }
-    ]
-
-subTopoParameters = [
-        {
-			'atPositions' :			[70, heightInitial-100, -8, 75.5, heightInitial-15, 8],
-			'subTopologiyContainer' : 	None
-        },
-        {
-        	'atPositions' :				None,
-			'subTopologiyContainer' : 	"@../../finger1/boxROISubTopo"
-        },
-        {
-        	'atPositions' :				None,
-			'subTopologiyContainer' : 	"@../../finger1/boxROISubTopo"
         }
     ]

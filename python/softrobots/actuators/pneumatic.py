@@ -69,7 +69,7 @@ def PneumaticCavity(surfaceMeshFileName=None,
 
     # This create a MeshTopology, a componant holding the topology of the cavity.
     # pneumatic.createObject('MeshTopology', name="topology", filename=surfaceMeshFileName)
-    pneumatic.createObject('Mesh', name='topology', src='@MeshLoader')
+    pneumatic.createObject('MeshTopology', name='topology', src='@MeshLoader')
 
     # This create a MechanicalObject, a componant holding the degree of freedom of our
     # mechanical modelling. In the case of a cavity actuated with pneumatic, it is a set of positions specifying
@@ -85,7 +85,7 @@ def PneumaticCavity(surfaceMeshFileName=None,
     # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
     # between the cavity's DoFs and the parents's ones so that the pressure applied on the cavity wall will be mapped
     # to the volume structure and vice-versa;
-    pneumatic.createObject('BarycentricMapping', name="Mapping", mapForces="false", mapMasses="false")
+    pneumatic.createObject('BarycentricMapping', name="Mapping", mapForces=False, mapMasses=False)
     return pneumatic
 
 # Exemple doesn't work
