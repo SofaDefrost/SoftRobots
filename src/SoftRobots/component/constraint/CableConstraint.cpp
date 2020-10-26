@@ -113,8 +113,6 @@ void CableForceConstraintResolution::resolution(int line, double** w, double* d,
     }
     else
         lambda[line] = m_imposedForce;
-
-    std::cout << "The force at the END is : " << lambda[line] << std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
