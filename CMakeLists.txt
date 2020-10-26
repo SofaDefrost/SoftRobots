@@ -56,9 +56,6 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/behavior/SoftRobotsBaseConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/behavior/SoftRobotsConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/behavior/SoftRobotsConstraint.inl
-    ${SOFTROBOTS_SOURCE_DIR}/component/behavior/CosseratSoftRobotsConstraint.h
-    ${SOFTROBOTS_SOURCE_DIR}/component/behavior/CosseratSoftRobotsConstraint.inl
-
     
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/CableConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/CableConstraint.inl
@@ -104,7 +101,6 @@ set(SOURCE_FILES
 
     ${SOFTROBOTS_SOURCE_DIR}/component/behavior/SoftRobotsBaseConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/behavior/SoftRobotsConstraint.cpp
-    ${SOFTROBOTS_SOURCE_DIR}/component/behavior/CosseratSoftRobotsConstraint.cpp
 
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/CableConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/PartialRigidificationConstraint.cpp
