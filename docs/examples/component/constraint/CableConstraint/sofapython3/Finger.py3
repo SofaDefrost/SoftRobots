@@ -4,12 +4,12 @@ import Sofa
 import Sofa.Core
 
 import os
-
 path = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
+
 from FingerController import FingerController
 
 def createScene(rootNode):
-                rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaPython3')
+                rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaPython3 SofaSparseSolver SofaOpenglVisual')
                 rootNode.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
                 rootNode.addObject('FreeMotionAnimationLoop')
@@ -23,14 +23,14 @@ def createScene(rootNode):
 
                 rootNode.gravity = [0, -9810, 0]
                 rootNode.dt = 0.01
-                rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765])
+                rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
                 rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
                 ##########################################
                 # FEM Model                              #
                 ##########################################
                 finger = rootNode.addChild('finger')
-                finger.addObject('EulerImplicit', name='odesolver', rayleighMass=0.1, rayleighStiffness=0.1)
+                finger.addObject('EulerImplicitSolver', name='odesolver', rayleighMass=0.1, rayleighStiffness=0.1)
                 finger.addObject('SparseLDLSolver', name='preconditioner')
 
 		        # Add a componant to load a VTK tetrahedral mesh and expose the resulting topology in the scene .
@@ -101,6 +101,7 @@ def createScene(rootNode):
                 cable.addObject('CableConstraint', name="aCableActuator",
                         indices=list(range(0,14)),
                         # indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                        minForce=0, # Set that the cable can't push
                         pullPoint=[0.0, 12.5, 2.5])
 
                 # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
@@ -108,10 +109,10 @@ def createScene(rootNode):
                 # to the finger and vice-versa;
                 cable.addObject('BarycentricMapping')
 
-                # # This create a PythonScriptController that permits to programatically implement new behavior
-                # #  or interactions using the Python programming langage. The controller is referring to a
-                # #  file named "controller.py".
-                # cable.addObject(FingerController(node=cable))
+                # This create a PythonScriptController that permits to programatically implement new behavior
+                #  or interactions using the Python programming langage. The controller is referring to a
+                #  file named "controller.py".
+                cable.addObject(FingerController(name="FingerController", node=cable))
 
                 ##########################################
                 # Visualization                          #
@@ -122,7 +123,7 @@ def createScene(rootNode):
 
                 # Add to this empty node a rendering model made of triangles and loaded from an stl file.
                 fingerVisu.addObject('MeshSTLLoader', filename=path+"finger.stl", name="loader")
-                fingerVisu.addObject('OglModel', src="@loader", template='ExtVec3f', color=[0.0, 0.7, 0.7])
+                fingerVisu.addObject('OglModel', src="@loader", color=[0.0, 0.7, 0.7])
 
                 # Add a BarycentricMapping to deform the rendering model in a way that follow the ones of the parent mechanical model.
                 fingerVisu.addObject('BarycentricMapping')
