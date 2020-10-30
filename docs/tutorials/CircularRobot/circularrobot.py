@@ -13,15 +13,15 @@ def Target(parentNode):
     target.createObject('UncoupledConstraintCorrection')
     return target
 
-def Floor(parentNode, color=[0.5, 0.5, 0.5, 1.], rotation=[90, 0, 180], translation=[50, -21, -100]):
+def Floor(parentNode, color=[0.5, 0.5, 0.5, 1.], rotation=[90, 0, 180], translation=[50, -22, -100]):
     floor = parentNode.createChild('Floor')
     floor.createObject('MeshObjLoader', name='loader', filename='mesh/square1.obj', scale=250, rotation=rotation, translation=translation)
     floor.createObject('OglModel', src='@loader', color=color)
     floor.createObject('MeshTopology', src='@loader', name='topo')
     floor.createObject('MechanicalObject')
-    floor.createObject('TTriangleModel')
-    floor.createObject('TLineModel')
-    floor.createObject('TPointModel')
+    floor.createObject('TriangleCollisionModel')
+    floor.createObject('LineCollisionModel')
+    floor.createObject('PointCollisionModel')
     return floor
 
 def Wall(parentNode, color=[0.5, 0.5, 0.5, 1.], rotation=[0, 0, 0], translation=[-200, -271, 100]):
@@ -69,7 +69,7 @@ class CircularRobot(SofaObject):
                 Sofa.msg_warning("The prefab CircularRobot needs effectorTarget in inverseMode")
             self.node.createObject('BarycentricCenterEffector', limitShiftToTarget=True, maxShiftToTarget=5,
                                     effectorGoal=effectorTarget,
-                                    axis="1 1 1")
+                                    axis=[1, 1, 1])
         self.__addCables()
 
     def __addCables(self):
@@ -90,17 +90,17 @@ class CircularRobot(SofaObject):
     def addCollisionModel(self):
         modelContact = self.node.createChild('CollisionModel')
         modelContact.createObject('MeshSTLLoader', name='loader', filename=path+'wheel_collision.stl', scale=1)
-        modelContact.createObject('Mesh', src='@loader', name='topo')
+        modelContact.createObject('MeshTopology', src='@loader', name='topo')
         modelContact.createObject('MechanicalObject')
-        modelContact.createObject('TTriangleModel')
-        modelContact.createObject('TLineModel')
-        modelContact.createObject('TPointModel')
+        modelContact.createObject('TriangleCollisionModel')
+        modelContact.createObject('LineCollisionModel')
+        modelContact.createObject('PointCollisionModel')
         modelContact.createObject('BarycentricMapping')
 
 
 def createScene(rootNode):
 
-    rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+    rootNode.createObject('RequiredPlugin', pluginName='SoftRobots SoftRobots.Inverse SofaOpenglVisual SofaSparseSolver')
     rootNode.createObject('VisualStyle', displayFlags='hideWireframe showVisualModels showBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields hideInteractionForceFields')
     rootNode.findData('gravity').value = [0, -9180, 0]
     rootNode.findData('dt').value = 0.01
@@ -110,9 +110,9 @@ def createScene(rootNode):
     rootNode.createObject('QPInverseProblemSolver', epsilon=2e-0, maxIterations=2500, tolerance=1e-7, responseFriction=0.8)
 
     # Contact detection methods
-    rootNode.createObject('CollisionPipeline')
+    rootNode.createObject('DefaultPipeline')
     rootNode.createObject('BruteForceDetection')
-    rootNode.createObject('CollisionResponse', response="FrictionContact", responseParams="mu=0.8")
+    rootNode.createObject('DefaultContactManager', response="FrictionContact", responseParams="mu=0.8")
     rootNode.createObject('LocalMinDistance', alarmDistance=5, contactDistance=1, angleCone=0.0)
 
     # Add linear solver
