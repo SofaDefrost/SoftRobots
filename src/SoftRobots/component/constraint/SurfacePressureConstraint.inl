@@ -183,7 +183,7 @@ void SurfacePressureConstraint<DataTypes>::setUpPressureLimits(double& imposedVa
 {
     if (d_maxPressureVariation.isSet())
     {
-        double pressure = d_pressure.getValue();
+        double pressure = this->d_pressure.getValue();
         if (imposedValue > pressure && imposedValue - pressure > d_maxPressureVariation.getValue())
             imposedValue = pressure + d_maxPressureVariation.getValue();
 
