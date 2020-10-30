@@ -117,7 +117,7 @@ class Trunk(SofaObject):
     def addVisualModel(self, color=[1., 1., 1., 1.]):
         trunkVisu = self.node.addChild('VisualModel')
         trunkVisu.addObject('MeshSTLLoader', filename=path+'trunk.stl')
-        trunkVisu.addObject('OglModel', template='ExtVec3', color=color)
+        trunkVisu.addObject('OglModel', color=color)
         trunkVisu.addObject('BarycentricMapping')
 
     def addCollisionModel(self, selfCollision=False):

@@ -2,7 +2,7 @@ def PositionEffector(attachedTo=None,
     name="effector",
     position=None,
     effectorGoal=None,
-    template="Vec3d",
+    template="Vec3",
     directions=None,
     useDirections=None,
     translation=[0.0,0.0,0.0],
@@ -62,7 +62,7 @@ def PositionEffector(attachedTo=None,
     # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
     # between the effector's DoFs and the parents's ones so that movements of the effector's DoFs will be mapped
     # to the model and vice-versa;
-    if template == "Rigid3d" or template == "Rigid3f":
+    if template == "Rigid3" or template == "Rigid3f":
         effector.createObject('RigidMapping', name="Mapping", mapForces=False, mapMasses=False)
     else:
         effector.createObject('BarycentricMapping', name="Mapping", mapForces=False, mapMasses=False)

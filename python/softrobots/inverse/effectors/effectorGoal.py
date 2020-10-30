@@ -1,7 +1,7 @@
 def EffectorGoal(attachedTo=None,
     name="Goal",
     position=None,
-    template="Vec3d",
+    template="Vec3",
     translation=[0.0,0.0,0.0],
     rotation=[0.0,0.0,0.0],
     uniformScale=1.0,
@@ -42,7 +42,7 @@ def EffectorGoal(attachedTo=None,
     # This create a MechanicalObject, a componant holding the degree of freedom of our
     # mechanical modelling. In the case of a effector it is a set of positions specifying
     # ghe location of the effector
-    goal.createObject('EulerImplicit', firstOrder="1")
+    goal.createObject('EulerImplicitSolver', firstOrder=True)
     goal.createObject('CGLinearSolver', threshold=1e-5, tolerance=1e-5)
     goal.createObject('MechanicalObject', template=template, position=position,
                         rotation=rotation, translation=translation, scale=uniformScale,

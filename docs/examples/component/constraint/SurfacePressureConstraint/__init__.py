@@ -22,11 +22,11 @@ Example
 	# This create a MechanicalObject, a componant holding the degree of freedom of our
 	# mechanical modelling. In the case of a pneumatic actuation it is a set of positions describing the cavity wall.
 	cavity.createObject('MeshSTLLoader', name='loader', filename=path+'Springy_Cavity.stl')
-	cavity.createObject('Mesh', src='@loader', name='topo')
+	cavity.createObject('MeshTopology', src='@loader', name='topo')
 	cavity.createObject('MechanicalObject', name='cavity')
 
 	# Create a SurfacePressureConstraint object with a name.
-	cavity.createObject('SurfacePressureConstraint', template='Vec3d', name="pressure",
+	cavity.createObject('SurfacePressureConstraint', template='Vec3', name="pressure",
 			    triangles='@topo.triangles',
 			    valueType="1",
 			    value="8")
@@ -34,7 +34,7 @@ Example
 	# This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
 	# between the cavity wall (surfacic mesh) and the accordion (volumetric mesh) so that movements of the cavity's DoFs will be mapped
 	# to the accordion and vice-versa;
-	cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+	cavity.createObject('BarycentricMapping', name='mapping',  mapForces=False, mapMasses=False)
 
 
 

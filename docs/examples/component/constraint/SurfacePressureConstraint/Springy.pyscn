@@ -25,20 +25,20 @@ def createScene(rootNode):
                 # FEM Model                              #
                 ##########################################
                 accordion = rootNode.createChild('accordion')
-                accordion.createObject('EulerImplicit', firstOrder='0', rayleighStiffness="0.2", rayleighMass="0.2")
+                accordion.createObject('EulerImplicitSolver', firstOrder=False, rayleighStiffness="0.2", rayleighMass="0.2")
                 accordion.createObject('SparseLDLSolver')
 
                 accordion.createObject('MeshVTKLoader', name='loader', filename=path+'Springy.vtk', rotation="0 0 0")
                 accordion.createObject('TetrahedronSetTopologyContainer', src='@loader')
                 accordion.createObject('TetrahedronSetTopologyModifier')
-                accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
-                accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
+                accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
-                accordion.createObject('MechanicalObject', name='tetras', template='Vec3d')
+                accordion.createObject('MechanicalObject', name='tetras', template='Vec3')
                 accordion.createObject('UniformMass', totalMass='0.030')
-                accordion.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
+                accordion.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
 
-                accordion.createObject('BoxROI', name='ROI1', box='-2 -2 0 2 2 0.5', drawBoxes='true')
+                accordion.createObject('BoxROI', name='ROI1', box='-2 -2 0 2 2 0.5', drawBoxes=True)
                 accordion.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness='1e12')
                 # accordion.createObject('FixedConstraint', indices='@ROI1.indices')
 
@@ -54,11 +54,11 @@ def createScene(rootNode):
 		# This create a MechanicalObject, a componant holding the degree of freedom of our
 		# mechanical modelling. In the case of a pneumatic actuation it is a set of positions describing the cavity wall.
 		cavity.createObject('MeshSTLLoader', name='loader', filename=path+'Springy_Cavity.stl')
-		cavity.createObject('Mesh', src='@loader', name='topo')
+		cavity.createObject('MeshTopology', src='@loader', name='topo')
 		cavity.createObject('MechanicalObject', name='cavity')
 
 		# Create a SurfacePressureConstraint object with a name.
-		cavity.createObject('SurfacePressureConstraint', template='Vec3d', name="pressure",
+		cavity.createObject('SurfacePressureConstraint', template='Vec3', name="pressure",
 		    triangles='@topo.triangles',
 		    valueType="1",
 		    value="8")
@@ -66,7 +66,7 @@ def createScene(rootNode):
 		# This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
 		# between the cavity wall (surfacic mesh) and the accordion (volumetric mesh) so that movements of the cavity's DoFs will be mapped
 		# to the accordion and vice-versa;
-		cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+		cavity.createObject('BarycentricMapping', name='mapping',  mapForces=False, mapMasses=False)
 
                 ##########################################
                 # Visualization                          #

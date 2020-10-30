@@ -16,14 +16,14 @@ def createScene(rootNode):
                 # FEM Model                              #
                 ##########################################
                 finger = rootNode.createChild('finger')
-                finger.createObject('EulerImplicit')
+                finger.createObject('EulerImplicitSolver')
                 finger.createObject('CGLinearSolver')
 
                 finger.createObject('MeshSTLLoader', name='loader', filename=path+'finger.stl')
-                finger.createObject('Mesh', src='@loader', name="mesh")
+                finger.createObject('MeshTopology', src='@loader', name="mesh")
 
                 # Create a mechanicaobject component to stores the DoFs of the model
-                finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showTetra='true', showIndicesScale='4e-5', rx='0', dz='0')
+                finger.createObject('MechanicalObject', name='tetras', template='Vec3', showTetra=True, showIndicesScale='4e-5', rx='0', dz='0')
                 finger.createObject('VolumeFromTriangles')
 
                 ##########################################

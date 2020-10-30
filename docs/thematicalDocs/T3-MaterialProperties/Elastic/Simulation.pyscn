@@ -20,7 +20,7 @@ def createScene(rootNode):
     ###############################
 
     robot = rootNode.createChild('robot')
-    robot.createObject('EulerImplicit');
+    robot.createObject('EulerImplicitSolver');
     robot.createObject('SparseLDLSolver');
     robot.createObject('MeshVTKLoader', name='loader', filename=path+'branch.vtu');
     robot.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray='1', checkConnexity='1');
@@ -36,7 +36,7 @@ def createScene(rootNode):
     ### Here you can set the youngModulus to adapt the stiffness of the deformable structure
     robot.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='600');
 
-    robot.createObject('BoxROI', name='boxROI', box="-30 80 70 30 140 130   -130 -100 70  -60  -20 130  130 -100 70  60  -20 130", drawBoxes='true');
+    robot.createObject('BoxROI', name='boxROI', box="-30 80 70 30 140 130   -130 -100 70  -60  -20 130  130 -100 70  60  -20 130", drawBoxes=True);
     robot.createObject('FixedConstraint', indices="@boxROI.indices");
 
     return rootNode

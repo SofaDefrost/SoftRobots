@@ -17,7 +17,7 @@ Example
 
 .. sourcecode:: python
 
-    	rootNode.createObject('SerialPortBridgeGeneric', name="serial", port="/dev/ttyACM0", baudRate="115200", size="5", listening="true")
+    	rootNode.createObject('SerialPortBridgeGeneric', name="serial", port="/dev/ttyACM0", baudRate="115200", size="5", listening=True)
 
 Data fields
 ***********

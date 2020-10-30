@@ -47,13 +47,13 @@ class GoalController(Sofa.PythonScriptController):
 
 def EffectorGoal(node, position):
     goal = node.createChild('goal')
-    goal.createObject('EulerImplicit', firstOrder='1')
+    goal.createObject('EulerImplicitSolver', firstOrder=True)
     goal.createObject('CGLinearSolver', iterations='100',threshold="1e-5", tolerance="1e-5")
-    goal.createObject('MechanicalObject', name='goalMO', template='Rigid3d',
+    goal.createObject('MechanicalObject', name='goalMO', template='Rigid3',
                       position=str(position[0])+" "+ str(position[1]) + " " + str(position[2]) + " 0 0 0 1", showObject='1',showObjectScale='10')
     spheres = goal.createChild('spheres')
     spheres.createObject('MechanicalObject', name='mo', position='0 0 0  10 0 0   0 10 0   0 0 10')
-    spheres.createObject('Sphere', radius='5', group='1')
+    spheres.createObject('SphereCollisionModel', radius='5', group='1')
     spheres.createObject('RigidMapping')
     goal.createObject('UncoupledConstraintCorrection')
     return goal
@@ -208,11 +208,11 @@ def Tripod(parent, name="Tripod", radius=70, numMotors=3, angleShift=180.0, effe
                            indices=2, showDirection='1',  showVisuScale='100', maxForce='100000', minForce='-30000')
 
     if goalNode is None:
-        actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal="10 40 0")
+        actuators.createObject('PositionEffector', name='effector', template='Rigid3', useDirections='1 1 1 0 0 0', indices='3', effectorGoal="10 40 0")
     elif use_orientation:
-        actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='0 1 0 1 0 1', indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position")
+        actuators.createObject('PositionEffector', name='effector', template='Rigid3', useDirections='0 1 0 1 0 1', indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position")
     else:
-        actuators.createObject('PositionEffector', name='effector', template='Rigid3d', useDirections='1 1 1 0 0 0', indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position")
+        actuators.createObject('PositionEffector', name='effector', template='Rigid3', useDirections='1 1 1 0 0 0', indices='3', effectorGoal=goalNode.goalMO.getLinkPath()+".position")
 
     actuators.activated = 0
 
@@ -224,7 +224,7 @@ def Tripod(parent, name="Tripod", radius=70, numMotors=3, angleShift=180.0, effe
 
     for i in range(0, numMotors):
         a = arms[i].ServoMotor.BaseFrame.createChild("Attach")
-        a.createObject("MechanicalObject", template="Rigid3d", name="dofs",
+        a.createObject("MechanicalObject", template="Rigid3", name="dofs",
                        showObject=True, showObjectScale=10,
                        position=[0.0, 25.0, 10.0, 0, 0, 0, 1])
         a.createObject("RigidRigidMapping")

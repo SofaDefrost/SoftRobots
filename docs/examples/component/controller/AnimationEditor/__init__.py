@@ -41,7 +41,7 @@ Example
 .. sourcecode:: python
 
     	goal = rootNode.createChild('goal')
-        goal.createObject('EulerImplicit', firstOrder='1')
+        goal.createObject('EulerImplicitSolver', firstOrder=True)
         goal.createObject('CGLinearSolver', iterations='100', tolerance="1e-5", threshold="1e-5")
         goal.createObject('MechanicalObject', name='goalMO',
                 position='0 0 8',

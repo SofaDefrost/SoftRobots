@@ -25,20 +25,20 @@ def createScene(rootNode):
                 # FEM Model                              #
                 ##########################################
                 accordion = rootNode.createChild('accordion')
-                accordion.createObject('EulerImplicit', firstOrder='0', rayleighStiffness="0.1", rayleighMass="0.1")
+                accordion.createObject('EulerImplicitSolver', firstOrder=False, rayleighStiffness="0.1", rayleighMass="0.1")
                 accordion.createObject('SparseLDLSolver')
 
                 accordion.createObject('MeshVTKLoader', name='loader', filename=path+'Springy.vtk', rotation="0 0 0")
                 accordion.createObject('TetrahedronSetTopologyContainer', src='@loader')
                 accordion.createObject('TetrahedronSetTopologyModifier')
-                accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
-                accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
+                accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
-                accordion.createObject('MechanicalObject', name='tetras', template='Vec3d')
+                accordion.createObject('MechanicalObject', name='tetras', template='Vec3')
                 accordion.createObject('UniformMass', totalMass='0.030')
-                accordion.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
+                accordion.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
 
-                accordion.createObject('BoxROI', name='ROI1', box='-2 -2 0 2 2 0.5', drawBoxes='true')
+                accordion.createObject('BoxROI', name='ROI1', box='-2 -2 0 2 2 0.5', drawBoxes=True)
                 accordion.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness='1e12')
                 # accordion.createObject('FixedConstraint', indices='@ROI1.indices')
 
@@ -54,14 +54,14 @@ def createScene(rootNode):
                 ##########################################
                 cavity = accordion.createChild('cavity')
                 cavity.createObject('MeshSTLLoader', name='loader', filename=path+'Springy_Cavity.stl')
-                cavity.createObject('Mesh', src='@loader', name='topo')
+                cavity.createObject('MeshTopology', src='@loader', name='topo')
                 cavity.createObject('MechanicalObject', name='cavity')
-                cavity.createObject('SurfacePressureConstraint', template='Vec3d', name="pressure",
+                cavity.createObject('SurfacePressureConstraint', template='Vec3', name="pressure",
                     triangles='@topo.triangles',
                     valueType="1",
                     value="@../sub.data1")
 
-                cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+                cavity.createObject('BarycentricMapping', name='mapping',  mapForces=False, mapMasses=False)
 
 
                 ##########################################
@@ -88,25 +88,25 @@ def createScene(rootNode):
                                         "-1.5 0 2.5   "+
                                         "-1.5 0 3.5   "+
                                         "-1.5 0 4.5   "))
-                cables.createObject('CableConstraint', template='Vec3d',
+                cables.createObject('CableConstraint', template='Vec3',
                         name="cable1",
                         indices="0 1 2 3 4",
                         pullPoint="1.5 0 0",
                         value = "@../sub.data2"
                         )
-                cables.createObject('CableConstraint', template='Vec3d',
+                cables.createObject('CableConstraint', template='Vec3',
                         name="cable2",
                         indices="5 6 7 8 9",
                         pullPoint="0 -1.5 0",
                         value = "@../sub.data3"
                         )
-                cables.createObject('CableConstraint', template='Vec3d',
+                cables.createObject('CableConstraint', template='Vec3',
                         name="cable3",
                         indices="10 11 12 13 14",
                         pullPoint="-1.5 0 0",
                         value = "@../sub.data4"
                         )
-                cables.createObject('BarycentricMapping', mapForces="false", mapMasses="false")
+                cables.createObject('BarycentricMapping', mapForces=False, mapMasses=False)
 
 
                 ##########################################

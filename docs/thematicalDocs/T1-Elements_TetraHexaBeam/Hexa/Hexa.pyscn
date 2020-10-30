@@ -19,7 +19,7 @@ def createScene(rootNode):
     ###############################
 
     robot = rootNode.createChild('robot')
-    robot.createObject('EulerImplicit');
+    robot.createObject('EulerImplicitSolver');
     robot.createObject('SparseLDLSolver');
     ### Here you set the Hexahedron topology
     robot.createObject('RegularGridTopology', name="grid", filename=path+'branch.stl', n="5 5 5");
@@ -32,7 +32,7 @@ def createScene(rootNode):
     robot.createObject('UniformMass', totalMass='0.4');
     robot.createObject('HexahedronFEMForceField', poissonRatio='0.45',  youngModulus='600');
 
-    robot.createObject('BoxROI', name='boxROI', box="-30 80 70 30 140 130   -130 -100 70  -60  -20 130  130 -100 70  60  -20 130", drawBoxes='true');
+    robot.createObject('BoxROI', name='boxROI', box="-30 80 70 30 140 130   -130 -100 70  -60  -20 130  130 -100 70  60  -20 130", drawBoxes=True);
     robot.createObject('FixedConstraint', indices="@boxROI.indices");
 
     return rootNode

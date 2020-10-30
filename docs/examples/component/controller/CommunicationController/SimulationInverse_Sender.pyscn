@@ -16,9 +16,9 @@ def createScene(rootNode):
 
                 rootNode.createObject('QPInverseProblemSolver', printLog='0', epsilon="1e-1",\
                 maxIterations="1000", tolerance="1e-14")
-                rootNode.createObject('CollisionPipeline', verbose="0")
+                rootNode.createObject('DefaultPipeline', verbose="0")
                 rootNode.createObject('BruteForceDetection', name="N2")
-                rootNode.createObject('CollisionResponse', response="FrictionContact", responseParams="mu=0")
+                rootNode.createObject('DefaultContactManager', response="FrictionContact", responseParams="mu=0")
                 rootNode.createObject('LocalMinDistance', name="Proximity", alarmDistance="5", contactDistance="1")
 
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
@@ -30,11 +30,11 @@ def createScene(rootNode):
                 # Effector goal for interactive control  #
                 ##########################################
                 goal = rootNode.createChild('goal')
-                goal.createObject('EulerImplicit', firstOrder='1')
+                goal.createObject('EulerImplicitSolver', firstOrder=True)
                 goal.createObject('CGLinearSolver', iterations='100', tolerance="1e-5", threshold="1e-5")
                 goal.createObject('MechanicalObject', name='goalMO',
                         position='0 0 8')
-                goal.createObject('Sphere', radius="1")
+                goal.createObject('SphereCollisionModel', radius="1")
                 #goal.createObject('AnimationEditor', listening="1", filename="Accordion_Animation.txt")
                 goal.createObject('UncoupledConstraintCorrection')
 
@@ -43,20 +43,20 @@ def createScene(rootNode):
                 # FEM Model                              #
                 ##########################################
                 accordion = rootNode.createChild('accordion')
-                accordion.createObject('EulerImplicit', firstOrder='0', rayleighStiffness="0.1", rayleighMass="0.1")
+                accordion.createObject('EulerImplicitSolver', firstOrder=False, rayleighStiffness="0.1", rayleighMass="0.1")
                 accordion.createObject('SparseLDLSolver')
 
                 accordion.createObject('MeshVTKLoader', name='loader', filename=path+'Springy.vtk', rotation="0 0 0")
                 accordion.createObject('TetrahedronSetTopologyContainer', src='@loader')
                 accordion.createObject('TetrahedronSetTopologyModifier')
-                accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
-                accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
+                accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
-                accordion.createObject('MechanicalObject', name='tetras', template='Vec3d')
+                accordion.createObject('MechanicalObject', name='tetras', template='Vec3')
                 accordion.createObject('UniformMass', totalMass='0.030')
-                accordion.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
+                accordion.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.3',  youngModulus='500')
 
-                accordion.createObject('BoxROI', name='ROI1', box='-2 -2 0 2 2 0.5', drawBoxes='true')
+                accordion.createObject('BoxROI', name='ROI1', box='-2 -2 0 2 2 0.5', drawBoxes=True)
                 accordion.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness='1e12')
                 # accordion.createObject('FixedConstraint', indices='@ROI1.indices')
 
@@ -70,11 +70,11 @@ def createScene(rootNode):
                 effector = accordion.createChild('effector')
                 effector.createObject('MechanicalObject', name="effectorPoint",
                         position=("0 0 5"))
-                effector.createObject('PositionEffector', template='Vec3d',
+                effector.createObject('PositionEffector', template='Vec3',
                         indices="0",
                         effectorGoal="@../../goal/goalMO.position",
                         useDirections="1 1 1")
-                effector.createObject('BarycentricMapping', mapForces="false", mapMasses="false")
+                effector.createObject('BarycentricMapping', mapForces=False, mapMasses=False)
 
 
                 ##########################################
@@ -82,14 +82,14 @@ def createScene(rootNode):
                 ##########################################
                 cavity = accordion.createChild('cavity')
                 cavity.createObject('MeshSTLLoader', name='loader', filename=path+'Springy_Cavity.stl')
-                cavity.createObject('Mesh', src='@loader', name='topo')
+                cavity.createObject('MeshTopology', src='@loader', name='topo')
                 cavity.createObject('MechanicalObject', name='cavity')
-                cavity.createObject('SurfacePressureActuator', template='Vec3d', name="pressure",
+                cavity.createObject('SurfacePressureActuator', template='Vec3', name="pressure",
                     triangles='@topo.triangles',
                     minPressure="0",
                     maxVolumeGrowth="8")
 
-                cavity.createObject('BarycentricMapping', name='mapping',  mapForces='false', mapMasses='false')
+                cavity.createObject('BarycentricMapping', name='mapping',  mapForces=False, mapMasses=False)
 
 
                 ##########################################
@@ -116,28 +116,28 @@ def createScene(rootNode):
                                         "-1.5 0 2.5   "+
                                         "-1.5 0 3.5   "+
                                         "-1.5 0 4.5   "))
-                cables.createObject('CableActuator', template='Vec3d',
+                cables.createObject('CableActuator', template='Vec3',
                         name="cable1",
                         indices="0 1 2 3 4",
                         pullPoint="1.5 0 0",
                         minForce="0",
                         maxPositiveDisp="1.5"
                         )
-                cables.createObject('CableActuator', template='Vec3d',
+                cables.createObject('CableActuator', template='Vec3',
                         name="cable2",
                         indices="5 6 7 8 9",
                         pullPoint="0 -1.5 0",
                         minForce="0",
                         maxPositiveDisp="1.5"
                         )
-                cables.createObject('CableActuator', template='Vec3d',
+                cables.createObject('CableActuator', template='Vec3',
                         name="cable3",
                         indices="10 11 12 13 14",
                         pullPoint="-1.5 0 0",
                         minForce="0",
                         maxPositiveDisp="1.5"
                         )
-                cables.createObject('BarycentricMapping', mapForces="false", mapMasses="false")
+                cables.createObject('BarycentricMapping', mapForces=False, mapMasses=False)
 
 
 

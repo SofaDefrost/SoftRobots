@@ -77,9 +77,9 @@ def createScene(rootNode):
 		finger.createObject('MeshVTKLoader', name='loader', filename='data/mesh/pneunetCutCoarse.vtk', rotation=[360 - angles[i]*180/math.pi, 0, 0], translation = translations[i])
 		finger.createObject('MeshTopology', src='@loader', name='container')
 
-		finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices=False, showIndicesScale=4e-5)
+		finger.createObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale=4e-5)
 		finger.createObject('UniformMass', totalMass= 0.04)
-		finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio=0.3,  youngModulus=youngModulusFingers, drawAsEdges=True)
+		finger.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.3,  youngModulus=youngModulusFingers, drawAsEdges=True)
 
 		finger.createObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20])
 		finger.createObject('BoxROI', name='boxROISubTopo', box=[-100, 22.5, -8, -19, 28, 8], strict=False)
@@ -98,7 +98,7 @@ def createScene(rootNode):
 			modelSubTopo.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@boxROISubTopo.tetrahedraInROI', name='container')
 		else:
 			modelSubTopo.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@../../finger1/boxROISubTopo.tetrahedraInROI', name='container')
-		modelSubTopo.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio=0.3,  youngModulus=str(youngModulusStiffLayerFingers-youngModulusFingers))
+		modelSubTopo.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.3,  youngModulus=str(youngModulusStiffLayerFingers-youngModulusFingers))
 
 
 		##########################################
@@ -108,7 +108,7 @@ def createScene(rootNode):
 		cavity.createObject('MeshSTLLoader', name='loader', filename='data/mesh/pneunetCavityCut.stl',translation = translations[i], rotation=[360 - angles[i]*180/math.pi, 0, 0])
 		cavity.createObject('MeshTopology', src='@loader', name='topo')
 		cavity.createObject('MechanicalObject', name='cavity')
-		cavity.createObject('SurfacePressureConstraint', name='SurfacePressureConstraint', template='Vec3d', value=0.0001, triangles='@topo.triangles', valueType='pressure')
+		cavity.createObject('SurfacePressureConstraint', name='SurfacePressureConstraint', template='Vec3', value=0.0001, triangles='@topo.triangles', valueType='pressure')
 		cavity.createObject('BarycentricMapping', name='mapping',  mapForces=False, mapMasses=False)
 
 		##########################################

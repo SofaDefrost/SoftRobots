@@ -27,32 +27,32 @@ def createScene(rootNode):
                 # FEM Model                              #
                 ##########################################
                 finger = rootNode.createChild('finger')
-                finger.createObject('EulerImplicit', name='odesolver', firstOrder='0', rayleighMass="0.1", rayleighStiffness="0.1")
+                finger.createObject('EulerImplicitSolver', name='odesolver', firstOrder=False, rayleighMass="0.1", rayleighStiffness="0.1")
                 finger.createObject('SparseLDLSolver', name='preconditioner')
 
 		        # Add a componant to load a VTK tetrahedral mesh and expose the resulting topology in the scene .
                 finger.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk')
                 finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
                 finger.createObject('TetrahedronSetTopologyModifier')
-                finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
-                finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
+                finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
                 # Create a mechanicaobject component to stores the DoFs of the model
-                finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5', rx='0', dz='0')
+                finger.createObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale='4e-5', rx='0', dz='0')
 
                 # Gives a mass to the model
                 finger.createObject('UniformMass', totalMass='0.075')
 
                 # Add a TetrahedronFEMForceField componant which implement an elastic material model solved using the Finite Element Method on
                 # tetrahedrons.
-                finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.45',  youngModulus='600')
+                finger.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.45',  youngModulus='600')
 
                 # To facilitate the selection of DoFs, SOFA has a concept called ROI (Region of Interest).
 		        # The idea is that ROI component "select" all DoFS that are enclosed by their "region".
                 # We use ROI here to select a group of finger's DoFs that will be constrained to stay
                 # at a fixed position.
                 # You can either use "BoxROI"...
-                finger.createObject('BoxROI', name='ROI1', box='-15 0 0 5 10 15', drawBoxes='true')
+                finger.createObject('BoxROI', name='ROI1', box='-15 0 0 5 10 15', drawBoxes=True)
                 # Or "SphereROI"...
                 #finger.createObject('SphereROI', name='ROI', centers='0 0 0', radii='5')
 

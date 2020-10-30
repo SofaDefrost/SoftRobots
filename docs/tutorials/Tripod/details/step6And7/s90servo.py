@@ -8,7 +8,7 @@ dirPath = os.path.dirname(os.path.abspath(__file__))+'/'
 def ServoBody(parent, position=[0., 0., 0., 0., 0., 0., 1.], showServo=True):
 
     servobody = parent.createChild("ServoBody")
-    servobody.createObject("MechanicalObject", template="Rigid3d", name="dofs", position=position)
+    servobody.createObject("MechanicalObject", template="Rigid3", name="dofs", position=position)
     servobody.createObject("MeshTopology")
 
     if showServo:
@@ -24,7 +24,7 @@ def ServoBody(parent, position=[0., 0., 0., 0., 0., 0., 1.], showServo=True):
 def ServoWheel(parent, showWheel=True):
 
     servowheel = parent.createChild("ServoWheel")
-    servowheel.createObject("MechanicalObject", template="Rigid3d", name="dofs", position=[[0., 0., 0., 0., 0., 0., 1.]],
+    servowheel.createObject("MechanicalObject", template="Rigid3", name="dofs", position=[[0., 0., 0., 0., 0., 0., 1.]],
                             showObject=showWheel, showObjectScale=10)
     servowheel.createObject("MeshTopology")
 

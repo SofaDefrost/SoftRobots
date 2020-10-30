@@ -21,7 +21,7 @@ Example
  
 	# Create the popology
 	finger.createObject('MeshSTLLoader', name='loader', filename=path+'finger.stl')
-	finger.createObject('Mesh', src='@loader', name="mesh")
+	finger.createObject('MeshTopology', src='@loader', name="mesh")
 	finger.createObject('VolumeFromTriangles')
 
 

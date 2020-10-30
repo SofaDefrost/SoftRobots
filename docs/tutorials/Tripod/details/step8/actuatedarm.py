@@ -108,7 +108,7 @@ class ActuatedArm(object):
                                translation=translation, rotation=eulerRotation, inverse=True)
 
         constraint.createObject("MechanicalObject", name="dofs",
-                                template="Vec3d", position="@TransformEngine.output_position",
+                                template="Vec3", position="@TransformEngine.output_position",
                                 showObject=True, showObjectScale=10.0)
 
         constraint.createObject('RigidMapping', name="mapping", input=self.node.ServoMotor.ServoWheel.dofs, output="@./")

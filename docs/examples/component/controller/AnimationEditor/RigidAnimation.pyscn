@@ -14,9 +14,9 @@ def createScene(rootNode):
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
 
                 point = rootNode.createChild('point')
-                point.createObject('EulerImplicit', firstOrder='1')
+                point.createObject('EulerImplicitSolver', firstOrder=True)
                 point.createObject('CGLinearSolver', iterations='100', tolerance="1e-5", threshold="1e-5")
-                point.createObject('MechanicalObject', template="Rigid3d",
+                point.createObject('MechanicalObject', template="Rigid3",
                         position='0 0 0 0 0 0 1',
                         showObject="1",
                         showObjectScale=".1",
@@ -33,7 +33,7 @@ def createScene(rootNode):
                 # drawTrajectory (default is true)
                 # drawSize : coeff size of diplayed elements of trajectory
                 point.createObject('AnimationEditor', name="animation",
-                template="Rigid3d", filename=path+"RigidAnimation.txt",
+                template="Rigid3", filename=path+"RigidAnimation.txt",
                 load="1",
                 drawTimeline="1", drawTrajectory="1")
 

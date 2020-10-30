@@ -21,7 +21,7 @@ def createScene(rootNode):
 				# FEM Model                              #
 				##########################################
 				finger = rootNode.createChild('finger')
-				finger.createObject('EulerImplicit', name='odesolver', firstOrder='1')
+				finger.createObject('EulerImplicitSolver', name='odesolver', firstOrder=True)
 				finger.createObject('SparseLDLSolver', name='preconditioner')
 
 				# Add a componant to load a VTK tetrahedral mesh and expose the resulting topology in the scene .
@@ -29,21 +29,21 @@ def createScene(rootNode):
 				finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
 
 				# Create a mechanical object component to stores the DoFs of the model
-				finger.createObject('MechanicalObject', name='tetras', template='Vec3d')
+				finger.createObject('MechanicalObject', name='tetras', template='Vec3')
 
 				# Gives a mass to the model
 				finger.createObject('UniformMass', totalMass='0.5')
 
 				# Add a TetrahedronFEMForceField component which implements an elastic material model solved using the Finite Element Method on
 				# tetrahedrons.
-				finger.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
+				finger.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
 
 				# To facilitate the selection of DoFs, SOFA has a concept called ROI (Region of Interest).
 				# The idea is that ROI component "select" all DoFS that are enclosed by their "region".
 				# We use ROI here to select a group of finger's DoFs that will be constrained to stay
 				# at a fixed position.
 				# You can either use "BoxROI"...
-				finger.createObject('BoxROI', name='ROI', box='-15 0 0 5 10 15', drawBoxes='true')
+				finger.createObject('BoxROI', name='ROI', box='-15 0 0 5 10 15', drawBoxes=True)
 				# Or "SphereROI"...
 				#finger.createObject('SphereROI', name='ROI', centers='0 0 0', radii='5')
 

@@ -9,4 +9,4 @@ def createScene(rootNode):
         finger = rootNode.createChild('finger')
         finger.createObject('MeshVTKLoader', name='loader', filename='data/mesh/pneunetCutCoarse.vtk')
         finger.createObject('MeshTopology', src='@loader', name='container')
-        finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showObject=True, showObjectScale=True)
+        finger.createObject('MechanicalObject', name='tetras', template='Vec3', showObject=True, showObjectScale=True)

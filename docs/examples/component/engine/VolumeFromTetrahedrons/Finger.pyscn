@@ -16,17 +16,17 @@ def createScene(rootNode):
                 # FEM Model                              #
                 ##########################################
                 finger = rootNode.createChild('finger')
-                finger.createObject('EulerImplicit')
+                finger.createObject('EulerImplicitSolver')
                 finger.createObject('CGLinearSolver')
 
                 finger.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk')
                 finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
                 finger.createObject('TetrahedronSetTopologyModifier')
-                finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
-                finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d', drawTetrahedra="1")
+                finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
+                finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3', drawTetrahedra="1")
 
                 # Create a mechanicaobject component to stores the DoFs of the model
-                finger.createObject('MechanicalObject', name='tetras', template='Vec3d', showTetra='true', showIndicesScale='4e-5', rx='0', dz='0')
+                finger.createObject('MechanicalObject', name='tetras', template='Vec3', showTetra=True, showIndicesScale='4e-5', rx='0', dz='0')
                 finger.createObject('VolumeFromTetrahedrons')
 
                 finger.createObject('TetrahedronFEMForceField')

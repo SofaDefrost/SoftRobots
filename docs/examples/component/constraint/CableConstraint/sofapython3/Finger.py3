@@ -38,14 +38,14 @@ def createScene(rootNode):
                 finger.addObject('MeshTopology', src='@loader', name='container')
 
                 # Create a mechanicaobject component to stores the DoFs of the model
-                finger.addObject('MechanicalObject', name='tetras', template='Vec3d', showIndices=False, showIndicesScale=4e-5)
+                finger.addObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale=4e-5)
 
                 # Gives a mass to the model
                 finger.addObject('UniformMass', totalMass=0.075)
 
                 # Add a TetrahedronFEMForceField componant which implement an elastic material model solved using the Finite Element Method on
                 # tetrahedrons.
-                finger.addObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio=0.45,  youngModulus=600)
+                finger.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.45,  youngModulus=600)
 
                 # To facilitate the selection of DoFs, SOFA has a concept called ROI (Region of Interest).
 		        # The idea is that ROI component "select" all DoFS that are enclosed by their "region".

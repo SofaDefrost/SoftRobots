@@ -15,9 +15,9 @@ def createScene(rootNode):
                 rootNode.createObject('FreeMotionAnimationLoop')
                 rootNode.createObject('GenericConstraintSolver', maxIterations="1000", tolerance="1e-3")
 
-                rootNode.createObject('CollisionPipeline', verbose="0")
+                rootNode.createObject('DefaultPipeline', verbose="0")
                 rootNode.createObject('BruteForceDetection', name="N2")
-                rootNode.createObject('CollisionResponse', response="FrictionContact", responseParams="mu=0")
+                rootNode.createObject('DefaultContactManager', response="FrictionContact", responseParams="mu=0")
                 rootNode.createObject('LocalMinDistance', name="Proximity", alarmDistance="1", contactDistance="0.1")
 
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
@@ -30,20 +30,20 @@ def createScene(rootNode):
                 # FEM Model                              #
                 ##########################################
                 tentacle = rootNode.createChild('tentacle')
-                tentacle.createObject('EulerImplicit', name='odesolver', rayleighMass="0.1", rayleighStiffness="0.1")
+                tentacle.createObject('EulerImplicitSolver', name='odesolver', rayleighMass="0.1", rayleighStiffness="0.1")
                 tentacle.createObject('SparseLDLSolver')
 
                 tentacle.createObject('MeshVTKLoader', name='loader', filename=path+'Tentacle.vtk')
                 tentacle.createObject('TetrahedronSetTopologyContainer', src='@loader')
                 tentacle.createObject('TetrahedronSetTopologyModifier')
-                tentacle.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
-                tentacle.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                tentacle.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
+                tentacle.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
-                tentacle.createObject('MechanicalObject', name='tetras', template='Vec3d')
+                tentacle.createObject('MechanicalObject', name='tetras', template='Vec3')
                 tentacle.createObject('UniformMass', totalMass='0.024')
-                tentacle.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='200')
+                tentacle.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.3',  youngModulus='200')
 
-                tentacle.createObject('BoxROI', name='ROI1', box='50 -20 30    75 20 50', drawBoxes='true')
+                tentacle.createObject('BoxROI', name='ROI1', box='50 -20 30    75 20 50', drawBoxes=True)
                 tentacle.createObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness='1e12')
 
                 tentacle.createObject('LinearSolverConstraintCorrection')
@@ -73,12 +73,12 @@ def createScene(rootNode):
                                         "0 -74.7298 158.056 "+
                                         "-2.498e-16 -93.8366 "+
                                         "158.056 -2.498e-16 -95"))
-                actuator.createObject('CableConstraint', template='Vec3d',
+                actuator.createObject('CableConstraint', template='Vec3',
                         name="cable",
                         indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14",
                         pullPoint="40 0 24"
                         )
-                actuator.createObject('BarycentricMapping', mapForces="false", mapMasses="false")
+                actuator.createObject('BarycentricMapping', mapForces=False, mapMasses=False)
 
 
                 ##########################################

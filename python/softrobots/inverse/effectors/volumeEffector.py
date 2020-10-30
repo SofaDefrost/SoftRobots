@@ -71,13 +71,13 @@ def VolumeEffector(surfaceMeshFileName=None,
 
     # This create a MeshTopology, a componant holding the topology of the cavity.
     # veffector.createObject('MeshTopology', name="topology", filename=surfaceMeshFileName)
-    veffector.createObject('Mesh', name='topology', src='@MeshLoader')
+    veffector.createObject('MeshTopology', name='topology', src='@MeshLoader')
 
     # This create a MechanicalObject, a componant holding the degree of freedom of our
     # mechanical modelling. In the case of a cavity actuated with veffector, it is a set of positions specifying
     # the points where the pressure is applied.
     veffector.createObject('MechanicalObject', src="@topology")
-    veffector.createObject('VolumeEffector', template='Vec3d', triangles='@topology.triangles')
+    veffector.createObject('VolumeEffector', template='Vec3', triangles='@topology.triangles')
     #veffector.createObject('SurfacePressureConstraint',
     #                      value=initialValue,
     #                      valueType=valueType)
@@ -85,7 +85,7 @@ def VolumeEffector(surfaceMeshFileName=None,
     # This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
     # between the cavity's DoFs and the parents's ones so that the pressure applied on the cavity wall will be mapped
     # to the volume structure and vice-versa;
-    veffector.createObject('BarycentricMapping', name="Mapping", mapForces="false", mapMasses="false")
+    veffector.createObject('BarycentricMapping', name="Mapping", mapForces=False, mapMasses=False)
     return veffector
 
 def createScene(node):

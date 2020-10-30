@@ -26,7 +26,7 @@ def createScene(rootNode):
 	# We use ROI here to select a group of finger's DoFs that will be constrained to stay
 	# at a fixed position.
 	# You can either use "BoxROI"...
-	finger.createObject('BoxROI', name='ROI1', box='-15 0 0 5 10 15', drawBoxes='true')
+	finger.createObject('BoxROI', name='ROI1', box='-15 0 0 5 10 15', drawBoxes=True)
 	# Or "SphereROI"...
 	#finger.createObject('SphereROI', name='ROI', centers='0 0 0', radii='5')
 
