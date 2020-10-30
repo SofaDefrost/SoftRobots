@@ -60,7 +60,8 @@ public:
     {
         ACTUATOR,
         EFFECTOR,
-        SENSOR
+        SENSOR,
+        EQUALITY
     };
 
     ConstraintType m_constraintType;

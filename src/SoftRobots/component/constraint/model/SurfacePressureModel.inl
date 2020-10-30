@@ -93,9 +93,14 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                              "Minimum pressure allowed for actuation. If no value is set by user, no \n"
                              "minimum pressure constraint will be considered. A negative pressure will empty/drain the cavity."))
 
+    , d_eqPressure(initData(&d_eqPressure, Real(0.0), "eqPressure",
+                            "Equality constraint for the pressure. \n"  
+                            "Solver will try to maintain the pressure at this value.\n"  
+                            "If unspecified, no equality constraint will be considered."))  
+
     , d_maxPressureVariation(initData(&d_maxPressureVariation, Real(0.0), "maxPressureVariation",
-        "Maximum pressure variation allowed for actuation. If no value is set by user, no \n"
-        "maximum will be considered."))
+                            "Maximum pressure variation allowed for actuation. If no value is set by user, no \n"
+                            "maximum will be considered."))
 
     , d_volumeGrowth(initData(&d_volumeGrowth, double(0.0), "volumeGrowth",
                              "Output volume growth."))
@@ -114,6 +119,11 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                              "Maximum volume growth variation allowed for actuation. If no value is set by user, no \n"
                              "maximum will be considered. NB: this value has a dependancy with the time step \n"
                              "(volume/dt) in the dynamic case."))
+
+    , d_eqVolumeGrowth(initData(&d_eqVolumeGrowth, Real(0.0), "eqVolumeGrowth",
+                            "Equality constraint for the volume growth. \n"
+                            "Solver will try to maintain the volume growth at this value.\n"
+                            "If unspecified, no equality constraint will be considered."))
 
     , d_drawPressure(initData(&d_drawPressure, false, "drawPressure",
                                "Visualization of the value of pressure. \n"

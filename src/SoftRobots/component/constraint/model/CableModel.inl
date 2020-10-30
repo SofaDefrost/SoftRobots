@@ -90,6 +90,12 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
                           "If unspecified no minimum value will be considered \n"
                           "and the cable will then be seen as a stiff rod able to push."))
 
+    , d_eqForce(initData(&d_eqForce,Real(0.0), "eqForce",
+                          "Equality force of the actuator. \n"
+                          "Solver will try to maintain the cable force at this value\n"
+                          "If unspecified, no value will be considered \n"
+                          ))
+
     , d_maxPositiveDisplacement(initData(&d_maxPositiveDisplacement,Real(0.0), "maxPositiveDisp",
                                          "Maximum displacement of the actuator in the positive direction. \n"
                                          "If unspecified no maximum value will be considered."))
@@ -97,6 +103,10 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
     , d_maxNegativeDisplacement(initData(&d_maxNegativeDisplacement,Real(0.0), "maxNegativeDisp",
                                          "Maximum displacement of the actuator in the negative direction. \n"
                                          "If unspecified no maximum value will be considered."))
+    , d_eqDisplacement(initData(&d_eqDisplacement,Real(0.0), "eqDisp",
+                                "Equality displacement of the actuator. \n"
+                                "Solver will try to maintain the cable displacement at this value\n"
+                                "If unspecified, no value will be considered \n" ))
 
     , d_maxDispVariation(initData(&d_maxDispVariation,Real(0.0), "maxDispVariation",
                                    "Maximum variation of the displacement allowed. If not set, no max variation will be concidered."))
