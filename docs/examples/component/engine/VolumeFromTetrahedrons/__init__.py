@@ -16,20 +16,21 @@ Example
 .. sourcecode:: python
 
     	finger = rootNode.createChild('finger')
- 
+
 	# Create the popology
 	finger.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk')
 	finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
 	finger.createObject('TetrahedronSetTopologyModifier')
 	finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
-	finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3', drawTetrahedra="1")
+	finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3', drawTetrahedra=True)
 
 	finger.createObject('VolumeFromTetrahedrons')
+    
 
 Data fields
 ***********
 
-.. list-table:: 
+.. list-table::
    :header-rows: 1
    :widths: auto
 
@@ -42,7 +43,7 @@ Data fields
    * - **hexas**
      - If not set by user, find the context topology.
 
-.. list-table:: 
+.. list-table::
    :header-rows: 1
    :widths: auto
 
@@ -51,7 +52,7 @@ Data fields
    * - **update**
      - If true, will update the volume with the current positions.
 
-.. list-table:: 
+.. list-table::
    :header-rows: 1
    :widths: auto
 
@@ -61,5 +62,3 @@ Data fields
      - Read only. Output volume.
 
 """
-
-

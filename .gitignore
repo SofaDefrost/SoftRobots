@@ -1,3 +1,5 @@
 *.pyc
 *py.log
 *pyscn.log
+*py3.log
+*py3scn.log

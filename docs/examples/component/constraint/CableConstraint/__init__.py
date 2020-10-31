@@ -4,8 +4,8 @@
 In this directory you will find multiple examples showing how to use the **CableConstraint** component:
 
 - **Finger.pyscn** : Soft actuated finger
-- **CableConstraint.pyscn** : Stanford bunny 
-- **DisplacementVsForceControl.pyscn** : Stanford bunny 
+- **CableConstraint.pyscn** : Stanford bunny
+- **DisplacementVsForceControl.pyscn** : Stanford bunny
 
 Below is a video of a soft finger actuated with one cable. You can run this simulation by loading the file **Finger.pyscn** with the application runSofa.
 
@@ -26,31 +26,31 @@ Example
 	# mechanical modelling. In the case of a cable it is a set of positions specifying
 	# the points where the cable is passing by.
 	cable.createObject('MechanicalObject',
-		            position=(
-					"-17.5 12.5 2.5 " +
-					"-32.5 12.5 2.5 " +
-					"-47.5 12.5 2.5 " +
-					"-62.5 12.5 2.5 " +
-					"-77.5 12.5 2.5 " +
+		            position=[
+					[-17.5, 12.5, 2.5],
+					[-32.5, 12.5, 2.5],
+					[-47.5, 12.5, 2.5],
+					[-62.5, 12.5, 2.5],
+					[-77.5, 12.5, 2.5],
 
-					"-83.5 12.5 4.5 " +
-					"-85.5 12.5 6.5 " +
-					"-85.5 12.5 8.5 " +
-					"-83.5 12.5 10.5 " +
+					[-83.5, 12.5, 4.5],
+					[-85.5, 12.5, 6.5],
+					[-85.5, 12.5, 8.5],
+					[-83.5, 12.5, 10.5],
 
-					"-77.5 12.5 12.5 " +
-					"-62.5 12.5 12.5 " +
-					"-47.5 12.5 12.5 " +
-					"-32.5 12.5 12.5 " +
-					"-17.5 12.5 12.5 " ))
+					[-77.5, 12.5, 12.5],
+					[-62.5, 12.5, 12.5],
+					[-47.5, 12.5, 12.5],
+					[-32.5, 12.5, 12.5],
+					[-17.5, 12.5, 12.5])
 
 	# Create a CableConstraint object with a name.
 	# The indices are referring to the MechanicalObject's positions.
 	# The last indice is where the pullPoint is connected.
 	cable.createObject('CableConstraint', name="aCableActuator",
 		           #indices=range(0,14),
-		           indices="0 1 2 3 4 5 6 7 8 9 10 11 12 13",
-		           pullPoint="0.0 12.5 2.5")
+		           indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+		           pullPoint=[0.0, 12.5, 2.5])
 
 	# This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
 	# between the cable's DoFs and the finger's ones so that movements of the cable's DoFs will be mapped
@@ -60,15 +60,15 @@ Example
 Data fields
 ***********
 
-.. list-table:: 
+.. list-table::
    :header-rows: 1
    :widths: auto
 
    * - Required
      - Description
-   * - **indices** 
+   * - **indices**
      - List of points connected by the cable (from extremity to actuated point). If no indices are given, default value is 0. In case of multiple indices, one point will be actuated and the others will represent sliding points for the cable.
-   * - **pullPoint** 
+   * - **pullPoint**
      - Fixed point from which the cable is pulled. If unspecified, the default value is {0.0,0.0,0.0}
    * - **value**
      - Displacement or force to impose.
@@ -77,7 +77,7 @@ Data fields
    * - **valueType**
      - Either "displacement", the contstraint will impose the displacement provided in data value[valueIndex], or force, in this case the contstraint will impose the force provided in data value[valueIndex]. If unspecified, the default value is displacement.
 
-.. list-table:: 
+.. list-table::
    :header-rows: 1
    :widths: auto
 
@@ -102,7 +102,7 @@ Data fields
    * - **hasPullPoint**
      - If false, the pull point is not considered and the cable is entirely mapped. In that case, needs at least 2 different point in indices
 
-.. list-table:: 
+.. list-table::
    :header-rows: 1
    :widths: auto
 
@@ -118,5 +118,3 @@ Data fields
      - Read only. Output displacement compared to the initial cable length
 
 """
-
-

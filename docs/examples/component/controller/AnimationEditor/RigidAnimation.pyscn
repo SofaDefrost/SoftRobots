@@ -11,7 +11,7 @@ def createScene(rootNode):
 
                 rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
                 rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
-                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765])
 
                 point = rootNode.createChild('point')
                 point.createObject('EulerImplicitSolver', firstOrder=True)
