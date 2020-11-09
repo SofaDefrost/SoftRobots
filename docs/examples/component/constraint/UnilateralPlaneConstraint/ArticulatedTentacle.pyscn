@@ -8,7 +8,7 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
 
-                rootNode.createObject('RequiredPlugin', name='SoftRobots')
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots SofaPython SofaSparseSolver SofaOpenglVisual')
                 rootNode.createObject('VisualStyle', displayFlags="showVisualModels hideBehaviorModels showCollisionModels \
                                         hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe")
 
@@ -96,13 +96,14 @@ def createScene(rootNode):
 
                 tentacleContact = tentacle.createChild('contact')
                 tentacleContact.createObject('MechanicalObject',
-                        position=[[64 0 11],   [69 7 8]     [69 -7 8]     [71 0 17],
-                                 [107 0 -23],   [111 7 -27]     [111 -7 -27]    [117 0 -17],
-                                 [93 0 -7.5],   [97 7 -11]     [97 -7 -11]    [102 0 -0.5],
-                                 [138 0 -73],   [141 7 -77]     [141 -7 -77]    [146 0 -72],
-                                 [78 0 3],     [83 7 0]    [83 -7 0]    [86 0 9  ],
-                                 [118 0 -38 ],  [122 6.7 -42]     [122 -7 -42]   [129 -0.2 -35 ],
-                                 [129.5 0 -55.5],    [132 7 -60]    [132.5 -7 -59.6]   [138 0 -53.5]])
+                                        position=[
+                                                 [64,    0,   11], [69,  7,     8], [69,  -7,     8],   [71,  0,    17],
+                                                 [107,   0,  -23], [111, 7,   -27], [111, -7,   -27],   [117, 0,    -17],
+                                                 [93,    0, -7.5], [97,  7,   -11], [97,  -7,   -11],   [102, 0,    -0.5],
+                                                 [138,   0,  -73], [141, 7,   -77], [141, -7,   -77],   [146, 0,    -72],
+                                                 [78,    0,    3], [83,  7,     0], [83,  -7,     0],   [86,  0,    9],
+                                                 [118,   0,  -38], [122, 6.7, -42], [122, -7,    -42],  [129, -0.2, -35 ],
+                                                 [129.5, 0,-55.5], [132, 7,   -60], [132.5,-7, -59.6],  [138, 0,    -53.5]])
                 tentacleContact.createObject('UnilateralPlaneConstraint', indices=[0 ,1, 2, 3])
                 tentacleContact.createObject('UnilateralPlaneConstraint', indices=[4 ,5, 6, 7])
                 tentacleContact.createObject('UnilateralPlaneConstraint', indices=[8 ,9, 10, 11])

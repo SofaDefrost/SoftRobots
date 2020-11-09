@@ -4,9 +4,9 @@ import Sofa
 import os
 path = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
 
-from stlib.scene import Scene
+from stlib3.scene import Scene
 # A prefab that implements an ElasticMaterialObject
-from stlib.physics.deformable import ElasticMaterialObject
+from stlib3.physics.deformable import ElasticMaterialObject
 
 def createScene(rootNode):
 	rootNode.addObject("RequiredPlugin", pluginName="SoftRobots")
@@ -64,7 +64,7 @@ def createScene(rootNode):
 			[-62.5, 12.5, 12.5],
 			[-47.5, 12.5, 12.5],
 			[-32.5, 12.5, 12.5],
-			[-17.5, 12.5, 12.5])
+			[-17.5, 12.5, 12.5]])
 
 	# add a CableConstraint object with a name.
 	# the indices are referring to the MechanicalObject's positions.

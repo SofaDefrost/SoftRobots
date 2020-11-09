@@ -5,7 +5,7 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
 
-                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots SofaOpenglVisual SofaSparseSolver SofaPreconditioner')
                 rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
                 rootNode.createObject('FreeMotionAnimationLoop')
@@ -51,7 +51,7 @@ def createScene(rootNode):
                 bunnyVisu.createObject('TriangleSetGeometryAlgorithms', template='Vec3')
                 bunnyVisu.createObject('Tetra2TriangleTopologicalMapping', name='Mapping', input="@../container", output="@container")
 
-                bunnyVisu.createObject('OglModel', template='ExtVec3f', color=[0.3, 0.2, 0.2, 0.6])
+                bunnyVisu.createObject('OglModel', color=[0.3, 0.2, 0.2, 0.6])
                 bunnyVisu.createObject('IdentityMapping')
 
 

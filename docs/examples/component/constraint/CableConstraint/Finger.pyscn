@@ -6,7 +6,7 @@ import os
 path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
-                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots SofaOpenglVisual SofaSparseSolver SofaPython')
                 rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
                 rootNode.createObject('FreeMotionAnimationLoop')
@@ -93,7 +93,7 @@ def createScene(rootNode):
     					[-62.5, 12.5, 12.5],
     					[-47.5, 12.5, 12.5],
     					[-32.5, 12.5, 12.5],
-    					[-17.5, 12.5, 12.5])
+    					[-17.5, 12.5, 12.5]])
 
                 # Create a CableConstraint object with a name.
                 # the indices are referring to the MechanicalObject's positions.
@@ -122,7 +122,7 @@ def createScene(rootNode):
 
                 # Add to this empty node a rendering model made of triangles and loaded from an stl file.
                 fingerVisu.createObject('MeshSTLLoader', filename=path+"finger.stl", name="loader")
-                fingerVisu.createObject('OglModel', src="@loader", template='ExtVec3f', color=[0.0, 0.7, 0.7])
+                fingerVisu.createObject('OglModel', src="@loader", color=[0.0, 0.7, 0.7])
 
                 # Add a BarycentricMapping to deform the rendering model in a way that follow the ones of the parent mechanical model.
                 fingerVisu.createObject('BarycentricMapping')

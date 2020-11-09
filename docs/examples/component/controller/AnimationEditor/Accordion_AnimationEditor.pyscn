@@ -9,7 +9,7 @@ pathMesh = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
 
-                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots SofaSparseSolver SofaOpenglVisual SofaMiscMapping')
                 rootNode.createObject('VisualStyle', displayFlags="showVisualModels hideBehaviorModels hideCollisionModels \
                                         hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe")
 

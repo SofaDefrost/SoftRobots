@@ -9,7 +9,7 @@ pathMesh = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
 
-                rootNode.addObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SoftRobots.Inverse SofaOpenglVisual SofaSparseSolver')
                 rootNode.addObject('VisualStyle', displayFlags="showVisualModels hideBehaviorModels hideCollisionModels \
                                         hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe")
 
@@ -107,21 +107,21 @@ def createScene(rootNode):
                                 [-1.5, 0, 4.5   ]])
                 cables.addObject('CableActuator', template='Vec3',
                         name="cable1",
-                        indices=range(5),
+                        indices=list(range(5)),
                         pullPoint=[1.5, 0, 0],
                         minForce=0,
                         maxPositiveDisp=1.5
                         )
                 cables.addObject('CableActuator', template='Vec3',
                         name="cable2",
-                        indices=range(5,10),
+                        indices=list(range(5,10)),
                         pullPoint=[0, -1.5, 0],
                         minForce=0,
                         maxPositiveDisp=1.5
                         )
                 cables.addObject('CableActuator', template='Vec3',
                         name="cable3",
-                        indices=range(10,15),
+                        indices=list(range(10,15)),
                         pullPoint=[-1.5, 0, 0],
                         minForce=0,
                         maxPositiveDisp=1.5

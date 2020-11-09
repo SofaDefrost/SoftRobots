@@ -16,7 +16,7 @@ def createScene(rootNode):
 
                 rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765])
 
-                BunnyPressure = createBunny(rootNode, Name='BunnyPressure', InitialValue=5)
+                BunnyPressure = createBunny(rootNode, name='BunnyPressure', initialValue=2)
 
                 BunnyVolume = createBunny(rootNode, translation=[15,0,0], controlType='VolumeConstraint', name='BunnyVolume ', initialValue=40)
 
