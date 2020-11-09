@@ -85,14 +85,12 @@ def Tripod(parent, name='Tripod', radius=60, numMotors=3, angleShift=180.0, effe
 
     actuators = o.RigidParts.createChild('actuators')
 
-    actuator0 = actuators.createObject('SlidingActuator', name='SlidingActuator0', template='Rigid3',
-                                       direction='0 0 0 1 0 0', indices=0, maxForce='100000', minForce='-30000')
-    actuator1 = actuators.createObject('SlidingActuator', name='SlidingActuator1', template='Rigid3',
-                                        direction='0 0 0 '+str(cos(4*math.pi/3))+' 0 '+str(sin(4*math.pi/3)), indices=1, showDirection='1',
-                                        showVisuScale='100', maxForce='100000', minForce='-30000')
-    actuator2 = actuators.createObject('SlidingActuator', name='SlidingActuator2', template='Rigid3',
-                                        direction='0 0 0 '+str(cos(2*math.pi/3))+' 0 '+str(sin(2*math.pi/3)), indices=2, showDirection='1',
-                                        showVisuScale='100', maxForce='100000', minForce='-30000')
+    actuator0 = actuators.createObject('SlidingActuator', name='SlidingActuator0', template='Rigid3', direction='0 0 0 1 0 0', indices=0,
+                                        maxPositiveDisp=-0.5, maxNegativeDisp=1.5, maxDispVariation=0.02, initDisplacement=-1.47)
+    actuator1 = actuators.createObject('SlidingActuator', name='SlidingActuator1', template='Rigid3', direction='0 0 0 '+str(cos(4*math.pi/3))+' 0 '+str(sin(4*math.pi/3)), indices=1,
+                                        maxPositiveDisp=-0.5, maxNegativeDisp=1.5, maxDispVariation=0.02, initDisplacement=-1.47)
+    actuator2 = actuators.createObject('SlidingActuator', name='SlidingActuator2', template='Rigid3', direction='0 0 0 '+str(cos(2*math.pi/3))+' 0 '+str(sin(2*math.pi/3)), indices=2,
+                                        maxPositiveDisp=-0.5, maxNegativeDisp=1.5, maxDispVariation=0.02, initDisplacement=-1.47)
 
     if goalNode == None:
         Effector = actuators.createObject('PositionEffector', name='effector', template='Rigid3', useDirections='1 1 1 0 0 0',

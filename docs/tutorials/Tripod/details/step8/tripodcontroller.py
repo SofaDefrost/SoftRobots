@@ -92,10 +92,8 @@ class InverseController(Sofa.PythonScriptController):
     def onKeyPressed(self, key):
         if key == Key.I:
             self.activate = 1
-
-    def onBeginAnimationStep(self,dt):
-        self.nodeActuators.activated = bool(self.activate)
-        self.nodeActuators.init()
+            self.nodeActuators.activated = bool(self.activate)
+            self.nodeActuators.init()
 
     def onEndAnimationStep(self,dt):
 
