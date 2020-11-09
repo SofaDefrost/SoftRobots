@@ -10,9 +10,9 @@ def createScene(rootNode):
                 rootNode.createObject('RequiredPlugin', name='SofaSparseSolver')
 
                 rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
-                rootNode.findData('dt').value= 0.005
-                rootNode.findData('gravity').value= [0, -9810, 0]
-                rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765])
+                rootNode.dt = 0.001;
+                rootNode.gravity = [0., 0., -9810];
+                rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
                 rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
                 ##### Compute the beam topology using python

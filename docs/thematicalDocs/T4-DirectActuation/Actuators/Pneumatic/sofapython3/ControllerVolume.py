@@ -3,9 +3,9 @@ import Sofa.Core
 class ControllerVolume(Sofa.Core.Controller):
 
 	def __init__(self, *a, **kw):
-        Sofa.Core.Controller.__init__(self, *a, **kw)
-        self.node = kw["node"]
-        return
+		Sofa.Core.Controller.__init__(self, *a, **kw)
+		self.node = kw["node"]
+		return
 
 	def onKeypressedEvent(self,e):
 		inputvalue = self.node.cavity.surfaceConstraint.value

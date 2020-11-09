@@ -13,22 +13,20 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 #La scene est en centimetre
 
 def createScene(rootNode):
-    rootNode.createObject('RequiredPlugin', pluginName=["SoftRobots", "SoftRobots.Inverse", "SofaSparseSolver", "SofaOpenglVisual"]);
+    rootNode.createObject('RequiredPlugin', pluginName=["SoftRobots", "SoftRobots.Inverse", "SofaSparseSolver", "SofaOpenglVisual", "SofaPreconditioner", "SofaBoundaryCondition"]);
     rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields ');
 
-    rootNode.findData('dt').value= 0.03;
-    rootNode.findData('gravity').value= [0., 0., -9810];
+    rootNode.dt = 0.03;
+    rootNode.gravity = [0., 0., -9810];
 
     rootNode.createObject('FreeMotionAnimationLoop');
     rootNode.createObject('QPInverseProblemSolver', epsilon=1e-3, printLog=0);
 
-    rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765]);
-    # rootNode.createObject('OglGrid', size="1000", nbSubdiv="100")
+    rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1]);
     rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
 
     # rootNode.createObject('PythonScriptController', classname="controller", filename="ArduinoInterface.py");
     # rootNode.createObject('SerialPortBridgeGeneric', name="serial", port="/dev/ttyACM0", baudRate=115200, size=3, listening=True)
-
 
 
     ##########################################
@@ -45,20 +43,16 @@ def createScene(rootNode):
     goal.createObject('UncoupledConstraintCorrection')
 
 
-
     ###############################
     ## MECHANICAL MODEL
     ###############################
 
     robot = rootNode.createChild('robot')
     robot.createObject('EulerImplicitSolver', name='odesolver', firstOrder=False);
-    robot.createObject('PCGLinearSolver', name='CG', preconditioners='preconditioner', tolerance=1e-15);
+    robot.createObject('ShewchukPCGLinearSolver', name='CG', preconditioners='preconditioner', tolerance=1e-15);
     robot.createObject('SparseLDLSolver', name='preconditioner');
     robot.createObject('MeshVTKLoader', name='loader', filename=path+'branch.vtu');
-    robot.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray=1, checkConnexity=1);
-    robot.createObject('TetrahedronSetTopologyModifier');
-    robot.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3');
-    robot.createObject('TetrahedronSetGeometryAlgorithms',  template='Vec3', drawEdges=False);
+    robot.createObject('MeshTopology', src='@loader')
 
     robot.createObject('MechanicalObject', name='tetras', template='Vec3', position='@loader.position');
     robot.createObject('UniformMass', totalMass=0.4);
@@ -74,8 +68,6 @@ def createScene(rootNode):
     robot.createObject('LinearSolverConstraintCorrection', solverName='preconditioner');
 
 
-
-
     ###############################
     ## EFFECTOR
     ###############################
@@ -86,7 +78,6 @@ def createScene(rootNode):
             indices=0,
             effectorGoal="@../../goal/goalMO.position")
     effector.createObject('BarycentricMapping', mapForces=False, mapMasses=False)
-
 
 
     ###############################

@@ -9,12 +9,13 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SofaPython3')
     rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
+    rootNode.addObject('RequiredPlugin', name='SofaBoundaryCondition')
     rootNode.addObject('VisualStyle', displayFlags='showBehaviorModels showForceFields');
 
-    rootNode.findData('dt').value= 0.001;
-    rootNode.findData('gravity').value= [0., 0., -9810];
+    rootNode.dt = 0.001;
+    rootNode.gravity = [0., 0., -9810];
 
-    rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765]);
+    rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1]);
     rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight");
 
     ###############################

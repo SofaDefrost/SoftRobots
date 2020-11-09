@@ -5,7 +5,7 @@ import Sofa
 from ControllerDisplacement import ControllerDisplacement
 
 import os
-path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
+path = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
 
 def createScene(rootNode):
 				rootNode.addObject('RequiredPlugin', name='SoftRobots')
@@ -18,7 +18,7 @@ def createScene(rootNode):
 
 				rootNode.addObject('GenericConstraintSolver', tolerance=1e-5, maxIterations=100)
 
-				rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765])
+				rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
 				rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
 				##########################################
@@ -67,22 +67,22 @@ def createScene(rootNode):
 				cable = finger.addChild('cable')
 				cable.addObject('MechanicalObject',
 						position=[
-								[17.5, 12.5, 2.5],
-								[32.5, 12.5, 2.5],
-								[47.5, 12.5, 2.5],
-								[62.5, 12.5, 2.5],
-								[77.5, 12.5, 2.5],
+								[-17.5, 12.5, 2.5],
+								[-32.5, 12.5, 2.5],
+								[-47.5, 12.5, 2.5],
+								[-62.5, 12.5, 2.5],
+								[-77.5, 12.5, 2.5],
 
-								[83.5, 12.5, 4.5],
-								[85.5, 12.5, 6.5],
-								[85.5, 12.5, 8.5],
-								[83.5, 12.5, 10.5],
+								[-83.5, 12.5, 4.5],
+								[-85.5, 12.5, 6.5],
+								[-85.5, 12.5, 8.5],
+								[-83.5, 12.5, 10.5],
 
-								[77.5, 12.5, 12.5],
-								[62.5, 12.5, 12.5],
-								[47.5, 12.5, 12.5],
-								[32.5, 12.5, 12.5],
-								[17.5, 12.5, 12.5]])
+								[-77.5, 12.5, 12.5],
+								[-62.5, 12.5, 12.5],
+								[-47.5, 12.5, 12.5],
+								[-32.5, 12.5, 12.5],
+								[-17.5, 12.5, 12.5]])
 
 				# Add a CableConstraint object with a name.
 				# the indices are referring to the MechanicalObject's positions.
@@ -110,7 +110,8 @@ def createScene(rootNode):
 				fingerVisu = finger.addChild('visu')
 
 				# Add to this empty node a rendering model made of triangles and loaded from an stl file.
-				fingerVisu.addObject('OglModel', filename=path+"finger.stl", color=[0.0, 0.7, 0.7])
+				fingerVisu.addObject('MeshSTLLoader', name='loader', filename=path+"finger.stl")
+				fingerVisu.addObject('OglModel', src='@loader', color=[0.0, 0.7, 0.7, 1])
 
 				# Add a BarycentricMapping to deform the rendering model to follow the ones of the mechanical model.
 				fingerVisu.addObject('BarycentricMapping')

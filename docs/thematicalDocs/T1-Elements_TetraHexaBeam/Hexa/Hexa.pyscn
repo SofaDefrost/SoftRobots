@@ -9,12 +9,13 @@ def createScene(rootNode):
 
     rootNode.createObject('RequiredPlugin', name='SofaPython')
     rootNode.createObject('RequiredPlugin', name='SofaSparseSolver')
+    rootNode.createObject('RequiredPlugin', name='SofaBoundaryCondition')
     rootNode.createObject('VisualStyle', displayFlags='showBehaviorModels showForceFields');
 
-    rootNode.findData('dt').value= 0.001;
-    rootNode.findData('gravity').value= [0., 0., -9810];
+    rootNode.dt = 0.001;
+    rootNode.gravity = [0., 0., -9810];
 
-    rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765]);
+    rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1]);
     rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
 
     ###############################
@@ -25,11 +26,8 @@ def createScene(rootNode):
     robot.createObject('EulerImplicitSolver');
     robot.createObject('SparseLDLSolver');
     ### Here you set the Hexahedron topology
-    robot.createObject('RegularGridTopology', name="grid", filename=path+'branch.stl', n=[5, 5, 5]);
-    # robot.createObject('HexahedronSetTopologyContainer', hexahedra='@grid.hexahedra' , name='container', checkConnexity=True);
-    # robot.createObject('HexahedronSetTopologyModifier');
-    # robot.createObject('HexahedronSetTopologyAlgorithms');
-    # robot.createObject('HexahedronSetGeometryAlgorithms');
+    robot.createObject('MeshSTLLoader', name='loader', filename=path+'branch.stl');
+    robot.createObject('SparseGridTopology', name="grid", src='@loader', n=[15, 15, 15]);
 
     robot.createObject('MechanicalObject', name='hexas', src="@grid");
     robot.createObject('UniformMass', totalMass=0.4);
