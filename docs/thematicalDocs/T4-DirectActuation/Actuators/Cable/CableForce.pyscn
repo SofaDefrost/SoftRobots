@@ -6,15 +6,17 @@ import os
 path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
-				rootNode.createObject('RequiredPlugin', name = "SoftRobots", pluginName='SoftRobots')
-				rootNode.createObject('RequiredPlugin', name = "SofaPython" , pluginName='SofaPython')
+				rootNode.createObject('RequiredPlugin', name='SoftRobots')
+				rootNode.createObject('RequiredPlugin', name='SofaPython')
+				rootNode.createObject('RequiredPlugin', name='SofaOpenglVisual')
+				rootNode.createObject('RequiredPlugin', name='SofaSparseSolver')
 				rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
 				rootNode.createObject('FreeMotionAnimationLoop')
 
-				rootNode.createObject('GenericConstraintSolver', tolerance="1e-5", maxIterations="100")
+				rootNode.createObject('GenericConstraintSolver', tolerance=1e-5, maxIterations=100)
 
-				rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+				rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
 				rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
 				##########################################
@@ -32,21 +34,21 @@ def createScene(rootNode):
 				finger.createObject('MechanicalObject', name='tetras', template='Vec3')
 
 				# Gives a mass to the model
-				finger.createObject('UniformMass', totalMass='0.5')
+				finger.createObject('UniformMass', totalMass=0.5)
 
 				# Add a TetrahedronFEMForceField component which implements an elastic material model solved using the Finite Element Method on
 				# tetrahedrons.
-				finger.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.3',  youngModulus='18000')
+				finger.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.3,  youngModulus=18000)
 
 				# To facilitate the selection of DoFs, SOFA has a concept called ROI (Region of Interest).
 				# The idea is that ROI component "select" all DoFS that are enclosed by their "region".
 				# We use ROI here to select a group of finger's DoFs that will be constrained to stay
 				# at a fixed position.
-				finger.createObject('BoxROI', name='ROI', box='-15 0 0 5 10 15', drawBoxes=True)
+				finger.createObject('BoxROI', name='ROI', box=[-15, 0, 0, 5, 10, 15], drawBoxes=True)
 
 				# RestShapeSpringsForceField is one way in Sofa to implement fixed point constraint.
 				# Here the constraints are applied to the DoFs selected by the previously defined BoxROI
-				finger.createObject('RestShapeSpringsForceField', points='@ROI.indices', stiffness='1e12')
+				finger.createObject('RestShapeSpringsForceField', points='@ROI.indices', stiffness=1e12)
 
 				finger.createObject('LinearSolverConstraintCorrection')
 
@@ -56,31 +58,31 @@ def createScene(rootNode):
 				##########################################
 				cable = finger.createChild('cable')
 				cable.createObject('MechanicalObject',
-						position=(
-								" -17.5 12.5 2.5 " +
-								" -32.5 12.5 2.5 " +
-								" -47.5 12.5 2.5 " +
-								" -62.5 12.5 2.5 " +
-								" -77.5 12.5 2.5 " +
+						position=[
+								[-17.5, 12.5, 2.5],
+								[-32.5, 12.5, 2.5],
+								[-47.5, 12.5, 2.5],
+								[-62.5, 12.5, 2.5],
+								[-77.5, 12.5, 2.5],
 
-								" -83.5 12.5 4.5 " +
-								" -85.5 12.5 6.5 " +
-								" -85.5 12.5 8.5 " +
-								" -83.5 12.5 10.5 " +
+								[-83.5, 12.5, 4.5],
+								[-85.5, 12.5, 6.5],
+								[-85.5, 12.5, 8.5],
+								[-83.5, 12.5, 10.5],
 
-								" -77.5 12.5 12.5 " +
-								" -62.5 12.5 12.5 " +
-								" -47.5 12.5 12.5 " +
-								" -32.5 12.5 12.5 " +
-								" -17.5 12.5 12.5 " ))
+								[-77.5, 12.5, 12.5],
+								[-62.5, 12.5, 12.5],
+								[-47.5, 12.5, 12.5],
+								[-32.5, 12.5, 12.5],
+								[-17.5, 12.5, 12.5]])
 
 				# Create a CableConstraint object with a name.
 				# the indices are referring to the MechanicalObject's positions.
 				# The last indice is where the pullPoint is connected.
 				# By default, the Cable is controlled by displacement, rather than force.
 				cable.createObject('CableConstraint', name="aCable",
-						indices='0 1 2 3 4 5 6 7 8 9 10 11 12 13',
-						pullPoint="0.0 12.5 2.5", valueType='force')
+						indices=range(14),
+						pullPoint=[0.0, 12.5, 2.5], valueType='force')
 
 				# This create a BarycentricMapping. A BarycentricMapping is a key element as it will create a bi-directional link
 				# between the cable's DoFs and the finger's ones so that movements of the cable's DoFs will be mapped
@@ -100,7 +102,8 @@ def createScene(rootNode):
 				fingerVisu = finger.createChild('visu')
 
 				# Add to this empty node a rendering model made of triangles and loaded from an stl file.
-				fingerVisu.createObject('OglModel', filename=path+"finger.stl", template='ExtVec3f', color="0.0 0.7 0.7")
+				fingerVisu.createObject('MeshSTLLoader', name='loader', filename=path+"finger.stl")
+				fingerVisu.createObject('OglModel', src='@loader', color=[0.0, 0.7, 0.7, 1])
 
 				# Add a BarycentricMapping to deform the rendering model to follow the ones of the mechanical model.
 				fingerVisu.createObject('BarycentricMapping')

@@ -7,12 +7,15 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 #Units: cm and kg
 
 def createScene(rootNode):
+
+    rootNode.createObject('RequiredPlugin', name='SofaPython')
+    rootNode.createObject('RequiredPlugin', name='SofaSparseSolver')
     rootNode.createObject('VisualStyle', displayFlags='showBehaviorModels showForceFields');
 
-    rootNode.findData('dt').value= 0.001;
-    rootNode.findData('gravity').value= '0. 0. -9810';
+    rootNode.dt = 0.001;
+    rootNode.gravity = [0., 0., -9810];
 
-    rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765');
+    rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1]);
     rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
 
     ###############################
@@ -24,16 +27,16 @@ def createScene(rootNode):
     robot.createObject('SparseLDLSolver');
     robot.createObject('MeshVTKLoader', name='loader', filename=path+'branch.vtu');
     ### Here you set the tetrahedra topology
-    robot.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray='1', checkConnexity='1');
+    robot.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray=1, checkConnexity=1);
     robot.createObject('TetrahedronSetTopologyModifier');
     robot.createObject('TetrahedronSetTopologyAlgorithms');
     robot.createObject('TetrahedronSetGeometryAlgorithms');
 
     robot.createObject('MechanicalObject', name='tetras');
-    robot.createObject('UniformMass', totalMass='0.4');
-    robot.createObject('TetrahedronFEMForceField', poissonRatio='0.45',  youngModulus='600');
+    robot.createObject('UniformMass', totalMass=0.4);
+    robot.createObject('TetrahedronFEMForceField', poissonRatio=0.45,  youngModulus=600);
 
-    robot.createObject('BoxROI', name='boxROI', box="-30 80 70 30 140 130   -130 -100 70  -60  -20 130  130 -100 70  60  -20 130", drawBoxes=True);
+    robot.createObject('BoxROI', name='boxROI', box=[[-30, 80, 70, 30, 140, 130], [-130, -100, 70,  -60,  -20, 130],  [130, -100, 70,  60,  -20, 130]], drawBoxes=True);
     robot.createObject('FixedConstraint', indices="@boxROI.indices");
 
     return rootNode

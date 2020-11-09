@@ -75,12 +75,6 @@ void CableConstraint<DataTypes>::init()
 {
     Inherit1::init();
 
-    // To remove in SoftRobots v20.0
-    if(!d_minForce.isSet())
-        msg_warning() << "An old implementation of CableConstraint was not allowing negative force. This is now possible. "
-                      << "However, to limit the force to be strictly positive you now have to set minForce=0.";
-    //
-
     internalInit();
 }
 

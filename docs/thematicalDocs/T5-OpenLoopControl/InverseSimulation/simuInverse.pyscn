@@ -13,22 +13,20 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 #La scene est en centimetre
 
 def createScene(rootNode):
-    rootNode.createObject('RequiredPlugin', pluginName=["SoftRobots", "SoftRobots.Inverse"]);
+    rootNode.createObject('RequiredPlugin', pluginName=["SoftRobots", "SoftRobots.Inverse", "SofaSparseSolver", "SofaOpenglVisual", "SofaPreconditioner", "SofaBoundaryCondition"]);
     rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields ');
 
-    rootNode.findData('dt').value= 0.03;
-    rootNode.findData('gravity').value= '0. 0. -9810';
+    rootNode.dt = 0.03;
+    rootNode.gravity = [0., 0., -9810];
 
     rootNode.createObject('FreeMotionAnimationLoop');
-    rootNode.createObject('QPInverseProblemSolver', epsilon="1e-3", printLog="0");
+    rootNode.createObject('QPInverseProblemSolver', epsilon=1e-3, printLog=0);
 
-    rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765');
-    # rootNode.createObject('OglGrid', size="1000", nbSubdiv="100")
+    rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1]);
     rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight");
 
     # rootNode.createObject('PythonScriptController', classname="controller", filename="ArduinoInterface.py");
-    # rootNode.createObject('SerialPortBridgeGeneric', name="serial", port="/dev/ttyACM0", baudRate="115200", size="3", listening=True)
-
+    # rootNode.createObject('SerialPortBridgeGeneric', name="serial", port="/dev/ttyACM0", baudRate=115200, size=3, listening=True)
 
 
     ##########################################
@@ -36,14 +34,13 @@ def createScene(rootNode):
     ##########################################
     goal = rootNode.createChild('goal')
     goal.createObject('EulerImplicitSolver', firstOrder=True)
-    goal.createObject('CGLinearSolver', iterations='200', threshold="1e-5", tolerance="1e-5")
+    goal.createObject('CGLinearSolver', iterations=200, threshold=1e-5, tolerance=1e-5)
     goal.createObject('MechanicalObject', name='goalMO',
-        showObject="1",
-        showObjectScale="10",
-        drawMode="1",
-        position = "0 0 222")
+        showObject=1,
+        showObjectScale=10,
+        drawMode=1,
+        position = [0, 0,222])
     goal.createObject('UncoupledConstraintCorrection')
-
 
 
     ###############################
@@ -52,28 +49,23 @@ def createScene(rootNode):
 
     robot = rootNode.createChild('robot')
     robot.createObject('EulerImplicitSolver', name='odesolver', firstOrder=False);
-    robot.createObject('PCGLinearSolver', name='CG', preconditioners='preconditioner', tolerance="1e-15");
+    robot.createObject('ShewchukPCGLinearSolver', name='CG', preconditioners='preconditioner', tolerance=1e-15);
     robot.createObject('SparseLDLSolver', name='preconditioner');
     robot.createObject('MeshVTKLoader', name='loader', filename=path+'branch.vtu');
-    robot.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray='1', checkConnexity='1');
-    robot.createObject('TetrahedronSetTopologyModifier');
-    robot.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3');
-    robot.createObject('TetrahedronSetGeometryAlgorithms',  template='Vec3',drawEdges='0');
+    robot.createObject('MeshTopology', src='@loader')
 
-    robot.createObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale='4e-5', position='@loader.position');
-    robot.createObject('UniformMass', totalMass='0.4');
-    robot.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.45',  youngModulus='600'); #600kPa
+    robot.createObject('MechanicalObject', name='tetras', template='Vec3', position='@loader.position');
+    robot.createObject('UniformMass', totalMass=0.4);
+    robot.createObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.45,  youngModulus=600); #600kPa
 
-    robot.createObject('BoxROI', name='boxROI1', box="-30 80 70 30 140 130   ", drawBoxes=True);
-    robot.createObject('PartialFixedConstraint', name="pfc1", fixedDirections="1 1 0", indices="@boxROI1.indices");
-    robot.createObject('BoxROI', name='boxROI2', box="-130 -100 70  -60  -20 130  ", drawBoxes=True);
-    robot.createObject('PartialFixedConstraint', name="pfc2", fixedDirections="1 1 0", indices="@boxROI2.indices");
-    robot.createObject('BoxROI', name='boxROI3', box="130 -100 70  60  -20 130  ", drawBoxes=True);
-    robot.createObject('PartialFixedConstraint', name="pfc3", fixedDirections="1 1 0", indices="@boxROI3.indices");
+    robot.createObject('BoxROI', name='boxROI1', box=[-30, 80, 70, 30, 140, 130], drawBoxes=True);
+    robot.createObject('PartialFixedConstraint', name="pfc1", fixedDirections=[1,1,0], indices="@boxROI1.indices");
+    robot.createObject('BoxROI', name='boxROI2', box=[-130, -100, 70,  -60,  -20, 130], drawBoxes=True);
+    robot.createObject('PartialFixedConstraint', name="pfc2", fixedDirections=[1,1,0], indices="@boxROI2.indices");
+    robot.createObject('BoxROI', name='boxROI3', box=[130, -100, 70,  60,  -20, 130], drawBoxes=True);
+    robot.createObject('PartialFixedConstraint', name="pfc3", fixedDirections=[1,1,0], indices="@boxROI3.indices");
 
     robot.createObject('LinearSolverConstraintCorrection', solverName='preconditioner');
-
-
 
 
     ###############################
@@ -81,12 +73,11 @@ def createScene(rootNode):
     ###############################
 
     effector = robot.createChild('effector')
-    effector.createObject('MechanicalObject', name="effectorPoint", position="0 0 222")
+    effector.createObject('MechanicalObject', name="effectorPoint", position=[0, 0, 222])
     effector.createObject('PositionEffector', template='Vec3',
-            indices="0",
+            indices=0,
             effectorGoal="@../../goal/goalMO.position")
     effector.createObject('BarycentricMapping', mapForces=False, mapMasses=False)
-
 
 
     ###############################
@@ -101,7 +92,7 @@ def createScene(rootNode):
         leg = robot.createChild('leg'+str(i))
         leg.createObject('MechanicalObject', position='@../boxROI'+str(i)+'.pointsInROI');
         leg.createObject('SlidingActuator', name="sa",
-            direction="0 0 1", showDirection="1", showVisuScale="5",
+            direction=[0, 0, 1], showDirection=1, showVisuScale=5,
             maxPositiveDisp=maxDisp,
             maxNegativeDisp=minDisp)
         leg.createObject('BarycentricMapping', mapMasses=False, mapForces=False)
@@ -114,12 +105,12 @@ def createScene(rootNode):
     ## Modele visuel
     visualrobot = robot.createChild('visualrobot')
     visualrobot.createObject('MeshSTLLoader', filename=path+'branch.stl', name='loaderSurf')
-    visualrobot.createObject('OglModel', name='mappedBodyVisual', src='@loaderSurf' ,color="1. 1. 1. 1.")
+    visualrobot.createObject('OglModel', name='mappedBodyVisual', src='@loaderSurf' ,color=[1., 1., 1., 1.])
     visualrobot.createObject('BarycentricMapping', name='BMVisual')
 
     # Modele visuel
     visualCoque = rootNode.createChild('coque')
-    visualCoque.createObject('MeshSTLLoader', filename=path+'coque_base.stl', name='loaderSurf', translation="0. 0. 10")
-    visualCoque.createObject('OglModel', name='mappedBodyVisual', src='@loaderSurf' ,color="0.2 0.2 0.2 1.")
+    visualCoque.createObject('MeshSTLLoader', filename=path+'coque_base.stl', name='loaderSurf', translation=[0., 0., 10])
+    visualCoque.createObject('OglModel', name='mappedBodyVisual', src='@loaderSurf' ,color=[0.2, 0.2, 0.2, 1.])
 
     return rootNode

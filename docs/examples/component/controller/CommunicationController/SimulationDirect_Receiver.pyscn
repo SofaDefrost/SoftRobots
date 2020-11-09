@@ -16,7 +16,7 @@ def createScene(rootNode):
 
                 rootNode.createObject('GenericConstraintSolver')
 
-                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765])
                 rootNode.findData('gravity').value="0 0 -981.0"
                 rootNode.findData('dt').value=0.01
 

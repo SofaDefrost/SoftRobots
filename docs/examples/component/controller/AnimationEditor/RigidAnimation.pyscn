@@ -9,19 +9,19 @@ pathMesh = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
 
-                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
-                rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
-                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots SofaOpenglVisual')
+                rootNode.createObject('OglSceneFrame', style='Arrows', alignment='TopRight')
+                rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
 
                 point = rootNode.createChild('point')
                 point.createObject('EulerImplicitSolver', firstOrder=True)
-                point.createObject('CGLinearSolver', iterations='100', tolerance="1e-5", threshold="1e-5")
-                point.createObject('MechanicalObject', template="Rigid3",
-                        position='0 0 0 0 0 0 1',
-                        showObject="1",
-                        showObjectScale=".1",
-                        drawMode="1",
-                        showColor="255 255 255 255")
+                point.createObject('CGLinearSolver', iterations=100, tolerance=1e-5, threshold=1e-5)
+                point.createObject('MechanicalObject', template='Rigid3',
+                        position=[0, 0, 0, 0, 0, 0, 1],
+                        showObject=True,
+                        showObjectScale=0.1,
+                        drawMode=1,
+                        showColor=[255, 255, 255, 255])
                 ## The AnimationEditor takes multiple options
                 # template : should be the same as the mechanical you want to animate
                 # filename : file in which the animation will be saved
@@ -32,14 +32,14 @@ def createScene(rootNode):
                 # drawTimeline (default is true)
                 # drawTrajectory (default is true)
                 # drawSize : coeff size of diplayed elements of trajectory
-                point.createObject('AnimationEditor', name="animation",
-                template="Rigid3", filename=path+"RigidAnimation.txt",
-                load="1",
-                drawTimeline="1", drawTrajectory="1")
+                point.createObject('AnimationEditor', name='animation',
+                template='Rigid3', filename=path+'RigidAnimation.txt',
+                load=True,
+                drawTimeline=True, drawTrajectory=True)
 
                 visu = point.createChild('visu')
-                visu.createObject('MeshObjLoader', name="loader", filename="mesh/cube.obj")
-                visu.createObject('OglModel', src="@loader", filename="mesh/cube.obj")
+                visu.createObject('MeshObjLoader', name='loader', filename='mesh/cube.obj')
+                visu.createObject('OglModel', src='@loader', filename='mesh/cube.obj')
                 visu.createObject('RigidMapping')
 
                 return rootNode

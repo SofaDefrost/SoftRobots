@@ -13,10 +13,10 @@ class controller(Sofa.PythonScriptController):
 
             if (c == "+"):
                displacement = inputvalue.value[0][0] + 1.
-               inputvalue.value = str(displacement)
+               inputvalue.value = [displacement]
 
             elif (c == "-"):
                displacement = inputvalue.value[0][0] - 1.
                if(displacement < 0):
-		  displacement = 0
-               inputvalue.value = str(displacement)
+		           displacement = 0
+               inputvalue.value = [displacement]

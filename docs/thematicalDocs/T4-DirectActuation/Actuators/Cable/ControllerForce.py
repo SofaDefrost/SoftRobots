@@ -9,11 +9,11 @@ class controller(Sofa.PythonScriptController):
             inputvalue = self.node.getObject('aCable').findData('value')
 
             if (c == "+"):
-               displacement = inputvalue.value[0][0] + 1000.
-               inputvalue.value = str(displacement)
+               force = inputvalue.value[0][0] + 1000.
+               inputvalue.value = [force]
 
             elif (c == "-"):
-               displacement = inputvalue.value[0][0] - 1000.
-               if(displacement < 0):
-		  displacement = 0
-               inputvalue.value = str(displacement)
+               force = inputvalue.value[0][0] - 1000.
+               if(force < 0):
+		           force = 0
+               inputvalue.value = [force]
