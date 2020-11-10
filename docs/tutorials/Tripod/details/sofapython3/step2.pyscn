@@ -1,0 +1,61 @@
+# -*- coding: utf-8 -*-
+'''
+Step 2: Introducing elastic material modelling
+'''
+from stlib.scene import Scene
+
+def createScene(rootNode):
+    scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0], plugins=['SofaSparseSolver'])
+    rootNode.dt = 0.01
+
+    # Graphic modelling of the legends associated to the servomotors
+    scene.Config.addObject('MeshSTLLoader', name='loader', filename='../data/mesh/blueprint.stl')
+    scene.Config.addObject('OglModel', src='@loader')
+
+    # To simulate an elastic object, we need:
+    # - a deformation law (here linear elasticity)
+    # - a solving method (here FEM)
+    # - as we are using FEM we need a space discretization (here tetrahedron)
+    elasticbody = rootNode.addChild('ElasticBody')
+
+    # Specific loader for the mechanical model
+    elasticbody.addObject('GIDMeshLoader',
+                             name='loader',
+                             filename='../data/mesh/tripod_high.gidmsh')
+    elasticbody.addObject('TetrahedronSetTopologyContainer',
+                             src='@loader',
+                             name='container')
+    elasticbody.addObject('MechanicalObject',
+                             name='dofs',
+                             position=elasticbody.loader.position,
+                             rotation=[90.0, 0.0, 0.0],
+                             showObject=True,
+                             showObjectScale=5.0)
+    elasticbody.addObject('UniformMass', totalMass=0.032)
+
+    elasticbody.addObject('EulerImplicitSolver')
+    elasticbody.addObject('SparseLDLSolver')
+
+    # ForceField components
+    elasticbody.addObject('TetrahedronFEMForceField',
+                             youngModulus=800,
+                             poissonRatio=0.45)
+    # It is possible to visualize the 'forcefields' by doing
+    scene.VisualStyle.displayFlags = 'showForceFields'
+
+    # Visual model
+    visual = elasticbody.addChild('Visual')
+
+    # Specific loader for the visual model
+    visual.addObject('MeshSTLLoader',
+                        name='loader',
+                        filename='../data/mesh/tripod_mid.stl',
+                        rotation=[90, 0, 0])
+    visual.addObject('OglModel',
+                        src='@loader',
+                        name='renderer',
+                        color=[1.0, 1.0, 1.0, 0.5])
+
+    visual.addObject('BarycentricMapping',
+                        input=elasticbody.dofs.getLinkPath(),
+                        output=visual.renderer.getLinkPath())
