@@ -17,12 +17,12 @@ Example
 
 .. sourcecode:: python
 
-    	rootNode.createObject('SerialPortBridgeGeneric', name="serial", port="/dev/ttyACM0", baudRate="115200", size="5", listening=True)
+    	rootNode.createObject('SerialPortBridgeGeneric', name="serial", port="/dev/ttyACM0", baudRate="115200", size="5", listening=True, header=255, packetOut=...)
 
 Data fields
 ***********
 
-.. list-table:: 
+.. list-table::
    :header-rows: 1
    :widths: auto
 
@@ -32,8 +32,8 @@ Data fields
      - Serial port name.
    * - **baudRate**
      - Transmission speed.
-   * - **sentData**
-     - Data to send: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255. The value of 'header' will be sent at the beginning of the sent data, enabling to implement a header research in the 'receiving' code, for synchronization purposes.
+   * - **packetOut**
+     - Data to send: vector of unsigned char, each entry should be an integer between 0 and (header-1) <= 255. The value of 'header' will be sent at the beginning of the sent data, enabling to implement a header research in the 'receiving' code, for synchronization purposes.
    * - **header**
      - Vector of unsigned char. Only one value is espected, two values if splitPacket = 1.
    * - **size**
@@ -41,7 +41,7 @@ Data fields
    * - **receive**
      - If true, will read from serial port (timeOut = 10ms).
 
-.. list-table:: 
+.. list-table::
    :header-rows: 1
    :widths: auto
 
@@ -54,15 +54,13 @@ Data fields
    * - **redundancy**
      - Each packet will be send that number of times (1=default).
 
-.. list-table:: 
+.. list-table::
    :header-rows: 1
    :widths: auto
 
    * - Properties
      - Description
-   * - **receivedData**
-     - Read only. Data received: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255.
+   * - **packetIn**
+     - Read only. Data received: vector of unsigned char, each entry should be an integer between 0 and (header-1) <= 255.
 
 """
-
-
