@@ -16,10 +16,10 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
             Most components will not work correctly.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
-    if(NOT PLUGIN_SOFAPYTHON)
+    if(NOT PLUGIN_SOFAPYTHON AND NOT PLUGIN_SOFAPYTHON3)
         message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling PLUGIN_SOFAPYTHON.
-            Most examples will not be loadable.
+            You should not use the plugin SoftRobots without enabling PLUGIN_SOFAPYTHON or PLUGIN_SOFAPYTHON3.
+            Most examples and tutorials will not be loadable.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
     if(NOT MODULE_SOFASPARSESOLVER)
