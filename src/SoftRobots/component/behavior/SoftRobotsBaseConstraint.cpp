@@ -47,6 +47,7 @@ SoftRobotsBaseConstraint::SoftRobotsBaseConstraint()
     , m_hasLambdaMax(false)
     , m_hasLambdaMin(false)
     , m_hasLambdaEqual(false)
+    , m_hasLambdaInit(false)
     , m_hasEpsilon(false)
 {
 }
@@ -81,6 +82,11 @@ bool SoftRobotsBaseConstraint::hasLambdaMin()
 bool SoftRobotsBaseConstraint::hasLambdaEqual()
 {
     return m_hasLambdaEqual;
+}
+
+bool SoftRobotsBaseConstraint::hasLambdaInit()
+{
+    return m_hasLambdaInit;
 }
 
 
@@ -120,6 +126,11 @@ SReal SoftRobotsBaseConstraint::getLambdaMin()
 SReal SoftRobotsBaseConstraint::getLambdaEqual()
 {
     return m_lambdaEqual;
+}
+
+SReal SoftRobotsBaseConstraint::getLambdaInit()
+{
+    return m_lambdaInit;
 }
 
 

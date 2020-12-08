@@ -85,6 +85,9 @@ public:
     /// Returns if the constraint has an equal constraint value for lambda or not
     bool hasLambdaEqual();
 
+    /// Returns if the constraint has an initial value for lambda or not
+    bool hasLambdaInit();
+
 
     /// Returns if the constraint has an epsilon value that can be used to prioritize the constraint (for actuator with inverse problem)
     bool hasEpsilon();
@@ -108,6 +111,9 @@ public:
 
     /// Accessor to equal constraint value of lambda
     SReal getLambdaEqual();
+
+    /// Accessor to initial value of lambda
+    SReal getLambdaInit();
 
 
     /// Accessor to epsilon value that can be used to prioritize the constraint (for actuator with inverse problem)
@@ -144,6 +150,7 @@ protected:
     bool m_hasLambdaMax;
     bool m_hasLambdaMin;
     bool m_hasLambdaEqual;
+    bool m_hasLambdaInit;
 
     bool m_hasEpsilon;
 
@@ -154,6 +161,7 @@ protected:
     double m_lambdaMax;
     double m_lambdaMin;
     double m_lambdaEqual;
+    double m_lambdaInit;
 
     double m_epsilon;
 
