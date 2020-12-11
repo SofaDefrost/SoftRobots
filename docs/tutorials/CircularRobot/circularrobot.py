@@ -58,8 +58,6 @@ class CircularRobot(SofaObject):
         self.node.createObject('MeshVTKLoader', name="loader", filename=path+"wheel.vtk")
         self.node.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra="@loader.tetrahedra")
         self.node.createObject('TetrahedronSetTopologyModifier')
-        self.node.createObject('TetrahedronSetTopologyAlgorithms')
-        self.node.createObject('TetrahedronSetGeometryAlgorithms')
         self.node.createObject('MechanicalObject', name='dofs', showIndices=False, showIndicesScale=4e-5)
         self.node.createObject('UniformMass', totalMass=totalMass)
         self.node.createObject('TetrahedronFEMForceField', poissonRatio=poissonRatio,  youngModulus=youngModulus)

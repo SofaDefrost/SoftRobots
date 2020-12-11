@@ -54,8 +54,6 @@ def createScene(rootNode):
                 accordion.addObject('MeshVTKLoader', name='loader', filename=pathMesh+'Accordion.vtu', rotation=[90, 0, 0])
                 accordion.addObject('TetrahedronSetTopologyContainer', src='@loader')
                 accordion.addObject('TetrahedronSetTopologyModifier')
-                accordion.addObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
-                accordion.addObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
                 accordion.addObject('MechanicalObject', name='tetras', template='Vec3')
                 accordion.addObject('UniformMass', totalMass=0.030)

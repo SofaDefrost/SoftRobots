@@ -21,11 +21,9 @@ Example
 	finger.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk')
 	finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
 	finger.createObject('TetrahedronSetTopologyModifier')
-	finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
-	finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3', drawTetrahedra=True)
 
 	finger.createObject('VolumeFromTetrahedrons')
-    
+
 
 Data fields
 ***********

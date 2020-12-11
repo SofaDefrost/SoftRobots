@@ -21,8 +21,6 @@ def createScene(rootNode):
 	bunny.createObject('MeshVTKLoader', name='loader', filename=path+'Hollow_Stanford_Bunny.vtu')
 	bunny.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
 	bunny.createObject('TetrahedronSetTopologyModifier')
-	bunny.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
-	bunny.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
 	bunny.createObject('MechanicalObject', name='tetras', template='Vec3')
 	bunny.createObject('UniformMass', totalMass=0.5)
@@ -48,8 +46,6 @@ def createScene(rootNode):
 	bunnyVisu = bunny.createChild('visu')
 	bunnyVisu.createObject('TriangleSetTopologyContainer', name='container')
 	bunnyVisu.createObject('TriangleSetTopologyModifier')
-	bunnyVisu.createObject('TriangleSetTopologyAlgorithms', template='Vec3')
-	bunnyVisu.createObject('TriangleSetGeometryAlgorithms', template='Vec3')
 	bunnyVisu.createObject('Tetra2TriangleTopologicalMapping', name='Mapping', input="@../container", output="@container")
 
 	bunnyVisu.createObject('OglModel', color=[0.3, 0.2, 0.2, 0.6])

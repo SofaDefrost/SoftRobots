@@ -37,8 +37,6 @@ def createScene(rootNode):
 	robot.addObject('MeshVTKLoader', name='loader', filename=path+'branch.vtu');
 	robot.addObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray=True, checkConnexity=True);
 	robot.addObject('TetrahedronSetTopologyModifier');
-	robot.addObject('TetrahedronSetTopologyAlgorithms', template='Vec3');
-	robot.addObject('TetrahedronSetGeometryAlgorithms',  template='Vec3');
 
 	robot.addObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale=4e-5, position='@loader.position');
 	robot.addObject('UniformMass', totalMass=0.4);

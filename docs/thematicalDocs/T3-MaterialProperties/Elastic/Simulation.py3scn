@@ -28,8 +28,6 @@ def createScene(rootNode):
     robot.addObject('MeshVTKLoader', name='loader', filename=path+'branch.vtu');
     robot.addObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray=True, checkConnexity=True);
     robot.addObject('TetrahedronSetTopologyModifier');
-    robot.addObject('TetrahedronSetTopologyAlgorithms');
-    robot.addObject('TetrahedronSetGeometryAlgorithms');
 
     robot.addObject('MechanicalObject', name='tetras');
     ### UniformMass: Here you can set the mass of the structure

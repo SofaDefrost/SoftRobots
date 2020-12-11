@@ -51,8 +51,6 @@ class Trunk(SofaObject):
         self.node.addObject('MeshVTKLoader', name='loader', filename=path+'trunk.vtk')
         self.node.addObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
         self.node.addObject('TetrahedronSetTopologyModifier')
-        self.node.addObject('TetrahedronSetTopologyAlgorithms')
-        self.node.addObject('TetrahedronSetGeometryAlgorithms')
 
         self.node.addObject('MechanicalObject', name='dofs', template='Vec3')
         self.node.addObject('UniformMass', totalMass=totalMass)

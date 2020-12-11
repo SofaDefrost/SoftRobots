@@ -31,8 +31,6 @@ def createScene(rootNode):
     accordion.createObject('MeshVTKLoader', name='loader', filename=path+'Springy.vtk', rotation=[0, 0, 0])
     accordion.createObject('TetrahedronSetTopologyContainer', src='@loader')
     accordion.createObject('TetrahedronSetTopologyModifier')
-    accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
-    accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
     accordion.createObject('MechanicalObject', name='tetras', template='Vec3')
     accordion.createObject('UniformMass', totalMass=0.030)

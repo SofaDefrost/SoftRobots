@@ -19,12 +19,11 @@
                 <SparseLDLSolver />
                 <MeshVTKLoader name="loader" filename="mesh/Hollow_Stanford_Bunny.vtu"/>
                 <TetrahedronSetTopologyContainer src="@loader"/>
-                <TetrahedronSetGeometryAlgorithms drawTetrahedra="false" template="Vec3d"/>
                 <MechanicalObject name="tetras" template="Vec3d"/>
                 <UniformMass totalMass="0.5"/>
                 <TetrahedronFEMForceField youngModulus="18000" poissonRatio='0.3' method='large'/>
 
-                <BoxROI name='ROI1' box='-5 -15 -5  5 -4.5 5' drawBoxes='true'/>                
+                <BoxROI name='ROI1' box='-5 -15 -5  5 -4.5 5' drawBoxes='true'/>
                 <RestShapeSpringsForceField points='@ROI1.indices' stiffness='1e12'/>
 
                 <LinearSolverConstraintCorrection/>
@@ -36,7 +35,7 @@
 
                         <SurfacePressureConstraint  name="SurfacePressureConstraint" value='40' valueType="1"/>
                         <VolumeFromTriangles name="VolumeFromTriangles"/>
-                        
+
                         <BarycentricMapping mapForces="false" mapMasses="false"/>
                 </Node>
         </Node>

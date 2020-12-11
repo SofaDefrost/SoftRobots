@@ -36,8 +36,6 @@ def createScene(rootNode):
     tentacle.addObject('MeshVTKLoader', name='loader', filename=path+'Tentacle.vtk')
     tentacle.addObject('TetrahedronSetTopologyContainer', src='@loader')
     tentacle.addObject('TetrahedronSetTopologyModifier')
-    tentacle.addObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
-    tentacle.addObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
     tentacle.addObject('MechanicalObject', name='tetras', template='Vec3')
     tentacle.addObject('UniformMass', totalMass=0.024)

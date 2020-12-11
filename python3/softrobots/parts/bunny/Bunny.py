@@ -31,8 +31,6 @@ def Bunny(Node, translation=[0,0,0], controlType='PressureConstraint', name='Bun
     BunnyVisu = Bunny.addChild('visu')
     BunnyVisu.addObject('TriangleSetTopologyContainer', name='container')
     BunnyVisu.addObject('TriangleSetTopologyModifier')
-    BunnyVisu.addObject('TriangleSetTopologyAlgorithms', template='Vec3')
-    BunnyVisu.addObject('TriangleSetGeometryAlgorithms', template='Vec3')
     BunnyVisu.addObject('Tetra2TriangleTopologicalMapping', name='Mapping', input="@../container", output="@container")
     BunnyVisu.addObject('OglModel', color=[0.3, 0.2, 0.2, 0.6], translation=translation)
     BunnyVisu.addObject('IdentityMapping')

@@ -34,8 +34,6 @@ def createScene(rootNode):
                 finger.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk')
                 finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
                 finger.createObject('TetrahedronSetTopologyModifier')
-                finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
-                finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
 
                 # Create a mechanicaobject component to stores the DoFs of the model
                 finger.createObject('MechanicalObject', name='tetras', template='Vec3')

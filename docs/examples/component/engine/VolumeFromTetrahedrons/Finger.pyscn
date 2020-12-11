@@ -7,7 +7,7 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
                 rootNode.createObject('RequiredPlugin', pluginName='SoftRobots SofaOpenglVisual')
-                rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
+                rootNode.createObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
 
                 rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
                 rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
@@ -22,8 +22,6 @@ def createScene(rootNode):
                 finger.createObject('MeshVTKLoader', name='loader', filename=path+'finger.vtk')
                 finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
                 finger.createObject('TetrahedronSetTopologyModifier')
-                finger.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
-                finger.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3', drawTetrahedra=True)
 
                 # Create a mechanicaobject component to stores the DoFs of the model
                 finger.createObject('MechanicalObject', name='tetras', template='Vec3')

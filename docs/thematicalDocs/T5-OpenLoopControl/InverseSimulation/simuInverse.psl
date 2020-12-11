@@ -37,8 +37,6 @@ Node : { name : "root"
         MeshVTKLoader : {name : "loader" filename : "mesh/branch.vtu"}
         TetrahedronSetTopologyContainer : {name : "container" src : "@loader"}
         TetrahedronSetTopologyModifier : {}
-        TetrahedronSetTopologyAlgorithms : {}
-        TetrahedronSetGeometryAlgorithms : {}
         MechanicalObject : {name : "tetras"}
         UniformMass : {totalMass : "0.4"}
         TetrahedronFEMForceField : {name : "FEM" poissonRatio : "0.45" youngModulus : "600"}

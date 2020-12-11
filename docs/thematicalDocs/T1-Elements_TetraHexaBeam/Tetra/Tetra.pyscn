@@ -29,8 +29,6 @@ def createScene(rootNode):
     ### Here you set the tetrahedra topology
     robot.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra' , name='container', createTriangleArray=1, checkConnexity=1);
     robot.createObject('TetrahedronSetTopologyModifier');
-    robot.createObject('TetrahedronSetTopologyAlgorithms');
-    robot.createObject('TetrahedronSetGeometryAlgorithms');
 
     robot.createObject('MechanicalObject', name='tetras');
     robot.createObject('UniformMass', totalMass=0.4);
