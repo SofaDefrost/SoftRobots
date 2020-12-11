@@ -31,6 +31,9 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
 endif()
 
 option(SOFTROBOTS_WITH_CAMERA "Enable this option if you want to use the realsense cameras to perform force sensing, and point cloud processing." OFF)
+option(SOFTROBOTS_GAMETRAKCONTROLLER "Enables GameTrak component" OFF)
+option(SOFTROBOTS_ROBOTINOCONTROLLER "Enables Robotino component" OFF)
+option(SOFTROBOTS_COMMUNICATIONCONTROLLER "Enables Communication component, requires to install ZMQ library" OFF)
 
 find_package(SofaPython QUIET)
 set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
@@ -65,7 +68,7 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.inl
-	${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.h
+    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.inl

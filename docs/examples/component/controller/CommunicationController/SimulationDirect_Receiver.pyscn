@@ -8,13 +8,13 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
 
-                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                rootNode.createObject('RequiredPlugin', name='SoftRobots')
                 rootNode.createObject('VisualStyle', displayFlags="showVisualModels hideBehaviorModels hideCollisionModels \
                                         hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe")
 
                 rootNode.createObject('FreeMotionAnimationLoop')
 
-                rootNode.createObject('GenericConstraintSolver')
+                rootNode.createObject('GenericConstraintSolver', maxIterations="1000", tolerance="1e-14")
 
                 rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765])
                 rootNode.findData('gravity').value="0 0 -981.0"
@@ -29,10 +29,7 @@ def createScene(rootNode):
                 accordion.createObject('SparseLDLSolver')
 
                 accordion.createObject('MeshVTKLoader', name='loader', filename=path+'Springy.vtk', rotation="0 0 0")
-                accordion.createObject('TetrahedronSetTopologyContainer', src='@loader')
-                accordion.createObject('TetrahedronSetTopologyModifier')
-                accordion.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3')
-                accordion.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3')
+                accordion.createObject('MeshTopology', src='@loader')
 
                 accordion.createObject('MechanicalObject', name='tetras', template='Vec3')
                 accordion.createObject('UniformMass', totalMass='0.030')
