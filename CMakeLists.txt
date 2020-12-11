@@ -30,13 +30,14 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
     endif()
 endif()
 
-option(SOFTROBOTS_WITH_CAMERA "Enable this option if you want to use the realsense cameras to perform force sensing, and point cloud processing." OFF)
-option(SOFTROBOTS_GAMETRAKCONTROLLER "Enables GameTrak component" OFF)
+option(SOFTROBOTS_COMMUNICATIONCONTROLLER "Enables Communication component. It requires ZeroMQ library (see controller/README for more info)" OFF)
+option(SOFTROBOTS_GAMETRAKCONTROLLER "Enables GameTrak component. It requires HIDAPI library (see controller/README for more info)" OFF)
 option(SOFTROBOTS_ROBOTINOCONTROLLER "Enables Robotino component" OFF)
-option(SOFTROBOTS_COMMUNICATIONCONTROLLER "Enables Communication component, requires to install ZMQ library" OFF)
+option(SOFTROBOTS_WITH_CAMERA "Enable this option if you want to use the realsense cameras to perform force sensing, and point cloud processing." OFF)
 
 find_package(SofaPython QUIET)
 set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
+find_package(SofaPython3 QUIET)
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
 if(WIN32)
@@ -189,7 +190,7 @@ if(SOFTROBOTS_ROBOTINOCONTROLLER)
         )
 endif()
 
-
+# CAMERA
 if (SOFTROBOTS_WITH_CAMERA)
   list(APPEND HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudProcessing.h
@@ -236,6 +237,7 @@ if(SOFTROBOTS_GAMETRAKCONTROLLER)
     target_link_libraries(${PROJECT_NAME} ${HIDAPI_LIBRARIES} ${BOOST_THREAD_LIBRARY})
 endif()
 
+# CAMERA
 if (SOFTROBOTS_WITH_CAMERA)
   find_package( PCL QUIET )
   find_library( REALSENSE_LIBRARY realsense2
@@ -271,6 +273,12 @@ if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
     # Config files and install rules for pythons scripts
     sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
+endif()
+
+if(SofaPython3_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython3)
+    # Config files and install rules for pythons scripts
+    sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python3")
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
