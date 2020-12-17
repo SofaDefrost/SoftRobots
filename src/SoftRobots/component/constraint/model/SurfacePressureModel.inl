@@ -146,11 +146,6 @@ SurfacePressureModel<DataTypes>::~SurfacePressureModel()
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::setUpData()
 {
-    // To remove in SoftRobots v20.0
-    d_visualizationDepracated.setDisplayed(false);
-    d_showVisuScaleDepracated.setDisplayed(false);
-    //
-
     d_cavityVolume.setReadOnly(true);
     d_initialCavityVolume.setReadOnly(true);
 
@@ -168,17 +163,6 @@ void SurfacePressureModel<DataTypes>::init()
 {
     d_componentState = ComponentState::Invalid;
     SoftRobotsConstraint<DataTypes>::init();
-
-    // To remove in SoftRobots v20.0
-    if(d_visualizationDepracated.isSet())
-        msg_warning() << "The field named 'visualization' is now deprecated. "
-                             "To remove this warning message, the field "
-                             "'visualization' should be replaced by the field 'drawPressure'." ;
-    if(d_showVisuScaleDepracated.isSet())
-        msg_warning() << "The field named 'showVisuScale' is now deprecated. "
-                             "To remove this warning message, the field "
-                             "'showVisuScale' should be replaced by the field 'drawScale'." ;
-    //
 
     internalInit();
 
@@ -305,8 +289,8 @@ SReal SurfacePressureModel<DataTypes>::getCavityVolume(const VecCoord& positions
     // NB : The computation  of the cavity volume is not relevant
     // in the case of an open mesh.
 
-    ReadAccessor<Data<vector<Triangle> > >  triangles = d_triangles;
-    ReadAccessor<Data<vector<Quad> > >      quads     = d_quads;
+    ReadAccessor<Data<vector<Triangle>>>  triangles = d_triangles;
+    ReadAccessor<Data<vector<Quad>>>      quads     = d_quads;
 
     Coord p0, p1, p2;
     Real volume = 0;

@@ -405,7 +405,6 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 }
 
 
-
 template<class DataTypes>
 void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
                                         core::MultiVecDerivId res,

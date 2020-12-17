@@ -124,7 +124,7 @@ public:
     /// Accessor to nbLines value
     unsigned int getNbLines();
 
-    /// Allows the constraint of having access to the result.
+    /// Allows the constraint to access to the results. Called from QPInverseProblemSolver.
     virtual void storeResults(helper::vector<double> &lambda, helper::vector<double> &delta);
 
     virtual void storeResults(helper::vector<double> &delta);

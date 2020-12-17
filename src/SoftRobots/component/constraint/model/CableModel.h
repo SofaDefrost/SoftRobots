@@ -109,6 +109,7 @@ public:
                      const BaseVector* lambda) override;
     /////////////////////////////////////////////////////////////////////////
 
+
 protected:
 
     Data<SetIndexArray>         d_indices;
