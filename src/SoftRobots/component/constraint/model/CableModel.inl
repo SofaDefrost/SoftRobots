@@ -49,7 +49,7 @@ using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
 using sofa::defaulttype::BaseVector;
 using sofa::helper::ReadAccessor;
-using sofa::defaulttype::Vec4f;
+using sofa::helper::types::RGBAColor;
 using sofa::defaulttype::Vector3;
 using sofa::helper::vector;
 
@@ -81,11 +81,11 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
     , d_displacement(initData(&d_displacement,double(0.0), "displacement",
                           "Output displacement compared to the initial cable length."))
 
-    , d_maxForce(initData(&d_maxForce,Real(0.0), "maxForce",
+    , d_maxForce(initData(&d_maxForce, "maxForce",
                           "Maximum force of the actuator. \n"
                           "If unspecified no maximum value will be considered."))
 
-    , d_minForce(initData(&d_minForce,Real(0.0), "minForce",
+    , d_minForce(initData(&d_minForce, "minForce",
                           "Minimum force of the actuator. \n"
                           "If unspecified no minimum value will be considered \n"
                           "and the cable will then be seen as a stiff rod able to push."))
@@ -96,19 +96,20 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
                           "If unspecified, no value will be considered \n"
                           ))
 
-    , d_maxPositiveDisplacement(initData(&d_maxPositiveDisplacement,Real(0.0), "maxPositiveDisp",
+    , d_maxPositiveDisplacement(initData(&d_maxPositiveDisplacement,"maxPositiveDisp",
                                          "Maximum displacement of the actuator in the positive direction. \n"
                                          "If unspecified no maximum value will be considered."))
 
-    , d_maxNegativeDisplacement(initData(&d_maxNegativeDisplacement,Real(0.0), "maxNegativeDisp",
+    , d_maxNegativeDisplacement(initData(&d_maxNegativeDisplacement,"maxNegativeDisp",
                                          "Maximum displacement of the actuator in the negative direction. \n"
                                          "If unspecified no maximum value will be considered."))
+
     , d_eqDisplacement(initData(&d_eqDisplacement,Real(0.0), "eqDisp",
                                 "Equality displacement of the actuator. \n"
                                 "Solver will try to maintain the cable displacement at this value\n"
                                 "If unspecified, no value will be considered \n" ))
 
-    , d_maxDispVariation(initData(&d_maxDispVariation,Real(0.0), "maxDispVariation",
+    , d_maxDispVariation(initData(&d_maxDispVariation, "maxDispVariation",
                                    "Maximum variation of the displacement allowed. If not set, no max variation will be concidered."))
 
     , d_drawPullPoint(initData(&d_drawPullPoint,true, "drawPullPoint",
@@ -117,7 +118,7 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
     , d_drawPoints(initData(&d_drawPoints,true, "drawPoints",
                           ""))
 
-    , d_color(initData(&d_color,Vec4f(0.4,0.4,0.4,1), "color",
+    , d_color(initData(&d_color,RGBAColor(0.4,0.4,0.4,1), "color",
                           "Color of the string."))
 
 {
@@ -147,7 +148,7 @@ void CableModel<DataTypes>::setUpData()
 template<class DataTypes>
 void CableModel<DataTypes>::init()
 {
-    d_componentState = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
     SoftRobotsConstraint<DataTypes>::init();
 
     if(m_state==nullptr)
@@ -160,14 +161,14 @@ void CableModel<DataTypes>::init()
     }
 
     internalInit();
-    d_componentState = ComponentState::Valid;
+    d_componentState.setValue(ComponentState::Valid);
 }
 
 
 template<class DataTypes>
 void CableModel<DataTypes>::bwdInit()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     // The initial length of the cable is set or computed in bwdInit so the mapping (if there is any)
@@ -188,7 +189,7 @@ void CableModel<DataTypes>::bwdInit()
 template<class DataTypes>
 void CableModel<DataTypes>::reinit()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     internalInit();
@@ -198,7 +199,7 @@ void CableModel<DataTypes>::reinit()
 template<class DataTypes>
 void CableModel<DataTypes>::reset()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
     d_cableLength.setValue(d_cableInitialLength.getValue());
@@ -288,7 +289,7 @@ SReal CableModel<DataTypes>::getCableLength(const VecCoord &positions)
 template<class DataTypes>
 void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &cMatrix, unsigned int &cIndex, const DataVecCoord &x)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -394,7 +395,7 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
                                                    BaseVector *resV,
                                                    const BaseVector *Jdx)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -413,7 +414,7 @@ void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);
 
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     d_force.setValue(lambda->element(m_constraintId));
@@ -429,7 +430,7 @@ void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
 template<class DataTypes>
 void CableModel<DataTypes>::draw(const VisualParams* vparams)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
@@ -457,7 +458,7 @@ void CableModel<DataTypes>::drawPullPoint(const VisualParams* vparams)
         points[0] = positions[indices[0]];
     }
 
-    vparams->drawTool()->drawPoints(points, 5, Vec4f(1.f,1.f,0.f,1.f));
+    vparams->drawTool()->drawPoints(points, 5, RGBAColor(1.f,1.f,0.f,1.f));
 }
 
 
@@ -471,7 +472,7 @@ void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
     for (unsigned int i=0; i<indices.size(); i++)
         points[i] = positions[indices[i]];
 
-    vparams->drawTool()->drawPoints(points, 5, Vec4f(1.f,0.f,0.f,1.f));
+    vparams->drawTool()->drawPoints(points, 5, RGBAColor(1.f,0.f,0.f,1.f));
 }
 
 
@@ -482,7 +483,7 @@ void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
 
     const SetIndexArray &indices = d_indices.getValue();
 
-    Vec4f color = d_color.getValue();
+    RGBAColor color = d_color.getValue();
     vector<Vector3> points(indices.size()*2);
     Coord previousPosition = d_pullPoint.getValue();
     unsigned int first = 0;

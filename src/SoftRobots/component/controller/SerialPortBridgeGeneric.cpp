@@ -66,10 +66,6 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
                            "enabling to implement a header research in the 'receiving' code, for synchronization purposes.\n"
                            ))
     , d_packetIn(initData(&d_packetIn, "packetIn", "Data received: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255."))
-    // To remove before v20.0 of the plugin
-    , d_packetOutDeprecated(initData(&d_packetOutDeprecated, "sentData", ""))
-    , d_packetInDeprecated(initData(&d_packetInDeprecated, "receivedData", ""))
-    // ////////////////////////////////////
     , d_header(initData(&d_header, helper::vector<unsigned char>{255,254}, "header", "Vector of unsigned char. Only one value is espected, two values if splitPacket = 1."))
     , d_size(initData(&d_size,(unsigned int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
                                             "Will return a warning if sentData size does not match this value."))
@@ -79,10 +75,6 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     , d_redundancy(initData(&d_redundancy,(unsigned int)1,"redundancy","Each packet will be send that number of times (1=default)"))
     , d_doReceive(initData(&d_doReceive,false,"receive","If true, will read from serial port (timeOut = 10ms)"))
 {
-    // To remove before v20.0 of the plugin
-    d_packetOutDeprecated.setDisplayed(false);
-    d_packetInDeprecated.setDisplayed(false);
-    // ////////////////////////////////////
 }
 
 
@@ -145,8 +137,6 @@ void SerialPortBridgeGeneric::init()
     }
 }
 
-
-// To remove before v20.0 of the plugin
 void SerialPortBridgeGeneric::dataDeprecationManagement()
 {
     if(!d_header.isSet())
@@ -154,41 +144,7 @@ void SerialPortBridgeGeneric::dataDeprecationManagement()
 
     if(d_precise.getValue())
         msg_info() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
-
-    if(d_packetOutDeprecated.isSet())
-    {
-        if(d_packetOut.isSet())
-        {
-            msg_warning() << "You are using both 'sentData' and 'packetOut' fields. You should use only 'packetOut', as sentData is now deprecated. \n"
-                          << "The component will switch to an invalid state to avoid any issues.";
-            d_componentState = ComponentState::Invalid;
-        }
-        else
-            msg_warning() << "Data field 'sentData' is now deprecated. You should use the field name 'packetOut' instead, which is a vector of unsigned char.";
-
-        updateLinkToDeprecatedData();
-    }
-
-    if(d_packetInDeprecated.isSet())
-    {
-        msg_warning() << "Data field 'receivedData' is now deprecated. You should use the field name 'packetIn' insteas, which is a vector of unsigned char.";if(!d_packetOut.isSet())
-        d_packetIn.setValue(d_packetInDeprecated.getValue());
-    }
 }
-
-
-void SerialPortBridgeGeneric::updateLinkToDeprecatedData()
-{
-    vector<double> packetOutDouble = d_packetOutDeprecated.getValue();
-    vector<unsigned char> packetOut;
-    unsigned int packetSize = static_cast<unsigned int>(packetOutDouble.size());
-    packetOut.resize(packetSize);
-    for(unsigned int i=0; i<packetSize; i++)
-        packetOut[i] = static_cast<unsigned char>(packetOutDouble[i]);
-    d_packetOut.setValue(packetOut);
-}
-// /////////////////////////////////////
-
 
 void SerialPortBridgeGeneric::checkConnection()
 {
@@ -197,7 +153,7 @@ void SerialPortBridgeGeneric::checkConnection()
     if (status!=1)
     {
         msg_warning() <<"No serial port found";
-        d_componentState = ComponentState::Invalid;
+        d_componentState.setValue(ComponentState::Invalid);
     }
     else
         msg_info() <<"Serial port found";
@@ -208,7 +164,7 @@ void SerialPortBridgeGeneric::onBeginAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
-    if(d_componentState == ComponentState::Invalid)
+    if(d_componentState.getValue() == ComponentState::Invalid)
         return;
 
     if(d_doReceive.getValue())
@@ -220,12 +176,12 @@ void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
-    if(d_componentState == ComponentState::Invalid)
+    if(d_componentState.getValue() == ComponentState::Invalid)
         return;
 
     checkData();
 
-    if(d_componentState == ComponentState::Invalid)
+    if(d_componentState.getValue() == ComponentState::Invalid)
         return;
 
     if(d_precise.getValue()) sendPacketPrecise();
@@ -309,11 +265,6 @@ void SerialPortBridgeGeneric::checkData()
 {
     if(!d_size.isSet())
         msg_warning() <<"Size not set.";
-
-    // To remove before v20.0 of the plugin
-    if(d_packetOutDeprecated.isSet())
-        updateLinkToDeprecatedData();
-    // /////////////////////////////////////
 
     if(d_packetOut.getValue().size()!=d_size.getValue())
     {

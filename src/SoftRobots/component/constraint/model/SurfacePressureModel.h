@@ -134,13 +134,8 @@ protected:
     Data<Real>                          d_eqVolumeGrowth;
     Data<Real>                          d_maxVolumeGrowthVariation;
 
-
     Data<bool>                          d_drawPressure;
     Data<Real>                          d_drawScale;
-    // To remove in SoftRobots v20.0
-    Data<bool>                          d_visualizationDepracated;
-    Data<Real>                          d_showVisuScaleDepracated;
-    //
 
 
 protected:

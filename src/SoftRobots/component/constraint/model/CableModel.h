@@ -132,7 +132,8 @@ protected:
 
     Data<bool>                  d_drawPullPoint;
     Data<bool>                  d_drawPoints;
-    Data<defaulttype::Vec4f>    d_color;
+
+    Data<helper::types::RGBAColor>    d_color;
 
     bool                        m_hasSlidingPoint;
 

@@ -120,7 +120,7 @@ void AnimationEditor<Rigid3Types>::drawTrajectory(const VisualParams* vparams)
         lines.push_back(points[i+1]);
     }
 
-    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,Vec4f(0.5,0.5,0.5,1.));
+    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,helper::types::RGBAColor(0.5,0.5,0.5,1.));
 }
 
 

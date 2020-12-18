@@ -52,7 +52,7 @@ using sofa::helper::vector;
 using core::ConstVecCoordId;
 using sofa::defaulttype::Mat;
 using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec4f;
+using sofa::helper::types::RGBAColor;
 using std::string;
 using std::ostringstream;
 using sofa::defaulttype::Vector3;
@@ -85,11 +85,11 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                              "Output pressure."))
 
 
-    , d_maxPressure(initData(&d_maxPressure, Real(0.0), "maxPressure",
+    , d_maxPressure(initData(&d_maxPressure, "maxPressure",
                              "Maximum pressure allowed for actuation. If no value is set by user, no \n"
                              "maximum pressure constraint will be considered."))
 
-    , d_minPressure(initData(&d_minPressure, Real(0.0), "minPressure",
+    , d_minPressure(initData(&d_minPressure, "minPressure",
                              "Minimum pressure allowed for actuation. If no value is set by user, no \n"
                              "minimum pressure constraint will be considered. A negative pressure will empty/drain the cavity."))
 
@@ -98,32 +98,32 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                             "Solver will try to maintain the pressure at this value.\n"  
                             "If unspecified, no equality constraint will be considered."))  
 
-    , d_maxPressureVariation(initData(&d_maxPressureVariation, Real(0.0), "maxPressureVariation",
+    , d_maxPressureVariation(initData(&d_maxPressureVariation, "maxPressureVariation",
                             "Maximum pressure variation allowed for actuation. If no value is set by user, no \n"
                             "maximum will be considered."))
 
     , d_volumeGrowth(initData(&d_volumeGrowth, double(0.0), "volumeGrowth",
                              "Output volume growth."))
 
-    , d_maxVolumeGrowth(initData(&d_maxVolumeGrowth, Real(0.0), "maxVolumeGrowth",
+    , d_maxVolumeGrowth(initData(&d_maxVolumeGrowth, "maxVolumeGrowth",
                              "Maximum volume growth allowed for actuation. If no value is set by user, no \n"
                              "maximum will be considered. NB: this value has a dependancy with the time step \n"
                              "(volume/dt) in the dynamic case."))
 
-    , d_minVolumeGrowth(initData(&d_minVolumeGrowth, Real(0.0), "minVolumeGrowth",
+    , d_minVolumeGrowth(initData(&d_minVolumeGrowth, "minVolumeGrowth",
                              "Minimum volume growth allowed for actuation. If no value is set by user, no \n"
                              "minimum will be considered. NB: this value has a dependancy with the time step \n"
-                             "(volume/dt) in the dynamic case."))
-
-    , d_maxVolumeGrowthVariation(initData(&d_maxVolumeGrowthVariation, Real(0.0), "maxVolumeGrowthVariation",
-                             "Maximum volume growth variation allowed for actuation. If no value is set by user, no \n"
-                             "maximum will be considered. NB: this value has a dependancy with the time step \n"
                              "(volume/dt) in the dynamic case."))
 
     , d_eqVolumeGrowth(initData(&d_eqVolumeGrowth, Real(0.0), "eqVolumeGrowth",
                             "Equality constraint for the volume growth. \n"
                             "Solver will try to maintain the volume growth at this value.\n"
                             "If unspecified, no equality constraint will be considered."))
+
+    , d_maxVolumeGrowthVariation(initData(&d_maxVolumeGrowthVariation, "maxVolumeGrowthVariation",
+                             "Maximum volume growth variation allowed for actuation. If no value is set by user, no \n"
+                             "maximum will be considered. NB: this value has a dependancy with the time step \n"
+                             "(volume/dt) in the dynamic case."))
 
     , d_drawPressure(initData(&d_drawPressure, false, "drawPressure",
                                "Visualization of the value of pressure. \n"
@@ -132,8 +132,6 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
     , d_drawScale(initData(&d_drawScale, Real(0.1), "drawScale",
                                "Scale for visualization. If unspecified the default value is {0.1}"))
 
-    , d_visualizationDepracated(initData(&d_visualizationDepracated, false, "visualization",""))
-    , d_showVisuScaleDepracated(initData(&d_showVisuScaleDepracated, Real(0.1), "showVisuScale",""))
 {
     setUpData();
 }
@@ -161,7 +159,7 @@ void SurfacePressureModel<DataTypes>::setUpData()
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::init()
 {
-    d_componentState = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
     SoftRobotsConstraint<DataTypes>::init();
 
     internalInit();
@@ -172,13 +170,13 @@ void SurfacePressureModel<DataTypes>::init()
     d_initialCavityVolume.setValue(volume);
     d_cavityVolume.setValue(volume);
 
-    d_componentState = ComponentState::Valid;
+    d_componentState.setValue(ComponentState::Valid);
 }
 
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::bwdInit()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     // The initial volume is computed in bwdInit so the mapping (if there is any)
@@ -193,7 +191,7 @@ void SurfacePressureModel<DataTypes>::bwdInit()
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::reinit()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     internalInit();
@@ -202,7 +200,7 @@ void SurfacePressureModel<DataTypes>::reinit()
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::reset()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     d_cavityVolume.setValue(d_initialCavityVolume.getValue());
@@ -332,7 +330,7 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
                                                             unsigned int &constraintIndex,
                                                             const DataVecCoord &x)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -385,7 +383,7 @@ void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintPar
                                                              BaseVector *resV,
                                                              const BaseVector *Jdx)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -404,7 +402,7 @@ void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParam
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);
 
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     d_pressure.setValue(lambda->element(m_constraintId));
@@ -420,7 +418,7 @@ void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParam
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::draw(const VisualParams* vparams)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     if (d_drawPressure.getValue()) drawValue(vparams);
@@ -451,7 +449,7 @@ void SurfacePressureModel<DataTypes>::drawValue(const core::visual::VisualParams
 {
     float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * d_drawScale.getValue() );
     string value = getValueString(d_pressure.getValue());
-    vparams->drawTool()->draw3DText(vparams->sceneBBox().maxBBox(),scale,Vec4f(1.,1.,1.,1.),value.c_str());
+    vparams->drawTool()->draw3DText(vparams->sceneBBox().maxBBox(),scale,RGBAColor(1.,1.,1.,1.),value.c_str());
 }
 
 template<class DataTypes>
@@ -478,7 +476,7 @@ void SurfacePressureModel<DataTypes>::drawQuads(const VisualParams* vparams, flo
         points[i*4+3]=x[quad[3]];
     }
 
-    vparams->drawTool()->drawQuads(points, Vec4f(red,green,blue,1));
+    vparams->drawTool()->drawQuads(points, RGBAColor(red,green,blue,1));
 }
 
 template<class DataTypes>
@@ -496,7 +494,7 @@ void SurfacePressureModel<DataTypes>::drawTriangles(const VisualParams* vparams,
         points[i*3+2]=x[tri[2]];
     }
 
-    vparams->drawTool()->drawTriangles(points, Vec4f(red,green,blue,1));
+    vparams->drawTool()->drawTriangles(points, RGBAColor(red,green,blue,1));
 }
 
 template<class DataTypes>
@@ -506,7 +504,7 @@ void SurfacePressureModel<DataTypes>::drawLines(const VisualParams* vparams, flo
 
     for (Edge e : m_edges)
     {
-        vparams->drawTool()->drawLine(x[e[0]], x[e[1]], Vec4f(red,green,blue,1));
+        vparams->drawTool()->drawLine(x[e[0]], x[e[1]], RGBAColor(red,green,blue,1));
     }
 }
 

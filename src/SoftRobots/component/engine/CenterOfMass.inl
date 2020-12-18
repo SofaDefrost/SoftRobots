@@ -51,7 +51,7 @@ using helper::vector;
 using core::ConstVecCoordId;
 using core::objectmodel::BaseData ;
 using core::visual::VisualParams ;
-using defaulttype::Vec4f ;
+using helper::types::RGBAColor ;
 using defaulttype::Vector3 ;
 
 template <class DataTypes>
@@ -60,7 +60,7 @@ CenterOfMass<DataTypes>::CenterOfMass()
     , d_centerOfMass(initData(&d_centerOfMass,"centerOfMass",""))
     , d_visualization(initData(&d_visualization,"visualization","If set to true, will draw the center of mass"))
     , d_visuSize(initData(&d_visuSize, float(1.0), "visuSize",""))
-    , d_visuColor(initData(&d_visuColor, Vec4f(1.,0.,0.,1.), "visuColor",""))
+    , d_visuColor(initData(&d_visuColor, RGBAColor(1.,0.,0.,1.), "visuColor",""))
 {
     d_centerOfMass.setReadOnly(true);
 }
@@ -111,7 +111,7 @@ void CenterOfMass<DataTypes>::reinit()
 template <class DataTypes>
 void CenterOfMass<DataTypes>::doUpdate()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     computeCenterOfMass();
@@ -140,7 +140,7 @@ void CenterOfMass<DataTypes>::computeCenterOfMass()
 template<class DataTypes>
 void CenterOfMass<DataTypes>::draw(const VisualParams *vparams)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     vector<Vector3> points;
