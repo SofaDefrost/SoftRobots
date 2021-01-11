@@ -31,7 +31,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
 #define SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include "../../behavior/SoftRobotsConstraint.h"
 

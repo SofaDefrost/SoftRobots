@@ -28,7 +28,7 @@
 *                                                                             *
 ******************************************************************************/
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include "CableModel.inl"
 

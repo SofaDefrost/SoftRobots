@@ -31,7 +31,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_H
 #define SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_H
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include "../../behavior/SoftRobotsConstraint.h"

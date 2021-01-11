@@ -32,7 +32,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_H
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include "../../behavior/SoftRobotsConstraint.h"
 
