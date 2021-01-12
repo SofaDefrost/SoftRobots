@@ -270,6 +270,7 @@ target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics 
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 
 if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
     # Config files and install rules for pythons scripts
     sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 endif()
