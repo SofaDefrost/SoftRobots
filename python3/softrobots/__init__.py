@@ -13,9 +13,9 @@ Example:
 
 .. sourcecode:: python
 
-    from stlib.scene import MainHeader
-    from stlib.physics.rigid import Cube, Floor
-    from stlib.physics.deformable import ElasticMaterialObject
+    from stlib3.scene import MainHeader
+    from stlib3.physics.rigid import Cube, Floor
+    from stlib3.physics.deformable import ElasticMaterialObject
 
     from softrobots.actuators import PullingCable
     from softrobots.sensors import StringSensor
@@ -56,4 +56,3 @@ Indices and tables
 """
 
 __all__=["actuators","parts", "sensors", "inverse"]
-

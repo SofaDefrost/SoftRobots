@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Sofa.Core
+from Sofa.constants import *
 
 class FingerController(Sofa.Core.Controller):
     """
@@ -29,9 +30,9 @@ class FingerController(Sofa.Core.Controller):
         inputvalue = self.node.aCableActuator.value
 
         displacement = 0
-        if (e["key"] == Sofa.constants.key_plus):
+        if (e["key"] == Sofa.constants.Key.plus):
             displacement = inputvalue.value[0] + 1.0
-        elif (e["key"] == Sofa.constants.key_minus):
+        elif (e["key"] == Sofa.constants.Key.minus):
             displacement = inputvalue.value[0] - 1.0
             if(displacement < 0):
                 displacement = 0

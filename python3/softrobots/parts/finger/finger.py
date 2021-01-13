@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import Sofa
 import Sofa.Core
+from Sofa.constants import *
 from stlib3.physics.deformable import ElasticMaterialObject
 from stlib3.physics.constraints import FixedBox
 from stlib3.scene import Node
@@ -12,33 +13,31 @@ import os.path
 
 templatepath = os.path.abspath(os.path.dirname(__file__) )
 
-class FingerController(Sofa.Core.Contoller):
+class FingerController(Sofa.Core.Controller):
+    def __init__(self, *a, **kw):
+        Sofa.Core.Controller.__init__(self, *a, **kw)
+        self.node = kw["node"]
+        return
 
-    def __init__(self, node, cable, valueType ):
-        self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
-        self.name = "FingerController"
-        if(valueType == "position"):
-            self.valueIncrement = 1
-        else:
-            self.valueIncrement = 20
+    def onKeypressedEvent(self,e):
+        inputvalue = self.node.aCableActuator.value
 
-    def onKeyPressed(self,c):
-        if (c == "+"):
-            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + self.valueIncrement
+        displacement = 0
+        if (e["key"] == Sofa.constants.Key.plus):
+            displacement = inputvalue.value[0] + 1.0
+        elif (e["key"] == Sofa.constants.Key.minus):
+            displacement = inputvalue.value[0] - 1.0
+            if(displacement < 0):
+                displacement = 0
 
-        elif (c == "-"):
-            actuation = self.cableconstraintvalue.value[0][0] - self.valueIncrement
-            if(actuation < 0):
-                actuation = 0
-            self.cableconstraintvalue.value = actuation
+        inputvalue.value = [displacement]
+        return
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
            fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0], youngModulus=18000, valueType='position'):
 
-    finger = Node(parentNode, name)
-    eobject = ElasticMaterialObject(finger,
-                                   volumeMeshFileName=os.path.join(templatepath, "mesh/finger.vtk"), #MISK need to change the relative file
+    eobject = ElasticMaterialObject(name=name, volumeMeshFileName=os.path.join(templatepath, "mesh/finger.vtk"), #MISK need to change the relative file
                                    poissonRatio=0.3,
                                    youngModulus=youngModulus,
                                    totalMass=0.5,
@@ -46,6 +45,7 @@ def Finger(parentNode=None, name="Finger",
                                    surfaceMeshFileName=os.path.join(templatepath, "mesh/finger.stl"),
                                    rotation=rotation,
                                    translation=translation)
+    parentNode.addChild(eobject)
 
 
     FixedBox(eobject, atPositions=fixingBox, doVisualization=True)

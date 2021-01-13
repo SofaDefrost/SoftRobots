@@ -11,4 +11,4 @@ Content:
 .. autofunction:: Finger
 
 """
-from finger import Finger
+from softrobots.parts.finger.finger import Finger

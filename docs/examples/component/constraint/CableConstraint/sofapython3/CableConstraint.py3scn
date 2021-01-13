@@ -7,19 +7,22 @@ path = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
 from stlib3.scene import Scene
 # A prefab that implements an ElasticMaterialObject
 from stlib3.physics.deformable import ElasticMaterialObject
+from stlib3.visuals import VisualModel
+from FingerController import FingerController
 
 def createScene(rootNode):
-	rootNode.addObject("RequiredPlugin", pluginName="SoftRobots")
+	rootNode.addObject("RequiredPlugin", pluginName=["SoftRobots",'SofaConstraint','SofaEngine','SofaLoader','SofaDeformable'])
 	scene = Scene(rootNode, gravity=[0.0,-9810.0,0.0], dt=0.01)
 
 	rootNode.addObject("FreeMotionAnimationLoop")
 	rootNode.addObject("GenericConstraintSolver", maxIterations=1000, tolerance=0.001)
 
-	finger = ElasticMaterialObject(rootNode, name="finger",
-	                        volumeMeshFileName="mesh/finger.vtk",
-	                        poissonRatio=0.45,
-	                        youngModulus=600,
-	                        totalMass=0.05)
+	finger = ElasticMaterialObject(name="finger",
+			                        volumeMeshFileName="../mesh/finger.vtk",
+			                        poissonRatio=0.45,
+			                        youngModulus=600,
+			                        totalMass=0.05)
+	rootNode.addChild(finger)
 
 	# To facilitate the selection of DoFs, SOFA has a concept called ROI (Region of Interest).
 	# The idea is that ROI component "select" all DoFS that are enclosed by their "region".
@@ -33,8 +36,6 @@ def createScene(rootNode):
 	# RestShapeSpringsForceField is one way in Sofa to implement fixed point constraint.
 	# Here the constraints are applied to the DoFs selected by the previously defined BoxROI
 	finger.addObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness=1e12)
-
-	finger.addObject('LinearSolverConstraintCorrection')
 
 
 	##########################################
@@ -70,7 +71,7 @@ def createScene(rootNode):
 	# the indices are referring to the MechanicalObject's positions.
 	# The last indice is where the pullPoint is connected.
 	cable.addObject('CableConstraint', name="aCableActuator",
-			indices=range(0,14),
+			indices=list(range(0,14)),
 			pullPoint=[0.0, 12.5, 2.5])
 
 	# This add a BarycentricMapping. A BarycentricMapping is a key element as it will add a bi-directional link
@@ -81,20 +82,13 @@ def createScene(rootNode):
 	# This add a PythonScriptController that permits to programatically implement new behavior
 	# or interactions using the Python programming langage. The controller is referring to a
 	# file named "controller.py".
-	cable.addObject('PythonScriptController', filename="controller/FingerController.py", classname="controller")
+	cable.addObject(FingerController(node=cable))
 
 	##########################################
 	# Visualization                          #
 	##########################################
 	# In Sofa, visualization is handled by adding a rendering model.
-	# add an empty child node to store this rendering model.
-	fingerVisu = finger.addChild('visu')
-
-	# Add to this empty node a rendering model made of triangles and loaded from an stl file.
-	fingerVisu.addObject('MeshSTLLoader', filename=path+"finger.stl", name="loader")
-	fingerVisu.addObject('OglModel', src="@loader", template='ExtVec3f', color=[0.0, 0.7, 0.7])
-
-	# Add a BarycentricMapping to deform the rendering model in a way that follow the ones of the parent mechanical model.
-	fingerVisu.addObject('BarycentricMapping')
+	finger.addChild(VisualModel(visualMeshPath=path+"finger.stl", color=[0.0, 0.7, 0.7]))
+	finger.VisualModel.addObject('BarycentricMapping', name='mapping')
 
 	return rootNode
