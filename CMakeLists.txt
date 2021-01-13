@@ -266,7 +266,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping SofaSparseSolver SofaEngine)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping SofaSparseSolver SofaEngine Sofa.GL)
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 
 if(SofaPython_FOUND)
@@ -276,7 +276,6 @@ if(SofaPython_FOUND)
 endif()
 
 if(SofaPython3_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaPython3)
     # Config files and install rules for pythons scripts
     sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python3")
 endif()
