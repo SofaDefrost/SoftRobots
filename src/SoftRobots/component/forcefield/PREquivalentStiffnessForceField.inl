@@ -148,7 +148,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         const DataVecCoord& x,
         const DataVecDeriv& v)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(v);
@@ -304,7 +304,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
                                                            DataVecDeriv&  d_f ,
                                                            const DataVecDeriv&  d_x)
 {    
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     const VecDeriv& dx = d_x.getValue();
@@ -349,7 +349,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addKToMatrix(BaseMatrix* matrix
                                                               double kFact,
                                                               unsigned int& offset)
 {    
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     if( CSRMatB66* csrMat = dynamic_cast<CSRMatB66*>(matrix) ) {

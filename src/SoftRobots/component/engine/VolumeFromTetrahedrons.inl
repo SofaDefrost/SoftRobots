@@ -31,7 +31,7 @@
 #define SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_INL
 
 #include "VolumeFromTetrahedrons.h"
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {
@@ -103,7 +103,7 @@ void VolumeFromTetrahedrons<DataTypes>::init()
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::reinit()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     updateVolume();
@@ -162,7 +162,7 @@ void VolumeFromTetrahedrons<DataTypes>::checkTopology()
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::doUpdate()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     if(m_state && d_doUpdate.getValue())

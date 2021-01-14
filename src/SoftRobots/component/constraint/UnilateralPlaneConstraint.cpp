@@ -90,7 +90,7 @@ int UnilateralPlaneConstraintClass = core::RegisterObject("This component is a s
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
+template class UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
 
 
 } // namespace constraintset

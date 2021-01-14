@@ -148,8 +148,8 @@ int AnimationEditorClass = RegisterObject("Build an animation from key points mo
 
         ;
 
-template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3Types>;
-template class SOFA_SOFTROBOTS_API AnimationEditor<Rigid3Types>;
+template class AnimationEditor<Vec3Types>;
+template class AnimationEditor<Rigid3Types>;
 
 
 

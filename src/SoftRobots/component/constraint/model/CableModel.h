@@ -55,7 +55,6 @@ using sofa::helper::ReadAccessor ;
 using sofa::core::VecCoordId ;
 
 
-
 /**
  * This class contains common implementation of cable constraints
 */

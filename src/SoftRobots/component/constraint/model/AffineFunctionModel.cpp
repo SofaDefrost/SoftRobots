@@ -48,8 +48,8 @@ using namespace sofa::defaulttype;
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-template class SOFA_SOFTROBOTS_API AffineFunctionModel<Vec3Types>;
-template class SOFA_SOFTROBOTS_API AffineFunctionModel<Rigid3Types>;
+template class AffineFunctionModel<Vec3Types>;
+template class AffineFunctionModel<Rigid3Types>;
 
 } // namespace constraintset
 

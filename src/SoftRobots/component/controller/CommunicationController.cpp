@@ -246,15 +246,15 @@ int CommunicationControllerClass = RegisterObject("This component is used to bui
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-template class SOFA_SOFTROBOTS_API CommunicationController<double>;
-template class SOFA_SOFTROBOTS_API CommunicationController<vector<Vec3Types::Coord>>;
-template class SOFA_SOFTROBOTS_API CommunicationController<vector<Vec1Types::Coord>>;
-template class SOFA_SOFTROBOTS_API CommunicationController<vector<Rigid3Types::Coord>>;
+template class CommunicationController<double>;
+template class CommunicationController<vector<Vec3Types::Coord>>;
+template class CommunicationController<vector<Vec1Types::Coord>>;
+template class CommunicationController<vector<Rigid3Types::Coord>>;
 
-template class SOFA_SOFTROBOTS_API CommunicationController<int>;
-template class SOFA_SOFTROBOTS_API CommunicationController<unsigned int>;
-template class SOFA_SOFTROBOTS_API CommunicationController<vector<Vec<2,int>> >;
-template class SOFA_SOFTROBOTS_API CommunicationController<vector<Vec<2,unsigned>> >;
+template class CommunicationController<int>;
+template class CommunicationController<unsigned int>;
+template class CommunicationController<vector<Vec<2,int>> >;
+template class CommunicationController<vector<Vec<2,unsigned>> >;
 
 
 }   //namespace controller

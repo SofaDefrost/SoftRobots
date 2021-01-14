@@ -49,7 +49,7 @@ int VolumeFromTetrahedronsClass = RegisterObject("This class computes the volume
 
         ;
 
-template class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons<Vec3Types>;
+template class VolumeFromTetrahedrons<Vec3Types>;
 
 
 } // namespace constraintset

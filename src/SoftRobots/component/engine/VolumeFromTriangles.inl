@@ -31,7 +31,7 @@
 #define SOFA_COMPONENT_ENGINE_VOLUMEFROMTRIANGLES_INL
 
 #include "VolumeFromTriangles.h"
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 namespace sofa
 {
@@ -101,7 +101,7 @@ void VolumeFromTriangles<DataTypes>::init()
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::reinit()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     updateVolume();
@@ -159,7 +159,7 @@ void VolumeFromTriangles<DataTypes>::checkTopology()
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::doUpdate()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     if(m_state && d_doUpdate.getValue())

@@ -49,7 +49,7 @@ int VolumeFromTrianglesClass = RegisterObject("This class computes the volume of
 
         ;
 
-template class SOFA_SOFTROBOTS_API VolumeFromTriangles<Vec3Types>;
+template class VolumeFromTriangles<Vec3Types>;
 
 
 } // namespace constraintset

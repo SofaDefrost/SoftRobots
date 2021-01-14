@@ -34,8 +34,8 @@
 
 
 #ifdef SOFA_WITH_OPENGL
-#include <sofa/helper/gl/template.h>
-using sofa::helper::gl::glVertexT;
+#include <sofa/gl/template.h>
+using sofa::gl::glVertexT;
 #endif
 
 
@@ -79,7 +79,7 @@ using sofa::helper::ReadAccessor;
 using std::endl;
 using std::cout;
 using std::stringstream;
-using sofa::defaulttype::Vec4f;
+using sofa::helper::types::RGBAColor;
 using sofa::defaulttype::Vec3d;
 using sofa::defaulttype::Vec4d;
 using std::ifstream;
@@ -799,7 +799,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
     quad.push_back(Vec3d(vparams->viewport()[2],yUPos,0)); //UL
     quad.push_back(Vec3d(vparams->viewport()[2],yDPos,0)); //DL
     quad.push_back(Vec3d(0,yDPos,0)); //DR
-    vparams->drawTool()->drawQuads(quad,Vec4f(0.4f,0.4f,0.4f,1.0f));
+    vparams->drawTool()->drawQuads(quad,RGBAColor(0.4f,0.4f,0.4f,1.0f));
 
     unsigned int maxKey = 0;
     for(unsigned int i=0; i<m_keyFramesID.size(); i++)
@@ -811,7 +811,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
     quad.push_back(Vec3d((maxKey+1)*ratio+xShift,yUPos,0)); //UL
     quad.push_back(Vec3d((maxKey+1)*ratio+xShift,yDPos,0)); //DL
     quad.push_back(Vec3d(ratio+xShift,yDPos,0)); //DR
-    vparams->drawTool()->drawQuads(quad,Vec4f(0.0f,0.3f,0.0f,1.0f));
+    vparams->drawTool()->drawQuads(quad,RGBAColor(0.0f,0.3f,0.0f,1.0f));
     ///////////////////////////////////////////////
 
     //////////////Cursor////////////////////////
@@ -822,7 +822,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
     triangle.push_back(Vec3d((d_cursor.getValue()+1)*ratio+xShift, yUPos, 0.));
     triangle.push_back(Vec3d(sizeCursor/2.+(d_cursor.getValue()+1)*ratio+xShift, yUPos + sizeCursor, 0.));
     triangle.push_back(Vec3d(-sizeCursor/2.+(d_cursor.getValue()+1)*ratio+xShift, yUPos + sizeCursor, 0.));
-    vparams->drawTool()->drawTriangles(triangle,Vec4f(0.9f,0.9f,0.9f,1.0f));
+    vparams->drawTool()->drawTriangles(triangle,RGBAColor(0.9f,0.9f,0.9f,1.0f));
     ///////////////////////////////////////////////////
 
     /// /////////////////////KeyFrames/////////////////////
@@ -831,13 +831,13 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
         vector<Vec3d> line;
         line.push_back(Vec3d((m_keyFramesID[i]+1)*ratio+xShift,yUPos,0.));
         line.push_back(Vec3d((m_keyFramesID[i]+1)*ratio+xShift,yDPos,0.));
-        vparams->drawTool()->drawLines(line,2,Vec4f(0.0f,0.5f,0.0f,1.0f));
+        vparams->drawTool()->drawLines(line,2,RGBAColor(0.0f,0.5f,0.0f,1.0f));
     }
 
     vector<Vec3d> line;
     line.push_back(Vec3d((d_maxKeyFrame.getValue()+1)*ratio+xShift,yUPos,0.));
     line.push_back(Vec3d((d_maxKeyFrame.getValue()+1)*ratio+xShift,yDPos,0.));
-    vparams->drawTool()->drawLines(line,2,Vec4f(0.6f,0.0f,0.0f,1.0f));
+    vparams->drawTool()->drawLines(line,2,RGBAColor(0.6f,0.0f,0.0f,1.0f));
     ////////////////////////////////////////////////
 
     glMatrixMode(GL_PROJECTION);
@@ -867,8 +867,8 @@ void AnimationEditor<DataTypes>::drawTrajectory(const VisualParams* vparams)
         lines.push_back(points[i+1]);
     }
 
-    vparams->drawTool()->drawPoints(points,d_drawSize.getValue()*5.,Vec4f(0.4,0.4,0.4,1.));
-    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,Vec4f(0.5,0.5,0.5,1.));
+    vparams->drawTool()->drawPoints(points,d_drawSize.getValue()*5.,RGBAColor(0.4,0.4,0.4,1.));
+    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,RGBAColor(0.5,0.5,0.5,1.));
 }
 
 }//namespace _animationeditor_

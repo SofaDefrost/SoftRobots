@@ -202,6 +202,7 @@ void AffineFunctionModel<DataTypes>::buildConstraintMatrix(const ConstraintParam
             return ;
 
     SOFA_UNUSED(cParams);
+    SOFA_UNUSED(x);
 
     m_constraintId = cIndex;
 

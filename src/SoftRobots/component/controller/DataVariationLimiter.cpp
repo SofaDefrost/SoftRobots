@@ -57,14 +57,14 @@ int DataVariationLimiterClass = RegisterObject("This component interpolates betw
         .add< DataVariationLimiter<Vec3i> >()
         ;
 
-template class SOFA_SOFTROBOTS_API DataVariationLimiter<Vec3Types::Coord>;
-template class SOFA_SOFTROBOTS_API DataVariationLimiter<Vec2Types::Coord>;
-template class SOFA_SOFTROBOTS_API DataVariationLimiter<Vec1Types::Coord>;
+template class DataVariationLimiter<Vec3Types::Coord>;
+template class DataVariationLimiter<Vec2Types::Coord>;
+template class DataVariationLimiter<Vec1Types::Coord>;
 
 
-template class SOFA_SOFTROBOTS_API DataVariationLimiter<Vec1i>;
-template class SOFA_SOFTROBOTS_API DataVariationLimiter<Vec2i>;
-template class SOFA_SOFTROBOTS_API DataVariationLimiter<Vec3i>;
+template class DataVariationLimiter<Vec1i>;
+template class DataVariationLimiter<Vec2i>;
+template class DataVariationLimiter<Vec3i>;
 
 } // namespace constraintset
 

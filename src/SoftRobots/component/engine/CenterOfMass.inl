@@ -31,7 +31,7 @@
 #define SOFA_COMPONENT_ENGINE_CENTEROFMASS_INL
 
 #include "CenterOfMass.h"
-#include <sofa/helper/helper.h>
+#include <sofa/helper/config.h>
 
 #include <sofa/core/visual/VisualParams.h>
 

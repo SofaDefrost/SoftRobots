@@ -53,7 +53,7 @@ using sofa::helper::WriteAccessor ;
 using sofa::helper::ReadAccessor ;
 using sofa::helper::vector ;
 using defaulttype::Vec;
-using defaulttype::Vec4f;
+using helper::types::RGBAColor;
 using defaulttype::Vector3;
 
 template<class DataTypes>
@@ -96,7 +96,7 @@ void UnilateralPlaneConstraint<DataTypes>::init()
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::reinit()
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     checkIndicesRegardingState();
@@ -124,7 +124,7 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const Constrain
                                                                   unsigned int &cIndex,
                                                                  const DataVecCoord &x)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -160,7 +160,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintViolation(const Constrai
                                                                   BaseVector *resV,
                                                                   const BaseVector *Jdx)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -186,7 +186,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintResolution(const Constra
                                                                    std::vector<ConstraintResolution*>& resTab,
                                                                    unsigned int& offset)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     SOFA_UNUSED(cParams);
@@ -199,7 +199,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintResolution(const Constra
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
 {
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
     if (!vparams->displayFlags().getShowCollisionModels())
@@ -220,7 +220,7 @@ void UnilateralPlaneConstraint<DataTypes>::drawPoints(const VisualParams* vparam
     for (unsigned int i=0; i<nbPoints; i++)
         points[i] = positions[d_indices.getValue()[i]];
 
-    vparams->drawTool()->drawPoints(points, 5, Vec4f(0.9f,0.4f,0.0f,1.0f));
+    vparams->drawTool()->drawPoints(points, 5, RGBAColor(0.9f,0.4f,0.0f,1.0f));
 }
 
 template<class DataTypes>
@@ -232,7 +232,7 @@ void UnilateralPlaneConstraint<DataTypes>::drawTriangles(const VisualParams* vpa
     for (unsigned int i=0; i<3; i++)
         points[i] = positions[d_indices.getValue()[i+1]];
 
-    vparams->drawTool()->drawTriangles(points, Vec4f(1.0f,0.6f,0.2f,1.0f));
+    vparams->drawTool()->drawTriangles(points, RGBAColor(1.0f,0.6f,0.2f,1.0f));
 
 }
 
@@ -249,7 +249,7 @@ void UnilateralPlaneConstraint<DataTypes>::drawArrows(const VisualParams* vparam
         normal = -normal;
     normal.normalize();
 
-    Vec4f color(0.9f,0.4f,0.0f,1.0f);
+    RGBAColor color(0.9f,0.4f,0.0f,1.0f);
     vparams->drawTool()->drawArrow((p1+p2+p3)/3., (p1+p2+p3)/3. + normal, 0.1, color, 4);
 }
 

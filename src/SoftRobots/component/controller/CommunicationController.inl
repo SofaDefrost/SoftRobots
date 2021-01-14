@@ -92,7 +92,7 @@ CommunicationController<DataTypes>::~CommunicationController()
 template<class DataTypes>
 void CommunicationController<DataTypes>::init()
 {
-    d_componentState = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
 
     // Should drop sent messages if exceed HWM.
     // WARNING: does not work
@@ -107,7 +107,7 @@ void CommunicationController<DataTypes>::init()
     d_data.resize(d_nbDataField.getValue());
     openCommunication();
 
-    d_componentState = ComponentState::Valid;
+    d_componentState.setValue(ComponentState::Valid);
 }
 
 template<class DataTypes>
@@ -217,7 +217,7 @@ void CommunicationController<DataTypes>::onBeginAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return;
 
     if(d_beginAt.getValue()>m_time)
@@ -239,7 +239,7 @@ void CommunicationController<DataTypes>::onEndAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
 
-    if(d_componentState != ComponentState::Valid)
+    if(d_componentState.getValue() != ComponentState::Valid)
         return;
 
     if(d_beginAt.getValue()>m_time)
@@ -310,7 +310,7 @@ void CommunicationController<DataTypes>::sendData()
         msg_warning() << "A problem with the communication has been detected. The component won't work anymore. "
                       << "If a timeOut has been set, you may consider a greater value.";
         closeCommunication();
-        d_componentState = ComponentState::Invalid;
+        d_componentState.setValue(ComponentState::Invalid);
     }
 }
 
@@ -348,7 +348,7 @@ void CommunicationController<DataTypes>::receiveData()
         {
             msg_error() << "The template of received data is not correct. Received " << templateStream.str() << ", while expecting " << getTemplateName()
                         << ". The component won't work anymore. ";
-            d_componentState = ComponentState::Invalid;
+            d_componentState.setValue(ComponentState::Invalid);
             return;
         }
 
@@ -367,7 +367,7 @@ void CommunicationController<DataTypes>::receiveData()
         msg_warning() << "A problem with the communication has been detected. The component won't work anymore. "
                       << "If a timeOut has been set, you may consider a greater value.";
         closeCommunication();
-        d_componentState = ComponentState::Invalid;
+        d_componentState.setValue(ComponentState::Invalid);
     }
 }
 

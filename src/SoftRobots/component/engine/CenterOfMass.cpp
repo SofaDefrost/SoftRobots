@@ -49,7 +49,7 @@ int CenterOfMassClass = RegisterObject("This class computes the center of mass o
 
         ;
 
-template class SOFA_SOFTROBOTS_API CenterOfMass<Vec3Types>;
+template class CenterOfMass<Vec3Types>;
 
 
 } // namespace constraintset
