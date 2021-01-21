@@ -34,8 +34,8 @@
 
 
 #ifdef SOFA_WITH_OPENGL
-#include <sofa/gl/template.h>
-using sofa::gl::glVertexT;
+#include <sofa/helper/gl/template.h>
+using sofa::helper::gl::glVertexT;
 #endif
 
 
@@ -47,12 +47,6 @@ using sofa::gl::glVertexT;
 #include <fstream>
 
 #include "AnimationEditor.h"
-
-#ifdef SOFA_WITH_DACCORD
-#include "../../applications/sofa/gui/SofaGuiCommon/editor/editor.h"
-using daccord::current::Editor ;
-#endif
-
 
 namespace sofa
 {
