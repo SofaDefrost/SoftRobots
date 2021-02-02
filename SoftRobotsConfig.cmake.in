@@ -2,13 +2,19 @@
 
 @PACKAGE_INIT@
 
+set(SOFTROBOTS_HAVE_SOFAPYTHON @SOFTROBOTS_HAVE_SOFAPYTHON@)
+set(SOFTROBOTS_HAVE_STLIB @SOFTROBOTS_HAVE_STLIB@)
+
 find_package(SofaFramework REQUIRED)
-if(@SofaPython_FOUND@)
-    find_package(SofaPython)
+
+if(SOFTROBOTS_HAVE_SOFAPYTHON)
+    find_package(SofaPython QUIET REQUIRED)
 endif()
-if(@STLIB_FOUND@)
-    find_package(STLIB)
+
+if(SOFTROBOTS_HAVE_STLIB)
+    find_package(STLIB QUIET REQUIRED)
 endif()
+
 find_package(Qt5 QUIET REQUIRED COMPONENTS Network)
 include_directories("${Qt5Network_INCLUDE_DIRS}")
 
