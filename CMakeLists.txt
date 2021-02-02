@@ -36,10 +36,8 @@ option(SOFTROBOTS_GAMETRAKCONTROLLER "Enables GameTrak component. It requires HI
 option(SOFTROBOTS_ROBOTINOCONTROLLER "Enables Robotino component" OFF)
 option(SOFTROBOTS_WITH_CAMERA "Enable this option if you want to use the realsense cameras to perform force sensing, and point cloud processing." OFF)
 
+sofa_find_package(SofaPython QUIET)
 sofa_find_package(SofaPython3 QUIET)
-if(NOT SofaPython3_FOUND)
-    sofa_find_package(SofaPython QUIET)
-endif()
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
 if(WIN32)
@@ -272,19 +270,12 @@ target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics 
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 
 
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 if(SofaPython3_FOUND)
-    debug_print_target_properties(SofaPython3::Plugin)
-    target_link_libraries(${PROJECT_NAME} SofaPython3::Bindings SofaPython3::Plugin)
-    # Config files and install rules for pythons scripts
-    # sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python3")
     SP3_add_python_package(
         SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python3/softrobots
         TARGET_DIRECTORY softrobots
     )
-elseif(SofaPython_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaPython)
-    # Config files and install rules for pythons scripts
-    sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
