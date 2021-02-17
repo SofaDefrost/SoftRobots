@@ -34,8 +34,8 @@
 
 
 #ifdef SOFA_WITH_OPENGL
-#include <sofa/gl/template.h>
-using sofa::gl::glVertexT;
+#include <sofa/helper/gl/template.h>
+using sofa::helper::gl::glVertexT;
 #endif
 
 
