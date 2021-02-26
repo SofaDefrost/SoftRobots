@@ -40,6 +40,7 @@
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
+#include <sofa/core/behavior/ForceField.h>
 
 namespace sofa
 {
