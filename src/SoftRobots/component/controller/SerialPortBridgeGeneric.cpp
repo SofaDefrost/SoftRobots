@@ -85,7 +85,7 @@ SerialPortBridgeGeneric::~SerialPortBridgeGeneric()
 
 void SerialPortBridgeGeneric::init()
 {
-    d_componentState = ComponentState::Valid;
+    d_componentState.setValue(ComponentState::Valid);
     dataDeprecationManagement();
     checkConnection();
 
@@ -273,7 +273,7 @@ void SerialPortBridgeGeneric::checkData()
                     <<" To remove this warning you can either change the value of 'size' or 'packetOut'."
                    <<" Make sure the size and format of the data correspond to what the microcontroller in the robot is expecting."
                   << "The component will switch to an invalid state to avoid any issues.";
-        d_componentState = ComponentState::Invalid;
+        d_componentState.setValue(ComponentState::Invalid);
     }
 }
 

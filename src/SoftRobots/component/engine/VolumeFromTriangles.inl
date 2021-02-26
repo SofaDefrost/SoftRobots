@@ -69,7 +69,7 @@ VolumeFromTriangles<DataTypes>::~VolumeFromTriangles()
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::init()
 {
-    d_componentState = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
 
     addInput(&d_positions);
     addInput(&d_triangles);
@@ -94,7 +94,7 @@ void VolumeFromTriangles<DataTypes>::init()
     checkTopology();
     updateVolume();
 
-    d_componentState = ComponentState::Valid;
+    d_componentState.setValue(ComponentState::Valid);
 }
 
 
