@@ -126,7 +126,7 @@ AnimationEditor<DataTypes>::~AnimationEditor()
 template<class DataTypes>
 void AnimationEditor<DataTypes>::init()
 {
-    d_componentState = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
 
     m_keyFramesID.clear();
 

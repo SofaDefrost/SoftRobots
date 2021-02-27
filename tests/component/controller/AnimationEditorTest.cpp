@@ -144,7 +144,7 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
         m_node->addObject(thisobject) ;
         thisobject->init();
 
-        EXPECT_EQ(thisobject->f_listening, true);
+        EXPECT_EQ(thisobject->f_listening.getValue(), true);
         EXPECT_EQ(thisobject->m_keyFramesID.size(), (unsigned int)1);
         EXPECT_EQ(thisobject->m_keyFramesID[0], (unsigned int)0);
         EXPECT_EQ(thisobject->m_animation.size(), (unsigned int)1);

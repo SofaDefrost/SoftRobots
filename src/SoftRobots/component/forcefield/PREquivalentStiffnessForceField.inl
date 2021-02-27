@@ -87,7 +87,7 @@ PREquivalentStiffnessForceField<DataTypes>::~PREquivalentStiffnessForceField()
 template<typename DataTypes>
 void PREquivalentStiffnessForceField<DataTypes>::init()
 {
-    d_componentState = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
 
     Inherit1::init();
     const string& filename = d_complianceFile.getValue();
@@ -139,7 +139,7 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
         msg_warning() << "Can not find compliance matrices file : " << filename;
     }
 
-    d_componentState = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
 }
 
 template<typename DataTypes>
