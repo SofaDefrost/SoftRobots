@@ -33,6 +33,7 @@
 
 #include "model/CableModel.h"
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 namespace sofa
 {

@@ -35,6 +35,7 @@
 #include <sofa/helper/OptionsGroup.h>
 
 #include <SoftRobots/component/initSoftRobots.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 namespace sofa
 {
