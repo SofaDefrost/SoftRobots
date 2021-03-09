@@ -39,6 +39,7 @@
 
 #include "../behavior/SoftRobotsConstraint.h"
 #include <SoftRobots/component/initSoftRobots.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 namespace sofa
 {

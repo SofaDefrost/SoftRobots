@@ -32,6 +32,7 @@
 #define PARTIALRIGIDIFICATIONCONSTRAINT_H
 
 #include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 namespace sofa
 {
