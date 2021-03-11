@@ -30,14 +30,10 @@
 #ifndef SOFA_CONTROLLER_ANIMATIONEDITOR_INL
 #define SOFA_CONTROLLER_ANIMATIONEDITOR_INL
 
-#include <sofa/config/build_option_opengl.h>
-
-
-#ifdef SOFA_WITH_OPENGL
+#ifndef SOFA_NO_OPENGL
 #include <sofa/helper/gl/template.h>
 using sofa::helper::gl::glVertexT;
 #endif
-
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -775,7 +771,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
         return ;
 #endif // SOFA_WITH_DACCORD
 
-#ifdef SOFA_WITH_OPENGL
+#ifndef SOFA_NO_OPENGL
     glDisable(GL_LIGHTING);
     unsigned int ratio = round(vparams->viewport()[2]/d_maxKeyFrame.getValue());
 
