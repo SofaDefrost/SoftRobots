@@ -32,6 +32,7 @@
 
 #include "SoftRobotsConstraint.h"
 #include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa
 {
@@ -83,7 +84,7 @@ void SoftRobotsConstraint<DataTypes>::init()
 
 
 template<class DataTypes>
-void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
+void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const sofa::core::ConstraintParams* cParams,
                                                              BaseVector *resV)
 {
     if (cParams)
