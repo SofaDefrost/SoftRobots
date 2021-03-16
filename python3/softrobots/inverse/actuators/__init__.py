@@ -14,5 +14,5 @@ Content:
 .. autofunction:: PneumaticCavity
 
 """
-from cable import PullingCable
-from pneumatic import PneumaticCavity
+from softrobots.inverse.actuators.cable import PullingCable
+from softrobots.inverse.actuators.pneumatic import PneumaticCavity

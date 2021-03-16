@@ -14,6 +14,6 @@ Content:
 .. autofunction:: EffectorGoal
 
 """
-from positionEffector import PositionEffector
-from effectorGoal import EffectorGoal
-from volumeEffector import VolumeEffector
+from softrobots.inverse.effectors.positionEffector import PositionEffector
+from softrobots.inverse.effectors.effectorGoal import EffectorGoal
+from softrobots.inverse.effectors.volumeEffector import VolumeEffector
