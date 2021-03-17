@@ -153,7 +153,7 @@ struct DataVariationLimiterTest : public Sofa_test<typename _DataTypes::value_ty
 
 };
 
-using testing::Types;
+using ::testing::Types;
 typedef Types<defaulttype::Vec3d> DataTypes;
 
 TYPED_TEST_CASE(DataVariationLimiterTest, DataTypes);

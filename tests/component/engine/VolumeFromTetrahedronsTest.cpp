@@ -147,7 +147,7 @@ struct VolumeFromTetrahedronsTest : public Sofa_test<typename _DataTypes::Real>,
     }
 };
 
-using testing::Types;
+using ::testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
 TYPED_TEST_CASE(VolumeFromTetrahedronsTest, DataTypes);

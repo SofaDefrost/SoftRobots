@@ -208,7 +208,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
 
 };
 
-using testing::Types;
+using ::testing::Types;
 typedef Types<defaulttype::Vec3d> DataTypes;
 
 TYPED_TEST_CASE(SerialPortBridgeGenericTest, DataTypes);
