@@ -53,7 +53,7 @@ def PullingCable(attachedTo=None,
     # The last indice is where the pullPoint is connected.
     if pullPointLocation != None:
         cable.addObject('CableConstraint',
-                            indices=range(len(cableGeometry)),
+                            indices=list(range(len(cableGeometry))),
                             pullPoint=pullPointLocation,
                             value=initialValue,
                             valueType=valueType,
@@ -61,7 +61,7 @@ def PullingCable(attachedTo=None,
                             )
     else:
         cable.addObject('CableConstraint',
-                            indices=range(len(cableGeometry)),
+                            indices=list(range(len(cableGeometry))),
                             value=initialValue,
                             valueType=valueType,
                             hasPullPoint=False
