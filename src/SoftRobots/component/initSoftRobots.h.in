@@ -31,7 +31,7 @@
 #define INITSOFTROBOTS_H
 
 
-#include <sofa/helper/config.h>
+#include <sofa/config.h>
 
 #ifdef SOFA_BUILD_SOFTROBOTS
 #define SOFA_TARGET SoftRobots
@@ -40,7 +40,8 @@
 #define SOFA_SOFTROBOTS_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#cmakedefine SOFTROBOTS_PYTHON
+#cmakedefine01 SOFTROBOTS_HAVE_SOFAPYTHON
+#cmakedefine01 SOFTROBOTS_HAVE_SOFAPYTHON3
 
 
 /** \mainpage

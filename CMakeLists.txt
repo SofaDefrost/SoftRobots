@@ -7,6 +7,7 @@ find_package(SofaFramework REQUIRED)
 find_package(SofaCommon REQUIRED) # SofaRigid
 find_package(SofaMisc REQUIRED) # SofaMiscMapping
 find_package(SofaSparseSolver REQUIRED)
+find_package(SofaConstraint REQUIRED)
 
 option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
 if(NOT SOFTROBOTS_IGNORE_ERRORS)
@@ -35,9 +36,8 @@ option(SOFTROBOTS_GAMETRAKCONTROLLER "Enables GameTrak component. It requires HI
 option(SOFTROBOTS_ROBOTINOCONTROLLER "Enables Robotino component" OFF)
 option(SOFTROBOTS_WITH_CAMERA "Enable this option if you want to use the realsense cameras to perform force sensing, and point cloud processing." OFF)
 
-find_package(SofaPython QUIET)
-set(SOFTROBOTS_PYTHON ${SofaPython_FOUND}) # config.h.in
-find_package(SofaPython3 QUIET)
+sofa_find_package(SofaPython QUIET)
+sofa_find_package(SofaPython3 QUIET)
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
 if(WIN32)
@@ -45,7 +45,7 @@ if(WIN32)
 endif()
 sofa_install_libraries(TARGETS Qt5::Network)
 
-find_package(STLIB QUIET)
+sofa_find_package(STLIB QUIET)
 if(STLIB_FOUND)
     message("-- Found dependency : 'STLIB' plugin .")
 else()
@@ -269,15 +269,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping SofaSparseSolver SofaEngine)
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
 
-if(SofaPython_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaPython)
-    # Config files and install rules for pythons scripts
-    sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
-endif()
 
+sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 if(SofaPython3_FOUND)
-    # Config files and install rules for pythons scripts
-    sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python3")
+    SP3_add_python_package(
+        SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python3/softrobots
+        TARGET_DIRECTORY softrobots
+    )
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
