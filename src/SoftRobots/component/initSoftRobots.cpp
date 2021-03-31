@@ -33,11 +33,6 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
 
-#ifdef SOFTROBOTS_PYTHON
-#include <SofaPython/PythonEnvironment.h>
-using sofa::simulation::PythonEnvironment;
-#endif
-
 #include <fstream>
 
 namespace sofa
@@ -69,9 +64,6 @@ void initExternalModule()
         PluginManager::getInstance().loadPlugin("STLIB") ;
     }
 
-#ifdef SOFTROBOTS_PYTHON
-    PythonEnvironment::addPythonModulePathsForPluginsByName("SoftRobots");
-#endif
     //SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > test;
 }
 
