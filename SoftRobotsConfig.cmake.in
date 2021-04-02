@@ -3,6 +3,13 @@
 @PACKAGE_INIT@
 
 find_package(SofaFramework REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
+find_package(SofaBaseMechanics REQUIRED)
+find_package(SofaConstraint REQUIRED)
+find_package(SofaRigid REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
+find_package(SofaEngine REQUIRED)
+find_package(SofaSparseSolver REQUIRED)
 if(@SofaPython_FOUND@)
     find_package(SofaPython)
 endif()
