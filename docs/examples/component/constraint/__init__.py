@@ -1,9 +1,4 @@
 """
-Constraint components (e.g actuation)
-
-Brief description
-*****************
-
 In our framework, we handle the actuation and contact by defining specific constraints with Lagrange
 multipliers on the boundary conditions of the deformable models. Different types of actuators are proposed (e.g cable and pneumatic actuators).
 
@@ -12,10 +7,10 @@ Contents
 .. autosummary::
     :toctree: _autosummary
 
-    component.constraint.CableConstraint
-    component.constraint.SurfacePressureConstraint
-    component.constraint.UnilateralPlaneConstraint
-   
+    CableConstraint
+    SurfacePressureConstraint
+    UnilateralPlaneConstraint
+
 
 Related paper
 **************
@@ -30,7 +25,7 @@ Related paper
 | "`Software toolkit for modeling, simulation and control of soft robots`_",
 | E. Coevoet, T. Morales-Bieze, F. Largilliere, Z. Zhang, M. Thieffry, et al.
 | Advanced Robotics (2017)
-| 
+|
 
 .. _Software toolkit for modeling, simulation and control of soft robots: https://hal.inria.fr/hal-01649355/document
 
