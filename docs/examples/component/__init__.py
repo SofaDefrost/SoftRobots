@@ -16,9 +16,9 @@ Contents of the library
 .. autosummary::
     :toctree: _autosummary
 
-    component.constraint
-    component.controller
-    component.engine
+    constraint
+    controller
+    engine
 
 
 Indices and tables
