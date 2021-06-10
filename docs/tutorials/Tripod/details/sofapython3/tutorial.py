@@ -69,7 +69,7 @@ def Scene(parent, **kwargs):
     scene = stScene(parent, **kwargs)
     setData(scene, dt=0.025)
     setData(scene, gravity=[0., -9810., 0.])
-    setData(scene.VisualStyle, displayFlags="showBehavior showForceFields")
+    setData(scene.Settings.VisualStyle, displayFlags="showBehavior showForceFields")
 
     Modelling(scene)
     Simulation(scene)
@@ -91,7 +91,7 @@ def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
 
 
 # Data sending controller
-class SerialPortController(Sofa.PythonScriptController):
+class SerialPortController(Sofa.Core.Controller):
     def __init__(self, node, inputs, serialport):
         self.name = "serialportcontroller"
         self.actuatedarms = inputs

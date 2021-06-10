@@ -1,9 +1,20 @@
 import Sofa
-from tutorial import *
+# from tutorial import *
 from splib3.numerics import RigidDof
 from splib3.animation import animate
 from splib3.constants import Key
 from tripod import Tripod
+
+def dumpPosition(fields, filename):
+    import json
+    data = {}
+    for field in fields:
+        v = field.value
+        if isinstance(v, list) and isinstance(v[0], list):
+            v = v[0]
+        data[field.getLinkPath()] = v
+    with open(filename, "w+t") as file:
+        json.dump(data, file)
 
 def setupanimation(actuators, step, angularstep, factor):
     """This function is called repeatidely in an animation.
@@ -12,7 +23,13 @@ def setupanimation(actuators, step, angularstep, factor):
     """
     for actuator in actuators:
         rigid = RigidDof( actuator.ServoMotor.BaseFrame.dofs )
+        # print('---------------')
+        # print(actuator.ServoMotor.BaseFrame.dofs.position.value)
+        # print(rigid.rest_position + rigid.forward * step * factor)
         rigid.setPosition( rigid.rest_position + rigid.forward * step * factor )
+        # print(actuator.ServoMotor.BaseFrame.dofs.position.value)
+        # print('---------------')
+
         actuator.angleIn = angularstep * factor
 
 def saveTripodPosition(actuators, step, angularstep, factor):
@@ -24,19 +41,22 @@ def saveTripodPosition(actuators, step, angularstep, factor):
         dumpPosition(t, "tripodRestPosition.json")
 
 
-class TripodController(Sofa.PythonScriptController):
+class TripodController(Sofa.Core.Controller):
     """This controller has two roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
        - if thr user presses A, an animation is started to move the servomotor to the initial position
          of the real robot.
     """
+    def __init__(self, *args, **kwargs):
+        # These are needed (and the normal way to override from a python class)
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
 
-    def __init__(self, node, actuators):
         self.stepsize = 0.1
-        self.actuators = actuators
+        self.actuators = kwargs["actuators"]
 
-    def onKeyPressed(self, key):
+    def onKeypressedEvent(self, event):
+        key = event['key']
         self.initTripod(key)
         self.animateTripod(key)
 
@@ -44,24 +64,24 @@ class TripodController(Sofa.PythonScriptController):
         if key == Key.A:
             animate(setupanimation,
                     {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965},
-                    duration=0.2,
-                    onDone=saveTripodPosition)
+                    duration=0.2)#,
+                    # onDone=saveTripodPosition)
 
     def animateTripod(self, key):
         if key == Key.uparrow:
-            self.actuators[0].ServoMotor.angleIn = self.actuators[0].ServoMotor.angleOut + self.stepsize
+            self.actuators[0].ServoMotor.angleIn = self.actuators[0].ServoMotor.angleOut.value + self.stepsize
         elif key == Key.downarrow:
-            self.actuators[0].ServoMotor.angleIn = self.actuators[0].ServoMotor.angleOut - self.stepsize
+            self.actuators[0].ServoMotor.angleIn = self.actuators[0].ServoMotor.angleOut.value - self.stepsize
 
         if key == Key.leftarrow:
-            self.actuators[1].ServoMotor.angleIn = self.actuators[1].ServoMotor.angleOut + self.stepsize
+            self.actuators[1].ServoMotor.angleIn = self.actuators[1].ServoMotor.angleOut.value + self.stepsize
         elif key == Key.rightarrow:
-            self.actuators[1].ServoMotor.angleIn = self.actuators[1].ServoMotor.angleOut - self.stepsize
+            self.actuators[1].ServoMotor.angleIn = self.actuators[1].ServoMotor.angleOut.value - self.stepsize
 
         if key == Key.plus:
-            self.actuators[2].ServoMotor.angleIn = self.actuators[2].ServoMotor.angleOut + self.stepsize
+            self.actuators[2].ServoMotor.angleIn = self.actuators[2].ServoMotor.angleOut.value + self.stepsize
         elif key == Key.minus:
-            self.actuators[2].ServoMotor.angleIn = self.actuators[2].ServoMotor.angleOut - self.stepsize
+            self.actuators[2].ServoMotor.angleIn = self.actuators[2].ServoMotor.angleOut.value - self.stepsize
 
 
 class TripodControllerWithCom(TripodController):
