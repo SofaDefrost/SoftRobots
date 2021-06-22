@@ -8,43 +8,63 @@
         - ActuatedArm
         - ServoArm
 '''
+import Sofa
 from splib3.numerics import vec3
 from splib3.objectmodel import SofaPrefab
 from stlib3.visuals import VisualModel
 from stlib3.components import addOrientedBoxRoi
+from splib3.scenegraph import *
 
 from s90servo import ServoMotor
 
 
-@SofaPrefab
-class ServoArm(object):
-    def __init__(self, parent, mappingInput, name='ServoArm', indexInput=0):
-        '''ServoArm is a reusable sofa model of a servo arm for the S90 servo motor
+class ServoArm(Sofa.Prefab):
+    '''ServoArm is a reusable sofa model of a servo arm for the S90 servo motor
 
-           Parameters:
-                parent:        node where the ServoArm will be attached
-                mappingInput:  the rigid mechanical object that will control the orientation of the servo arm
-                indexInput: (int) index of the rigid the ServoArm should be mapped to
-        '''
-        self.node = parent.addChild(name)
-        self.node.addObject('MechanicalObject',
+       Parameters:
+            parent:        node where the ServoArm will be attached
+            mappingInput:  the rigid mechanical object that will control the orientation of the servo arm
+            indexInput: (int) index of the rigid the ServoArm should be mapped to
+    '''
+
+    properties = [
+        {'name':'name','type':'string', 'help':'Node name','default':'ServoArm'},
+        {'name':'mappingInputLink','type':'string',  'help':'the rigid mechanical object that will control the orientation of the servo arm','default':''},
+        {'name':'indexInput','type':'int',  'help':'index of the rigid the ServoArm should be mapped to','default':0}]
+
+    def __init__(self, *args, **kwargs):
+        Sofa.Prefab.__init__(self, *args, **kwargs)
+
+    def init(self):
+        # if not self.mappingInputLink:
+        #     Sofa.msg_error("ServoArm", "no mappingInput")
+        #     return
+
+        self.addObject('MechanicalObject',
                                name='dofs',
                                size=1,
                                template='Rigid3',
                                showObject=True,
                                showObjectScale=5,
                                translation2=[0, 25, 0])
+                               # translation2=[0, 0, 0]) 
+        # mappingInput = getFromRoot(self,self.mappingInputLink.value)
+        # print(self.mappingInputLink.value.getLinkPath())
+        # self.addObject('RigidRigidMapping',name='mapping', input='@../ServoMotor/ServoWheel/dofs', index=self.indexInput.value)
 
-        self.node.addObject('RigidRigidMapping',
-                               name='mapping', input=mappingInput, index=indexInput)
+        # visual = VisualModel(self, '../data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.], color=[1., 1., 1., 0.75])
+        # visual.model.writeZTransparent = True
+        # visual.addObject('RigidMapping', name='mapping')
+    
+    def setRigidMapping(self,path):
 
-        visual = VisualModel(self.node, '../data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.], color=[1., 1., 1., 0.75])
-        visual.model.writeZTransparent = True
+        self.addObject('RigidRigidMapping',name='mapping', input=path, index=self.indexInput.value)
+
+        visual = self.addChild(VisualModel(visualMeshPath='../data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.], color=[1., 1., 1., 0.75]))
+        visual.OglModel.writeZTransparent = True
         visual.addObject('RigidMapping', name='mapping')
 
-
-@SofaPrefab
-class ActuatedArm(object):
+class ActuatedArm(Sofa.Prefab):
     '''ActuatedArm is a reusable sofa model of a S90 servo motor and the tripod actuation arm.
            Parameters:
              - translation the position in space of the structure
@@ -59,32 +79,40 @@ class ActuatedArm(object):
                 ServoArm             // The actuation arm connected to ServoMotor.ServoWheel
             }
     '''
+    properties = [
+        {'name':'name',                'type':'string', 'help':'Node name',                   'default':'ActuatedArm'},
+        {'name':'rotation',            'type':'Vec3d',  'help':'Rotation',                    'default':[0.0, 0.0, 0.0]},
+        {'name':'translation',         'type':'Vec3d',  'help':'Translation',                 'default':[0.0, 0.0, 0.0]},
+        {'name':'scale',               'type':'Vec3d',  'help':'Scale 3d',                    'default':[1.0, 1.0, 1.0]},
+        {'name':'attachingToLink',         'type':'string', 'help':'a rest shape forcefield will constraint the object to follow arm position','default':''}]
 
-    def __init__(self, parent, name='ActuatedArm',
-                 translation=[0.0, 0.0, 0.0], eulerRotation=[0.0, 0.0, 0.0], attachingTo=None):
+    def __init__(self, *args, **kwargs):
+        Sofa.Prefab.__init__(self, *args, **kwargs)
 
-        self.node = parent.addChild(name)
+    def init(self):
 
-        self.servomotor = ServoMotor(self.node, translation=translation, rotation=eulerRotation)
-        self.servoarm = ServoArm(self.node, self.servomotor.ServoWheel.dofs)
+        self.servomotor = self.addChild(ServoMotor(name="ServoMotor",translation=self.translation.value, rotation=self.rotation.value))
+        self.servoarm = self.addChild(ServoArm(name="ServoArm"))#,mappingInputLink=self.ServoMotor.ServoWheel.dofs.getLinkPath()))
+        self.servoarm.setRigidMapping(self.ServoMotor.ServoWheel.dofs.getLinkPath())
 
         ## add a public attribute and connect it to the private one.
-        self.node.addNewData('angleIn', 'ArmProperties', 'angle of rotation (in radians) of the arm', 'float', 0)
-        self.node.ServoMotor.getData('angleIn').setParent(self.node.getData('angleIn'))
+        self.addData(name='angleIn', group='ArmProperties', help='angle of rotation (in radians) of the arm', type='float', value=0)
+        self.ServoMotor.getData('angleIn').setParent(self.getData('angleIn'))
 
         ## add a public attribute and connect it to the internal one.
-        self.node.addNewData('angleOut', 'ArmProperties', 'angle of rotation (in radians) of the arm', 'float', 0)
-        self.node.getData('angleOut').setParent(self.node.ServoMotor.getData('angleOut'))
+        self.addData(name='angleOut', group='ArmProperties', help='angle of rotation (in radians) of the arm', type='float', value=0)
+        self.getData('angleOut').setParent(self.ServoMotor.getData('angleOut'))
 
-        if attachingTo is not None:
-            constraint = self.addConstraint(attachingTo, translation, eulerRotation)
-            attachingTo.addObject('RestShapeSpringsForceField', name='rssff'+name,
+        if self.attachingToLink :
+            attachingTo = getFromRoot(self,self.attachingToLink)
+            constraint = self.addConstraint(attachingTo, self.translation.value, self.rotation.value)
+            self.attachingTo.addObject('RestShapeSpringsForceField', name='rssff'+self.name,
                                      points=constraint.BoxROI.getData('indices'),
                                      external_rest_shape=constraint.dofs,
                                      stiffness='1e12')
 
     def addConstraint(self, deformableObject, translation, eulerRotation):
-        constraint = self.node.addChild('Constraint')
+        constraint = self.addChild('Constraint')
         o = addOrientedBoxRoi(constraint, position=deformableObject.dofs.getData('rest_position'),
                               translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
                               eulerRotation=eulerRotation, scale=[45, 15, 30])
@@ -98,12 +126,12 @@ class ActuatedArm(object):
                                 template='Vec3', position='@TransformEngine.output_position',
                                 showObject=True, showObjectScale=5.0)
 
-        constraint.addObject('RigidMapping', name='mapping', input=self.node.ServoMotor.ServoWheel.dofs, output='@./')
+        constraint.addObject('RigidMapping', name='mapping', input=self.ServoMotor.ServoWheel.dofs, output='@./')
 
         return constraint
 
     def addBox(self, position, translation, eulerRotation):
-        constraint = self.node.addChild('Box')
+        constraint = self.addChild('Box')
         o = addOrientedBoxRoi(constraint, position=position,
                               translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
                               eulerRotation=eulerRotation, scale=[45, 15, 30])
