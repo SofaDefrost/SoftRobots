@@ -15,12 +15,12 @@ def ElasticBody(parent):
     body = parent.addChild('ElasticBody')
 
     # Prefab ElasticMaterialObject implementing the whole mechanical model of the silicone piece
-    e = ElasticMaterialObject(body,
+    e = body.addChild(ElasticMaterialObject(
                               volumeMeshFileName='../data/mesh/tripod_mid.gidmsh',
                               poissonRatio=0.45,
                               youngModulus=100,
                               totalMass=0.032,
-                              rotation=[90, 0, 0])
+                              rotation=[90, 0, 0]))
 
     # Visual model
     visual = e.addChild('Visual')
@@ -38,10 +38,12 @@ def ElasticBody(parent):
     return body
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem'])
+    scene.addMainHeader()
     rootNode.dt = 0.025
     scene.VisualStyle.displayFlags = 'showBehavior'
 
+    scene.addChild('Config')
     scene.Config.addObject('MeshSTLLoader', name='loader', filename='../data/mesh/blueprint.stl')
     scene.Config.addObject('OglModel', src='@loader')
 
@@ -55,4 +57,4 @@ def createScene(rootNode):
                     scale=[30., 30., 30.])
 
     # Changing the property of the Box ROI so that the constraint area appears on screen.
-    fix.BoxROI.drawBoxes = True
+    rootNode.FixingBox.BoxROI.drawBoxes = True

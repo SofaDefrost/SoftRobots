@@ -4,7 +4,6 @@ from splib3.numerics import sin, cos, radians
 from stlib3.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 from stlib3.physics.collision import CollisionMesh
-from splib3.objectmodel import SofaPrefab, SofaObject
 from stlib3.physics.mixedmaterial import Rigidify
 from stlib3.components import addOrientedBoxRoi
 from splib3.numerics import vec3
@@ -119,7 +118,7 @@ class Tripod(Sofa.Prefab):
 
 
 def createScene(rootNode):
-    from stlib3.scene import Scene 
+    from stlib3.scene import Scene
 
     scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver"])
     scene.addMainHeader()
