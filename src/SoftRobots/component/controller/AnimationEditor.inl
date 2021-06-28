@@ -31,8 +31,8 @@
 #define SOFA_CONTROLLER_ANIMATIONEDITOR_INL
 
 #ifndef SOFA_NO_OPENGL
-#include <sofa/helper/gl/template.h>
-using sofa::helper::gl::glVertexT;
+#include <sofa/gl/template.h>
+using sofa::gl::glVertexT;
 #endif
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
