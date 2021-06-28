@@ -32,6 +32,7 @@
 
 #include "SoftRobotsConstraint.h"
 #include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa
 {
@@ -83,7 +84,7 @@ void SoftRobotsConstraint<DataTypes>::init()
 
 
 template<class DataTypes>
-void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
+void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const sofa::core::ConstraintParams* cParams,
                                                              BaseVector *resV)
 {
     if (cParams)
@@ -142,8 +143,8 @@ void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParam
                                                   const Data<MatrixDeriv>& jacobian,
                                                   const BaseVector* lambda)
 {
-    auto res = sofa::helper::write(result, cParams);
-    const MatrixDeriv& j = jacobian.getValue(cParams);
+    auto res = sofa::helper::getWriteAccessor(result);
+    const MatrixDeriv& j = jacobian.getValue();
     j.multTransposeBaseVector(res, lambda ); // lambda is a vector of scalar value so block size is one.
 }
 

@@ -49,7 +49,7 @@ using namespace sofa::core;
 
 //----------- Displacement constraint --------------
 CableDisplacementConstraintResolution::CableDisplacementConstraintResolution(const double& imposedDisplacement, const double &min, const double &max)
-    : ConstraintResolution(1)
+    : sofa::core::behavior::ConstraintResolution(1)
     , m_imposedDisplacement(imposedDisplacement)
     , m_minForce(min)
     , m_maxForce(max)

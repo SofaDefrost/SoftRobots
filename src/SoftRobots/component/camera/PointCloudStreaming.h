@@ -25,11 +25,11 @@
 #ifndef SOFTROBOTS_CAMERA_POINTCLOUDSTREAMING_H
 #define SOFTROBOTS_CAMERA_POINTCLOUDSTREAMING_H
 
-#include <SoftRobots/initSoftRobots.h>
+#include <SoftRobots/component/initSoftRobots.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include<sofa/defaulttype/VecTypes.h>
 
 #include <pcl/point_types.h>
 #include <pcl/surface/mls.h>

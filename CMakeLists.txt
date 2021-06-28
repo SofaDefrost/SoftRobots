@@ -4,8 +4,12 @@ project(SoftRobots VERSION 1.0)
 include(cmake/environment.cmake)
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaCommon REQUIRED) # SofaRigid
-find_package(SofaMisc REQUIRED) # SofaMiscMapping
+find_package(SofaUserInteraction REQUIRED)
+find_package(SofaBaseMechanics REQUIRED)
+find_package(SofaConstraint REQUIRED)
+find_package(SofaRigid REQUIRED)
+find_package(SofaMiscMapping REQUIRED)
+find_package(SofaEngine REQUIRED)
 find_package(SofaSparseSolver REQUIRED)
 find_package(SofaConstraint REQUIRED)
 
@@ -203,7 +207,7 @@ if (SOFTROBOTS_WITH_CAMERA)
 endif(SOFTROBOTS_WITH_CAMERA)
 
 # initSoftRobots.h
-configure_file(${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.h.in "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h")
+configure_file(${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.h.in "${CMAKE_BINARY_DIR}/include/SoftRobots/component/initSoftRobots.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h" DESTINATION "include/SoftRobots" COMPONENT headers)
 
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
@@ -279,9 +283,9 @@ if(SofaPython3_FOUND)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
-sofa_generate_package(
-    NAME SoftRobots
-    VERSION ${PROJECT_VERSION}
+sofa_create_package_with_targets(
+    PACKAGE_NAME SoftRobots
+    PACKAGE_VERSION ${PROJECT_VERSION}
     TARGETS ${PROJECT_NAME}
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}

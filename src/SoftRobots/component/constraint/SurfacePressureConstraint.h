@@ -35,6 +35,7 @@
 #include <sofa/helper/OptionsGroup.h>
 
 #include <SoftRobots/component/initSoftRobots.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 namespace sofa
 {
@@ -144,6 +145,8 @@ protected:
     using SurfacePressureModel<DataTypes>::d_maxVolumeGrowthVariation ;
     using SurfacePressureModel<DataTypes>::d_maxVolumeGrowth ;
     using SurfacePressureModel<DataTypes>::d_minVolumeGrowth ;
+    using SurfacePressureModel<DataTypes>::d_eqVolumeGrowth ;
+    using SurfacePressureModel<DataTypes>::d_eqPressure ;
     using SurfacePressureModel<DataTypes>::d_maxPressure ;
     using SurfacePressureModel<DataTypes>::d_minPressure ;
     using SurfacePressureModel<DataTypes>::d_maxPressureVariation;

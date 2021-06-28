@@ -118,7 +118,7 @@ void PointCloudProcessing::init()
     //The following vector and matrix are the calibration matrix between the camera coordinate system and the robot coordinate system.
     //build rotation matrix
     const defaulttype::Mat3x4d& m = d_M.getValue();
-    m_transform = Eigen::Matrix4f::Identity();
+    m_transform = Eigen::Matrix4d::Identity();
     for (int i =0 ; i < 3 ; ++i)
         for (int j =0 ; j < 4 ; ++j)
             m_transform(i,j) = m[i][size_t(j)];
@@ -269,7 +269,7 @@ void PointCloudProcessing::computeEffectorsDirection(pcl::PointCloud<pcl::PointX
     treeNormal->setInputCloud (robot_effectors);
     ne.setSearchMethod (treeNormal);
     // Output datasets
-    pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal>);
+   // pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal>);
     //The number of neighbour points which need to be searched when to compute the normal direction
     ne.setKSearch (3);
     // Compute the features

@@ -33,6 +33,7 @@
 
 #include "model/CableModel.h"
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
 namespace sofa
 {
@@ -139,6 +140,8 @@ public:
     using CableModel<DataTypes>::d_maxDispVariation ;
     using CableModel<DataTypes>::d_maxPositiveDisplacement ;
     using CableModel<DataTypes>::d_maxNegativeDisplacement ;
+    using CableModel<DataTypes>::d_eqDisplacement ;
+    using CableModel<DataTypes>::d_eqForce ;
     using CableModel<DataTypes>::d_maxForce ;
     using CableModel<DataTypes>::d_minForce ;
     using CableModel<DataTypes>::d_displacement ;

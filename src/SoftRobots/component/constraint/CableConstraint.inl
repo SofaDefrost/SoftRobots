@@ -63,6 +63,8 @@ CableConstraint<DataTypes>::CableConstraint(MechanicalState* object)
                                           "force = the contstraint will impose the force provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
+    d_eqDisplacement.setDisplayed(false);
+    d_eqForce.setDisplayed(false);
 }
 
 template<class DataTypes>

@@ -11,4 +11,4 @@ Content:
 .. autofunction:: createBunny
 
 """
-from Bunny import createBunny
+from softrobots.parts.bunny.Bunny import createBunny

@@ -101,8 +101,9 @@ void CommunicationController<double>::convertStringStreamToData(stringstream *st
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<double>> data = d_data[i];
-        (*stream) >> data;
+        double value;
+        (*stream) >> value;
+        d_data[i]->setValue(value);
     }
 }
 
@@ -111,8 +112,9 @@ void CommunicationController<float>::convertStringStreamToData(stringstream *str
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<float>> data = d_data[i];
-        (*stream) >> data;
+        float value;
+        (*stream) >> value;
+        d_data[i]->setValue(value);
     }
 }
 
@@ -121,8 +123,9 @@ void CommunicationController<int>::convertStringStreamToData(stringstream *strea
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<int>> data = d_data[i];
-        (*stream) >> data;
+        int value;
+        (*stream) >> value;
+        d_data[i]->setValue(value);
     }
 }
 
@@ -131,8 +134,9 @@ void CommunicationController<unsigned int>::convertStringStreamToData(stringstre
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<unsigned int>> data = d_data[i];
-        (*stream) >> data;
+        unsigned int value;
+        (*stream) >> value;
+        d_data[i]->setValue(value);
     }
 }
 

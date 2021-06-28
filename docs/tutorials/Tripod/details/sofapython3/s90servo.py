@@ -1,4 +1,5 @@
 import os
+import Sofa
 from splib3.objectmodel import SofaObject, SofaPrefab
 from splib3.animation import animate
 from stlib3.scene import Scene
@@ -31,8 +32,7 @@ def ServoWheel(parent, showWheel=True):
     return servowheel
 
 
-@SofaPrefab
-class ServoMotor(SofaObject):
+class ServoMotor(Sofa.Prefab):
     '''A S90 servo motor
 
     This prefab is implementing a S90 servo motor.
@@ -64,30 +64,37 @@ class ServoMotor(SofaObject):
         ## Direct access to the components
         servo.angle.value = 1.0
     '''
+    properties = [
+        {'name':'name',                'type':'string', 'help':'Node name',                   'default':'ServoMotor'},
+        {'name':'rotation',            'type':'Vec3d',  'help':'Rotation',                    'default':[0.0, 0.0, 0.0]},
+        {'name':'translation',         'type':'Vec3d',  'help':'Translation',                 'default':[0.0, 0.0, 0.0]},
+        {'name':'scale3d',               'type':'Vec3d',  'help':'Scale 3d',                    'default':[1.0, 1.0, 1.0]}]
 
-    def __init__(self, parent,
-                 translation=[0.0, 0.0, 0.0], rotation=[0.0, 0.0, 0.0], scale=[1.0, 1.0, 1.0], showServo=True, showWheel=False):
+    def __init__(self, *args, **kwargs):
+        Sofa.Prefab.__init__(self, *args, **kwargs)
 
-        self.node = parent.addChild('ServoMotor')
+    def init(self):
+        showServo=True
+        showWheel=False
 
         # The inputs
-        self.node.addNewData('minAngle', 'S90Properties', 'min angle of rotation (in radians)', 'float', -100)
-        self.node.addNewData('maxAngle', 'S90Properties', 'max angle of rotation (in radians)', 'float', 100)
-        self.node.addNewData('angleIn', 'S90Properties', 'angle of rotation (in radians)', 'float', 0)
+        self.addData(name='minAngle', group='S90Properties', help='min angle of rotation (in radians)', type='float', value=-100)
+        self.addData(name='maxAngle', group='S90Properties', help='max angle of rotation (in radians)', type='float', value=100)
+        self.addData(name='angleIn', group='S90Properties', help='angle of rotation (in radians)', type='float', value=0)
 
         # Two positions (rigid): first one for the servo body, second for the servo wheel
-        baseFrame = self.node.addChild('BaseFrame')
+        baseFrame = self.addChild('BaseFrame')
         baseFrame.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[[0., 0., 0., 0., 0., 0., 1.], [0., 0., 0., 0., 0., 0., 1.]],
-                               translation=translation, rotation=rotation, scale3d=scale)
+                               translation=list(self.translation.value),rotation=list(self.rotation.value),scale3d=list(self.scale3d.value))
 
         # Angle of the wheel
-        angle = self.node.addChild('Angle')
-        angle.addObject('MechanicalObject', name='dofs', template='Vec1d', position=self.node.getData('angleIn').getLinkPath())
+        angle = self.addChild('Angle')
+        angle.addObject('MechanicalObject', name='dofs', template='Vec1d', position=self.getData('angleIn').getLinkPath())
         # This component is used to constrain the angle to lie between a maximum and minimum value,
         # corresponding to the limit of the real servomotor
         angle.addObject('ArticulatedHierarchyContainer')
         angle.addObject('ArticulatedSystemMapping', input1=angle.dofs.getLinkPath(), output=baseFrame.dofs.getLinkPath())
-        angle.addObject('StopperConstraint', name='AngleLimits', index=0, min=self.node.getData('minAngle').getLinkPath(), max=self.node.getData('maxAngle').getLinkPath())
+        angle.addObject('StopperConstraint', name='AngleLimits', index=0, min=self.getData('minAngle').getLinkPath(), max=self.getData('maxAngle').getLinkPath())
         angle.addObject('UncoupledConstraintCorrection')
 
         articulationCenter = angle.addChild('ArticulationCenter')
@@ -96,41 +103,43 @@ class ServoMotor(SofaObject):
         articulation.addObject('Articulation', translation=False, rotation=True, rotationAxis=[1, 0, 0], articulationIndex=0)
 
         # ServoBody and ServoWheel objects with visual
-        servowheel = ServoWheel(self.node, showWheel=showWheel)
-        servowheel.addObject('RigidRigidMapping', input=self.node.BaseFrame.dofs.getLinkPath(), output=servowheel.dofs.getLinkPath(), index=1)
-        servobody = ServoBody(self.node, showServo=showServo)
-        servobody.addObject('RigidRigidMapping', input=self.node.BaseFrame.dofs.getLinkPath(), output=servobody.dofs.getLinkPath(), index=0)
+        servowheel = ServoWheel(self, showWheel=showWheel)
+        servowheel.addObject('RigidRigidMapping', input=self.BaseFrame.dofs.getLinkPath(), output=servowheel.dofs.getLinkPath(), index=1)
+        servobody = ServoBody(self, showServo=showServo)
+        servobody.addObject('RigidRigidMapping', input=self.BaseFrame.dofs.getLinkPath(), output=servobody.dofs.getLinkPath(), index=0)
 
         # The output
-        self.node.addNewData('angleOut', 'S90Properties', 'angle of rotation (in degree)', 'float', angle.dofs.getData('position').getLinkPath())
+        self.addData(name='angleOut', group='S90Properties', help='angle of rotation (in degree)', type='float', value=angle.dofs.getData('position').getLinkPath())
 
-        self.node.BaseFrame.init()
-        self.node.BaseFrame.dofs.rotation = [0., 0., 0.]
-        self.node.BaseFrame.dofs.translation = [0., 0., 0.]
+        self.BaseFrame.init()
+        self.BaseFrame.dofs.rotation = [0., 0., 0.]
+        self.BaseFrame.dofs.translation = [0., 0., 0.]
 
 
 def createScene(rootNode):
 
     import math
 
-    def animation(target, factor):
-        target.angleIn = math.cos(factor * 2 * math.pi)
+    # def animation(target, factor):
+    #     target.angleIn = math.cos(factor * 2 * math.pi)
 
-    Scene(rootNode)
+    # Scene(rootNode)
 
-    rootNode.dt = 0.003
-    rootNode.gravity = [0., -9810., 0.]
-    rootNode.addObject('VisualStyle', displayFlags='showBehaviorModels')
+    # rootNode.dt = 0.003
+    # rootNode.gravity = [0., -9810., 0.]
+    # rootNode.addObject('VisualStyle', displayFlags='showBehaviorModels')
 
-    # Use these components on top of the scene to solve the constraint 'StopperConstraint'.
-    rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('GenericConstraintSolver', maxIterations=1e3, tolerance=1e-5)
+    # # Use these components on top of the scene to solve the constraint 'StopperConstraint'.
+    # rootNode.addObject('FreeMotionAnimationLoop')
+    # rootNode.addObject('GenericConstraintSolver', maxIterations=1e3, tolerance=1e-5)
 
-    simulation = rootNode.addChild('Simulation')
-    simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
-    simulation.addObject('CGLinearSolver', name='precond')
+    # simulation = rootNode.addChild('Simulation')
+    # simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
+    # simulation.addObject('CGLinearSolver', name='precond')
 
-    ServoMotor(simulation, showWheel=True)
-    animate(animation, {'target': simulation.ServoMotor}, duration=5., mode='loop')
+    # simulation.addChild(ServoMotor(name="ServoMotor"))
+    # animate(animation, {'target': simulation.ServoMotor}, duration=5., mode='loop')
 
+    servo = rootNode.addChild(ServoMotor(name="ServoMotor"))
+    print(servo.BaseFrame.dofs)
     return rootNode

@@ -77,7 +77,7 @@ UnilateralPlaneConstraint<DataTypes>::~UnilateralPlaneConstraint()
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::init()
 {
-    d_componentState = ComponentState::Invalid;
+    d_componentState.setValue(ComponentState::Invalid);
     Inherit1::init();
 
     if(m_state == nullptr)
@@ -89,7 +89,7 @@ void UnilateralPlaneConstraint<DataTypes>::init()
     }
 
     checkIndicesRegardingState();
-    d_componentState = ComponentState::Valid;
+    d_componentState.setValue(ComponentState::Valid);
 }
 
 

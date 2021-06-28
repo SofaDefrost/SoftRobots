@@ -1,5 +1,4 @@
 import Sofa
-from splib.objectmodel import SofaObject, SofaPrefab
 
 import os
 path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
@@ -30,8 +29,7 @@ def Wall(parentNode, color=[0.5, 0.5, 0.5, 1.], rotation=[0, 0, 0], translation=
     wall.addObject('OglModel', src='@loader', color=color)
     return wall
 
-@SofaPrefab
-class CircularRobot(SofaObject):
+class CircularRobot():
     """ This prefab is implementing a soft circular robot actuated with four cables.
 
         The prefab is composed of:
@@ -98,7 +96,7 @@ class CircularRobot(SofaObject):
 
 def createScene(rootNode):
 
-    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaOpenglVisual SofaSparseSolver')
+    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SoftRobots.Inverse SofaOpenglVisual SofaSparseSolver SofaImplicitOdeSolver SofaLoader SofaMeshCollision SofaSimpleFem SofaConstraint')
     rootNode.addObject('VisualStyle', displayFlags='hideWireframe showVisualModels showBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields hideInteractionForceFields')
     rootNode.findData('gravity').value = [0, -9180, 0]
     rootNode.findData('dt').value = 0.01

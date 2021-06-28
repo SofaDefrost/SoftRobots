@@ -13,5 +13,5 @@ Content:
 .. autofunction:: StringSensor
 
 """
-from stringsensor import StringSensor
-from pneumaticSensor import PneumaticSensor
+from softrobots.sensors.stringsensor import StringSensor
+from softrobots.sensors.pneumaticSensor import PneumaticSensor

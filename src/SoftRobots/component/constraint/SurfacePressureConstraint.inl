@@ -68,6 +68,8 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState*
                                           "pressure = the contstraint will impose the pressure provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is pressure"))
 {
+    d_eqVolumeGrowth.setDisplayed(false);
+    d_eqPressure.setDisplayed(false);
 }
 
 
