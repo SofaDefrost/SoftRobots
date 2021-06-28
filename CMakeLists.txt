@@ -22,9 +22,9 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
             Most examples and tutorials will not be loadable.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
-    if(NOT MODULE_SOFASPARSESOLVER)
+    if(NOT PLUGIN_SOFASPARSESOLVER)
         message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling MODULE_SOFASPARSESOLVER.
+            You should not use the plugin SoftRobots without enabling PLUGIN_SOFASPARSESOLVER.
             Most examples and some tests will not work.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
