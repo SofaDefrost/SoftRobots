@@ -2,13 +2,15 @@
 '''
 Step 2: Introducing elastic material modelling
 '''
-from stlib.scene import Scene
+from stlib3.scene import Scene
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810.0, 0.0], plugins=['SofaSparseSolver'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem'])
+    scene.addMainHeader()
     rootNode.dt = 0.01
 
     # Graphic modelling of the legends associated to the servomotors
+    scene.addChild('Config')
     scene.Config.addObject('MeshSTLLoader', name='loader', filename='../data/mesh/blueprint.stl')
     scene.Config.addObject('OglModel', src='@loader')
 
@@ -27,7 +29,7 @@ def createScene(rootNode):
                              name='container')
     elasticbody.addObject('MechanicalObject',
                              name='dofs',
-                             position=elasticbody.loader.position,
+                             position=elasticbody.loader.position.getLinkPath(),
                              rotation=[90.0, 0.0, 0.0],
                              showObject=True,
                              showObjectScale=5.0)

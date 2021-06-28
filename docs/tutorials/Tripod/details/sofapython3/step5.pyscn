@@ -3,7 +3,10 @@
 Step 5: Adding a controller.
 The controller will connect user actions to the simulated behaviour.
 """
-from tutorial import *
+import Sofa
+from stlib3.scene import Scene 
+
+#from tutorial import *
 from tripod import Tripod
 
 """
@@ -11,21 +14,29 @@ The controller is implemented in this file: tripodcontroller.py
 """
 from tripodcontroller import TripodController
 
-class MyController(Sofa.PythonScriptController):
-        def __init__(self, node):
-                self.node = node
+class MyController(Sofa.Core.Controller):
+    def __init__(self, *args, **kwargs):
+        # These are needed (and the normal way to override from a python class)
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
 
-        def onKeyPressed(self, key):
+        def onKeypressedEvent(self, key):
                 print("Key Pressed")
 
 def createScene(rootNode):
-    scene = Scene(rootNode)
 
-    tripod = Tripod(scene.Modelling)
+    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver"])
+    scene.addMainHeader()
 
-    scene.addObject(TripodController, node=scene, [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
 
+
+    scene.VisualStyle.displayFlags = "showBehavior"
+
+    tripod = scene.Modelling.addChild(Tripod())
+
+    scene.addObject(TripodController(name="TripodController",actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
+    
     scene.Simulation.addChild(tripod.RigidifiedStructure)
-    scene.Simulation.addChild(tripod.ActuatedArm0)
-    scene.Simulation.addChild(tripod.ActuatedArm1)
-    scene.Simulation.addChild(tripod.ActuatedArm2)
+    motors = scene.Simulation.addChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)

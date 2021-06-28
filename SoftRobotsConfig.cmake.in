@@ -2,15 +2,21 @@
 
 @PACKAGE_INIT@
 
-find_package(SofaFramework REQUIRED)
-if(@SofaPython_FOUND@)
-    find_package(SofaPython)
-endif()
-if(@STLIB_FOUND@)
-    find_package(STLIB)
-endif()
+set(SOFTROBOTS_HAVE_SOFAPYTHON @SOFTROBOTS_HAVE_SOFAPYTHON@)
+set(SOFTROBOTS_HAVE_SOFAPYTHON3 @SOFTROBOTS_HAVE_SOFAPYTHON3@)
+set(SOFTROBOTS_HAVE_STLIB @SOFTROBOTS_HAVE_STLIB@)
+
+find_package(SofaFramework QUIET REQUIRED)
+find_package(SofaCommon QUIET REQUIRED)
+find_package(SofaMisc QUIET REQUIRED)
+find_package(SofaSparseSolver QUIET REQUIRED)
+find_package(SofaConstraint QUIET REQUIRED)
+find_package(SofaUserInteraction QUIET REQUIRED)
+find_package(SofaBaseMechanics QUIET REQUIRED)
+find_package(SofaMiscMapping QUIET REQUIRED)
+find_package(SofaEngine QUIET REQUIRED)
+find_package(SofaRigid QUIET REQUIRED)
 find_package(Qt5 QUIET REQUIRED COMPONENTS Network)
-include_directories("${Qt5Network_INCLUDE_DIRS}")
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

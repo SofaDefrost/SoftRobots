@@ -26,11 +26,11 @@
 #define SOFA_CORE_CAMERA_POINTCLOUDPROCESSING_H
 
 #include "PointCloudStreaming.h"
-#include <SoftRobots/initSoftRobots.h>
+#include <SoftRobots/component/initSoftRobots.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include<sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <Eigen/Dense>
 

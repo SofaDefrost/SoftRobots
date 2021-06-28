@@ -9,7 +9,8 @@ from stlib3.scene import Scene
 
 def createScene(rootNode):
     # Setting the gravity, assuming the length unit is in millimeters
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual'])
+    scene.addMainHeader()
 
     # Setting the timestep in seconds
     rootNode.dt = 0.001
@@ -24,7 +25,7 @@ def createScene(rootNode):
     # Basic mechanical modelling of the silicone piece
     elasticbody = rootNode.addChild('MechanicalBody')
     elasticbody.addObject('MechanicalObject', name='dofs',
-                             position=rootNode.loader2.position,
+                             position=rootNode.loader2.position.getLinkPath(),
                              showObject=True, showObjectScale=5.0,
                              rotation=[90.0, 0.0, 0.0])
     elasticbody.addObject('UniformMass')
