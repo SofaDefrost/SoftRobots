@@ -16,7 +16,18 @@ find_package(SofaBaseMechanics QUIET REQUIRED)
 find_package(SofaMiscMapping QUIET REQUIRED)
 find_package(SofaEngine QUIET REQUIRED)
 find_package(SofaRigid QUIET REQUIRED)
+
 find_package(Qt5 QUIET REQUIRED COMPONENTS Network)
+
+if(SOFTROBOTS_HAVE_SOFAPYTHON)
+    find_package(SofaPython QUIET REQUIRED)
+endif()
+if(SOFTROBOTS_HAVE_SOFAPYTHON3)
+    find_package(SofaPython3 QUIET REQUIRED)
+endif()
+if(SOFTROBOTS_HAVE_STLIB)
+    find_package(STLIB QUIET REQUIRED)
+endif()
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
