@@ -11,7 +11,6 @@ find_package(SofaRigid REQUIRED)
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaEngine REQUIRED)
 find_package(SofaSparseSolver REQUIRED)
-find_package(SofaConstraint REQUIRED)
 
 option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
 if(NOT SOFTROBOTS_IGNORE_ERRORS)
@@ -27,9 +26,9 @@ if(NOT SOFTROBOTS_IGNORE_ERRORS)
             Most examples and tutorials will not be loadable.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
-    if(NOT MODULE_SOFASPARSESOLVER)
+    if(NOT PLUGIN_SOFASPARSESOLVER)
         message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling MODULE_SOFASPARSESOLVER.
+            You should not use the plugin SoftRobots without enabling PLUGIN_SOFASPARSESOLVER.
             Most examples and some tests will not work.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
