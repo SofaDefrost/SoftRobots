@@ -205,10 +205,6 @@ if (SOFTROBOTS_WITH_CAMERA)
     )
 endif(SOFTROBOTS_WITH_CAMERA)
 
-# initSoftRobots.h
-configure_file(${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.h.in "${CMAKE_BINARY_DIR}/include/SoftRobots/component/initSoftRobots.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h" DESTINATION "include/SoftRobots" COMPONENT headers)
-
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
 IF(WIN32)
