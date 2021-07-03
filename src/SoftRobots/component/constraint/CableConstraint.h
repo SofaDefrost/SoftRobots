@@ -43,10 +43,10 @@ namespace component
 
 namespace constraintset
 {
-using sofa::defaulttype::Vec;
-using sofa::defaulttype::Vec3d;
+using sofa::type::Vec;
+using sofa::type::Vec3d;
 using sofa::helper::WriteAccessor;
-using sofa::helper::vector;
+using sofa::type::vector;
 using sofa::core::ConstraintParams;
 using sofa::defaulttype::BaseVector;
 using sofa::core::visual::VisualParams ;
@@ -150,7 +150,7 @@ public:
 
 protected:
     //Input data
-    Data<helper::vector< Real > >       d_value;
+    Data<type::vector< Real > >       d_value;
     Data<unsigned int>                  d_valueIndex;
     Data<helper::OptionsGroup>          d_valueType;
                                         // displacement = the constraint will impose the displacement provided in data d_inputValue[d_iputIndex]

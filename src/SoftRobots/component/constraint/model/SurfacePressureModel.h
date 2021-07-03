@@ -79,7 +79,7 @@ public:
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef type::vector<unsigned int> SetIndexArray;
 
     typedef core::topology::BaseMeshTopology::Triangle      Triangle;
     typedef core::topology::BaseMeshTopology::Quad          Quad;
@@ -115,9 +115,9 @@ public:
     /////////////////////////////////////////////////////////////////////////
 
 protected:
-    Data<helper::vector<Triangle> >     d_triangles;
-    Data<helper::vector<Quad> >         d_quads;
-    helper::vector<Edge>                m_edges;
+    Data<type::vector<Triangle> >     d_triangles;
+    Data<type::vector<Quad> >         d_quads;
+    type::vector<Edge>                m_edges;
 
     Data<Real>                          d_initialCavityVolume;
     Data<Real>                          d_cavityVolume;

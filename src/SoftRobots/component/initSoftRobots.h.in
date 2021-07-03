@@ -42,6 +42,7 @@
 
 #cmakedefine01 SOFTROBOTS_HAVE_SOFAPYTHON
 #cmakedefine01 SOFTROBOTS_HAVE_SOFAPYTHON3
+#cmakedefine01 SOFTROBOTS_HAVE_SOFA_GL
 
 
 /** \mainpage

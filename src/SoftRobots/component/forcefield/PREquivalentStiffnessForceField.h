@@ -50,9 +50,9 @@ namespace component
 
 namespace forcefield
 {
-using sofa::defaulttype::Vec ;
-using sofa::defaulttype::Mat ;
-using sofa::helper::vector;
+using sofa::type::Vec ;
+using sofa::type::Mat ;
+using sofa::type::vector;
 using sofa::core::MechanicalParams;
 using sofa::defaulttype::BaseMatrix;
 using sofa::core::behavior::ForceField ;
@@ -69,8 +69,8 @@ public :
     typedef typename DataTypes::Deriv   Deriv;
     typedef typename Coord::Pos         Pos;
     typedef typename Coord::Quat        Quaternion;
-    typedef helper::vector<Coord>       VecCoord;
-    typedef helper::vector<Deriv>       VecDeriv;
+    typedef type::vector<Coord>       VecCoord;
+    typedef type::vector<Deriv>       VecDeriv;
     typedef Data<VecCoord>              DataVecCoord;
     typedef Data<VecDeriv>              DataVecDeriv;
 
@@ -90,9 +90,9 @@ public :
     typedef typename sofa::defaulttype::SolidTypes<Real>::Transform Transform;
     typedef typename sofa::defaulttype::SolidTypes<Real>::SpatialVector SpatialVector;
 
-    typedef helper::vector<Vec6> VecVec6;
-    typedef helper::vector<Mat66> VecMat66;
-    typedef helper::vector<Mat12x12> VecMat12;
+    typedef type::vector<Vec6> VecVec6;
+    typedef type::vector<Mat66> VecMat66;
+    typedef type::vector<Mat12x12> VecMat12;
 
 
 public :

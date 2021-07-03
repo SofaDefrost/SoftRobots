@@ -49,9 +49,9 @@ namespace controller
 namespace _animationeditor_
 {
 
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 using core::objectmodel::Event;
-using helper::vector;
+using type::vector;
 using core::behavior::MechanicalState;
 using std::string;
 using core::visual::VisualParams;

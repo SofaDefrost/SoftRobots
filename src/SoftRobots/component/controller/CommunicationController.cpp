@@ -45,12 +45,12 @@ namespace component
 namespace controller
 {
 
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec3f;
-using sofa::defaulttype::Vec1d;
-using sofa::defaulttype::Vec1f;
-using sofa::defaulttype::Vec;
-using helper::vector;
+using sofa::type::Vec3d;
+using sofa::type::Vec3f;
+using sofa::type::Vec1d;
+using sofa::type::Vec1f;
+using sofa::type::Vec;
+using type::vector;
 
 using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid3fTypes;
@@ -225,7 +225,7 @@ std::string CommunicationController<vector<Rigid3fTypes::Coord>>::templateName(c
 using sofa::core::RegisterObject ;
 using defaulttype::Rigid3Types;
 using defaulttype::Vec3Types;
-using defaulttype::Vec1Types;
+using type::Vec1Types;
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
 // 1-RegisterObject("description") + .add<> : Register the component

@@ -48,7 +48,7 @@ namespace controller
 
 using sofa::helper::OptionsGroup;
 using std::memcpy;
-using sofa::helper::vectorData;
+using sofa::type::vectorData;
 using std::stringstream;
 using sofa::helper::WriteAccessor;
 using sofa::helper::ReadAccessor;

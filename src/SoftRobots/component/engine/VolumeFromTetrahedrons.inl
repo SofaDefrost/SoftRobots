@@ -31,7 +31,7 @@
 #define SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_INL
 
 #include "VolumeFromTetrahedrons.h"
-#include <sofa/helper/config.h>
+#include <sofa/config.h>
 
 namespace sofa
 {
@@ -44,7 +44,7 @@ namespace engine
 
 using core::objectmodel::ComponentState;
 using helper::ReadAccessor;
-using helper::vector;
+using type::vector;
 using core::ConstVecCoordId;
 using core::objectmodel::BaseData;
 

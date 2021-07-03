@@ -54,7 +54,7 @@ class SOFA_SOFTROBOTS_API DataVariationLimiter : public Controller
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DataVariationLimiter,T),Controller);
 
-    typedef typename helper::vector<T> VecValue;
+    typedef typename type::vector<T> VecValue;
     typedef T                          Value;
     typedef typename T::value_type     ValueType;
 
@@ -74,15 +74,15 @@ public:
         {
         case 1:
         {
-            return defaulttype::DataTypeInfo<defaulttype::Vec<1,ValueType>>::name();
+            return defaulttype::DataTypeInfo<type::Vec<1,ValueType>>::name();
         }
         case 2:
         {
-            return defaulttype::DataTypeInfo<defaulttype::Vec<2,ValueType>>::name();
+            return defaulttype::DataTypeInfo<type::Vec<2,ValueType>>::name();
         }
         case 3:
         {
-            return defaulttype::DataTypeInfo<defaulttype::Vec<3,ValueType>>::name();
+            return defaulttype::DataTypeInfo<type::Vec<3,ValueType>>::name();
         }
         default: break;
         }
@@ -116,8 +116,8 @@ protected:
 
     Data<bool>         d_initOuput;
 
-    helper::vector<bool>                   m_isStabilizing;
-    helper::vector<unsigned int>           m_step;
+    type::vector<bool>                   m_isStabilizing;
+    type::vector<unsigned int>           m_step;
 
 
     VecValue           m_inititialOuput;
@@ -132,14 +132,14 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec3d>;
-extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec2d>;
-extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec1d>;
+extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec3d>;
+extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec2d>;
+extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec1d>;
 
 
-extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec1i>;
-extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec2i>;
-extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::defaulttype::Vec3i>;
+extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec1i>;
+extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec2i>;
+extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec3i>;
 
 
 } // namespace engine
