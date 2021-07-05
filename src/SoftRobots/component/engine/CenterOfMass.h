@@ -102,7 +102,7 @@ protected:
     Data<Coord>   d_centerOfMass;
     Data<bool>    d_visualization;
     Data<float>   d_visuSize;
-    Data<helper::types::RGBAColor>   d_visuColor;
+    Data<type::RGBAColor>   d_visuColor;
 
     void computeCenterOfMass();
 

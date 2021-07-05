@@ -48,11 +48,11 @@ namespace constraintset
 
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
-using sofa::helper::vector;
+using sofa::type::vector;
 using core::ConstVecCoordId;
-using sofa::defaulttype::Mat;
-using sofa::defaulttype::Vec3d;
-using sofa::helper::types::RGBAColor;
+using sofa::type::Mat;
+using sofa::type::Vec3d;
+using sofa::type::RGBAColor;
 using std::string;
 using std::ostringstream;
 using sofa::defaulttype::Vector3;

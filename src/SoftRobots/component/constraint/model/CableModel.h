@@ -77,7 +77,7 @@ public:
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
-    typedef helper::vector<unsigned int> SetIndexArray;
+    typedef type::vector<unsigned int> SetIndexArray;
 
 public:
     CableModel(MechanicalState* object = nullptr);
@@ -132,7 +132,7 @@ protected:
     Data<bool>                  d_drawPullPoint;
     Data<bool>                  d_drawPoints;
 
-    Data<helper::types::RGBAColor>    d_color;
+    Data<type::RGBAColor>    d_color;
 
     bool                        m_hasSlidingPoint;
 

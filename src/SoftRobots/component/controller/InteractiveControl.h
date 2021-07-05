@@ -78,7 +78,7 @@ protected:
 
     Data<unsigned int> d_motorIndex;
     Data<unsigned int> d_mode;
-    Data<Vec1f> d_setPoint;
+    Data<type::Vec1f> d_setPoint;
     Data<float> d_rotorDiameter;
     Data<float> d_manualSetpoint;
     Data<std::string> d_address;

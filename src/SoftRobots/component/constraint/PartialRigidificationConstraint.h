@@ -46,7 +46,7 @@ using sofa::core::behavior::ConstraintResolution ;
 using sofa::core::ConstraintParams ;
 using sofa::core::behavior::Constraint ;
 using sofa::defaulttype::BaseVector ;
-using sofa::defaulttype::Vec ;
+using sofa::type::Vec ;
 
 class PartialRigidificationConstraintResolution6Dof : public ConstraintResolution
 {

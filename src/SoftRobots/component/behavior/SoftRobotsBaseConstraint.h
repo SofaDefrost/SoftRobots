@@ -43,7 +43,7 @@ namespace core
 namespace behavior
 {
 
-using helper::vector;
+using type::vector;
 
 /**
  *  \brief Component computing inverse problem constraints within a simulated body.
@@ -127,9 +127,9 @@ public:
     unsigned int getNbLines();
 
     /// Allows the constraint to access to the results. Called from QPInverseProblemSolver.
-    virtual void storeResults(helper::vector<double> &lambda, helper::vector<double> &delta);
+    virtual void storeResults(type::vector<double> &lambda, type::vector<double> &delta);
 
-    virtual void storeResults(helper::vector<double> &delta);
+    virtual void storeResults(type::vector<double> &delta);
 
     /// Useful when the Constraint is applied only on a subset of dofs.
     /// It is automatically called by buildConstraintMatrix
