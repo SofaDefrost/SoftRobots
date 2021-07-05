@@ -38,7 +38,7 @@ namespace core
 namespace behavior
 {
 
-using helper::vector;
+using type::vector;
 
 SoftRobotsBaseConstraint::SoftRobotsBaseConstraint()
     : m_hasDeltaMax(false)

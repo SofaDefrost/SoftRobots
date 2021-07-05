@@ -58,7 +58,7 @@ struct DataVariationLimiterTest : public Sofa_test<typename _DataTypes::value_ty
 {
     typedef DataVariationLimiter<_DataTypes> ThisClass ;
     typedef _DataTypes DataTypes;
-    typedef typename helper::vector<DataTypes> VecValue;
+    typedef typename type::vector<DataTypes> VecValue;
 
     ///////////////////////////////////////////////////////////////
     // Bring parents members in the current lookup context.
@@ -154,7 +154,7 @@ struct DataVariationLimiterTest : public Sofa_test<typename _DataTypes::value_ty
 };
 
 using ::testing::Types;
-typedef Types<defaulttype::Vec3d> DataTypes;
+typedef Types<type::Vec3d> DataTypes;
 
 TYPED_TEST_CASE(DataVariationLimiterTest, DataTypes);
 

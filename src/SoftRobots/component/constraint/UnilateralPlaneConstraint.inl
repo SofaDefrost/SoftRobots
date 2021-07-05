@@ -51,9 +51,9 @@ using sofa::core::VecCoordId;
 using sofa::core::ConstVecCoordId ;
 using sofa::helper::WriteAccessor ;
 using sofa::helper::ReadAccessor ;
-using sofa::helper::vector ;
+using sofa::type::vector ;
 using defaulttype::Vec;
-using helper::types::RGBAColor;
+using type::RGBAColor;
 using defaulttype::Vector3;
 
 template<class DataTypes>

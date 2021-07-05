@@ -69,18 +69,18 @@ using sofa::core::objectmodel::MouseEvent;
 using sofa::simulation::AnimateBeginEvent;
 
 using sofa::core::visual::VisualParams;
-using sofa::defaulttype::Mat;
+using sofa::type::Mat;
 using sofa::helper::WriteAccessor;
 using sofa::helper::ReadAccessor;
 using std::endl;
 using std::cout;
 using std::stringstream;
-using sofa::helper::types::RGBAColor;
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec4d;
+using sofa::type::RGBAColor;
+using sofa::type::Vec3d;
+using sofa::type::Vec4d;
 using std::ifstream;
 using std::ofstream;
-using sofa::helper::vector;
+using sofa::type::vector;
 
 
 template<class DataTypes>

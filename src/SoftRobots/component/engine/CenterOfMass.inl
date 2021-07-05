@@ -47,12 +47,12 @@ namespace engine
 using core::objectmodel::ComponentState;
 using helper::ReadAccessor;
 using helper::WriteAccessor;
-using helper::vector;
+using type::vector;
 using core::ConstVecCoordId;
 using core::objectmodel::BaseData ;
 using core::visual::VisualParams ;
-using helper::types::RGBAColor ;
-using defaulttype::Vector3 ;
+using type::RGBAColor ;
+using type::Vector3 ;
 
 template <class DataTypes>
 CenterOfMass<DataTypes>::CenterOfMass()

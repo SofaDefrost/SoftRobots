@@ -44,7 +44,7 @@ namespace engine
 
 using core::objectmodel::ComponentState;
 using helper::ReadAccessor;
-using helper::vector;
+using type::vector;
 using sofa::core::ConstVecCoordId;
 using core::objectmodel::BaseData ;
 
