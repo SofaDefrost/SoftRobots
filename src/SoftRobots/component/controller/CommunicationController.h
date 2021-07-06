@@ -55,7 +55,7 @@ using core::objectmodel::Event;
 using core::objectmodel::BaseObjectDescription;
 using std::map;
 using std::string;
-using sofa::helper::vectorData;
+using sofa::type::vectorData;
 
 
 /**

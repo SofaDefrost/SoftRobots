@@ -50,7 +50,7 @@ using sofa::core::visual::VisualParams;
 using sofa::defaulttype::BaseVector;
 using sofa::helper::ReadAccessor;
 using sofa::type::RGBAColor;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::type::vector;
 
 template<class DataTypes>

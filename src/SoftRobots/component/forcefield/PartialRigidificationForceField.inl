@@ -33,7 +33,7 @@
 
 #include "PartialRigidificationForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/config.h>
+#include <sofa/config.h>
 #include <sofa/helper/rmath.h>
 #include <assert.h>
 #include <iostream>

@@ -31,7 +31,7 @@
 #define SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_INL
 
 #include "VolumeFromTetrahedrons.h"
-#include <sofa/helper/config.h>
+#include <sofa/config.h>
 
 namespace sofa
 {

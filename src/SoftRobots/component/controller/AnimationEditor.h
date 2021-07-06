@@ -49,7 +49,7 @@ namespace controller
 namespace _animationeditor_
 {
 
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 using core::objectmodel::Event;
 using type::vector;
 using core::behavior::MechanicalState;

@@ -30,24 +30,24 @@
 #ifndef SOFA_CONTROLLER_ANIMATIONEDITOR_INL
 #define SOFA_CONTROLLER_ANIMATIONEDITOR_INL
 
-#ifndef SOFA_NO_OPENGL
-#include <sofa/gl/template.h>
-using sofa::gl::glVertexT;
+#include "AnimationEditor.h"
+#ifdef SOFA_WITH_DACCORD
+#include "../../applications/sofa/gui/SofaGuiCommon/editor/editor.h"
+using daccord::current::Editor ;
 #endif
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/objectmodel/Event.h>
+
+#if SOFTROBOTS_HAVE_SOFA_GL
+#include <sofa/gl/template.h>
+using sofa::gl::glVertexT;
+#endif
+
 #include <fstream>
 #include <iomanip>
 #include <fstream>
-
-#include "AnimationEditor.h"
-
-#ifdef SOFA_WITH_DACCORD
-#include "../../applications/sofa/gui/SofaGuiCommon/editor/editor.h"
-using daccord::current::Editor ;
-#endif
 
 
 namespace sofa
@@ -771,7 +771,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
         return ;
 #endif // SOFA_WITH_DACCORD
 
-#ifndef SOFA_NO_OPENGL
+#if SOFTROBOTS_HAVE_SOFA_GL
     glDisable(GL_LIGHTING);
     unsigned int ratio = round(vparams->viewport()[2]/d_maxKeyFrame.getValue());
 

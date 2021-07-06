@@ -55,7 +55,7 @@ using sofa::type::Vec3d;
 using sofa::type::RGBAColor;
 using std::string;
 using std::ostringstream;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 
 template<class DataTypes>
 SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)

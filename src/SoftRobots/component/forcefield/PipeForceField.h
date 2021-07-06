@@ -50,8 +50,8 @@ namespace component
 
 namespace forcefield
 {
-using sofa::defaulttype::Vec ;
-using sofa::defaulttype::Mat ;
+using sofa::type::Vec ;
+using sofa::type::Mat ;
 using sofa::type::vector;
 using sofa::core::MechanicalParams;
 using sofa::defaulttype::BaseMatrix;

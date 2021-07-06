@@ -44,7 +44,7 @@ namespace controller
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
+using namespace sofa::type;
 using core::RegisterObject;
 
 int DataVariationLimiterClass = RegisterObject("This component interpolates between two consecutive inputs when a jump is detected.")

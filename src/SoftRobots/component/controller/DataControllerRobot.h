@@ -130,7 +130,7 @@ public:
     SOFA_CLASS(DataControllerRobot,sofa::component::controller::Controller);
 
     // needs to be changed to QPInverseProblemSolver
-//    sofa::helper::vector<sofa::component::constraintset::SurfacePressureActuator<sofa::defaulttype::Vec3dTypes>*> listSPC;
+//    sofa::type::vector<sofa::component::constraintset::SurfacePressureActuator<sofa::defaulttype::Vec3dTypes>*> listSPC;
     sofa::component::constraintset::QPInverseProblemSolver* m_QPSolver;
 
 protected:
@@ -145,7 +145,7 @@ public:
 
     void onEndAnimationStep(const double dt); // better do it at the end of the animation step
 
-    void drive(const helper::vector<double>&);
+    void drive(const type::vector<double>&);
 
     Data<double> coefPressure;
 
