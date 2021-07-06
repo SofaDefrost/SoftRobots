@@ -55,8 +55,8 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(DataVariationLimiter,T),Controller);
 
     typedef typename type::vector<T> VecValue;
-    typedef T                          Value;
-    typedef typename T::value_type     ValueType;
+    typedef T                        Value;
+    typedef typename T::value_type   ValueType;
 
 public:
 
