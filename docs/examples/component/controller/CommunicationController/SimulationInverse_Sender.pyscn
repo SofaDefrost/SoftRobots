@@ -18,7 +18,8 @@ def createScene(rootNode):
                 rootNode.createObject('QPInverseProblemSolver', printLog='0', epsilon="1e-1",\
                 maxIterations="1000", tolerance="1e-14")
                 rootNode.createObject('DefaultPipeline', verbose="0")
-                rootNode.createObject('BruteForceDetection', name="N2")
+                rootNode.createObject('BruteForceBroadPhase', name="N2")
+                rootNode.createObject('BVHNarrowPhase')
                 rootNode.createObject('DefaultContactManager', response="FrictionContact", responseParams="mu=0")
                 rootNode.createObject('LocalMinDistance', name="Proximity", alarmDistance="5", contactDistance="1")
 
