@@ -8,7 +8,8 @@
 
         <FreeMotionMasterSolver/>
         <CollisionPipeline verbose='0'/>
-        <BruteForceDetection name='N2'/>
+        <BruteForceBroadPhase name="N2" />
+        <BVHNarrowPhase />
         <CollisionResponse response='FrictionContact'/>
         <LocalMinDistance name="Proximity" alarmDistance='3' contactDistance='0.5'/>
         <GenericConstraintSolver name="GenericConstraintSolver" maxIterations='250' printLog='0' tolerance = '0.0000001'/>

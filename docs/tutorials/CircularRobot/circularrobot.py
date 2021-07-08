@@ -109,7 +109,8 @@ def createScene(rootNode):
 
     # Contact detection methods
     rootNode.createObject('DefaultPipeline')
-    rootNode.createObject('BruteForceDetection')
+    rootNode.createObject('BruteForceBroadPhase', name="N2")
+    rootNode.createObject('BVHNarrowPhase')
     rootNode.createObject('DefaultContactManager', response="FrictionContact", responseParams="mu=0.8")
     rootNode.createObject('LocalMinDistance', alarmDistance=5, contactDistance=1, angleCone=0.0)
 
