@@ -1,51 +1,78 @@
-from stlib3.scene import MainHeader
-from stlib3.visuals import ShowGrid
-from stlib3.solver import DefaultSolver
-from stlib3.physics.rigid import Floor
+import Sofa.Core
 
 def createScene(rootNode):
-	ShowGrid(rootNode)
+	rootNode.addObject("OglGrid", nbSubdiv=10, size=1000)
 
-	# A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
-	MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+	rootNode.findData('gravity').value=[0.0,-981.0,0.0];
+	rootNode.findData('dt').value=0.01
 
-	cube = rootNode.addChild("Cube")
+	confignode = rootNode.addChild("Config")
+	confignode.addObject('RequiredPlugin', name="SofaMiscCollision", printLog=False)
+	confignode.addObject('RequiredPlugin', name="SofaPython3", printLog=False)
+	confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+
+
+	#Collision function
+
+	rootNode.addObject('DefaultPipeline')
+	rootNode.addObject('FreeMotionAnimationLoop')
+	rootNode.addObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
+	rootNode.addObject('BruteForceDetection')
+	rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContact')
+	rootNode.addObject('LocalMinDistance', alarmDistance=10, contactDistance=5, angleCone=0.01)
 
 	### Mechanical model
-
 	totalMass = 1.0
 	volume = 1.0
-	inertiaMatrix = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+	inertiaMatrix=[1., 0., 0., 0., 1., 0., 0., 0., 1.]
 
+	#Creating the floor
+	floor = rootNode.addChild("floor")
 
-	cube.addObject('MechanicalObject', name="DOF", template="Rigid3", showObject=True, showObjectScale=30.0, translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
-	cube.addObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+	floor.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0.0,-300.0,0.0], rotation2=[0., 0., 0.], showObjectScale=5.0)
 
-	# The following line defines the material behaviour when submitted to constraints; it is not necessary here, as no interaction between objects has been defined
-	# cube.addObject('UncoupledConstraintCorrection')
+	floor.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+	floorCollis = floor.addChild('collision')
+	floorCollis.addObject('MeshObjLoader', name="loader", filename="mesh/floor.obj", triangulate="true", scale=5.0)
+	floorCollis.addObject('MeshTopology', src="@loader")
+	floorCollis.addObject('MechanicalObject')
+	floorCollis.addObject('TriangleCollisionModel', moving=False, simulated=False)
+	floorCollis.addObject('LineCollisionModel', moving=False, simulated=False)
+	floorCollis.addObject('PointCollisionModel', moving=False, simulated=False)
 
-	### Time integration and solver
+	floorCollis.addObject('RigidMapping')
+
+	#### visualization
+	floorVisu = floor.addChild("VisualModel")
+	floorVisu.loader = floorVisu.addObject('MeshObjLoader', name="loader", filename="mesh/floor.obj")
+	floorVisu.addObject('OglModel', name="model", src="@loader", scale3d=[5.0]*3, color=[1., 1., 0.], updateNormals=False)
+	floorVisu.addObject('RigidMapping')
+
+	#Creating the cube
+	cube = rootNode.addChild("cube")
+	cube.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
+	cube.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+	cube.addObject('UncoupledConstraintCorrection')
 
 	cube.addObject('EulerImplicitSolver', name='odesolver')
 	cube.addObject('CGLinearSolver', name='Solver')
 
+	collision = cube.addChild('collision')
+	collision.addObject('MeshObjLoader', name="loader", filename="mesh/cube.obj", triangulate="true", scale=45.0)
 
-	### Visual Object of the Cube
+	collision.addObject('MeshTopology', src="@loader")
+	collision.addObject('MechanicalObject')
 
-	visual = cube.addChild("CubeVisual")
-	# Graphic model based on a mesh
-	visual.addObject("MeshObjLoader", name="loader", filename="../mesh/smCube27.obj")
-	visual.addObject('OglModel', name="Visual", src="@loader", color=[0.1,0.0,1.0], scale=20.0)
-	# Building a correspondance between the mechanical and the graphical representation
-	visual.addObject('RigidMapping')
+	collision.addObject('TriangleCollisionModel')
+	collision.addObject('LineCollisionModel')
+	collision.addObject('PointCollisionModel')
 
+	collision.addObject('RigidMapping')
 
-	########################################
-	### Adding the Floor for more fun ;) ###
-	Floor(rootNode,
-          translation=[0.0,-300.0,0.0],
-          uniformScale=5.0,
-          isAStaticObject=True)
-
+	#### visualization
+	cubeVisu = cube.addChild("VisualModel")
+	cubeVisu.loader = cubeVisu.addObject('MeshObjLoader', name="loader", filename="mesh/cube.obj")
+	cubeVisu.addObject('OglModel', name="model", src="@loader", scale3d=[50]*3, color=[0., 1., 0.], updateNormals=False)
+	cubeVisu.addObject('RigidMapping')
 
 	return rootNode

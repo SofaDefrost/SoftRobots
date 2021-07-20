@@ -1,70 +1,105 @@
-from stlib3.scene import MainHeader, ContactHeader
-from stlib3.visuals import ShowGrid
-from stlib3.solver import DefaultSolver
-from stlib3.physics.rigid import Floor
+import Sofa.Core
 
 def createScene(rootNode):
-	ShowGrid(rootNode)
 
-	# A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
-	MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+	rootNode.addObject("OglGrid", nbSubdiv=10, size=1000)
 
-    #Collision built-in function (already used in Step 1)
-	ContactHeader(rootNode, alarmDistance=10, contactDistance=5)
+	rootNode.findData('gravity').value=[0.0,-981.0,0.0];
+	rootNode.findData('dt').value=0.01
 
-	cube = rootNode.addChild("Cube")
+	#Required plugins
+	confignode = rootNode.addChild("Config")
+	confignode.addObject('RequiredPlugin', name="SofaMiscCollision", printLog=False)
+	confignode.addObject('RequiredPlugin', name="SofaImplicitOdeSolver", printLog=False)
+	confignode.addObject('RequiredPlugin', name="SofaLoader", printLog=False)
+	confignode.addObject('RequiredPlugin', name="SofaMeshCollision", printLog=False)
+	confignode.addObject('RequiredPlugin', name="SofaOpenglVisual", printLog=False)
+	confignode.addObject('RequiredPlugin', name="SofaRigid", printLog=False)
+	confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+
+
+	#Collision function
+	rootNode.addObject('DefaultPipeline')
+	rootNode.addObject('FreeMotionAnimationLoop')
+	rootNode.addObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
+	rootNode.addObject('BruteForceDetection')
+	rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContact')
+	rootNode.addObject('LocalMinDistance', alarmDistance=10, contactDistance=5, angleCone=0.01)
 
 	### Mechanical model
-
 	totalMass = 1.0
 	volume = 1.0
-	inertiaMatrix = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+	inertiaMatrix=[1., 0., 0., 0., 1., 0., 0., 0., 1.]
+
+	#Creating the cubes
+	for c in range(7):
+		cube = rootNode.addChild("cube"+str(-210+c*70))
+		cube.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[-210+c*70, 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
+
+		cube.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+		cube.addObject('UncoupledConstraintCorrection')
+
+		cube.addObject('EulerImplicitSolver', name='odesolver')
+		cube.addObject('CGLinearSolver', name='Solver')
+
+		#### visualization
+		cubeVisu = cube.addChild("VisualModel")
+		cubeVisu.loader = cubeVisu.addObject('MeshObjLoader', name="loader", filename="mesh/cube.obj")
+		cubeVisu.addObject('OglModel', name="model", src="@loader", scale3d=[20]*3, color=[0., 1., 0.], updateNormals=False)
+		cubeVisu.addObject('RigidMapping')
 
 
-	cube.addObject('MechanicalObject', name="DOF", template="Rigid3", translation=[0.0,0.0,0.0], rotation=[0.0,0.0,0.0])
-	cube.addObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+		collision = cube.addChild('collision')
+		collision.addObject('MeshObjLoader', name="loader", filename="mesh/cube.obj", triangulate="true", scale=45.0)
 
-	# Material behaviour when submitted to constraints
-	cube.addObject('UncoupledConstraintCorrection')
+		collision.addObject('MeshTopology', src="@loader")
+		collision.addObject('MechanicalObject')
 
-	### Time integration and solver
+		collision.addObject('TriangleCollisionModel')
+		collision.addObject('LineCollisionModel')
+		collision.addObject('PointCollisionModel')
 
-	cube.addObject('EulerImplicitSolver', name='odesolver')
-	cube.addObject('CGLinearSolver', name='Solver')
-
-
-	### Visual Object of the Cube
-
-	visual = cube.addChild("CubeVisual")
-	# Graphic model based on a mesh
-	visual.addObject('MeshObjLoader', name="loader", filename="../mesh/smCube27.obj", triangulate=True)
-	visual.addObject('OglModel', name="Visual", src="@loader", color=[0.1,0.0,1.0], scale=20.0)
-	# Building a correspondance between the mechanical and the graphical representation
-	visual.addObject('RigidMapping')
-
-	### Collision Object for the Cube
-
-	collision = cube.addChild("CubeCollisionModel")
-	collision.addObject('MeshObjLoader', name="loader", filename="../mesh/smCube27.obj", triangulate=True, scale=20.0)
-
-	collision.addObject('MeshTopology', src="@loader")
-	collision.addObject('MechanicalObject')
-
-	collision.addObject('TriangleCollisionModel')
-	collision.addObject('LineCollisionModel')
-	collision.addObject('PointCollisionModel')
-
-	collision.addObject('RigidMapping')
+		collision.addObject('RigidMapping')
 
 
-	########################################
-	### Adding the Floor for more fun ;) ###
-	floor = Floor(rootNode,
-		  name="Floor",
-          translation=[0.0,-300.0,0.0],
-          uniformScale=5.0,
-          isAStaticObject=True)
+	#Creating the floor
+	floor = rootNode.addChild("floor")
+	floor.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0.0,-300.0,0.0], rotation2=[0., 0., 0.], showObjectScale=5.0)
+	floor.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+
+	floorCollis = floor.addChild('collision')
+	floorCollis.addObject('MeshObjLoader', name="loader", filename="mesh/floor.obj", triangulate="true", scale=5.0)
+	floorCollis.addObject('MeshTopology', src="@loader")
+	floorCollis.addObject('MechanicalObject')
+	floorCollis.addObject('TriangleCollisionModel', moving=False, simulated=False)
+	floorCollis.addObject('LineCollisionModel', moving=False, simulated=False)
+	floorCollis.addObject('PointCollisionModel', moving=False, simulated=False)
 
 
+	#### visualization
+	floorVisu = floor.addChild("VisualModel")
+	floorVisu.loader = floorVisu.addObject('MeshObjLoader', name="loader", filename="mesh/floor.obj")
+	floorVisu.addObject('OglModel', name="model", src="@loader", scale3d=[5.0]*3, color=[1., 1., 0.], updateNormals=False)
+	floorVisu.addObject('RigidMapping')
+
+	#floor obstacle
+	floorobs = rootNode.addChild("floor obstacle")
+	floorobs.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0.0,-200.0,0.0], rotation2=[0., 0., 0.], showObjectScale=5.0)
+	floorobs.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+
+	floorCollisObs = floorobs.addChild('collision')
+	floorCollisObs.addObject('MeshObjLoader', name="loader", filename="mesh/floor.obj", triangulate="true", scale=5.0)
+	floorCollisObs.addObject('MeshTopology', src="@loader")
+	floorCollisObs.addObject('MechanicalObject')
+	floorCollisObs.addObject('TriangleCollisionModel', moving=False, simulated=False)
+	floorCollisObs.addObject('LineCollisionModel', moving=False, simulated=False)
+	floorCollisObs.addObject('PointCollisionModel', moving=False, simulated=False)
+
+
+	###Visualization
+	floorVisu = floorobs.addChild("VisualModel")
+	floorVisu.loader = floorVisu.addObject('MeshObjLoader', name="loader", filename="mesh/floor.obj")
+	floorVisu.addObject('OglModel', name="model", src="@loader", scale3d=[2.0]*3, color=[1., 1., 0.], updateNormals=False)
+	floorVisu.addObject('RigidMapping')
 
 	return rootNode
