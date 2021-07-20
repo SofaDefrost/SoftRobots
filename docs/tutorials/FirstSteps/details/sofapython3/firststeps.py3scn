@@ -1,5 +1,39 @@
-# -*- coding: utf-8 -*-
+import Sofa.Core
 
 def createScene(rootNode):
-    """This is my first scene...it is currently empty"""
-    pass
+
+    rootNode.addObject("OglGrid", nbSubdiv=10, size=1000)
+
+    confignode = rootNode.addChild("Config")
+
+    confignode.addObject('RequiredPlugin', name="SofaLoader", printLog=False)
+    confignode.addObject('RequiredPlugin', name="SofaOpenglVisual", printLog=False)
+    confignode.addObject('RequiredPlugin', name="SofaRigid", printLog=False)
+    confignode.addObject('RequiredPlugin', name="SofaPython3", printLog=False)
+    confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+
+    #Creating the cube
+    cube = rootNode.addChild("cube")
+    cube.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.,], rotation2=[0., 0., 0.], showObjectScale=50)
+
+    ###Visualization
+    cubeVisu = cube.addChild("VisualModel")
+    cubeVisu.loader = cubeVisu.addObject('MeshObjLoader', name="loader", filename="mesh/cube.obj")
+    cubeVisu.addObject('OglModel', name="model", src="@loader", scale3d=[50]*3, color=[0., 1., 0.], updateNormals=False)
+    cubeVisu.addObject('RigidMapping')
+
+    ###Mechanical model
+    totalMass = 1.0
+    volume = 1.0
+    inertiaMatrix=[1., 0., 0., 0., 1., 0., 0., 0., 1.]
+
+    #Creating the floor
+    floor = rootNode.addChild("floor")
+    floor.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0.0,-300.0,0.0], rotation2=[0., 0., 0.], showObjectScale=5.0)
+    floor.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+
+    ###Visualization
+    floorVisu = floor.addChild("VisualModel")
+    floorVisu.loader = floorVisu.addObject('MeshObjLoader', name="loader", filename="mesh/floor.obj")
+    floorVisu.addObject('OglModel', name="model", src="@loader", scale3d=[5.0]*3, color=[1., 1., 0.], updateNormals=False)
+    floorVisu.addObject('RigidMapping')
