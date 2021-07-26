@@ -204,6 +204,8 @@ void SurfacePressureModel<DataTypes>::reset()
             return ;
 
     d_cavityVolume.setValue(d_initialCavityVolume.getValue());
+    d_pressure.setValue(0.0);
+    d_volumeGrowth.setValue(0.0);
 }
 
 template<class DataTypes>
