@@ -69,8 +69,8 @@ using std::cout;
 using std::endl;
 using std::cerr;
 using sofa::helper::WriteAccessor;
-using sofa::helper::vector;
-using sofa::defaulttype::Vec3d;
+using sofa::type::vector;
+using sofa::type::Vec3d;
 using helper::WriteAccessor;
 using helper::OptionsGroup;
 

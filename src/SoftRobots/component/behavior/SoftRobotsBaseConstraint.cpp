@@ -38,7 +38,7 @@ namespace core
 namespace behavior
 {
 
-using helper::vector;
+using type::vector;
 
 SoftRobotsBaseConstraint::SoftRobotsBaseConstraint()
     : m_hasDeltaMax(false)
@@ -96,41 +96,41 @@ bool SoftRobotsBaseConstraint::hasEpsilon()
 }
 
 
-SReal SoftRobotsBaseConstraint::getDeltaMax()
+SReal SoftRobotsBaseConstraint::getDeltaMax(const size_t i)
 {
-    return m_deltaMax;
+    return m_deltaMax[i];
 }
 
-SReal SoftRobotsBaseConstraint::getDeltaMin()
+SReal SoftRobotsBaseConstraint::getDeltaMin(const size_t i)
 {
-    return m_deltaMin;
+    return m_deltaMin[i];
 }
 
-SReal SoftRobotsBaseConstraint::getDeltaEqual()
+SReal SoftRobotsBaseConstraint::getDeltaEqual(const size_t i)
 {
-    return m_deltaEqual;
+    return m_deltaEqual[i];
 }
 
 
 
-SReal SoftRobotsBaseConstraint::getLambdaMax()
+SReal SoftRobotsBaseConstraint::getLambdaMax(const size_t i)
 {
-    return m_lambdaMax;
+    return m_lambdaMax[i];
 }
 
-SReal SoftRobotsBaseConstraint::getLambdaMin()
+SReal SoftRobotsBaseConstraint::getLambdaMin(const size_t i)
 {
-    return m_lambdaMin;
+    return m_lambdaMin[i];
 }
 
-SReal SoftRobotsBaseConstraint::getLambdaEqual()
+SReal SoftRobotsBaseConstraint::getLambdaEqual(const size_t i)
 {
-    return m_lambdaEqual;
+    return m_lambdaEqual[i];
 }
 
-SReal SoftRobotsBaseConstraint::getLambdaInit()
+SReal SoftRobotsBaseConstraint::getLambdaInit(const size_t i)
 {
-    return m_lambdaInit;
+    return m_lambdaInit[i];
 }
 
 

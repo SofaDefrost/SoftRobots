@@ -68,9 +68,9 @@ class PointCloudProcessing : public  BaseObject
         Data<VecCoord> d_effectorPositions;
         Data<VecCoord> d_goalPositions;
         Data<VecCoord> d_normalDirections;
-        Data<helper::vector<int>> d_contactLocations;
+        Data<type::vector<int>> d_contactLocations;
 
-        Data<defaulttype::Mat3x4d> d_M;
+        Data<type::Mat3x4d> d_M;
         Eigen::Matrix4d m_transform;
 
         /// Region growing segmentation tuning

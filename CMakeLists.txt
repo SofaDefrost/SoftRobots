@@ -11,25 +11,27 @@ find_package(SofaRigid REQUIRED)
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaEngine REQUIRED)
 find_package(SofaSparseSolver REQUIRED)
-find_package(SofaConstraint REQUIRED)
+sofa_find_package(Sofa.GL QUIET)
+sofa_find_package(SofaPython QUIET)
+sofa_find_package(SofaPython3 QUIET)
 
 option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
 if(NOT SOFTROBOTS_IGNORE_ERRORS)
     if(SOFA_USE_MASK)
         message(SEND_ERROR "
-            You should not use the plugin SoftRobots with SOFA_USE_MASK enabled.
+            You should not use SoftRobots with SOFA_USE_MASK enabled.
             Most components will not work correctly.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
-    if(NOT PLUGIN_SOFAPYTHON AND NOT PLUGIN_SOFAPYTHON3)
+    if(NOT SofaPython_FOUND AND NOT SofaPython3_FOUND)
         message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling PLUGIN_SOFAPYTHON or PLUGIN_SOFAPYTHON3.
+            You should not use SoftRobots without SofaPython or SofaPython3.
             Most examples and tutorials will not be loadable.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
-    if(NOT MODULE_SOFASPARSESOLVER)
+    if(NOT SofaSparseSolver_FOUND)
         message(SEND_ERROR "
-            You should not use the plugin SoftRobots without enabling MODULE_SOFASPARSESOLVER.
+            You should not use SoftRobots without SofaSparseSolver.
             Most examples and some tests will not work.
             To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
     endif()
@@ -39,8 +41,6 @@ option(SOFTROBOTS_COMMUNICATIONCONTROLLER "Enables Communication component. It r
 option(SOFTROBOTS_GAMETRAKCONTROLLER "Enables GameTrak component. It requires HIDAPI library (see controller/README for more info)" OFF)
 option(SOFTROBOTS_ROBOTINOCONTROLLER "Enables Robotino component" OFF)
 option(SOFTROBOTS_WITH_CAMERA "Enable this option if you want to use the realsense cameras to perform force sensing, and point cloud processing." OFF)
-
-sofa_find_package(SofaPython QUIET)
 
 find_package(Qt5 REQUIRED COMPONENTS Network)
 if(WIN32)
@@ -205,10 +205,6 @@ if (SOFTROBOTS_WITH_CAMERA)
     )
 endif(SOFTROBOTS_WITH_CAMERA)
 
-# initSoftRobots.h
-configure_file(${SOFTROBOTS_SOURCE_DIR}/component/initSoftRobots.h.in "${CMAKE_BINARY_DIR}/include/SoftRobots/component/initSoftRobots.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SoftRobots/initSoftRobots.h" DESTINATION "include/SoftRobots" COMPONENT headers)
-
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
 IF(WIN32)
@@ -269,9 +265,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping SofaSparseSolver SofaEngine Sofa.GL)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping SofaSparseSolver SofaEngine)
 target_link_libraries(${PROJECT_NAME} Qt5::Network)
-
+if(Sofa.GL_FOUND)
+    target_link_libraries(${PROJECT_NAME} Sofa.GL)
+endif()
 
 sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 if(SofaPython3_FOUND)
@@ -285,7 +283,7 @@ endif()
 sofa_create_package_with_targets(
     PACKAGE_NAME SoftRobots
     PACKAGE_VERSION ${PROJECT_VERSION}
-    TARGETS ${PROJECT_NAME}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR ${PROJECT_NAME}
     RELOCATABLE "plugins"

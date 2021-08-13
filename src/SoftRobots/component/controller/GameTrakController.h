@@ -85,8 +85,8 @@ public:
 
 protected:
 
-    Data<defaulttype::Vec3d>                       d_translation;
-    Data<defaulttype::Vec3d>                       d_offset;
+    Data<type::Vec3d>                       d_translation;
+    Data<type::Vec3d>                       d_offset;
     Data<double>                                   d_sizeCoeff;
 
     Data<helper::OptionsGroup>                     d_x;
@@ -95,16 +95,16 @@ protected:
 
     Data<std::string>                              d_deviceURI;
     Data<bool>                                     d_buttonPressed;
-    Data<helper::vector<sofa::defaulttype::Vec3d>> d_output;
+    Data<type::vector<sofa::type::Vec3d>> d_output;
 
     gametrak::GameTrak  *m_gameTrak;
     bool                 m_isButtonPressed;
 
     gametrak::TimeStamp::inttime m_lastTime;
 
-    defaulttype::Vec3d m_initLeft;
-    defaulttype::Vec3d m_initRight;
-    sofa::helper::vector<defaulttype::Vec3d> m_output;
+    type::Vec3d m_initLeft;
+    type::Vec3d m_initRight;
+    sofa::type::vector<type::Vec3d> m_output;
 
 
     void GameTrakCallback(void *context,

@@ -30,24 +30,24 @@
 #ifndef SOFA_CONTROLLER_ANIMATIONEDITOR_INL
 #define SOFA_CONTROLLER_ANIMATIONEDITOR_INL
 
-#ifndef SOFA_NO_OPENGL
-#include <sofa/helper/gl/template.h>
-using sofa::helper::gl::glVertexT;
+#include "AnimationEditor.h"
+#ifdef SOFA_WITH_DACCORD
+#include "../../applications/sofa/gui/SofaGuiCommon/editor/editor.h"
+using daccord::current::Editor ;
 #endif
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/objectmodel/Event.h>
+
+#if SOFTROBOTS_HAVE_SOFA_GL
+#include <sofa/gl/template.h>
+using sofa::gl::glVertexT;
+#endif
+
 #include <fstream>
 #include <iomanip>
 #include <fstream>
-
-#include "AnimationEditor.h"
-
-#ifdef SOFA_WITH_DACCORD
-#include "../../applications/sofa/gui/SofaGuiCommon/editor/editor.h"
-using daccord::current::Editor ;
-#endif
 
 
 namespace sofa
@@ -69,18 +69,18 @@ using sofa::core::objectmodel::MouseEvent;
 using sofa::simulation::AnimateBeginEvent;
 
 using sofa::core::visual::VisualParams;
-using sofa::defaulttype::Mat;
+using sofa::type::Mat;
 using sofa::helper::WriteAccessor;
 using sofa::helper::ReadAccessor;
 using std::endl;
 using std::cout;
 using std::stringstream;
-using sofa::helper::types::RGBAColor;
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec4d;
+using sofa::type::RGBAColor;
+using sofa::type::Vec3d;
+using sofa::type::Vec4d;
 using std::ifstream;
 using std::ofstream;
-using sofa::helper::vector;
+using sofa::type::vector;
 
 
 template<class DataTypes>
@@ -771,7 +771,7 @@ void AnimationEditor<DataTypes>::drawTimeline(const VisualParams* vparams)
         return ;
 #endif // SOFA_WITH_DACCORD
 
-#ifndef SOFA_NO_OPENGL
+#if SOFTROBOTS_HAVE_SOFA_GL
     glDisable(GL_LIGHTING);
     unsigned int ratio = round(vparams->viewport()[2]/d_maxKeyFrame.getValue());
 

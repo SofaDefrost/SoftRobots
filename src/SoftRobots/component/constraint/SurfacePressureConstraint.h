@@ -52,7 +52,7 @@ namespace _surfacepressureconstraint_
     using sofa::core::ConstraintParams ;
     using sofa::defaulttype::BaseVector ;
     using sofa::core::behavior::ConstraintResolution ;
-    using helper::vector;
+    using type::vector;
 
 class VolumeGrowthConstraintResolution : public ConstraintResolution
 {

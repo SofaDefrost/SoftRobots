@@ -54,7 +54,7 @@ using sofa::core::visual::VisualParams;
 using sofa::core::behavior::SoftRobotsConstraint;
 using sofa::core::ConstraintParams;
 using sofa::defaulttype::BaseVector;
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 
 using sofa::core::behavior::ConstraintResolution ;
 using core::visual::VisualParams ;

@@ -53,7 +53,7 @@ using sofa::component::controller::SerialPortBridgeGeneric ;
 namespace sofa
 {
 
-using helper::vector;
+using type::vector;
 using helper::WriteAccessor;
 using core::objectmodel::ComponentState;
 
@@ -62,7 +62,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
 {
     typedef SerialPortBridgeGeneric ThisClass ;
     typedef _DataTypes DataTypes;
-    typedef typename helper::vector<DataTypes> VecValue;
+    typedef typename type::vector<DataTypes> VecValue;
 
     ///////////////////////////////////////////////////////////////
     // Bring parents members in the current lookup context.
@@ -126,7 +126,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
 
     void checkIndicesTest(){
 
-        helper::WriteAccessor<Data<helper::vector<unsigned char>>> packOut = d_packetOut;
+        helper::WriteAccessor<Data<type::vector<unsigned char>>> packOut = d_packetOut;
         packOut.resize(2);
         d_size.setValue(0);
 
@@ -209,7 +209,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
 };
 
 using ::testing::Types;
-typedef Types<defaulttype::Vec3d> DataTypes;
+typedef Types<type::Vec3d> DataTypes;
 
 TYPED_TEST_CASE(SerialPortBridgeGenericTest, DataTypes);
 

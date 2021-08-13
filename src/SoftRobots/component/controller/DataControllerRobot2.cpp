@@ -95,11 +95,11 @@ void DataControllerRobot::onEndAnimationStep(const double /*dt*/)
 {
     std::cout<<"DataControllerRobot::onBeginAnimationStep()"<<std::endl;
 
-//    helper::vector<double> pressures;
+//    type::vector<double> pressures;
 //    pressures.resize(listSPC.size(),0.);
 //    for (int i=0; i<listSPC.size(); i++)
 //        listSPC[i]->getActualPressure(pressures[i]);
-    helper::vector<double> pressures = m_QPSolver->d_computedForces.getValue();
+    type::vector<double> pressures = m_QPSolver->d_computedForces.getValue();
 
     if( pressures.size() < 6 )
         return;
@@ -107,7 +107,7 @@ void DataControllerRobot::onEndAnimationStep(const double /*dt*/)
     drive(m_QPSolver->d_computedForces.getValue());
 }
 
-void DataControllerRobot::drive(const helper::vector<double>& pressures)
+void DataControllerRobot::drive(const type::vector<double>& pressures)
 {
     //double pressures[8] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
    // double pots[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};

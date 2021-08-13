@@ -18,23 +18,20 @@ angles=[0,angle1, angle2]
 
 def createScene(rootNode):
 
-	rootNode.addObject('RequiredPlugin', name='SoftRobots')
-	rootNode.addObject('RequiredPlugin', name='SofaPython')
-	rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
-	rootNode.addObject('RequiredPlugin', name='SofaOpenglVisual')
+	rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaPython3 SofaLoader SofaSimpleFem SofaEngine SofaDeformable SofaImplicitOdeSolver SofaConstraint SofaSparseSolver SofaMeshCollision SofaRigid SofaOpenglVisual')
 
 	rootNode.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 	rootNode.findData('gravity').value=[-9810, 0, 0];
 	rootNode.addObject('FreeMotionAnimationLoop')
 	rootNode.addObject('GenericConstraintSolver', tolerance=1e-12, maxIterations=10000)
 	rootNode.addObject('DefaultPipeline')
-	rootNode.addObject('BruteForceDetection')
+	rootNode.addObject('BruteForceBroadPhase')
+	rootNode.addObject('BVHNarrowPhase')
 	rootNode.addObject('DefaultContactManager', response='FrictionContact', responseParams='mu=0.6')
 	rootNode.addObject('LocalMinDistance', name='Proximity', alarmDistance=5, contactDistance=1, angleCone=0.0)
 
-	rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765])
+	rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1.])
 	rootNode.addObject('OglSceneFrame', style='Arrows', alignment='TopRight')
-	rootNode.addObject(WholeGripperController(node=rootNode))
 
 	planeNode = rootNode.addChild('Plane')
 	planeNode.addObject('MeshObjLoader', name='loader', filename='../data/mesh/floorFlat.obj', triangulate=True, rotation=[0, 0, 270], scale=10, translation=[-122, 0, 0])
@@ -81,9 +78,9 @@ def createScene(rootNode):
 
 		finger.addObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale=4e-5)
 		finger.addObject('UniformMass', totalMass= 0.04)
-		finger.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.3,  youngModulus=youngModulusFingers, drawAsEdges=True)
+		finger.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.3,  youngModulus=youngModulusFingers)
 
-		finger.addObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20])
+		finger.addObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20], doUpdate=False)
 		finger.addObject('BoxROI', name='boxROISubTopo', box=[-100, 22.5, -8, -19, 28, 8], strict=False)
 		if i == 0:
 			finger.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
@@ -132,5 +129,7 @@ def createScene(rootNode):
 		modelVisu.addObject('MeshSTLLoader', name='loader', filename='../data/mesh/pneunetCut.stl')
 		modelVisu.addObject('OglModel', src='@loader', color=[0.7, 0.7, 0.7, 0.6], translation = translations[i], rotation=[360 - angles[i]*180/math.pi, 0, 0])
 		modelVisu.addObject('BarycentricMapping')
+
+	rootNode.addObject(WholeGripperController(node=rootNode))
 
 	return rootNode

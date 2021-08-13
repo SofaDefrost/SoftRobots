@@ -49,9 +49,9 @@ using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
 using sofa::defaulttype::BaseVector;
 using sofa::helper::ReadAccessor;
-using sofa::helper::types::RGBAColor;
-using sofa::defaulttype::Vector3;
-using sofa::helper::vector;
+using sofa::type::RGBAColor;
+using sofa::type::Vector3;
+using sofa::type::vector;
 
 template<class DataTypes>
 CableModel<DataTypes>::CableModel(MechanicalState* object)

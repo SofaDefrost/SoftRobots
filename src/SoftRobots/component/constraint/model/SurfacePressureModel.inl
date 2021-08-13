@@ -48,14 +48,14 @@ namespace constraintset
 
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
-using sofa::helper::vector;
+using sofa::type::vector;
 using core::ConstVecCoordId;
-using sofa::defaulttype::Mat;
-using sofa::defaulttype::Vec3d;
-using sofa::helper::types::RGBAColor;
+using sofa::type::Mat;
+using sofa::type::Vec3d;
+using sofa::type::RGBAColor;
 using std::string;
 using std::ostringstream;
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 
 template<class DataTypes>
 SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
@@ -204,6 +204,8 @@ void SurfacePressureModel<DataTypes>::reset()
             return ;
 
     d_cavityVolume.setValue(d_initialCavityVolume.getValue());
+    d_pressure.setValue(0.0);
+    d_volumeGrowth.setValue(0.0);
 }
 
 template<class DataTypes>

@@ -33,7 +33,7 @@
 
 #include "PartialRigidificationForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/config.h>
+#include <sofa/config.h>
 #include <sofa/helper/rmath.h>
 #include <assert.h>
 #include <iostream>
@@ -77,7 +77,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(mstate1, mstate2);
     MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(mstate2, mstate1);
 
-    const helper::vector<BaseMatrix*>* J0J1 = d_subsetMultiMapping.get()->getJs();
+    const type::vector<BaseMatrix*>* J0J1 = d_subsetMultiMapping.get()->getJs();
 
     if(J0J1 == nullptr)
         dmsg_warning()<<"J0J1 null";

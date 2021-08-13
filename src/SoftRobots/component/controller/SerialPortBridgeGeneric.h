@@ -83,10 +83,10 @@ public:
     //Config
     Data<string>                 d_port;
     Data<unsigned int>           d_baudRate;
-    Data<helper::vector<unsigned char>> d_packetOut;
-    Data<helper::vector<unsigned char>> d_packetIn;
+    Data<type::vector<unsigned char>> d_packetOut;
+    Data<type::vector<unsigned char>> d_packetIn;
 
-    Data<helper::vector<unsigned char>> d_header;
+    Data<type::vector<unsigned char>> d_header;
     Data<unsigned int>           d_size;
     Data<bool>                   d_precise;
     Data<bool>                   d_splitPacket;
@@ -96,7 +96,7 @@ public:
 protected:
 
     Serial m_serial;
-    helper::vector<unsigned char> m_packetOut; //member variable to enable tests
+    type::vector<unsigned char> m_packetOut; //member variable to enable tests
 
     void checkConnection();
     void checkData();

@@ -1,6 +1,5 @@
 from math import cos
 from math import sin
-from splib3.objectmodel import SofaPrefab, SofaObject
 from splib3.numerics import Vec3, Quat
 from splib3.animation import animate, AnimationManager
 
@@ -18,8 +17,7 @@ def effectorTarget(parentNode, position=[0., 0., 200]):
     return target
 
 
-@SofaPrefab
-class Trunk(SofaObject):
+class Trunk():
     ''' This prefab is implementing a soft robot inspired by the elephant's trunk.
         The robot is entirely soft and actuated with 8 cables.
 
@@ -49,8 +47,7 @@ class Trunk(SofaObject):
         self.node = parentNode.addChild('Trunk')
 
         self.node.addObject('MeshVTKLoader', name='loader', filename=path+'trunk.vtk')
-        self.node.addObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
-        self.node.addObject('TetrahedronSetTopologyModifier')
+        self.node.addObject('MeshTopology', src='@loader', name='container')
 
         self.node.addObject('MechanicalObject', name='dofs', template='Vec3')
         self.node.addObject('UniformMass', totalMass=totalMass)
@@ -84,7 +81,7 @@ class Trunk(SofaObject):
                                 position=pullPoint[i]+[pos.toList() for pos in position])
             cableL.addObject('CableConstraint' if not self.inverseMode else 'CableActuator', template='Vec3', name='cable',
                                 hasPullPoint='0',
-                                indices=range(0, 21),
+                                indices=list(range(0, 21)),
                                 maxPositiveDisp='70',
                                 maxDispVariation='1',
                                 minForce=0)
@@ -106,7 +103,7 @@ class Trunk(SofaObject):
                                 position=pullPoint[i]+[pos.toList() for pos in position])
             cableS.addObject('CableConstraint' if not self.inverseMode else 'CableActuator', template='Vec3', name='cable',
                                 hasPullPoint='0',
-                                indices=range(0, 10),
+                                indices=list(range(0, 10)),
                                 maxPositiveDisp='40',
                                 maxDispVariation='1',
                                 minForce=0)
@@ -137,7 +134,7 @@ class Trunk(SofaObject):
     def addEffectors(self, target, position=[0., 0., 195.]):
         effectors = self.node.addChild('Effectors')
         effectors.addObject('MechanicalObject', position=position)
-        effectors.addObject('PositionEffector', indices=range(len(position)), effectorGoal=target)
+        effectors.addObject('PositionEffector', indices=list(range(len(position))), effectorGoal=target)
         effectors.addObject('BarycentricMapping', mapForces=False, mapMasses=False)
 
 
@@ -146,12 +143,11 @@ def createScene(rootNode):
     # Choose your resolution mode
     # 1- inverseMode=True, solve the inverse problem and control the end effectors
     # 2- inverseMode=False, solve the direct problem and set the cable displacements by hand
-    inverseMode = True
+    inverseMode = False
 
-    rootNode.addObject('RequiredPlugin', name='SoftRobots')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
-    rootNode.addObject('RequiredPlugin', name='SofaPreconditioner')
-    rootNode.addObject('RequiredPlugin', name='SofaPython')
+    rootNode.addObject('RequiredPlugin', pluginName=['SoftRobots','SofaSparseSolver','SofaPreconditioner','SofaPython3','SofaConstraint',
+                                                     'SofaImplicitOdeSolver','SofaLoader','SofaSimpleFem','SofaBoundaryCondition','SofaEngine',
+                                                     'SofaOpenglVisual'])
     AnimationManager(rootNode)
     rootNode.addObject('VisualStyle', displayFlags='showBehavior')
     rootNode.gravity = [0., -9810., 0.]
@@ -159,6 +155,7 @@ def createScene(rootNode):
     rootNode.addObject('FreeMotionAnimationLoop')
     if inverseMode:
         # For inverse resolution, i.e control of effectors position
+        rootNode.addObject('RequiredPlugin', name='SoftRobots.Inverse')
         rootNode.addObject('QPInverseProblemSolver', epsilon=1e-1)
     else:
         # For direct resolution, i.e direct control of the cable displacement

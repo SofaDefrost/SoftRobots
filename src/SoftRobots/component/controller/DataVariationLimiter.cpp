@@ -44,7 +44,7 @@ namespace controller
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
+using namespace sofa::type;
 using core::RegisterObject;
 
 int DataVariationLimiterClass = RegisterObject("This component interpolates between two consecutive inputs when a jump is detected.")
@@ -52,9 +52,9 @@ int DataVariationLimiterClass = RegisterObject("This component interpolates betw
         .add< DataVariationLimiter<Vec2Types::Coord> >()
         .add< DataVariationLimiter<Vec1Types::Coord> >()
 
-        .add< DataVariationLimiter<Vec1i> >()
-        .add< DataVariationLimiter<Vec2i> >()
-        .add< DataVariationLimiter<Vec3i> >()
+        .add< DataVariationLimiter<type::Vec1i> >()
+        .add< DataVariationLimiter<type::Vec2i> >()
+        .add< DataVariationLimiter<type::Vec3i> >()
         ;
 
 template class DataVariationLimiter<Vec3Types::Coord>;
@@ -62,9 +62,9 @@ template class DataVariationLimiter<Vec2Types::Coord>;
 template class DataVariationLimiter<Vec1Types::Coord>;
 
 
-template class DataVariationLimiter<Vec1i>;
-template class DataVariationLimiter<Vec2i>;
-template class DataVariationLimiter<Vec3i>;
+template class DataVariationLimiter<type::Vec1i>;
+template class DataVariationLimiter<type::Vec2i>;
+template class DataVariationLimiter<type::Vec3i>;
 
 } // namespace constraintset
 

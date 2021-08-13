@@ -51,10 +51,10 @@ using sofa::core::VecCoordId;
 using sofa::core::ConstVecCoordId ;
 using sofa::helper::WriteAccessor ;
 using sofa::helper::ReadAccessor ;
-using sofa::helper::vector ;
-using defaulttype::Vec;
-using helper::types::RGBAColor;
-using defaulttype::Vector3;
+using sofa::type::vector ;
+using type::Vec;
+using type::RGBAColor;
+using type::Vector3;
 
 template<class DataTypes>
 UnilateralPlaneConstraint<DataTypes>::UnilateralPlaneConstraint(MechanicalState* object)

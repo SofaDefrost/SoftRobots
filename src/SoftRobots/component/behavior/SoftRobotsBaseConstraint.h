@@ -43,6 +43,8 @@ namespace core
 namespace behavior
 {
 
+using type::vector;
+
 /**
  *  \brief Component computing inverse problem constraints within a simulated body.
  *
@@ -94,26 +96,26 @@ public:
 
 
     /// Accessor to maximum value of delta
-    SReal getDeltaMax();
+    SReal getDeltaMax(const size_t i);
 
     /// Accessor to minimum value of delta
-    SReal getDeltaMin();
+    SReal getDeltaMin(const size_t i);
 
     /// Accessor to equal constraint value of delta
-    SReal getDeltaEqual();
+    SReal getDeltaEqual(const size_t i);
 
 
     /// Accessor to maximum value of lambda
-    SReal getLambdaMax();
+    SReal getLambdaMax(const size_t i);
 
     /// Accessor to maximum value of lambda
-    SReal getLambdaMin();
+    SReal getLambdaMin(const size_t i);
 
     /// Accessor to equal constraint value of lambda
-    SReal getLambdaEqual();
+    SReal getLambdaEqual(const size_t i);
 
     /// Accessor to initial value of lambda
-    SReal getLambdaInit();
+    SReal getLambdaInit(const size_t i);
 
 
     /// Accessor to epsilon value that can be used to prioritize the constraint (for actuator with inverse problem)
@@ -125,9 +127,9 @@ public:
     unsigned int getNbLines();
 
     /// Allows the constraint to access to the results. Called from QPInverseProblemSolver.
-    virtual void storeResults(helper::vector<double> &lambda, helper::vector<double> &delta);
+    virtual void storeResults(type::vector<double> &lambda, type::vector<double> &delta);
 
-    virtual void storeResults(helper::vector<double> &delta);
+    virtual void storeResults(type::vector<double> &delta);
 
     /// Useful when the Constraint is applied only on a subset of dofs.
     /// It is automatically called by buildConstraintMatrix
@@ -154,14 +156,14 @@ protected:
 
     bool m_hasEpsilon;
 
-    double m_deltaMax;
-    double m_deltaMin;
-    double m_deltaEqual;
+    vector<double> m_deltaMax;
+    vector<double> m_deltaMin;
+    vector<double> m_deltaEqual;
 
-    double m_lambdaMax;
-    double m_lambdaMin;
-    double m_lambdaEqual;
-    double m_lambdaInit;
+    vector<double> m_lambdaMax;
+    vector<double> m_lambdaMin;
+    vector<double> m_lambdaEqual;
+    vector<double> m_lambdaInit;
 
     double m_epsilon;
 

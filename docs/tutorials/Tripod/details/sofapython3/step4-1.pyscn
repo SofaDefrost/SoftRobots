@@ -3,20 +3,19 @@
 Step 4-1: Adding the ActuatedArm prefab.
 This prefab is defining the servomotor, the servo-arm and the constraint that attaches the end of the arm to the deformable object.
 """
+import Sofa
 from tutorial import *
 from splib3.numerics import sin, cos, to_radians
 from stlib3.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
-from splib3.objectmodel import SofaPrefab, SofaObject
 
 
 def ElasticBody(parent):
     body = parent.addChild("ElasticBody")
 
-    e = ElasticMaterialObject(body,
-                              volumeMeshFileName="../data/mesh/tripod_mid.gidmsh",
-                              translation=[0.0, 30, 0.0], rotation=[90, 0, 0],
-                              youngModulus=800, poissonRatio=0.45, totalMass=0.032)
+    elasticMaterialObject = body.addChild(ElasticMaterialObject( volumeMeshFileName="../data/mesh/tripod_mid.gidmsh",
+                                             translation=[0.0, 30, 0.0], rotation=[90, 0, 0],
+                                             youngModulus=800, poissonRatio=0.45, totalMass=0.032))
 
     visual = body.addChild("Visual")
     visual.addObject("MeshSTLLoader", name="loader", filename="../data/mesh/tripod_mid.stl")
@@ -24,31 +23,40 @@ def ElasticBody(parent):
                         rotation=[90, 0, 0], translation=[0, 30, 0])
 
     visual.addObject("BarycentricMapping",
-                        input=e.dofs.getLinkPath(),
+                        input=body.ElasticMaterialObject.dofs.getLinkPath(),
                         output=visual.renderer.getLinkPath())
 
-    return body
+    return elasticMaterialObject
+    
+
+class Tripod(Sofa.Prefab):
+
+    properties = [
+        {'name':'name',                 'type':'string', 'help':'Node name',                   'default':'Tripod'},
+        {'name':'radius',               'type':'int',    'help':'Rotation',                    'default':60},
+        {'name':'numMotors',            'type':'int',    'help':'Translation',                 'default':3},
+        {'name':'angleShift',           'type':'float', 'help':'Translation',                 'default':180.0}]
+
+    def __init__(self, *args, **kwargs):
+        Sofa.Prefab.__init__(self, *args, **kwargs)
 
 
-@SofaPrefab
-class Tripod(SofaObject):
+    def init(self):
 
-    def __init__(self, parent, name="Tripod", radius=60, numMotors=3, angleShift=180.0):
-        self.node = parent.addChild(name)
-        ElasticBody(self.node)
+        self.elasticMaterialObject = ElasticBody(self)
 
-        dist = radius
-        numstep = numMotors
+        dist = self.radius.value
+        numstep = self.numMotors.value
         self.actuatedarms = []
         for i in range(0, numstep):
             name = "ActuatedArm"+str(i)
-            translation, eulerRotation = self.__getTransform(i, numstep, angleShift, radius, dist)
-            arm = ActuatedArm(self.node, name=name,
-                              translation=translation, eulerRotation=eulerRotation)
+            translation, eulerRotation = self.__getTransform(i, numstep, self.angleShift.value, self.radius.value, dist)
+            arm = self.addChild(ActuatedArm(name=name,translation=translation, rotation=eulerRotation))
             self.actuatedarms.append(arm)
             # Add limits to angle that correspond to limits on real robot
             arm.ServoMotor.minAngle = -2.0225
             arm.ServoMotor.maxAngle = -0.0255
+
 
     def __getTransform(self, index, numstep, angleShift, radius, dist):
         fi = float(index)
@@ -56,17 +64,20 @@ class Tripod(SofaObject):
         angle = fi*360/fnumstep
         angle2 = fi*360/fnumstep+angleShift
         eulerRotation = [0, angle, 0]
-        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
+        translation = [dist*sin(radians(angle2)), -1.35, dist*cos(radians(angle2))]
 
         return translation, eulerRotation
 
 
 def createScene(rootNode):
-    from splib.animation import animate
+    from splib3.animation import animate
+    from stlib3.scene import Scene
     from fixingbox import FixingBox
     import math
 
-    scene = Scene(rootNode)
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem'])
+    scene.addMainHeader()
+    rootNode.dt = 0.025
 
     scene.VisualStyle.displayFlags = "showBehavior"
 

@@ -65,7 +65,7 @@ using sofa::core::behavior::MultiMatrixAccessor ;
 using sofa::component::mapping::RigidMapping ;
 using sofa::defaulttype::BaseMatrix ;
 using sofa::core::MechanicalParams ;
-using sofa::defaulttype::Mat ;
+using sofa::type::Mat ;
 
 
 template<typename TDataTypes1, typename TDataTypes2>

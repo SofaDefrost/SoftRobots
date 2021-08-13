@@ -49,8 +49,8 @@ namespace _surfacepressureconstraint_
 
 using sofa::core::objectmodel::ComponentState ;
 using sofa::helper::WriteAccessor ;
-using sofa::defaulttype::Vec3d;
-using sofa::helper::vector ;
+using sofa::type::Vec3d;
+using sofa::type::vector ;
 using sofa::helper::OptionsGroup;
 
 template<class DataTypes>
