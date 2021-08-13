@@ -2,7 +2,7 @@
 """
 Step 4-2: Rigidify extremity of deformable part to be able to fix it to the actuated arms
 """
-from splib3.numerics import sin, cos, to_radians
+from splib3.numerics import sin, cos, radians
 from stlib3.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 from stlib3.physics.mixedmaterial import Rigidify
@@ -67,7 +67,7 @@ class Tripod(Sofa.Prefab):
         angle = fi*360/fnumstep
         angle2 = fi*360/fnumstep+angleShift
         eulerRotation = [0, angle, 0]
-        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
+        translation = [dist*sin(radians(angle2)), -1.35, dist*cos(radians(angle2))]
 
         return translation, eulerRotation
 
@@ -118,10 +118,11 @@ def createScene(rootNode):
     import math
 
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem'])
+    scene.VisualStyle.displayFlags = "showBehavior"
     scene.addMainHeader()
     rootNode.dt = 0.025
 
-    tripod = Tripod(scene.Modelling)
+    tripod = scene.Modelling.addChild(Tripod())
     FixingBox(tripod, tripod.ElasticBody.ElasticMaterialObject, scale=[10, 10, 10], translation=[0., 25, 0.])
     tripod.FixingBox.BoxROI.drawBoxes = True
     tripod.BoxROI0.drawBoxes = True

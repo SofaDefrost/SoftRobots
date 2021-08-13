@@ -5,7 +5,7 @@ This prefab is defining the servomotor, the servo-arm and the constraint that at
 """
 import Sofa
 from tutorial import *
-from splib3.numerics import sin, cos, to_radians
+from splib3.numerics import sin, cos, radians
 from stlib3.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 
@@ -27,7 +27,7 @@ def ElasticBody(parent):
                         output=visual.renderer.getLinkPath())
 
     return elasticMaterialObject
-    
+
 
 class Tripod(Sofa.Prefab):
 
@@ -81,7 +81,7 @@ def createScene(rootNode):
 
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    tripod = Tripod(scene.Modelling)
+    tripod = scene.Modelling.addChild(Tripod())
     FixingBox(tripod, tripod.ElasticBody.ElasticMaterialObject, scale=[10, 10, 10], translation=[0., 25, 0.])
     tripod.FixingBox.BoxROI.drawBoxes = True
 

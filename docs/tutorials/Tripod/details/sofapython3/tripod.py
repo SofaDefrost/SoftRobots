@@ -69,13 +69,13 @@ class Tripod(Sofa.Prefab):
 
         return translation, eulerRotation
 
-    def addCollision(self):
-        CollisionMesh(self.ElasticBody.ElasticMaterialObject, surfaceMeshFileName="../data/mesh/tripod_low.stl", name="CollisionModel", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
-
-        for arm in self.actuatedarms:
-            CollisionMesh(arm.ServoMotor.ServoBody,
-                          surfaceMeshFileName="../data/mesh/servo_collision.stl",
-                          name="TopServoCollision", mappingType='RigidMapping')
+    # def addCollision(self):
+    #     CollisionMesh(self.ElasticBody.ElasticMaterialObject, surfaceMeshFileName="../data/mesh/tripod_low.stl", name="CollisionModel", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
+    #
+    #     for arm in self.actuatedarms:
+    #         CollisionMesh(arm.ServoMotor.ServoBody,
+    #                       surfaceMeshFileName="../data/mesh/servo_collision.stl",
+    #                       name="TopServoCollision", mappingType='RigidMapping')
 
     def __attachToActuatedArms(self, radius=60, numMotors=3, angleShift=180.0):
         deformableObject = self.elasticMaterialObject
@@ -99,8 +99,8 @@ class Tripod(Sofa.Prefab):
 
         # Rigidify the deformable part at extremity to attach arms
         rigidifiedstruct = Rigidify(self, deformableObject, groupIndices=groupIndices, frames=frames, name="RigidifiedStructure")
-        rigidifiedstruct.DeformableParts.addObject("UncoupledConstraintCorrection")
-        rigidifiedstruct.RigidParts.addObject("UncoupledConstraintCorrection")
+        # rigidifiedstruct.DeformableParts.addObject("UncoupledConstraintCorrection")
+        # rigidifiedstruct.RigidParts.addObject("UncoupledConstraintCorrection")
 
         # Use this to activate some rendering on the rigidified object ######################################
         # setData(rigidifiedstruct.RigidParts.dofs, showObject=True, showObjectScale=10, drawMode=2)

@@ -1,21 +1,31 @@
+import SofaRuntime
 from stlib3.scene import MainHeader, ContactHeader
-from stlib3.visuals import ShowGrid
-from stlib3.physics.rigid import Floor
-from stlib3.physics.rigid import Cube
+from stlib3.scene.scene import Scene
+from stlib3.physics.rigid import Floor, Cube
+
 
 def createScene(rootNode):
     """This is my first scene"""
+    SofaRuntime.importPlugin('SofaRigid')
+    SofaRuntime.importPlugin('SofaConstraint')
+
+    rootNode.addObject("OglGrid", nbSubdiv=10, size=1000)
+
+    rootNode.addObject("EulerImplicitSolver", name = 'odesolver')
+    rootNode.addObject("CGLinearSolver", name = 'Solver')
+
     MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
     ContactHeader(rootNode, alarmDistance=15, contactDistance=10)
+    #rootNode.VisualStyle.displayFlags = 'showAll'
 
-    #ShowGrid(rootNode)
+    totalMass = 1.0
+    volume = 1.0
+    inertiaMatrix=[1., 0., 0., 0., 1., 0., 0., 0., 1.]
 
-    Floor(rootNode,
-          translation=[0.0,-160.0,0.0],
+    Floor(rootNode, translation=[0.0,-160.0,0.0],
           isAStaticObject=True)
 
-    Cube(rootNode,
-          translation=[0.0,0.0,0.0],
+    Cube(rootNode, translation=[0.0,0.0,0.0],
           uniformScale=20.0)
 
 

@@ -95,7 +95,7 @@ class ServoMotor(Sofa.Prefab):
         angle.addObject('ArticulatedHierarchyContainer')
         angle.addObject('ArticulatedSystemMapping', input1=angle.dofs.getLinkPath(), output=baseFrame.dofs.getLinkPath())
         angle.addObject('StopperConstraint', name='AngleLimits', index=0, min=self.getData('minAngle').getLinkPath(), max=self.getData('maxAngle').getLinkPath())
-        angle.addObject('UncoupledConstraintCorrection')
+        # angle.addObject('UncoupledConstraintCorrection')
 
         articulationCenter = angle.addChild('ArticulationCenter')
         articulationCenter.addObject('ArticulationCenter', parentIndex=0, childIndex=1, posOnParent=[0., 0., 0.], posOnChild=[0., 0., 0.])

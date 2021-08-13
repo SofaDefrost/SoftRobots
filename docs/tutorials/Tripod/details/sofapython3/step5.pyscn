@@ -4,7 +4,7 @@ Step 5: Adding a controller.
 The controller will connect user actions to the simulated behaviour.
 """
 import Sofa
-from stlib3.scene import Scene 
+from stlib3.scene import Scene
 
 #from tutorial import *
 from tripod import Tripod
@@ -27,14 +27,12 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver"])
     scene.addMainHeader()
 
-
-
     scene.VisualStyle.displayFlags = "showBehavior"
 
     tripod = scene.Modelling.addChild(Tripod())
 
     scene.addObject(TripodController(name="TripodController",actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
-    
+
     scene.Simulation.addChild(tripod.RigidifiedStructure)
     motors = scene.Simulation.addChild("Motors")
     motors.addChild(tripod.ActuatedArm0)
