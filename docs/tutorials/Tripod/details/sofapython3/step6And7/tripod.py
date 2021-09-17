@@ -1,6 +1,6 @@
 import Sofa
 
-from splib3.numerics import sin, cos, radians
+from splib3.numerics import sin, cos, to_radians
 from stlib3.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 from stlib3.physics.collision import CollisionMesh
@@ -65,7 +65,7 @@ class Tripod(Sofa.Prefab):
         angle = fi*360/fnumstep
         angle2 = fi*360/fnumstep+angleShift
         eulerRotation = [0, angle, 0]
-        translation = [dist*sin(radians(angle2)), -1.35, dist*cos(radians(angle2))]
+        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
 
         return translation, eulerRotation
 

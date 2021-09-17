@@ -17,7 +17,7 @@ from splib3.objectmodel import *
 
 from stlib3.visuals import VisualModel
 from stlib3.solver import DefaultSolver
-from stlib3.scene import Scene, Node, get
+from stlib3.scene import Scene
 
 @SofaPrefab
 class ServoMotor(SofaObject):
@@ -58,7 +58,8 @@ class ServoMotor(SofaObject):
     """
 
     def __init__(self, parent, translation=[0.0, 0.0, 0.0], rotation=[0.0, 0.0, 0.0], scale=[1.0, 1.0, 1.0], doAddVisualModel=True):
-        self.node = Node(parent, "ServoMotor")
+        # self.node = Node(parent, "ServoMotor")
+        self.node = Sofa.Core.Node("ServoMotor") #parent.addChild("ServoMotor")
         self.node.addNewData("angle",
                              "ServoMotor Properties",
                              "The angular position of the motor (in radians)", "double", 0.0)
@@ -87,25 +88,27 @@ class ServoMotor(SofaObject):
 
 class ServoWheel(SofaObject):
     def __init__(self, parentNode):
-        self.node = Node(parentNode, "ServoWheel")
+        self.node = Sofa.Core.Node(parentNode, "ServoWheel")
         self.dofs = self.node.addObject("MechanicalObject", size=1, template='Rigid3',
                                            showObject=True, showObjectScale=15, name="dofs")
         self.node.addObject("RigidRigidMapping", name="map", applyRestPosition=True)
 
 
-class KinematicMotorController(Sofa.PythonScriptController):
+class KinematicMotorController(Sofa.Core.Controller):
     """
         This controller is in charge of transforming the angular 'positional' control of the
         of the ServoWheel.
     """
-
-    def __init__(self, node, parentframe, target, dmap, angleValue):
+    def __init__(self, *args, **kwargs):
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
+    # def __init__(self, node, parentframe, target, dmap, angleValue):
         self.name = "controller"
-        self.parentframe = parentframe
-        self.node = node
-        self.target = target
-        self.dmap = dmap
-        self.addNewData("angle", "Properties", "The angular position of the motor (in radians)", "double", angleValue)
+        self.node = args[0]
+        self.parentframe = args[1]
+        self.target = args[2]
+        self.dmap = args[3]
+        self.angleValue = args[4]
+        self.addNewData("angle", "Properties", "The angular position of the motor (in radians)", "double", self.angleValue)
 
     def applyAngleToServoWheel(self, angle):
         rigidparent = RigidDof(self.parentframe)

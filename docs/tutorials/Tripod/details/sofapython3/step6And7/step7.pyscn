@@ -12,6 +12,7 @@ from tripod import Tripod
 from tripodcontroller import TripodController, setupanimation
 
 
+
 class TripodControllerWithCom(TripodController):
     """This controller has three roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
@@ -38,8 +39,8 @@ class TripodControllerWithCom(TripodController):
 # Description of how the communication is handled
 # CHANGE HERE the serialport that correspond to your computer
 # def SerialPortBridgeGeneric(rootNode, serialport='/dev/cu.usbserial-1420'):
-def SerialPortBridgeGeneric(rootNode, serialport='COM3'):
-# def SerialPortBridgeGeneric(rootNode, serialport='/dev/ttyUSB0'):
+# def SerialPortBridgeGeneric(rootNode, serialport='COM3'):
+def SerialPortBridgeGeneric(rootNode, serialport='/dev/ttyUSB0'):
   return rootNode.addObject('SerialPortBridgeGeneric', port=serialport, baudRate=115200, size=3, listening=True, header=255)
 
 # Data sending controller
@@ -54,10 +55,10 @@ class SerialPortController(Sofa.Core.Controller):
 
     def onAnimateEndEvent(self, event):
         # Data sending if the robot is initializing or in the no-communication state
-        if self.serialport.state == "init":
+        if self.state == "init":
             return
 
-        if self.serialport.state == "no-comm":
+        if self.state == "no-comm":
             return
 
         # Vector storing the simulated servomotors' angular position
@@ -65,7 +66,7 @@ class SerialPortController(Sofa.Core.Controller):
 
         for arm in self.actuatedarms:
             # Conversion of the angle values from radians to degrees
-            angleDegree = arm.servomotor.angle*360/(2.0*pi)
+            angleDegree = arm.servomotor.angleOut.value * 360/(2.0*pi)
             angleByte = int(floor(angleDegree)) + 179
 
             # Limitation of the angular position's command
@@ -78,6 +79,7 @@ class SerialPortController(Sofa.Core.Controller):
             angles.append(angleByte)
         # The controller board of the real robot receives `angles` values
         self.serialport.packetOut = angles
+
 
 
 def createScene(rootNode):
@@ -96,7 +98,7 @@ def createScene(rootNode):
     serial = SerialPortBridgeGeneric(scene)
 
     # The real robot receives data from the 3 actuators
-    serialportctrl = SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial)
+    serialportctrl = scene.addObject(SerialPortController(name="SerialPortController", inputs=tripod.actuatedarms, serialport=serial))
 
     # The simulation's control with keystrokes is still available
     scene.addObject(TripodControllerWithCom(scene, actuators=tripod.actuatedarms, serialportctrl=serialportctrl))

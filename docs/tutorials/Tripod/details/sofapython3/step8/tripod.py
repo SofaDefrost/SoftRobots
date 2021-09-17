@@ -1,4 +1,4 @@
-from splib3.numerics import sin, cos, to_radians
+from splib3.numerics import sin, cos, radians
 from stlib3.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 import math
@@ -19,9 +19,11 @@ def ElasticBody(parent):
     visual.addObject('OglModel', name='renderer', src='@loader', color=[1.0, 1.0, 1.0, 0.5],
                         rotation=[90, 0, 0], translation=[0, 30, 0])
 
-    visual.addObject('BarycentricMapping',
-                        input=e.dofs.getLinkPath(),
-                        output=visual.renderer.getLinkPath())
+    print('==========================================> ',e.dofs.getLinkPath())
+    print('==========================================> ', visual.renderer.getLinkPath())
+    # visual.addObject('BarycentricMapping',
+    #                     input=e.dofs.getLinkPath(),
+    #                     output=visual.renderer.getLinkPath())
     return body
 
 
@@ -50,13 +52,13 @@ def Tripod(parent, name='Tripod', radius=60, numMotors=3, angleShift=180.0, effe
         angle2 = fi*360/fnumstep+angleShift
         eulerRotation = [0, angle, 0]
         angles.append([0, angle, 0])
-        translation = [dist*sin(to_radians(angle2)),
+        translation = [dist*sin(radians(angle2)),
                        -1.35,
-                       dist*cos(to_radians(angle2))]
+                       dist*cos(radians(angle2))]
 
-        frames.append([dist*sin(to_radians(angle2)),
+        frames.append([dist*sin(radians(angle2)),
                        -1.35,
-                       dist*cos(to_radians(angle2)),
+                       dist*cos(radians(angle2)),
                        0, angle, 0])
 
         c = ActuatedArm(tripod, name=name,
