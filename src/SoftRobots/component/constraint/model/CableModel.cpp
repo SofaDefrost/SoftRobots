@@ -48,6 +48,8 @@ using namespace sofa::defaulttype;
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 template class CableModel<Vec3Types>;
+//template class CableModel<Rigid3Types>;
+template class CableModel<Vec2Types>;
 
 
 } // namespace constraintset

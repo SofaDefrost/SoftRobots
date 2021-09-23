@@ -62,7 +62,7 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
                          "In case of multiple indices, one point will be actuated \n"
                          "and the others will represent sliding points for the cable."))
 
-    , d_pullPoint(initData(&d_pullPoint, Coord(0.0, 0.0, 0.0), "pullPoint",
+    , d_pullPoint(initData(&d_pullPoint, Coord(), "pullPoint",
                                           "Fixed point from which the cable is pulled. \n"
                                           "If unspecified, the default value is {0.0,0.0,0.0}"))
 
@@ -306,13 +306,13 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
         if ( d_hasPullPoint.getValue())
         {
-            Deriv direction = d_pullPoint.getValue() - positions[d_indices.getValue()[0]];
+            Deriv direction = DataTypes::coordDifference(d_pullPoint.getValue(),positions[d_indices.getValue()[0]]);
             direction.normalize();
             rowIterator.setCol(d_indices.getValue()[0],  direction);
         }
         else
         {
-            Deriv direction = positions[d_indices.getValue()[1]] - positions[d_indices.getValue()[0]];
+            Deriv direction = DataTypes::coordDifference(positions[d_indices.getValue()[1]],positions[d_indices.getValue()[0]]);
             direction.normalize();
             rowIterator.setCol(d_indices.getValue()[1],  -direction);
             rowIterator.setCol(d_indices.getValue()[0],  direction);
