@@ -292,7 +292,8 @@ sofa_create_package_with_targets(
 install(DIRECTORY docs DESTINATION .)
 install(FILES "README.md" "LICENSE" "CHANGELOG" DESTINATION .)
 
-if(SOFA_BUILD_TESTS)
+option(SOFTROBOTS_BUILD_TESTS "Build unit tests" ON)
+if(SOFTROBOTS_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
