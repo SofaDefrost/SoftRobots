@@ -127,6 +127,8 @@ void CableForceConstraintResolution::resolution(int line, double** w, double* d,
 
 int CableConstraintClass = RegisterObject("Simulate cable actuation.")
 .add< CableConstraint<Vec3Types> >(true)
+.add< CableConstraint<Vec2Types> >()
+//.add< CableConstraint<Rigid3Types> >()
 
 ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +138,8 @@ int CableConstraintClass = RegisterObject("Simulate cable actuation.")
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 template class CableConstraint<Vec3Types>;
+template class CableConstraint<Vec2Types>;
+//template class CableConstraint<Rigid3Types>;
 
 
 } // namespace constraintset
