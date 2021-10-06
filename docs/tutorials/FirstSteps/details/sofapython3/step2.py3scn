@@ -1,13 +1,12 @@
 from stlib3.scene import MainHeader
-from stlib3.visuals import ShowGrid
 from stlib3.solver import DefaultSolver
 from stlib3.physics.rigid import Floor
 
 def createScene(rootNode):
-	ShowGrid(rootNode)
 
 	# A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
 	MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+	rootNode.VisualStyle.displayFlags = 'showCollisionModels'
 
 	cube = rootNode.addChild("Cube")
 

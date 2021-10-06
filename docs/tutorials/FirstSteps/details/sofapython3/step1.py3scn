@@ -11,22 +11,16 @@ def createScene(rootNode):
 
     rootNode.addObject("OglGrid", nbSubdiv=10, size=1000)
 
-    rootNode.addObject("EulerImplicitSolver", name = 'odesolver')
-    rootNode.addObject("CGLinearSolver", name = 'Solver')
-
     MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
     ContactHeader(rootNode, alarmDistance=15, contactDistance=10)
-    #rootNode.VisualStyle.displayFlags = 'showAll'
-
-    totalMass = 1.0
-    volume = 1.0
-    inertiaMatrix=[1., 0., 0., 0., 1., 0., 0., 0., 1.]
+    rootNode.VisualStyle.displayFlags = "showCollisionModels"
 
     Floor(rootNode, translation=[0.0,-160.0,0.0],
           isAStaticObject=True)
 
-    Cube(rootNode, translation=[0.0,0.0,0.0],
+    cube = Cube(rootNode, translation=[0.0,0.0,0.0],
           uniformScale=20.0)
 
+    cube.addObject('UncoupledConstraintCorrection')
 
     return rootNode
