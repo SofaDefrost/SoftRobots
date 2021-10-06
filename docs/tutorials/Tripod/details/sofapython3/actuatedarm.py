@@ -36,10 +36,6 @@ class ServoArm(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
-        # if not self.mappingInputLink:
-        #     Sofa.msg_error("ServoArm", "no mappingInput")
-        #     return
-
         self.addObject('MechanicalObject',
                                name='dofs',
                                size=1,
@@ -47,14 +43,6 @@ class ServoArm(Sofa.Prefab):
                                showObject=True,
                                showObjectScale=5,
                                translation2=[0, 25, 0])
-                               # translation2=[0, 0, 0])
-        # mappingInput = getFromRoot(self,self.mappingInputLink.value)
-        # print(self.mappingInputLink.value.getLinkPath())
-        # self.addObject('RigidRigidMapping',name='mapping', input='@../ServoMotor/ServoWheel/dofs', index=self.indexInput.value)
-
-        # visual = VisualModel(self, '../data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.], color=[1., 1., 1., 0.75])
-        # visual.model.writeZTransparent = True
-        # visual.addObject('RigidMapping', name='mapping')
 
     def setRigidMapping(self,path):
 
@@ -92,7 +80,7 @@ class ActuatedArm(Sofa.Prefab):
     def init(self):
 
         self.servomotor = self.addChild(ServoMotor(name="ServoMotor",translation=self.translation.value, rotation=self.rotation.value))
-        self.servoarm = self.addChild(ServoArm(name="ServoArm"))#,mappingInputLink=self.ServoMotor.ServoWheel.dofs.getLinkPath()))
+        self.servoarm = self.addChild(ServoArm(name="ServoArm"))
         self.servoarm.setRigidMapping(self.ServoMotor.ServoWheel.dofs.getLinkPath())
 
         ## add a public attribute and connect it to the private one.
@@ -139,10 +127,11 @@ class ActuatedArm(Sofa.Prefab):
 
 
 def createScene(rootNode):
-    from splib3.animation import animate
+    from splib3.animation import animate, AnimationManager
     from stlib3.scene import Scene
     import math
 
+    rootNode.addObject(AnimationManager(rootNode))
     scene = Scene(rootNode)
     scene.VisualStyle.displayFlags = 'showBehavior'
     rootNode.dt = 0.003
@@ -152,7 +141,7 @@ def createScene(rootNode):
     simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
     simulation.addObject('CGLinearSolver', name='precond')
 
-    arm = ActuatedArm(simulation, name='ActuatedArm', translation=[0.0, 0.0, 0.0])
+    arm = simulation.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
 
     def myanimate(target, factor):
         target.angleIn = math.cos(factor * 2 * math.pi)

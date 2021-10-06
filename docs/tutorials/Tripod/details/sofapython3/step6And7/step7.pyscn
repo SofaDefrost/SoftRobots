@@ -17,7 +17,7 @@ class TripodControllerWithCom(TripodController):
     """This controller has three roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
-       - if thr user presses A, an animation is started to move the servomotor to the initial position
+       - if the user presses A, an animation is started to move the servomotor to the initial position
          of the real robot.
        - if thr user presses B start the communication with controller card, send
          servomotor commands
@@ -88,12 +88,10 @@ def createScene(rootNode):
 
     # Adding contact handling
     scene.addMainHeader()
-    # ContactHeader(scene, alarmDistance=1, contactDistance=0.1, frictionCoef=1.0)
 
     scene.VisualStyle.displayFlags = "showBehavior"
 
     tripod = scene.Modelling.addChild(Tripod())
-    #tripod.addCollision()
 
     serial = SerialPortBridgeGeneric(scene)
 
@@ -101,9 +99,12 @@ def createScene(rootNode):
     serialportctrl = scene.addObject(SerialPortController(name="SerialPortController", inputs=tripod.actuatedarms, serialport=serial))
 
     # The simulation's control with keystrokes is still available
-    scene.addObject(TripodControllerWithCom(scene, actuators=tripod.actuatedarms, serialportctrl=serialportctrl))
+    controller = scene.addObject(TripodControllerWithCom(scene, actuators=tripod.actuatedarms, serialportctrl=serialportctrl))
+    # You can set the animation from the python script by adding this call
+    controller.initTripod('A')
 
-    scene.Simulation.addChild(tripod.ActuatedArm0)
-    scene.Simulation.addChild(tripod.ActuatedArm1)
-    scene.Simulation.addChild(tripod.ActuatedArm2)
-    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    rigidifiedstruct = scene.Simulation.addChild(tripod.RigidifiedStructure)
+    motors = scene.Simulation.addChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)

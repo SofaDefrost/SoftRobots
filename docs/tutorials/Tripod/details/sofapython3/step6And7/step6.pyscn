@@ -24,7 +24,7 @@ class JumpController(Sofa.Core.Controller):
     """This controller has two roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
-       - if thr user presses A, an animation is started to move the servomotor to the initial position
+       - if the user presses A, an animation is started to move the servomotor to the initial position
          of the real robot.
     """
     def __init__(self, *args, **kwargs):
@@ -51,35 +51,35 @@ class JumpController(Sofa.Core.Controller):
 
 def createScene(rootNode):
 
-    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.001, plugins=["SofaSparseSolver"], iterative=False)
+    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.002, plugins=["SofaSparseSolver"], iterative=True)
 
-    #scene.addContact()
-    ContactHeader(rootNode, alarmDistance=10, contactDistance=0.5, frictionCoef=0.2)
+    ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0.2)
 
     # Adding contact handling
     scene.addMainHeader()
-
-
-
-    scene.VisualStyle.displayFlags = "showCollision"
+    scene.VisualStyle.displayFlags = "showCollisionModels"
 
     tripod = scene.Modelling.addChild(Tripod())
-
     tripod.addCollision()
 
     # The regular controller that is being used for the last 2 steps
-    scene.addObject(TripodController(name="TripodController", actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
+    controller = scene.addObject(TripodController(name="TripodController", actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
+    # You can set the animation from the python script by adding this call
+    controller.initTripod('A')
 
     # The additionnal controller that add two predefined positions for the three servomotors
     scene.addObject(JumpController(name="JumpController", actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
 
-    scene.Simulation.addObject('GenericConstraintCorrection')
-    Sphere(scene.Simulation, translation=[0.0, 50.0, 0.0],
-           uniformScale=10.,
-           collisionGroup='2',
-           totalMass=0.032)
+    sphere = Sphere(scene.Simulation, translation=[0.0, 50.0, 0.0],
+               uniformScale=10.,
+               totalMass=0.032,
+               isAStaticObject=True)
+    sphere.addObject('UncoupledConstraintCorrection')
 
-    scene.Simulation.addChild(tripod.ActuatedArm0)
-    scene.Simulation.addChild(tripod.ActuatedArm1)
-    scene.Simulation.addChild(tripod.ActuatedArm2)
-    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    rigidifiedstruct = scene.Simulation.addChild(tripod.RigidifiedStructure)
+    rigidifiedstruct.DeformableParts.addObject('UncoupledConstraintCorrection')
+    rigidifiedstruct.RigidParts.addObject('UncoupledConstraintCorrection')
+    motors = scene.Simulation.addChild("Motors")
+    for i in range(3):
+        actuatedarm = motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
+        actuatedarm.ServoMotor.Angle.addObject('UncoupledConstraintCorrection')

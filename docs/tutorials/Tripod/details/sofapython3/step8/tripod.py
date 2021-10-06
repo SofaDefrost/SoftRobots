@@ -8,22 +8,16 @@ from stlib3.physics.mixedmaterial import Rigidify
 def ElasticBody(parent):
     body = parent.addChild('ElasticBody')
 
-    e = ElasticMaterialObject(body,
+    e = body.addChild(ElasticMaterialObject(body,
                               volumeMeshFileName='../../data/mesh/tripod_mid.gidmsh',
                               translation=[0.0, 30, 0.0], rotation=[90, 0, 0],
-                              youngModulus=600, poissonRatio=0.45, totalMass=0.4)
+                              youngModulus=600, poissonRatio=0.45, totalMass=0.4))
 
-    visual = body.addChild('Visual')
-    visual.addObject('MeshSTLLoader', name='loader',
-                        filename='../../data/mesh/tripod_mid.stl')
-    visual.addObject('OglModel', name='renderer', src='@loader', color=[1.0, 1.0, 1.0, 0.5],
-                        rotation=[90, 0, 0], translation=[0, 30, 0])
-
-    print('==========================================> ',e.dofs.getLinkPath())
-    print('==========================================> ', visual.renderer.getLinkPath())
-    # visual.addObject('BarycentricMapping',
-    #                     input=e.dofs.getLinkPath(),
-    #                     output=visual.renderer.getLinkPath())
+    visual = e.addChild('Visual')
+    visual.addObject('MeshSTLLoader', name='loader', filename='../../data/mesh/tripod_mid.stl')
+    visual.addObject('MeshTopology', name='topology', src='@loader')
+    visual.addObject('OglModel', name='renderer', src='@topology', color=[1.0, 1.0, 1.0, 0.5], rotation=[90, 0, 0], translation=[0, 30, 0])
+    visual.addObject('BarycentricMapping')
     return body
 
 
@@ -57,24 +51,24 @@ def Tripod(parent, name='Tripod', radius=60, numMotors=3, angleShift=180.0, effe
                        dist*cos(radians(angle2))]
 
         frames.append([dist*sin(radians(angle2)),
-                       -1.35,
+                       -1.35+25,
                        dist*cos(radians(angle2)),
                        0, angle, 0])
 
-        c = ActuatedArm(tripod, name=name,
-                        translation=translation, eulerRotation=eulerRotation)
+        c = tripod.addChild(ActuatedArm(tripod, name=name,
+                        translation=translation, eulerRotation=eulerRotation))
 
         c.addBox(body.ElasticMaterialObject.dofs.getData('rest_position'),
                  translation, eulerRotation)
         arms.append(c)
-        b.append(map(lambda x: x[0], c.Box.BoxROI.indices))
+        b.append(c.Box.BoxROI.indices.value)
 
-    if len(effectorPos) == 3:
+    if effectorPos is not None and len(effectorPos) == 3:
         o = body.ElasticMaterialObject.addObject('SphereROI', name='roi', template='Rigid3',
                                                     position=body.ElasticMaterialObject.dofs.getData('rest_position'),
                                                     centers=effectorPos, radii=[7.5], drawSphere=True)
         o.init()
-        b.append(map(lambda x: x[0], o.indices))
+        b.append(o.indices.value)
 
         frames.append([effectorPos[0], effectorPos[1],
                        effectorPos[2], 0, 0, 0])
@@ -107,7 +101,7 @@ def Tripod(parent, name='Tripod', radius=60, numMotors=3, angleShift=180.0, effe
     actuators.activated = 0
     tripod.addObject('MechanicalMatrixMapper',
                         template='Vec3,Rigid3',
-                        object1=o.DeformableParts.getLinkPath(),
+                        object1=o.DeformableParts.dofs.getLinkPath(),
                         object2=o.RigidParts.dofs.getLinkPath(),
                         nodeToParse=o.RigidParts.RigidifiedParticules.ElasticMaterialObject.getLinkPath())
 
@@ -116,7 +110,7 @@ def Tripod(parent, name='Tripod', radius=60, numMotors=3, angleShift=180.0, effe
         a.addObject('MechanicalObject', template='Rigid3', name='dofs',
                        showObject=True, showObjectScale=10,
                        position=[0.0, 25.0, 10.0, 0, 0, 0, 1])
-        a.addObject('RigidRigidMapping')
+        a.addObject('RigidRigidMapping', input=arms[i].ServoMotor.BaseFrame.dofs.getLinkPath())
 
         o.RigidParts.addObject('RestShapeSpringsForceField',
                                   external_rest_shape=arms[i].ServoArm.dofs.getLinkPath(),
@@ -124,9 +118,25 @@ def Tripod(parent, name='Tripod', radius=60, numMotors=3, angleShift=180.0, effe
                                   angularStiffness=1e7, stiffness=1e10)
 
     for i in range(0, numMotors):
-        arms[i].addObject('FixedConstraint')
         arms[i].ServoMotor.ServoWheel.addObject('FixedConstraint')
 
     tripod.removeChild(body)
 
     return tripod
+
+
+def createScene(rootNode):
+    from stlib3.scene import Scene
+
+    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver","SoftRobots","SoftRobots.Inverse"])
+    scene.addMainHeader()
+
+    scene.VisualStyle.displayFlags = "showBehavior"
+
+    tripod = scene.Modelling.addChild(Tripod(scene.Modelling))
+
+    scene.Simulation.addChild(tripod.RigidifiedStructure)
+    motors = scene.Simulation.addChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)

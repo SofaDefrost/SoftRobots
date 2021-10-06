@@ -99,8 +99,6 @@ class Tripod(Sofa.Prefab):
 
         # Rigidify the deformable part at extremity to attach arms
         rigidifiedstruct = Rigidify(self, deformableObject, groupIndices=groupIndices, frames=frames, name="RigidifiedStructure")
-        # rigidifiedstruct.DeformableParts.addObject("UncoupledConstraintCorrection")
-        # rigidifiedstruct.RigidParts.addObject("UncoupledConstraintCorrection")
 
         # Use this to activate some rendering on the rigidified object ######################################
         # setData(rigidifiedstruct.RigidParts.dofs, showObject=True, showObjectScale=10, drawMode=2)
@@ -118,7 +116,7 @@ class Tripod(Sofa.Prefab):
 
 
 def createScene(rootNode):
-    from stlib3.scene import Scene 
+    from stlib3.scene import Scene
 
     scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver"])
     scene.addMainHeader()

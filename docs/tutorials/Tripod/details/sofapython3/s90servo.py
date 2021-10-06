@@ -95,7 +95,6 @@ class ServoMotor(Sofa.Prefab):
         angle.addObject('ArticulatedHierarchyContainer')
         angle.addObject('ArticulatedSystemMapping', input1=angle.dofs.getLinkPath(), output=baseFrame.dofs.getLinkPath())
         angle.addObject('StopperConstraint', name='AngleLimits', index=0, min=self.getData('minAngle').getLinkPath(), max=self.getData('maxAngle').getLinkPath())
-        # angle.addObject('UncoupledConstraintCorrection')
 
         articulationCenter = angle.addChild('ArticulationCenter')
         articulationCenter.addObject('ArticulationCenter', parentIndex=0, childIndex=1, posOnParent=[0., 0., 0.], posOnChild=[0., 0., 0.])
@@ -119,27 +118,28 @@ class ServoMotor(Sofa.Prefab):
 def createScene(rootNode):
 
     import math
+    from splib3.animation import AnimationManager, animate
 
-    # def animation(target, factor):
-    #     target.angleIn = math.cos(factor * 2 * math.pi)
+    def animation(target, factor):
+        target.angleIn.value = math.cos(factor * 2 * math.pi)
 
-    # Scene(rootNode)
+    Scene(rootNode)
+    rootNode.addObject(AnimationManager(rootNode))
 
-    # rootNode.dt = 0.003
-    # rootNode.gravity = [0., -9810., 0.]
-    # rootNode.addObject('VisualStyle', displayFlags='showBehaviorModels')
+    rootNode.dt = 0.003
+    rootNode.gravity = [0., -9810., 0.]
+    rootNode.VisualStyle.displayFlags='showBehaviorModels'
 
-    # # Use these components on top of the scene to solve the constraint 'StopperConstraint'.
-    # rootNode.addObject('FreeMotionAnimationLoop')
-    # rootNode.addObject('GenericConstraintSolver', maxIterations=1e3, tolerance=1e-5)
+    # Use these components on top of the scene to solve the constraint 'StopperConstraint'.
+    rootNode.addObject('FreeMotionAnimationLoop')
+    rootNode.addObject('GenericConstraintSolver', maxIterations=1e3, tolerance=1e-5)
 
-    # simulation = rootNode.addChild('Simulation')
-    # simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
-    # simulation.addObject('CGLinearSolver', name='precond')
+    simulation = rootNode.addChild('Simulation')
+    simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
+    simulation.addObject('CGLinearSolver', name='precond')
 
-    # simulation.addChild(ServoMotor(name="ServoMotor"))
-    # animate(animation, {'target': simulation.ServoMotor}, duration=5., mode='loop')
+    servo = simulation.addChild(ServoMotor(name="ServoMotor"))
+    animate(animation, {'target': simulation.ServoMotor}, duration=5., mode='loop')
+    servo.ServoWheel.dofs.showObject = True
 
-    servo = rootNode.addChild(ServoMotor(name="ServoMotor"))
-    print(servo.BaseFrame.dofs)
     return rootNode

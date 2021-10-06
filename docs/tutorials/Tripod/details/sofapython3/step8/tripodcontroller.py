@@ -57,8 +57,8 @@ class DirectController(Sofa.Core.Controller):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
         self.name = "TripodController"
         self.stepsize = 0.1
-        self.actuators = kwargs['actuators'] # actuators
-        self.serialportctrl = kwargs['serialportctrl']
+        self.actuators = args[1]
+        self.serialportctrl = args[2]
 
     def onKeyPressed(self, key):
         if key == Key.A and self.serialportctrl.state == "init":
@@ -80,14 +80,13 @@ class InverseController(Sofa.Core.Controller):
 
     def __init__(self, *args, serialport=None, servomotors=None, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        # def __init__(self, node, nodeGoal, nodeEffector, nodeActuators, nodeDofRigid, nodeTripod, serialport=None, servomotors=None):
         self.name = "InverseController"
-        self.nodeGoal = args[1]  #nodeGoal
-        self.nodeEffector = args[2] #nodeEffector
-        self.nodeActuators = args[3] # nodeActuators
-        self.nodeDofRigid = args[4] #nodeDofRigid
-        self.nodeTripod = args[5] # nodeTripod
-        self.serialport = serialport
+        self.nodeGoal = args[1]
+        self.nodeEffector = args[2]
+        self.nodeActuators = args[3]
+        self.nodeDofRigid = args[4]
+        self.nodeTripod = args[5]
+        self.serialport = args[6]
         self.serialport.packetOut = [150, 150, 150]
         self.state = "init"
         self.actuators = servomotors

@@ -3,7 +3,7 @@ import Sofa
 from splib3.objectmodel import SofaObject, SofaPrefab
 from splib3.animation import animate
 from stlib3.scene import Scene
-dirPath = os.path.dirname(os.path.abspath(__file__))#+'/../../'
+dirPath = os.path.dirname(os.path.abspath(__file__))
 
 
 def ServoBody(parent, position=[0., 0., 0., 0., 0., 0., 1.], showServo=True):
@@ -97,7 +97,6 @@ class ServoMotor(Sofa.Prefab):
         angle.addObject('ArticulatedHierarchyContainer')
         angle.addObject('ArticulatedSystemMapping', input1=angle.dofs.getLinkPath(), output=baseFrame.dofs.getLinkPath())
         angle.addObject('StopperConstraint', name='AngleLimits', index=0, min=self.getData('minAngle').getLinkPath(), max=self.getData('maxAngle').getLinkPath())
-        #angle.addObject('UncoupledConstraintCorrection')
 
         articulationCenter = angle.addChild('ArticulationCenter')
         articulationCenter.addObject('ArticulationCenter', parentIndex=0, childIndex=1, posOnParent=[0., 0., 0.], posOnChild=[0., 0., 0.])
@@ -123,5 +122,4 @@ def createScene(rootNode):
     import math
 
     servo = rootNode.addChild(ServoMotor(name="ServoMotor"))
-    print(servo.BaseFrame.dofs)
     return rootNode

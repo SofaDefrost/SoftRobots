@@ -100,8 +100,6 @@ class Tripod(Sofa.Prefab):
 
         # Rigidify the deformable part at extremity to attach arms
         rigidifiedstruct = Rigidify(self, deformableObject, groupIndices=groupIndices, frames=frames, name="RigidifiedStructure")
-        #rigidifiedstruct.DeformableParts.addObject("UncoupledConstraintCorrection")
-        #rigidifiedstruct.RigidParts.addObject("UncoupledConstraintCorrection")
 
         # Use this to activate some rendering on the rigidified object ######################################
         # setData(rigidifiedstruct.RigidParts.dofs, showObject=True, showObjectScale=10, drawMode=2)
