@@ -41,7 +41,7 @@ class TripodController(Sofa.Core.Controller):
     """This controller has two roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
-       - if thr user presses A, an animation is started to move the servomotor to the initial position
+       - if the user presses A, an animation is started to move the servomotor to the initial position
          of the real robot.
     """
     def __init__(self, *args, **kwargs):
