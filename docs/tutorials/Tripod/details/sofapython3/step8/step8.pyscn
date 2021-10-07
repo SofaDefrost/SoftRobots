@@ -15,7 +15,7 @@ def EffectorGoal(node, position):
     goal.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
 
     spheres = goal.addChild('spheres')
-    spheres.addObject('MechanicalObject', name='mo', position='0 0 0  10 0 0   0 10 0   0 0 10')
+    spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0],  [10, 0, 0],   [0, 10, 0],   [0, 0, 10]])
     spheres.addObject('SphereCollisionModel', radius=5, group=1)
     spheres.addObject('RigidMapping')
 
@@ -72,14 +72,14 @@ def createScene(rootNode):
                                 tripod.ActuatedArm2], invCtr)
 
     simulation = scene.addChild('Simulation')
-    simulation.addObject('EulerImplicitSolver', firstOrder=False, rayleighStiffness=0.01)
+    simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.01)
     simulation.addObject('SparseLDLSolver', name='sparseSolver')
     simulation.addObject('GenericConstraintCorrection', solverName='sparseSolver')
     simulation.addChild(tripod)
 
     for i in range(3):
         visual = tripod.RigidifiedStructure.RigidParts.addChild('VisualModel')
-        visual.addObject('MeshSTLLoader', name='loader',filename='../../data/mesh/SG90_servoarm.stl')
+        visual.addObject('MeshSTLLoader', name='loader',filename='../../data/mesh/SG90_servoarm.stl', translation=[0,-25,0])
         visual.addObject('MeshTopology', src='@loader')
         visual.addObject('OglModel', color=[0.75, 0.75, 0.75, 0.7], writeZTransparent=True)
         visual.addObject('RigidMapping', index=i)

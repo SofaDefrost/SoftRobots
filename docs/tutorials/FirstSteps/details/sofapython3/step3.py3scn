@@ -1,13 +1,12 @@
 from stlib3.scene import MainHeader, ContactHeader
-from stlib3.visuals import ShowGrid
 from stlib3.solver import DefaultSolver
 from stlib3.physics.rigid import Floor
 
 def createScene(rootNode):
-	ShowGrid(rootNode)
 
 	# A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
 	MainHeader(rootNode, gravity=[0.0,-981.0,0.0])
+	rootNode.VisualStyle.displayFlags = 'showCollisionModels'
 
     #Collision built-in function (already used in Step 1)
 	ContactHeader(rootNode, alarmDistance=10, contactDistance=5)
@@ -34,7 +33,7 @@ def createScene(rootNode):
 
 
 	### Visual Object of the Cube
-
+	
 	visual = cube.addChild("CubeVisual")
 	# Graphic model based on a mesh
 	visual.addObject('MeshObjLoader', name="loader", filename="../mesh/smCube27.obj", triangulate=True)

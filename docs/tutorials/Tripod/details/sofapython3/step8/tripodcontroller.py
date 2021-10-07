@@ -45,7 +45,7 @@ class GoalController(Sofa.Core.Controller):
         self.mo.position = [[pos[0], pos[1], pos[2], 0, 0, 0, 1]]
 
 
-class DirectController(Sofa.PythonScriptController):
+class DirectController(Sofa.Core.Controller):
     """This controller has two role:
        - if user press up/left/right/down/plus/minus the servo motor angle
          is changed.
@@ -53,11 +53,12 @@ class DirectController(Sofa.PythonScriptController):
          they are occupying in the real robot.
     """
 
-    def __init__(self, node, actuators, serialportctrl):
+    def __init__(self, *args, **kwargs):
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
         self.name = "TripodController"
         self.stepsize = 0.1
-        self.actuators = actuators
-        self.serialportctrl = serialportctrl
+        self.actuators = args[1]
+        self.serialportctrl = args[2]
 
     def onKeyPressed(self, key):
         if key == Key.A and self.serialportctrl.state == "init":
@@ -69,7 +70,7 @@ class DirectController(Sofa.PythonScriptController):
             self.serialportctrl.state = "comm"
 
 
-class InverseController(Sofa.PythonScriptController):
+class InverseController(Sofa.Core.Controller):
     """This controller has two role:
        - if user press up/left/right/down/plus/minus the servo motor angle
          is changed.
@@ -77,14 +78,15 @@ class InverseController(Sofa.PythonScriptController):
          they are occupying in the real robot.
     """
 
-    def __init__(self, node, nodeGoal, nodeEffector, nodeActuators, nodeDofRigid, nodeTripod, serialport=None, servomotors=None):
+    def __init__(self, *args, serialport=None, servomotors=None, **kwargs):
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
         self.name = "InverseController"
-        self.nodeGoal = nodeGoal
-        self.nodeEffector = nodeEffector
-        self.nodeActuators = nodeActuators
-        self.nodeDofRigid = nodeDofRigid
-        self.nodeTripod = nodeTripod
-        self.serialport = serialport
+        self.nodeGoal = args[1]
+        self.nodeEffector = args[2]
+        self.nodeActuators = args[3]
+        self.nodeDofRigid = args[4]
+        self.nodeTripod = args[5]
+        self.serialport = args[6]
         self.serialport.packetOut = [150, 150, 150]
         self.state = "init"
         self.actuators = servomotors

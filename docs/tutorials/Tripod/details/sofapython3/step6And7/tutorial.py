@@ -73,10 +73,10 @@ def Scene(parent, **kwargs):
     parent.addObject("FreeMotionAnimationLoop")
     parent.addObject("GenericConstraintSolver", maxIterations=250, tolerance=1e-20)
 
-    ctx = scene.Config
-    ctx.addObject("MeshSTLLoader", name="loader", filename=getLoadingLocation("../../data/mesh/blueprint.stl", __file__))
-    ctx.addObject("OglModel", src="@loader")
-    ctx.addObject("AddResourceRepository", path=os.path.abspath(os.path.dirname(__file__)))
+    scene.addChild('Config')
+    scene.Config.addObject("MeshSTLLoader", name="loader", filename=getLoadingLocation("../../data/mesh/blueprint.stl", __file__))
+    scene.Config.addObject("OglModel", src="@loader")
+    scene.Config.addObject("AddResourceRepository", path=os.path.abspath(os.path.dirname(__file__)))
 
     return parent
 

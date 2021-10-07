@@ -4,6 +4,7 @@ Step 6: Here we are showing how to setup a communication with the servomotors
 """
 import Sofa
 from tutorial import *
+from stlib3.scene import Scene
 from splib3.animation import animate
 from splib3.constants import Key
 from math import floor, pi
@@ -11,19 +12,20 @@ from tripod import Tripod
 from tripodcontroller import TripodController, setupanimation
 
 
+
 class TripodControllerWithCom(TripodController):
     """This controller has three roles:
        - if the user presses up/left/right/down/plus/minus, the servomotor angle
          is changed.
-       - if thr user presses A, an animation is started to move the servomotor to the initial position
+       - if the user presses A, an animation is started to move the servomotor to the initial position
          of the real robot.
        - if thr user presses B start the communication with controller card, send
          servomotor commands
     """
 
-    def __init__(self, node, actuators, serialportctrl):
-        TripodController.__init__(self, node, actuators)
-        self.serialportctrl = serialportctrl
+    def __init__(self, *args, **kwargs):
+         TripodController.__init__(self, *args, **kwargs)
+         self.serialportctrl = kwargs['serialportctrl']
 
     def initTripod(self, key):
         if key == Key.A and self.serialportctrl.state == "init":
@@ -34,23 +36,25 @@ class TripodControllerWithCom(TripodController):
         if key == Key.B and self.serialportctrl.state == "no-comm":
             self.serialportctrl.state = "comm"
 
-
 # Description of how the communication is handled
-def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
-    return rootNode.addObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True, header=255)
-
+# CHANGE HERE the serialport that correspond to your computer
+# def SerialPortBridgeGeneric(rootNode, serialport='/dev/cu.usbserial-1420'):
+# def SerialPortBridgeGeneric(rootNode, serialport='COM3'):
+def SerialPortBridgeGeneric(rootNode, serialport='/dev/ttyUSB0'):
+  return rootNode.addObject('SerialPortBridgeGeneric', port=serialport, baudRate=115200, size=3, listening=True, header=255)
 
 # Data sending controller
-class SerialPortController(Sofa.PythonScriptController):
-    def __init__(self, node, inputs, serialport):
+class SerialPortController(Sofa.Core.Controller):
+    def __init__(self, *args, **kwargs):
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
         self.name = "serialportcontroller"
-        self.actuatedarms = inputs
-        self.serialport = serialport
+        self.actuatedarms = kwargs['inputs']
+        self.serialport = kwargs['serialport']
         self.serialport.packetOut = [150, 150, 150]
         self.state = "init"
 
-    def onEndAnimationStep(self, dt):
-        # Data sending if the robot is initializing or in the no-communication sate
+    def onAnimateEndEvent(self, event):
+        # Data sending if the robot is initializing or in the no-communication state
         if self.state == "init":
             return
 
@@ -62,7 +66,7 @@ class SerialPortController(Sofa.PythonScriptController):
 
         for arm in self.actuatedarms:
             # Conversion of the angle values from radians to degrees
-            angleDegree = arm.servomotor.angle*360/(2.0*pi)
+            angleDegree = arm.servomotor.angleOut.value * 360/(2.0*pi)
             angleByte = int(floor(angleDegree)) + 179
 
             # Limitation of the angular position's command
@@ -73,28 +77,34 @@ class SerialPortController(Sofa.PythonScriptController):
 
             # Filling the list of the 3 angle values
             angles.append(angleByte)
-
         # The controller board of the real robot receives `angles` values
         self.serialport.packetOut = angles
 
 
+
 def createScene(rootNode):
-    scene = Scene(rootNode, plugins=["SoftRobots"])
+    from stlib3.scene import Scene
+    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver", "SofaOpenglVisual", "SofaSimpleFem", "SoftRobots"])
 
     # Adding contact handling
-    addContact(scene)
+    scene.addMainHeader()
 
-    tripod = Tripod(scene.Modelling)
-    tripod.addCollision()
+    scene.VisualStyle.displayFlags = "showBehavior"
+
+    tripod = scene.Modelling.addChild(Tripod())
 
     serial = SerialPortBridgeGeneric(scene)
 
     # The real robot receives data from the 3 actuators
-    serialportctrl = SerialPortController(scene, tripod.actuatedarms, serial)
+    serialportctrl = scene.addObject(SerialPortController(name="SerialPortController", inputs=tripod.actuatedarms, serialport=serial))
 
     # The simulation's control with keystrokes is still available
-    TripodControllerWithCom(scene, tripod.actuatedarms, serialportctrl)
+    controller = scene.addObject(TripodControllerWithCom(scene, actuators=tripod.actuatedarms, serialportctrl=serialportctrl))
+    # You can set the animation from the python script by adding this call
+    controller.initTripod('A')
 
-    scene.Simulation.addChild(tripod.ActuatedArm0)
-    scene.Simulation.addChild(tripod.ActuatedArm1)
-    scene.Simulation.addChild(tripod.ActuatedArm2)
+    rigidifiedstruct = scene.Simulation.addChild(tripod.RigidifiedStructure)
+    motors = scene.Simulation.addChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)
