@@ -12,29 +12,32 @@ def setupanimation(actuators, step, angularstep, factor):
     """
     for actuator in actuators:
         rigid = RigidDof(actuator.dofs)
-        rigid.translate(rigid.forward * step * factor)
-        actuator.ServoMotor.angle += angularstep * factor
+        rigid.setPosition( rigid.rest_position + rigid.forward * step * factor )
+        actuator.ServoMotor.angle = angularstep * factor
 
 
 class GoalController(Sofa.Core.Controller):
     """This controller moves the goal position when the inverse control is activated
     """
 
-    def __init__(self, goalNode):
+    def __init__(self, *args, **kwargs):
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
         self.name = "GoalController"
         self.activated = False
         self.time = 0
         self.dy = 0.1
+        goalNode = args[1]
         self.mo = goalNode.goalMO
+        self.dt = goalNode.getRoot().dt.value
 
     def onKeyPressed(self, key):
         if key == Key.I:
             self.activated = True
 
-    def onBeginAnimationStep(self, dt):
+    def onAnimateBeginEvent(self, e):
 
         if self.activated:
-            self.time = self.time+dt
+            self.time = self.time+self.dt
 
         if self.time >= 1:
             self.time = 0;
@@ -60,10 +63,11 @@ class DirectController(Sofa.Core.Controller):
         self.actuators = args[1]
         self.serialportctrl = args[2]
 
-    def onKeyPressed(self, key):
+    def onKeypressedEvent(self, event):
+        key = event['key']
         if key == Key.A and self.serialportctrl.state == "init":
             self.serialportctrl.state = "no-comm"
-            animate(setupanimation, {"actuators": self.actuators, "step": 3.0, "angularstep": -0.14}, duration=0.2)
+            animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, duration=0.2)
 
         # Inclusion of the keystroke to start data sending = establishing communication ('comm')
         if key == Key.B and self.serialportctrl.state == "no-comm":
@@ -92,13 +96,14 @@ class InverseController(Sofa.Core.Controller):
         self.actuators = servomotors
         self.activate = False
 
-    def onKeyPressed(self, key):
+    def onKeypressedEvent(self, event):
+        key = event['key']
         if key == Key.I:
             self.activate = 1
             self.nodeActuators.activated = bool(self.activate)
             self.nodeActuators.init()
 
-    def onEndAnimationStep(self,dt):
+    def onAnimateBeginEvent(self,e):
 
         if self.state == "init":
             return

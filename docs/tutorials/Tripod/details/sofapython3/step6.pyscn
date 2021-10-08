@@ -51,12 +51,13 @@ class JumpController(Sofa.Core.Controller):
 
 def createScene(rootNode):
 
-    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.002, plugins=["SofaSparseSolver"], iterative=True)
+    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.002, plugins=["SofaSparseSolver", 'SofaBoundaryCondition', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping'], iterative=True)
 
     ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0.2)
 
     # Adding contact handling
     scene.addMainHeader()
+    scene.addObject('DefaultVisualManagerLoop')
     scene.VisualStyle.displayFlags = "showCollisionModels"
 
     tripod = scene.Modelling.addChild(Tripod())

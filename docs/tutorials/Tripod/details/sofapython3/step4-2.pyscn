@@ -115,9 +115,11 @@ def createScene(rootNode):
     from fixingbox import FixingBox
     import math
 
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
     scene.VisualStyle.displayFlags = "showBehavior"
     scene.addMainHeader()
+    scene.addObject('DefaultAnimationLoop')
+    scene.addObject('DefaultVisualManagerLoop')
     rootNode.dt = 0.025
 
     tripod = scene.Modelling.addChild(Tripod())

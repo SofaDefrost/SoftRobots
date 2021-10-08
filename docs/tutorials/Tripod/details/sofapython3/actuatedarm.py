@@ -131,17 +131,15 @@ def createScene(rootNode):
     from stlib3.scene import Scene
     import math
 
-    rootNode.addObject(AnimationManager(rootNode))
-    scene = Scene(rootNode)
+    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaRigid'])
+    scene.addMainHeader()
+    scene.addObject('DefaultAnimationLoop')
+    scene.addObject('DefaultVisualManagerLoop')
     scene.VisualStyle.displayFlags = 'showBehavior'
     rootNode.dt = 0.003
     rootNode.gravity = [0., -9810., 0.]
 
-    simulation = rootNode.addChild('Simulation')
-    simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
-    simulation.addObject('CGLinearSolver', name='precond')
-
-    arm = simulation.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
+    arm = rootNode.Simulation.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
 
     def myanimate(target, factor):
         target.angleIn = math.cos(factor * 2 * math.pi)

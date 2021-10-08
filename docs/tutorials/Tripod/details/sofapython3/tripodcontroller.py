@@ -23,13 +23,7 @@ def setupanimation(actuators, step, angularstep, factor):
     """
     for actuator in actuators:
         rigid = RigidDof( actuator.ServoMotor.BaseFrame.dofs )
-        # print('---------------')
-        # print(actuator.ServoMotor.BaseFrame.dofs.position.value)
-        # print(rigid.rest_position + rigid.forward * step * factor)
         rigid.setPosition( rigid.rest_position + rigid.forward * step * factor )
-        # print(actuator.ServoMotor.BaseFrame.dofs.position.value)
-        # print('---------------')
-
         actuator.angleIn = angularstep * factor
 
 def saveTripodPosition(actuators, step, angularstep, factor):
@@ -64,8 +58,7 @@ class TripodController(Sofa.Core.Controller):
         if key == Key.A:
             animate(setupanimation,
                     {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965},
-                    duration=0.2)#,
-                    # onDone=saveTripodPosition)
+                    duration=0.2)
 
     def animateTripod(self, key):
         if key == Key.uparrow:
