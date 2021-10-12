@@ -7,6 +7,8 @@ from stlib3.scene import Scene
 def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem'])
     scene.addMainHeader()
+    scene.addObject('DefaultAnimationLoop')
+    scene.addObject('DefaultVisualManagerLoop')
     rootNode.dt = 0.01
 
     # Graphic modelling of the legends associated to the servomotors
@@ -36,7 +38,7 @@ def createScene(rootNode):
     elasticbody.addObject('UniformMass', totalMass=0.032)
 
     elasticbody.addObject('EulerImplicitSolver')
-    elasticbody.addObject('SparseLDLSolver')
+    elasticbody.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixd')
 
     # ForceField components
     elasticbody.addObject('TetrahedronFEMForceField',

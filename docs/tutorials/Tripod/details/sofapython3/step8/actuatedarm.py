@@ -9,7 +9,7 @@
         - ServoArm
 '''
 import Sofa
-from splib3.numerics import vec3
+from splib3.numerics import vec3, Transform
 from splib3.objectmodel import SofaPrefab
 from stlib3.visuals import VisualModel
 from stlib3.components import addOrientedBoxRoi
@@ -41,14 +41,14 @@ class ServoArm(Sofa.Prefab):
                                size=1,
                                template='Rigid3',
                                showObject=True,
-                               showObjectScale=5,
-                               translation2=[0, 25, 0])
+                               showObjectScale=5)
 
     def setRigidMapping(self,path):
 
         self.addObject('RigidRigidMapping',name='mapping', input=path, index=self.indexInput.value)
 
-        visual = self.addChild(VisualModel(visualMeshPath='../../data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.], color=[1., 1., 1., 0.75]))
+    def addVisual(self):
+        visual = self.addChild(VisualModel(visualMeshPath='../../data/mesh/SG90_servoarm.stl', translation=[0., 0., 0.], color=[1., 1., 1., 0.75]))
         visual.OglModel.writeZTransparent = True
         visual.addObject('RigidMapping', name='mapping')
 
@@ -57,8 +57,9 @@ class ActuatedArm(Sofa.Prefab):
            Parameters:
              - translation the position in space of the structure
              - eulerRotation the orientation of the structure
-             - attachingTo (MechanicalObject)    a rest shape forcefield will constraint the object
+             - attachingToLink (MechanicalObject)    a rest shape forcefield will constraint the object
                                                  to follow arm position
+             - showServoArm default is True
            Structure:
            Node : {
                 name : 'ActuatedArm'
@@ -72,24 +73,23 @@ class ActuatedArm(Sofa.Prefab):
         {'name':'eulerRotation',       'type':'Vec3d',  'help':'Rotation',                    'default':[0.0, 0.0, 0.0]},
         {'name':'translation',         'type':'Vec3d',  'help':'Translation',                 'default':[0.0, 0.0, 0.0]},
         {'name':'scale',               'type':'Vec3d',  'help':'Scale 3d',                    'default':[1.0, 1.0, 1.0]},
-        {'name':'attachingToLink',         'type':'string', 'help':'a rest shape forcefield will constraint the object to follow arm position','default':''}]
+        {'name':'attachingToLink',     'type':'string', 'help':'a rest shape forcefield will constraint the object to follow arm position','default':''},
+        {'name':'showServoArm',        'type':'bool', 'help':'show arm', 'default':True}]
 
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
 
-        self.servomotor = self.addChild(ServoMotor(name="ServoMotor",translation=self.translation.value, rotation=self.eulerRotation.value))
-        self.servoarm = self.addChild(ServoArm(name="ServoArm"))#,mappingInputLink=self.ServoMotor.ServoWheel.dofs.getLinkPath()))
+        r = Transform(translation=list(self.translation.value), eulerRotation=list(self.eulerRotation.value))
+        self.addObject("MechanicalObject", name="dofs", size=1, position=r.toSofaRepr(), template='Rigid3', showObject=True, showObjectScale=15)
+
+        self.servomotor = self.addChild(ServoMotor(name="ServoMotor"))
+        self.servomotor.addObject("RigidRigidMapping", name="mapping")
+        self.servoarm = self.addChild(ServoArm(name="ServoArm"))
         self.servoarm.setRigidMapping(self.ServoMotor.ServoWheel.dofs.getLinkPath())
-
-        ## add a public attribute and connect it to the private one.
-        self.addData(name='angleIn', group='ArmProperties', help='angle of rotation (in radians) of the arm', type='float', value=0)
-        self.ServoMotor.getData('angleIn').setParent(self.getData('angleIn'))
-
-        ## add a public attribute and connect it to the internal one.
-        self.addData(name='angleOut', group='ArmProperties', help='angle of rotation (in radians) of the arm', type='float', value=0)
-        self.getData('angleOut').setParent(self.ServoMotor.getData('angleOut'))
+        if self.showServoArm.value :
+            self.servoarm.addVisual()
 
         if self.attachingToLink :
             attachingTo = getFromRoot(self,self.attachingToLink)
@@ -98,6 +98,15 @@ class ActuatedArm(Sofa.Prefab):
                                      points=constraint.BoxROI.getData('indices'),
                                      external_rest_shape=constraint.dofs,
                                      stiffness='1e12')
+
+    def addBox(self, position, translation, eulerRotation):
+        constraint = self.addChild('Box')
+        # template of box is Rigid3 because of its location
+        o = addOrientedBoxRoi(constraint, position=[list(pos)+[0,0,0,1] for pos in position.value],
+                              translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
+                              eulerRotation=eulerRotation, scale=[45, 15, 30])
+        o.drawBoxes = False
+        o.init()
 
     def addConstraint(self, deformableObject, translation, eulerRotation):
         constraint = self.addChild('Constraint')
@@ -118,32 +127,24 @@ class ActuatedArm(Sofa.Prefab):
 
         return constraint
 
-    def addBox(self, position, translation, eulerRotation):
-        constraint = self.addChild('Box')
-        o = addOrientedBoxRoi(constraint, position=position,
-                              translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
-                              eulerRotation=eulerRotation, scale=[45, 15, 30])
-        o.init()
-
 
 def createScene(rootNode):
-    from splib3.animation import animate, AnimationManager
+    from splib3.animation import animate
     from stlib3.scene import Scene
     import math
 
-    rootNode.addObject(AnimationManager(rootNode))
-    scene = Scene(rootNode)
+    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaRigid', 'SofaBoundaryCondition', 'SofaOpenglVisual'])
+    scene.addMainHeader()
+    scene.addObject('DefaultVisualManagerLoop')
+    scene.addObject('DefaultAnimationLoop')
     scene.VisualStyle.displayFlags = 'showBehavior'
     rootNode.dt = 0.003
     rootNode.gravity = [0., -9810., 0.]
 
-    simulation = rootNode.addChild('Simulation')
-    simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
-    simulation.addObject('CGLinearSolver', name='precond')
-
-    arm = simulation.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
+    arm = rootNode.Simulation.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
+    arm.addObject("FixedConstraint")
 
     def myanimate(target, factor):
-        target.angleIn = math.cos(factor * 2 * math.pi)
+        target.angle = math.cos(factor * 2 * math.pi)
 
     animate(myanimate, {'target': arm.ServoMotor}, duration=5, mode='loop')

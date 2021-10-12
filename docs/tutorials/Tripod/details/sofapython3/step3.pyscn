@@ -38,8 +38,10 @@ def ElasticBody(parent):
     return body
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine'])
     scene.addMainHeader()
+    scene.addObject('DefaultAnimationLoop')
+    scene.addObject('DefaultVisualManagerLoop')
     rootNode.dt = 0.025
     scene.VisualStyle.displayFlags = 'showBehavior'
 

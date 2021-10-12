@@ -38,7 +38,6 @@ def loadPosition(root, filename):
         def setMatchingData(target):
             for field in target.getListOfDataFields():
                 if field.getLinkPath() in data:
-                    print("SET: "+field.getLinkPath())
                     field.value = data[field.getLinkPath()]
 
         for k, v in enumerate(data):
