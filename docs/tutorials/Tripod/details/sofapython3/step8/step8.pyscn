@@ -4,6 +4,7 @@ Step 9: Adding the rigidification to the tutorial.
 
 '''
 from stlib3.scene import Scene
+from splib3.animation import AnimationManager
 from tripod import Tripod
 from tripodcontroller import DirectController, InverseController, GoalController
 
@@ -47,7 +48,9 @@ def createScene(rootNode):
 
     # Scene set up
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0])
-    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SoftRobots.Inverse SofaMiscMapping SofaOpenglVisual')
+    rootNode.addObject(AnimationManager(rootNode))
+    rootNode.addObject('DefaultVisualManagerLoop')
+    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SoftRobots.Inverse SofaMiscMapping SofaOpenglVisual SofaBoundaryCondition SofaDeformable SofaEngine SofaGeneralAnimationLoop SofaGeneralEngine SofaGeneralRigid SofaRigid')
     scene.VisualStyle.displayFlags = 'showBehavior showCollision'
     scene.addObject('MeshSTLLoader', name='loader', filename='../../data/mesh/blueprint.stl')
     scene.addObject('OglModel', src='@loader')
@@ -60,26 +63,27 @@ def createScene(rootNode):
     serial = SerialPortBridgeGeneric(rootNode)
 
     # add the tripod object.
-    tripod = Tripod(rootNode, effectorPos=[0, 30, 0], use_orientation=orientation, goalNode=goalNode)
+    rootNode.addChild('Modelling')
+    tripod = Tripod(rootNode.Modelling, effectorPos=[0, 30, 0], use_orientation=orientation, goalNode=goalNode)
 
     actuators = tripod.RigidifiedStructure.RigidParts.actuators
-    invCtr = InverseController(rootNode, goalNode, actuators, actuators, tripod.RigidifiedStructure.RigidParts, tripod, serial, [
-                               tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2])
+    invCtr = rootNode.addObject(InverseController(rootNode, goalNode, actuators, actuators, tripod.RigidifiedStructure.RigidParts, tripod, serial, [
+                               tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
 
     # The regular controller that is being used for the last 2 steps
-    DirectController(rootNode, [tripod.ActuatedArm0,
-                                tripod.ActuatedArm1,
-                                tripod.ActuatedArm2], invCtr)
+    rootNode.addObject(DirectController(rootNode, [tripod.ActuatedArm0,
+                                        tripod.ActuatedArm1,
+                                        tripod.ActuatedArm2], invCtr))
 
     simulation = scene.addChild('Simulation')
     simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.01)
-    simulation.addObject('SparseLDLSolver', name='sparseSolver')
+    simulation.addObject('SparseLDLSolver', name='sparseSolver', template='CompressedRowSparseMatrixd')
     simulation.addObject('GenericConstraintCorrection', solverName='sparseSolver')
     simulation.addChild(tripod)
 
     for i in range(3):
-        visual = tripod.RigidifiedStructure.RigidParts.addChild('VisualModel')
-        visual.addObject('MeshSTLLoader', name='loader',filename='../../data/mesh/SG90_servoarm.stl', translation=[0,-25,0])
+        visual = tripod.RigidifiedStructure.RigidParts.addChild('VisualModelArm'+str(i))
+        visual.addObject('MeshSTLLoader', name='loader',filename='../../data/mesh/SG90_servoarm.stl')
         visual.addObject('MeshTopology', src='@loader')
         visual.addObject('OglModel', color=[0.75, 0.75, 0.75, 0.7], writeZTransparent=True)
         visual.addObject('RigidMapping', index=i)

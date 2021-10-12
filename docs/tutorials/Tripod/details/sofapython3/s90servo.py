@@ -123,8 +123,9 @@ def createScene(rootNode):
     def animation(target, factor):
         target.angleIn.value = math.cos(factor * 2 * math.pi)
 
-    Scene(rootNode)
-    rootNode.addObject(AnimationManager(rootNode))
+    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaOpenglVisual', 'SofaRigid'])
+    scene.addMainHeader()
+    rootNode.addObject('DefaultVisualManagerLoop')
 
     rootNode.dt = 0.003
     rootNode.gravity = [0., -9810., 0.]
@@ -134,12 +135,8 @@ def createScene(rootNode):
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('GenericConstraintSolver', maxIterations=1e3, tolerance=1e-5)
 
-    simulation = rootNode.addChild('Simulation')
-    simulation.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
-    simulation.addObject('CGLinearSolver', name='precond')
-
-    servo = simulation.addChild(ServoMotor(name="ServoMotor"))
-    animate(animation, {'target': simulation.ServoMotor}, duration=5., mode='loop')
+    servo = rootNode.Simulation.addChild(ServoMotor(name="ServoMotor"))
+    animate(animation, {'target': rootNode.Simulation.ServoMotor}, duration=5., mode='loop')
     servo.ServoWheel.dofs.showObject = True
 
     return rootNode

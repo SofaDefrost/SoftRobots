@@ -11,6 +11,8 @@ def createScene(rootNode):
     # Setting the gravity, assuming the length unit is in millimeters
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual'])
     scene.addMainHeader()
+    scene.addObject('DefaultAnimationLoop')
+    scene.addObject('DefaultVisualManagerLoop')
 
     # Setting the timestep in seconds
     rootNode.dt = 0.001
@@ -31,7 +33,7 @@ def createScene(rootNode):
     elasticbody.addObject('UniformMass')
 
     elasticbody.addObject('EulerImplicitSolver')
-    elasticbody.addObject('SparseLDLSolver')
+    elasticbody.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixd')
 
     # Visual object
     visual = rootNode.addChild('Visual')

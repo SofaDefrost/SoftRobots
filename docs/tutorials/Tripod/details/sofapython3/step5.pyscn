@@ -24,8 +24,10 @@ class MyController(Sofa.Core.Controller):
 
 def createScene(rootNode):
 
-    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver"])
+    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver",'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
     scene.addMainHeader()
+    scene.addObject('DefaultAnimationLoop')
+    scene.addObject('DefaultVisualManagerLoop')
 
     scene.VisualStyle.displayFlags = "showBehavior"
 

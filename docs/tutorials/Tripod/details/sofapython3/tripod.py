@@ -69,9 +69,9 @@ class Tripod(Sofa.Prefab):
 
         return translation, eulerRotation
 
-    # def addCollision(self):
-    #     CollisionMesh(self.ElasticBody.ElasticMaterialObject, surfaceMeshFileName="../data/mesh/tripod_low.stl", name="CollisionModel", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
-    #
+    def addCollision(self):
+        CollisionMesh(self.ElasticBody.ElasticMaterialObject, surfaceMeshFileName="../data/mesh/tripod_low.stl", name="CollisionModel", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
+    
     #     for arm in self.actuatedarms:
     #         CollisionMesh(arm.ServoMotor.ServoBody,
     #                       surfaceMeshFileName="../data/mesh/servo_collision.stl",
@@ -91,7 +91,7 @@ class Tripod(Sofa.Prefab):
                                     translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
                                     eulerRotation=eulerRotation, scale=[45, 15, 30])
 
-            box.drawBoxes = True
+            box.drawBoxes = False
             box.init()
             # deformableObject.init()
             groupIndices.append([ind for ind in box.indices.value])
@@ -118,9 +118,10 @@ class Tripod(Sofa.Prefab):
 def createScene(rootNode):
     from stlib3.scene import Scene
 
-    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver"])
+    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver", 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
     scene.addMainHeader()
-
+    scene.addObject('DefaultAnimationLoop')
+    scene.addObject('DefaultVisualManagerLoop')
 
     scene.VisualStyle.displayFlags = "showBehavior"
 
