@@ -151,7 +151,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     /**************************************** Add J0tKJ0 to global system **********************************************/
 
     _3_3_Matrix_Type K11MatrixBuffer;
-    for(size_t k11RowIndex = 0 ; k11RowIndex < (unsigned int)J0tKJ0.nBlocRow ; ++k11RowIndex)
+    for(size_t k11RowIndex = 0 ; k11RowIndex < (unsigned int)J0tKJ0.nBlockRow ; ++k11RowIndex)
     {
         for(_3_3_ColBlockConstIterator k11ColIter = J0tKJ0.bRowBegin(k11RowIndex); k11ColIter < J0tKJ0.bRowEnd(k11RowIndex) ; k11ColIter++)
         {
@@ -171,7 +171,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     /**************************************** Add JrtJ1tKJ1Jr to global system **********************************************/
 
     _6_6_Matrix_Type K22MatrixBuffer;
-    for(size_t k22RowIndex = 0 ; k22RowIndex < (unsigned int)JrtJ1tKJ1Jr.nBlocRow ; ++k22RowIndex)
+    for(size_t k22RowIndex = 0 ; k22RowIndex < (unsigned int)JrtJ1tKJ1Jr.nBlockRow ; ++k22RowIndex)
     {
         for(_6_6_ColBlockConstIterator k22ColIter = JrtJ1tKJ1Jr.bRowBegin(k22RowIndex); k22ColIter < JrtJ1tKJ1Jr.bRowEnd(k22RowIndex) ; k22ColIter++)
         {
@@ -190,7 +190,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 
     _3_6_Matrix_Type K12MatrixBuffer;
 
-    for(size_t k12RowIndex = 0 ; k12RowIndex < (unsigned int)J0tKJ1Jr.nBlocRow ; ++k12RowIndex)
+    for(size_t k12RowIndex = 0 ; k12RowIndex < (unsigned int)J0tKJ1Jr.nBlockRow ; ++k12RowIndex)
     {
         for(_3_6_ColBlockConstIterator k12ColIter = J0tKJ1Jr.bRowBegin(k12RowIndex) ; k12ColIter < J0tKJ1Jr.bRowEnd(k12RowIndex) ; k12ColIter++ )
         {
@@ -207,7 +207,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 
     _6_3_Matrix_Type K21MatrixBuffer;
 
-    for(size_t k21RowIndex = 0 ; k21RowIndex < (unsigned int)JrtJ1tKJ0.nBlocRow ; ++k21RowIndex) {
+    for(size_t k21RowIndex = 0 ; k21RowIndex < (unsigned int)JrtJ1tKJ0.nBlockRow ; ++k21RowIndex) {
         for(_6_3_ColBlockConstIterator k21ColIter = JrtJ1tKJ0.bRowBegin(k21RowIndex) ; k21ColIter < JrtJ1tKJ0.bRowEnd(k21RowIndex) ; k21ColIter++)
         {
             _6_3_BlockConstAccessor k21Block = k21ColIter.bloc();
@@ -285,8 +285,8 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::multMatrices(const
                                                                            const CompressedRowSparseMatrix<Mat<N, K, Real1> >& B,
                                                                            CompressedRowSparseMatrix<Mat<M, K, Real1> >& R)
 {
-    size_t rBlockR = A.nBlocRow;
-    size_t cBlockR = B.nBlocCol;
+    size_t rBlockR = A.nBlockRow;
+    size_t cBlockR = B.nBlockCol;
 
     R.resizeBloc(rBlockR, cBlockR);
 
@@ -297,7 +297,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::multMatrices(const
 
     Mat<M, N, Real1> AMatrixBuffer;
     Mat<N, K, Real1> BMatrixBuffer;
-    for (int ArBlockId = 0; ArBlockId < A.nBlocRow; ArBlockId++)
+    for (int ArBlockId = 0; ArBlockId < A.nBlockRow; ArBlockId++)
     {// for each line block of A
         for (AColBlockIter AColIter = A.bRowBegin(ArBlockId); AColIter < A.bRowEnd(ArBlockId); AColIter++)
         {// for each column in row
@@ -335,8 +335,8 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::multMatricesT(cons
                                                                             const CompressedRowSparseMatrix<Mat<M, K, Real1> >& B,
                                                                             CompressedRowSparseMatrix<Mat<N, K, Real1> >& R)
 {
-    size_t rBlockR = At.nBlocCol;
-    size_t cBlockR = B.nBlocCol;
+    size_t rBlockR = At.nBlockCol;
+    size_t cBlockR = B.nBlockCol;
 
     R.resizeBloc(rBlockR, cBlockR);
 
@@ -348,7 +348,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::multMatricesT(cons
     Mat<M, N, Real1> AMatrixBuffer;
     Mat<M, K, Real1> BMatrixBuffer;
 
-    for(size_t AtrBlockId = 0 ; AtrBlockId < (unsigned int)At.nBlocRow ; ++AtrBlockId) {
+    for(size_t AtrBlockId = 0 ; AtrBlockId < (unsigned int)At.nBlockRow ; ++AtrBlockId) {
         for(AColBlockIter AtColIter = At.bRowBegin(AtrBlockId); AtColIter < At.bRowEnd(AtrBlockId) ; AtColIter++) {
             ABlockConstAccessor ABlock = AtColIter.bloc(); // is now a column block
 

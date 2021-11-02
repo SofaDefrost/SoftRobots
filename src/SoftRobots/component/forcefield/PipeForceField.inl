@@ -177,7 +177,7 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
 
     MultiMatrixAccessor::MatrixRef matrixRef = matrix->getMatrix(mstate);
     _3_3_Matrix_Type KMatrixBuffer;
-    for(size_t kRowIndex = 0 ; kRowIndex < (unsigned int)JtKJ.nBlocRow ; ++kRowIndex) {
+    for(size_t kRowIndex = 0 ; kRowIndex < (unsigned int)JtKJ.nBlockRow ; ++kRowIndex) {
         for(_3_3_ColBlockConstIterator kColIter = JtKJ.bRowBegin(kRowIndex); kColIter < JtKJ.bRowEnd(kRowIndex) ; kColIter++) {
 
             _3_3_BlockConstAccessor kBlock = kColIter.bloc();
@@ -203,8 +203,8 @@ void PipeForceField<DataTypes>::multMatrices(const CompressedRowSparseMatrix<Mat
                                              const CompressedRowSparseMatrix<Mat<N, K, Real> >& B,
                                              CompressedRowSparseMatrix<Mat<M, K, Real> >& R)
 {
-    size_t rBlockR = A.nBlocRow;
-    size_t cBlockR = B.nBlocCol;
+    size_t rBlockR = A.nBlockRow;
+    size_t cBlockR = B.nBlockCol;
 
     R.resizeBloc(rBlockR, cBlockR);
 
@@ -215,7 +215,7 @@ void PipeForceField<DataTypes>::multMatrices(const CompressedRowSparseMatrix<Mat
 
     Mat<M, N, Real> AMatrixBuffer;
     Mat<N, K, Real> BMatrixBuffer;
-    for (int ArBlockId = 0; ArBlockId < A.nBlocRow; ArBlockId++) {  //For each line block of A
+    for (int ArBlockId = 0; ArBlockId < A.nBlockRow; ArBlockId++) {  //For each line block of A
         for (AColBlockIter AColIter = A.bRowBegin(ArBlockId); AColIter < A.bRowEnd(ArBlockId); AColIter++) { //For each column in row
             ABlockConstAccessor ABlock = AColIter.bloc(); //Take non zero blocks in row
 
@@ -251,8 +251,8 @@ void PipeForceField<DataTypes>::multMatricesT(const CompressedRowSparseMatrix<Ma
                                               const CompressedRowSparseMatrix<Mat<M, K, Real> >& B,
                                               CompressedRowSparseMatrix<Mat<N, K, Real> >& R)
 {
-    size_t rBlockR = At.nBlocCol;
-    size_t cBlockR = B.nBlocCol;
+    size_t rBlockR = At.nBlockCol;
+    size_t cBlockR = B.nBlockCol;
 
     R.resizeBloc(rBlockR, cBlockR);
 
@@ -264,7 +264,7 @@ void PipeForceField<DataTypes>::multMatricesT(const CompressedRowSparseMatrix<Ma
     Mat<M, N, Real> AMatrixBuffer;
     Mat<M, K, Real> BMatrixBuffer;
 
-    for(size_t AtrBlockId = 0 ; AtrBlockId < (unsigned int)At.nBlocRow ; ++AtrBlockId) {
+    for(size_t AtrBlockId = 0 ; AtrBlockId < (unsigned int)At.nBlockRow ; ++AtrBlockId) {
         for(AColBlockIter AtColIter = At.bRowBegin(AtrBlockId); AtColIter < At.bRowEnd(AtrBlockId) ; AtColIter++) {
             ABlockConstAccessor ABlock = AtColIter.bloc(); //Is now a column block
 
