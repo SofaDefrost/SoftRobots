@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 from stlib3.physics.deformable import ElasticMaterialObject
 from stlib3.physics.constraints import FixedBox
-from stlib3.scene import Node
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
            fixingBox=[0.0,0.0,0.0], pullPointLocation=[0.0,0.0,0.0]):
 
-    finger = Node(parentNode, "Finger")
+    finger = parentNode.addChild("Finger")
     eobject = ElasticMaterialObject(finger,
-                                   volumeMeshFileName="data/mesh/finger.vtk",
+                                   volumeMeshFileName="../data/mesh/finger.vtk",
                                    poissonRatio=0.3,
                                    youngModulus=18000,
                                    totalMass=0.5,
                                    surfaceColor=[0.0, 0.8, 0.7],
-                                   surfaceMeshFileName="data/mesh/finger.stl",
+                                   surfaceMeshFileName="../data/mesh/finger.stl",
                                    rotation=rotation,
                                    translation=translation)
+    finger.addChild(eobject)
 
     FixedBox(eobject,
              doVisualization=True,
@@ -26,13 +26,11 @@ def Finger(parentNode=None, name="Finger",
 def createScene(rootNode):
     # -*- coding: utf-8 -*-
     from stlib3.scene import MainHeader
-    from stlib3.visuals import ShowGrid
     from stlib3.physics.rigid import Floor
     from stlib3.physics.rigid import Cube
-    m=MainHeader(rootNode, plugins=["SoftRobots"])
-    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+    MainHeader(rootNode, plugins=["SoftRobots"])
+    rootNode.VisualStyle.displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
 
-    ShowGrid(rootNode)
     Finger(rootNode)
 
     return rootNode

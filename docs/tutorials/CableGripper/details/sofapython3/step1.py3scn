@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from stlib3.visuals import ShowGrid
 from stlib3.physics.rigid import Floor
 from stlib3.physics.rigid import Cube
 
 def createScene(rootNode):
     """This is my first scene"""
-    ShowGrid(rootNode)
+    rootNode.addObject('VisualStyle', displayFlags = "showBehavior showCollisionModels")
 
     Floor(rootNode,
           translation=[0.0,-160.0,0.0],

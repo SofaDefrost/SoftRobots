@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from stlib3.scene import Node
 from grippercontroller import GripperController
 from finger import Finger
 
 def Gripper(parentNode=None):
-    gripper = Node(parentNode, "Gripper")
+    gripper = parentNode.addChild("Gripper")
 
     f1 = Finger(gripper, "Finger1",
            rotation=[0, 0, 105],
@@ -24,7 +23,7 @@ def Gripper(parentNode=None):
            fixingBox=[-20, -10, 0, 20, 10, 50],
            pullPointLocation=[3, 10.5, 31.5])
 
-    GripperController(gripper, fingers=[f1,f2,f3])
+    gripper.addObject(GripperController([f1,f2,f3]))
 
     return gripper
 
@@ -32,10 +31,10 @@ def createScene(rootNode):
     """To test the content of this file, try:
     >>> runSofa gripper.py
     """
-    from stlib.scene import MainHeader, ContactHeader
-    m=MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
-    m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
+    from stlib3.scene import MainHeader, ContactHeader
+    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, frictionCoef=0.08)
+    rootNode.VisualStyle.displayFlags = "showBehavior showCollisionModels"
 
     Gripper(rootNode)
     return rootNode
