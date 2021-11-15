@@ -226,9 +226,12 @@ def addCables(node, length, nbSection):
     v = rotate(v,q); pullPoint[2] = [v[0],v[1],v[2]]
     v = rotate(v,q);
 
-    cables.addObject('CableConstraint', name="cable1", indices=list(range(0,size*3,3)), pullPoint=pullPoint[0], valueType="force")
-    cables.addObject('CableConstraint', name="cable2", indices=list(range(1,size*3,3)), pullPoint=pullPoint[1], valueType="force")
-    cables.addObject('CableConstraint', name="cable3", indices=list(range(2,size*3,3)), pullPoint=pullPoint[2], valueType="force")
+    if params.Simulation.inverse:
+        for i in range(3):
+            cables.addObject('CableActuator', name="cable"+str(i), minForce=0, indices=list(range(i,size*3,3)), pullPoint=pullPoint[i])
+    else:
+        for i in range(3):
+            cables.addObject('CableConstraint', name="cable"+str(i), indices=list(range(i,size*3,3)), pullPoint=pullPoint[i], valueType="force")
 
     rigidIndexPerPoint = [list(range(4*i+2,(i+1)*4+1)) for i in range(size)]
     cables.addObject('RigidMapping', rigidIndexPerPoint=rigidIndexPerPoint, mapForces=False, mapMasses=False)

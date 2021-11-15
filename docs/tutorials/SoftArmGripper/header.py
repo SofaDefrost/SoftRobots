@@ -7,7 +7,7 @@ def addHeader(node):
                                                               'SofaGeneralRigid', 'SofaLoader', 'SofaOpenglVisual', 'SofaRigid', 'SofaMiscMapping', 'SofaEngine', 'SofaSimpleFem'])
     node.addObject('RequiredPlugin', name='SoftRobots')
     node.addObject('RequiredPlugin', name='BeamAdapter')
-    node.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels hideCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
+    node.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
 
     node.dt.value = params.Simulation.dt
     node.gravity.value = params.Simulation.gravity

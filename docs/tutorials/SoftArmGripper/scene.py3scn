@@ -13,7 +13,10 @@ def addAllCablesArm(node):
     middleCable = node.addChild('MiddleCable')
     positions = [[0, 0, 0]] * size
     middleCable.addObject('MechanicalObject', position=positions)
-    middleCable.addObject('CableConstraint', name="cable", indices=list(range(size)), pullPoint=[0., 0., 0.], valueType="force")
+    if params.Simulation.inverse:
+        middleCable.addObject('CableActuator', name="cable", minForce=0, indices=list(range(size)), pullPoint=[0., 0., 0.])
+    else:
+        middleCable.addObject('CableConstraint', name="cable", indices=list(range(size)), pullPoint=[0., 0., 0.], valueType="force")
     middleCable.addObject('RigidMapping', rigidIndexPerPoint=[4 * i + 1 for i in range(size)], mapForces=False, mapMasses=False)
 
     return
@@ -27,6 +30,7 @@ def addArm(node):
 
     size = params.Robot.nbRibs * params.Robot.nbSection
     arm = node.addChild("Arm")
+    arm.addData(name='nbDofs', value=len(position), type='int')
     arm.addObject('EulerImplicitSolver', firstOrder=True)
     arm.addObject('SparseLDLSolver', name='ldl', template='CompressedRowSparseMatrixMat3x3d')
     arm.addObject('GenericConstraintCorrection')
@@ -138,7 +142,7 @@ def addGripper(node, middleCable):
                                 indices=list(range(32)),
                                 pullPoint=[0.0, 0.0, 0.0])
 
-        finalCable.addObject('SubsetMultiMapping', template='Vec3d,Vec3d',
+        finalCable.addObject('SubsetMultiMapping', template='Vec3,Vec3',
                                 name='SMM' + str(fingerId),
                                 input=[middleCable.MechanicalObject.getLinkPath(), dofsCable[fingerId].getLinkPath()],
                                 output='@./dofs',
@@ -153,5 +157,14 @@ def createScene(rootnode):
 
     arm = addArm(rootnode)
     # gripper = addGripper(rootnode, arm.MiddleCable)
+
+    if params.Simulation.inverse:
+        target = rootnode.addChild('Target')
+        target.addObject('EulerImplicitSolver', firstOrder=True)
+        target.addObject('CGLinearSolver', iterations=10, threshold=1e-5, tolerance=1e-5)
+        target.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[0,880,0,0,0,0,1])
+        target.addObject('SphereCollisionModel', radius=10)
+        target.addObject('UncoupledConstraintCorrection')
+        arm.addObject('PositionEffector', template="Rigid3", effectorGoal=target.dofs.position.getLinkPath(), indices=arm.nbDofs.value-4, useDirections=[1,1,1,0,0,0])
 
     return
