@@ -91,9 +91,9 @@ def addFirstRib(length, height, angle):
             position1[i] = position[edges[b][1]][i]
 
         if b % 2==0:
-            transform = generateDOFTransform(position0, position1, position0, position1, params.Robot.dist, -angle)
+            transform = generateDOFTransform(position0, position1, position0, position1, params.Arm.dist, -angle)
         else:
-            transform = generateDOFTransform(position0, position1, position0, position1, params.Robot.dist, angle)
+            transform = generateDOFTransform(position0, position1, position0, position1, params.Arm.dist, angle)
 
         DOF0TransformNode0[b] = transform[0]
         DOF1TransformNode1[b] = transform[1]
@@ -159,9 +159,9 @@ def addRib(length, height, angle, ribId, position, edges, DOF0TransformNode0, DO
             position1[i] = position[edges[b + numBeam - 6][1]][i]
 
         if b % 2==0:
-            transform = generateDOFTransform(position0, position1, position0, position1, params.Robot.dist, -angle)
+            transform = generateDOFTransform(position0, position1, position0, position1, params.Arm.dist, -angle)
         else:
-            transform = generateDOFTransform(position0, position1, position0, position1, params.Robot.dist, angle)
+            transform = generateDOFTransform(position0, position1, position0, position1, params.Arm.dist, angle)
 
         DOF0TransformNode0[b+numBeam-6] = transform[0]
         DOF1TransformNode1[b+numBeam-6] = transform[1]
@@ -185,12 +185,12 @@ def generateRibs():
     edges = []
     DOF0TransformNode0 = []
     DOF1TransformNode1 = []
-    for s in range(params.Robot.nbSection):
-        for i in range(params.Robot.nbRibs):
-            ribId = params.Robot.nbRibs*s + i
-            [position, edges, DOF0TransformNode0, DOF1TransformNode1] = addRib(params.Robot.beamLength,
-                                                                               params.Robot.beamHeight[s],
-                                                                               params.Robot.angle,
+    for s in range(params.Arm.nbSection):
+        for i in range(params.Arm.nbRibs):
+            ribId = params.Arm.nbRibs * s + i
+            [position, edges, DOF0TransformNode0, DOF1TransformNode1] = addRib(params.Arm.beamLength,
+                                                                               params.Arm.beamHeight[s],
+                                                                               params.Arm.angle,
                                                                                ribId, position, edges,
                                                                                DOF0TransformNode0,
                                                                                DOF1TransformNode1)
@@ -204,10 +204,10 @@ def addCables(node, length, nbSection):
     cables = node.addChild('Cables')
     theta = 2.0944
     q = [0., sin(theta/2.), 0., cos(theta/2.)]
-    size = params.Robot.nbRibs * nbSection
+    size = params.Arm.nbRibs * nbSection
 
     positions = [[0,0,0],[0,0,0],[0,0,0]] * size
-    p = [[params.Robot.tx,0,0]]*3
+    p = [[params.Arm.tx, 0, 0]] * 3
     v = p[0]
     v = rotate(v,q); p[1] = [v[0],v[1],v[2]]
     v = rotate(v,q); p[2] = [v[0],v[1],v[2]]
@@ -220,7 +220,7 @@ def addCables(node, length, nbSection):
     cables.addObject('MechanicalObject', position=positions)
 
     pullPoint = [[0,0,0],[0,0,0],[0,0,0]]
-    pullPoint[0] = [length+params.Robot.tx,0,0]
+    pullPoint[0] = [length + params.Arm.tx, 0, 0]
     v = pullPoint[0];
     v = rotate(v,q); pullPoint[1] = [v[0],v[1],v[2]]
     v = rotate(v,q); pullPoint[2] = [v[0],v[1],v[2]]
@@ -231,9 +231,9 @@ def addCables(node, length, nbSection):
             cables.addObject('CableActuator', name="cable"+str(i), minForce=0, indices=list(range(i,size*3,3)), pullPoint=pullPoint[i])
     else:
         for i in range(3):
-            cables.addObject('CableConstraint', name="cable"+str(i), indices=list(range(i,size*3,3)), pullPoint=pullPoint[i], valueType="force")
+            cables.addObject('CableConstraint', name="cable"+str(i), indices=list(range(i,size*3,3)), pullPoint=pullPoint[i], valueType="displacement")
 
     rigidIndexPerPoint = [list(range(4*i+2,(i+1)*4+1)) for i in range(size)]
-    cables.addObject('RigidMapping', rigidIndexPerPoint=rigidIndexPerPoint, mapForces=False, mapMasses=False)
+    cables.addObject('RigidMapping', rigidIndexPerPoint=rigidIndexPerPoint, mapForces=False, mapMasses=False, applyRestPosition=True)
 
     return

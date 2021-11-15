@@ -4,10 +4,10 @@ import params
 def addAllCablesArm(node):
 
     from generation import addCables
-    size = params.Robot.nbRibs * params.Robot.nbSection
+    size = params.Arm.nbRibs * params.Arm.nbSection
 
-    for i in range(params.Robot.nbSection):
-        addCables(node.getChild('Section'+str(i+1)), params.Robot.beamThickness[i], i+1)
+    for i in range(params.Arm.nbSection):
+        addCables(node.getChild('Section'+str(i+1)), params.Arm.beamThickness[i], i + 1)
 
     # middle cable for the gripper
     middleCable = node.addChild('MiddleCable')
@@ -16,8 +16,8 @@ def addAllCablesArm(node):
     if params.Simulation.inverse:
         middleCable.addObject('CableActuator', name="cable", minForce=0, indices=list(range(size)), pullPoint=[0., 0., 0.])
     else:
-        middleCable.addObject('CableConstraint', name="cable", indices=list(range(size)), pullPoint=[0., 0., 0.], valueType="force")
-    middleCable.addObject('RigidMapping', rigidIndexPerPoint=[4 * i + 1 for i in range(size)], mapForces=False, mapMasses=False)
+        middleCable.addObject('CableConstraint', name="cable", indices=list(range(size)), pullPoint=[0., 0., 0.], valueType="displacement")
+    middleCable.addObject('RigidMapping', rigidIndexPerPoint=[4 * i + 1 for i in range(size)], mapForces=False, mapMasses=False, applyRestPosition=True)
 
     return
 
@@ -28,7 +28,7 @@ def addArm(node):
 
     [position, edges, DOF0TransformNode0, DOF1TransformNode1] = generateRibs()
 
-    size = params.Robot.nbRibs * params.Robot.nbSection
+    size = params.Arm.nbRibs * params.Arm.nbSection
     arm = node.addChild("Arm")
     arm.addData(name='nbDofs', value=len(position), type='int')
     arm.addObject('EulerImplicitSolver', firstOrder=True)
@@ -40,21 +40,21 @@ def addArm(node):
     arm.addObject('RestShapeSpringsForceField', stiffness=1e12, angularStiffness=1e12, points=0)  # fix base of the arm
 
     # sub topology to allow different ribs thickness for each section
-    for i in range(params.Robot.nbSection):
+    for i in range(params.Arm.nbSection):
         section = arm.addChild('Section'+str(i+1))
         topology = section.addChild("Topology")
         idFirst = size * i * 2
         idLast = size * (i + 1) * 2
 
         topology.addObject('MeshTopology', position=position, edges=edges[idFirst:idLast])
-        topology.addObject('BeamInterpolation', name="BeamInterpolation", defaultYoungModulus=params.Robot.youngModulus,
+        topology.addObject('BeamInterpolation', name="BeamInterpolation", defaultYoungModulus=params.Arm.youngModulus,
                            dofsAndBeamsAligned=False, straight=True, crossSectionShape="rectangular",
-                           lengthZ=params.Robot.beamWidth,
-                           lengthY=params.Robot.beamThickness[i],
+                           lengthZ=params.Arm.beamWidth,
+                           lengthY=params.Arm.beamThickness[i],
                            DOF0TransformNode0=DOF0TransformNode0,
                            DOF1TransformNode1=DOF1TransformNode1)
         topology.addObject('AdaptiveBeamForceFieldAndMass', name="BeamForceField", computeMass=True,
-                           massDensity=params.Robot.massDensity)
+                           massDensity=params.Arm.massDensity)
 
     visual = arm.addChild('Visual')
     visual.addObject('MeshObjLoader', filename=params.Simulation.path + '/mesh/robot.obj', name='loader')
@@ -97,14 +97,14 @@ def addFinger(node, fingerId, translation, rotation):
 
 def addGripper(node, middleCable):
 
-    size = params.Robot.nbRibs*params.Robot.nbSection
+    size = params.Arm.nbRibs * params.Arm.nbSection
 
     gripper = node.addChild('Gripper')
     fingers = []
 
     for fingerId in range(3):
         rotation=[0, 120. * fingerId, 0]
-        translation = [0, 0, 0]
+        translation = [0, -880, 0]
         fingers.append(addFinger(gripper, fingerId, translation, rotation))
 
     dofsCable = [[], [], []]
@@ -138,9 +138,10 @@ def addGripper(node, middleCable):
         for i in range(14):
             indexPairs[i + size] = [1, i]
 
-        finalCable.addObject('CableConstraint', name="CableGrasping",
-                                indices=list(range(32)),
-                                pullPoint=[0.0, 0.0, 0.0])
+        if not params.Simulation.inverse:
+            finalCable.addObject('CableConstraint', name="CableGrasping",
+                                    indices=list(range(32)),
+                                    pullPoint=[0.0, 0.0, 0.0])
 
         finalCable.addObject('SubsetMultiMapping', template='Vec3,Vec3',
                                 name='SMM' + str(fingerId),
@@ -158,12 +159,18 @@ def createScene(rootnode):
     arm = addArm(rootnode)
     # gripper = addGripper(rootnode, arm.MiddleCable)
 
+    if not params.Simulation.inverse and params.Simulation.armGUI:
+        from armGUI import ArmGUI
+        rootnode.addObject(ArmGUI(arm=arm))
+
     if params.Simulation.inverse:
+        # The target will be represented by an orange sphere in the scene. You can select the target with the mouse (left click) while pressing the shift key on the keyboard.
+        # Once selected you can move the target around and see the robot follow.
         target = rootnode.addChild('Target')
         target.addObject('EulerImplicitSolver', firstOrder=True)
         target.addObject('CGLinearSolver', iterations=10, threshold=1e-5, tolerance=1e-5)
         target.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[0,880,0,0,0,0,1])
-        target.addObject('SphereCollisionModel', radius=10)
+        target.addObject('SphereCollisionModel', radius=20)
         target.addObject('UncoupledConstraintCorrection')
         arm.addObject('PositionEffector', template="Rigid3", effectorGoal=target.dofs.position.getLinkPath(), indices=arm.nbDofs.value-4, useDirections=[1,1,1,0,0,0])
 

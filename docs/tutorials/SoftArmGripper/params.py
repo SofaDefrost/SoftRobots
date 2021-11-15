@@ -5,11 +5,12 @@ class Simulation:
     dt = 0.01
     gravity = [9810, 0, 0]
     inverse = False  # To allow the inverse mode you need the SoftRobots.Inverse plugins available in binaries
+    armGUI = False  # To allow a GUI to control the robot in direct mode. Requires tkinter for python3
 
     path = os.path.dirname(os.path.abspath(__file__))
 
 
-class Robot:
+class Arm:
     # units are mm and kg
     youngModulus = 1e8
     massDensity = 5e-6
