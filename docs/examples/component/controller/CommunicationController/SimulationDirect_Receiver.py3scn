@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-from modules.accordion import addAccordion
+from modules.accordion3 import addAccordion
 
 
 def createScene(rootNode):
 
-    rootNode.createObject('RequiredPlugin', name='SoftRobots')
-    rootNode.createObject('VisualStyle', displayFlags="showVisualModels hideBehaviorModels hideCollisionModels \
+    rootNode.addObject('RequiredPlugin', name='SoftRobots')
+    rootNode.addObject('VisualStyle', displayFlags="showVisualModels hideBehaviorModels hideCollisionModels \
                             hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe")
 
-    rootNode.createObject('FreeMotionAnimationLoop')
-    rootNode.createObject('GenericConstraintSolver', maxIterations=1000, tolerance=1e-14)
+    rootNode.addObject('FreeMotionAnimationLoop')
+    rootNode.addObject('GenericConstraintSolver', maxIterations=1000, tolerance=1e-14)
 
-    rootNode.createObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
+    rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
     rootNode.gravity.value=[0, 0, -981.0]
     rootNode.dt.value=0.01
 
@@ -19,7 +19,7 @@ def createScene(rootNode):
     accordion = addAccordion(rootNode)
 
     # For local communication
-    communication = accordion.createObject('CommunicationController', name="sub", listening=True, job="receiver", port=5558, nbDataField=4, pattern=0)
+    communication = accordion.addObject('CommunicationController', name="sub", listening=True, job="receiver", port=5558, nbDataField=4, pattern=0)
     # Between two different computers, specify the ip address of the sender
     # accordion.createObject('CommunicationController', name="sub", listening=True, job="receiver", port=5558, nbDataField=4, ip="...")
 

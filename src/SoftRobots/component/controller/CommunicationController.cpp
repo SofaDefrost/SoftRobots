@@ -225,7 +225,7 @@ std::string CommunicationController<vector<Rigid3fTypes::Coord>>::templateName(c
 using sofa::core::RegisterObject ;
 using defaulttype::Rigid3Types;
 using defaulttype::Vec3Types;
-using type::Vec1Types;
+using defaulttype::Vec1Types;
 // Registering the component
 // see: http://wiki.sofa-framework.org/wiki/ObjectFactory
 // 1-RegisterObject("description") + .add<> : Register the component

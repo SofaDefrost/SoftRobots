@@ -34,7 +34,7 @@
 #include <SofaUserInteraction/Controller.h>
 
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 #include <zmq.hpp>
 #include <string>
@@ -55,7 +55,7 @@ using core::objectmodel::Event;
 using core::objectmodel::BaseObjectDescription;
 using std::map;
 using std::string;
-using sofa::type::vectorData;
+using sofa::core::objectmodel::vectorData;
 
 
 /**
