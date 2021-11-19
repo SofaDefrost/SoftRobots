@@ -6,7 +6,7 @@
 
 - [SOFA](https://github.com/sofa-framework/sofa)
 - [SoftRobots](https://github.com/SofaDefrost/SoftRobots) plugin for SOFA
-- BeamAdapter plugin for SOFA (soon available)
+- [BeamAdapter](https://github.com/sofa-framework/BeamAdapter) plugin for SOFA
 - [SofaPython3](https://github.com/sofa-framework/SofaPython3) plugin for SOFA
 
 Binaries of SOFA with the above plugins are also available [here](https://github.com/sofa-framework/sofa/releases).
