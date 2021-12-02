@@ -35,7 +35,7 @@
 #include <SofaUserInteraction/Controller.h>
 #include "../solver/QPInverseProblemSolver.h"
 #include "../constraint/SurfacePressureActuator.h"
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 
 

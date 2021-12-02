@@ -33,7 +33,7 @@
 
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include "modules/libgametrak/GameTrak.h"
 

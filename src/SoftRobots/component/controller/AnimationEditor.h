@@ -32,7 +32,7 @@
 
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <SoftRobots/component/initSoftRobots.h>

@@ -31,8 +31,8 @@
 #define SOFA_COMPONENT_FORCEFIELD_PREQUIVALENTSTIFFNESSFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>

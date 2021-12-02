@@ -33,7 +33,7 @@
 
 #include <iomanip>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include "SurfacePressureModel.h"
 

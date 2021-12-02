@@ -35,7 +35,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include "../behavior/SoftRobotsConstraint.h"
 #include <SoftRobots/component/initSoftRobots.h>
