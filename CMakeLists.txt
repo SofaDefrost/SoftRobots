@@ -41,12 +41,7 @@ option(SOFTROBOTS_COMMUNICATIONCONTROLLER "Enables Communication component. It r
 option(SOFTROBOTS_GAMETRAKCONTROLLER "Enables GameTrak component. It requires HIDAPI library (see controller/README for more info)" OFF)
 option(SOFTROBOTS_ROBOTINOCONTROLLER "Enables Robotino component" OFF)
 option(SOFTROBOTS_WITH_CAMERA "Enable this option if you want to use the realsense cameras to perform force sensing, and point cloud processing." OFF)
-
-find_package(Qt5 REQUIRED COMPONENTS Network)
-if(WIN32)
-     sofa_copy_libraries(TARGETS Qt5::Network)
-endif()
-sofa_install_libraries(TARGETS Qt5::Network)
+option(SOFTROBOTS_INTERACTIVECONTROL "Enable this option if you want to use the component InteractiveControl. Requires Qt5 Network." OFF)
 
 sofa_find_package(STLIB QUIET)
 if(STLIB_FOUND)
@@ -83,9 +78,6 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/AnimationEditor.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/DataVariationLimiter.h
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/DataVariationLimiter.inl
-    ${SOFTROBOTS_SOURCE_DIR}/component/controller/InteractiveControl.h
-    ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/Network.h
-    ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/SplitFloat.h
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/Serial.h
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/SerialPortBridgeGeneric.h # Communication robot/sofa
 
@@ -119,9 +111,6 @@ set(SOURCE_FILES
 
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/AnimationEditor.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/DataVariationLimiter.cpp
-    ${SOFTROBOTS_SOURCE_DIR}/component/controller/InteractiveControl.cpp
-    ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/Network.cpp
-    ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/SplitFloat.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/Serial.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/SerialPortBridgeGeneric.cpp # Communication robot/sofa
 
@@ -205,6 +194,25 @@ if (SOFTROBOTS_WITH_CAMERA)
     )
 endif(SOFTROBOTS_WITH_CAMERA)
 
+# INTERACTIVECONTROL
+if (SOFTROBOTS_INTERACTIVECONTROL)
+    find_package(Qt5 REQUIRED COMPONENTS Network)
+    if(WIN32)
+         sofa_copy_libraries(TARGETS Qt5::Network)
+    endif()
+    sofa_install_libraries(TARGETS Qt5::Network)
+    list(APPEND HEADER_FILES
+        ${SOFTROBOTS_SOURCE_DIR}/component/controller/InteractiveControl.h
+        ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/Network.h
+        ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/SplitFloat.h
+        )
+    list(APPEND SOURCE_FILES
+        ${SOFTROBOTS_SOURCE_DIR}/component/controller/InteractiveControl.cpp
+        ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/Network.cpp
+        ${SOFTROBOTS_SOURCE_DIR}/component/controller/modules/SplitFloat.cpp
+        )
+endif(SOFTROBOTS_INTERACTIVECONTROL)
+
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
 IF(WIN32)
@@ -258,6 +266,11 @@ if (SOFTROBOTS_WITH_CAMERA)
 
 endif(SOFTROBOTS_WITH_CAMERA)
 
+# INTERACTIVE CONTROL
+if (SOFTROBOTS_INTERACTIVECONTROL)
+    target_link_libraries(${PROJECT_NAME} Qt5::Network)
+endif(SOFTROBOTS_INTERACTIVECONTROL)
+
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
@@ -266,7 +279,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid SofaMiscMapping SofaSparseSolver SofaEngine)
-target_link_libraries(${PROJECT_NAME} Qt5::Network)
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
