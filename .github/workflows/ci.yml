@@ -85,10 +85,6 @@ jobs:
             echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
           echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
-          echo '------ ls -la "$WORKSPACE_ARTIFACT_PATH/bin/" ------'
-          ls -la "$WORKSPACE_ARTIFACT_PATH/bin"
-          echo '------ ls -la "$WORKSPACE_BUILD_PATH/bin/" ------'
-          ls -la "$WORKSPACE_BUILD_PATH/bin"
           # Add execution right on the tests
 #          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*_test${{ steps.sofa.outputs.exe }}
 
@@ -112,7 +108,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          cd $WORKSPACE_ARTIFACT_PATH
+          cd $WORKSPACE_BUILD_PATH
           ./bin/SoftRobots_test${{ steps.sofa.outputs.exe }}
 
   deploy:
