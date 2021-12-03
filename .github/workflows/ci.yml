@@ -12,7 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-10.15, windows-2019]
+#        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        os: [macos-10.15]
         sofa_branch: [master]
 
     steps:
@@ -84,8 +85,12 @@ jobs:
             echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
           echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          echo '------ ls -la "$WORKSPACE_ARTIFACT_PATH/bin/" ------'
+          ls -la "$WORKSPACE_SRC_PATH/bin"
+          echo '------ ls -la "$WORKSPACE_BUILD_PATH/bin/" ------'
+          ls -la "$WORKSPACE_BUILD_PATH/bin"
           # Add execution right on the tests
-          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*_test${{ steps.sofa.outputs.exe }}
+#          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*_test${{ steps.sofa.outputs.exe }}
 
       - name: Check environment for tests
         shell: bash
