@@ -2,7 +2,7 @@ name: SoftRobots-CI
 
 on:
   workflow_dispatch:
-  pull_request:
+#  pull_request:
   push:
 
 jobs:
@@ -39,6 +39,7 @@ jobs:
                   -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
                   -DCMAKE_BUILD_TYPE=Release \
                   -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
+                  -DSOFTROBOTS_BUILD_TESTS=True \
                   -DSOFTROBOTS_IGNORE_ERRORS=True \
                   ../src \
               && ninja install"
@@ -52,6 +53,7 @@ jobs:
               -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
+              -DSOFTROBOTS_BUILD_TESTS=True \
               -DSOFTROBOTS_IGNORE_ERRORS=True \
               ../src
             ninja install
@@ -83,7 +85,7 @@ jobs:
           fi
           echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           # Add execution right on the tests
-          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
+          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*_test${{ steps.sofa.outputs.exe }}
 
       - name: Check environment for tests
         shell: bash
