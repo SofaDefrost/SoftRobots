@@ -39,6 +39,7 @@ jobs:
                   -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
                   -DCMAKE_BUILD_TYPE=Release \
                   -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
+                  -DSOFTROBOTS_IGNORE_ERRORS=True \
                   ../src \
               && ninja install"
           else
@@ -51,6 +52,7 @@ jobs:
               -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
+              -DSOFTROBOTS_IGNORE_ERRORS=True \
               ../src
             ninja install
             echo ${CCACHE_BASEDIR}
