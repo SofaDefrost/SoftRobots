@@ -31,13 +31,14 @@
 #include <string>
 using std::string ;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
@@ -54,7 +55,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct DataVariationLimiterTest : public Sofa_test<typename _DataTypes::value_type>, DataVariationLimiter<_DataTypes>
+struct DataVariationLimiterTest : public sofa::testing::BaseTest, DataVariationLimiter<_DataTypes>
 {
     typedef DataVariationLimiter<_DataTypes> ThisClass ;
     typedef _DataTypes DataTypes;
@@ -156,7 +157,7 @@ struct DataVariationLimiterTest : public Sofa_test<typename _DataTypes::value_ty
 using ::testing::Types;
 typedef Types<type::Vec3d> DataTypes;
 
-TYPED_TEST_CASE(DataVariationLimiterTest, DataTypes);
+TYPED_TEST_SUITE(DataVariationLimiterTest, DataTypes);
 
 
 TYPED_TEST(DataVariationLimiterTest, NormalBehavior) {

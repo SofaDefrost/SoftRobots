@@ -31,7 +31,7 @@
 #include <string>
 using std::string ;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
@@ -50,6 +50,7 @@ using sofa::simulation::SceneLoaderXML ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
@@ -67,7 +68,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct VolumeFromTrianglesTest : public Sofa_test<typename _DataTypes::Real>,
+struct VolumeFromTrianglesTest : public sofa::testing::BaseTest,
         VolumeFromTriangles<_DataTypes>
 {
     typedef VolumeFromTriangles<_DataTypes> ThisClass ;
@@ -153,7 +154,7 @@ struct VolumeFromTrianglesTest : public Sofa_test<typename _DataTypes::Real>,
 using ::testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(VolumeFromTrianglesTest, DataTypes);
+TYPED_TEST_SUITE(VolumeFromTrianglesTest, DataTypes);
 
 
 TYPED_TEST(VolumeFromTrianglesTest, NormalBehavior) {
