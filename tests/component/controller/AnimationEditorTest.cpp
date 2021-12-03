@@ -31,7 +31,7 @@
 #include <string>
 using std::string ;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/DefaultAnimationLoop.h>
@@ -43,6 +43,7 @@ using sofa::core::objectmodel::Data ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
@@ -63,7 +64,7 @@ namespace sofa
 {
 
 template <typename DataTypes>
-struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, AnimationEditor<DataTypes>
+struct AnimationEditorTest : public sofa::testing::BaseTest, AnimationEditor<DataTypes>
 {
     typedef AnimationEditor<DataTypes> ThisClass ;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -269,9 +270,9 @@ struct AnimationEditorTest : public Sofa_test<typename DataTypes::Real>, Animati
 };
 
 using ::testing::Types;
-typedef Types<Vec3Types> DataTypes;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(AnimationEditorTest, DataTypes);
+TYPED_TEST_SUITE(AnimationEditorTest, DataTypes);
 
 
 TYPED_TEST(AnimationEditorTest, NormalBehavior) {

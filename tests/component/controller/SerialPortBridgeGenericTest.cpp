@@ -31,13 +31,14 @@
 #include <string>
 using std::string ;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
@@ -58,7 +59,7 @@ using helper::WriteAccessor;
 using core::objectmodel::ComponentState;
 
 template <typename _DataTypes>
-struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value_type>, SerialPortBridgeGeneric
+struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortBridgeGeneric
 {
     typedef SerialPortBridgeGeneric ThisClass ;
     typedef _DataTypes DataTypes;
@@ -102,8 +103,6 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
         EXPECT_TRUE( thisobject->findData("baudRate") != nullptr ) ;
         EXPECT_TRUE( thisobject->findData("packetOut") != nullptr ) ;
         EXPECT_TRUE( thisobject->findData("packetIn") != nullptr ) ;
-        EXPECT_TRUE( thisobject->findData("sentData") != nullptr ) ;
-        EXPECT_TRUE( thisobject->findData("receivedData") != nullptr ) ;
         EXPECT_TRUE( thisobject->findData("port") != nullptr ) ;
 
         EXPECT_TRUE(thisobject->findData("size")->getValueString()=="0") ;
@@ -211,7 +210,7 @@ struct SerialPortBridgeGenericTest : public Sofa_test<typename _DataTypes::value
 using ::testing::Types;
 typedef Types<type::Vec3d> DataTypes;
 
-TYPED_TEST_CASE(SerialPortBridgeGenericTest, DataTypes);
+TYPED_TEST_SUITE(SerialPortBridgeGenericTest, DataTypes);
 
 
 TYPED_TEST(SerialPortBridgeGenericTest, NormalBehavior) {

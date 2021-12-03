@@ -31,7 +31,7 @@
 #include <string>
 using std::string ;
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
@@ -47,6 +47,7 @@ using sofa::simulation::SceneLoaderXML ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
@@ -61,7 +62,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct UnilateralPlaneConstraintTest : public Sofa_test<typename _DataTypes::Real>,
+struct UnilateralPlaneConstraintTest : public sofa::testing::BaseTest,
         UnilateralPlaneConstraint<_DataTypes>
 {
     typedef UnilateralPlaneConstraint<_DataTypes> ThisClass ;
@@ -119,7 +120,7 @@ struct UnilateralPlaneConstraintTest : public Sofa_test<typename _DataTypes::Rea
 using ::testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
-TYPED_TEST_CASE(UnilateralPlaneConstraintTest, DataTypes);
+TYPED_TEST_SUITE(UnilateralPlaneConstraintTest, DataTypes);
 
 
 TYPED_TEST(UnilateralPlaneConstraintTest, NormalBehavior) {
