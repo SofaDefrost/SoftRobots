@@ -86,7 +86,7 @@ jobs:
           fi
           echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           echo '------ ls -la "$WORKSPACE_ARTIFACT_PATH/bin/" ------'
-          ls -la "$WORKSPACE_SRC_PATH/bin"
+          ls -la "$WORKSPACE_ARTIFACT_PATH/bin"
           echo '------ ls -la "$WORKSPACE_BUILD_PATH/bin/" ------'
           ls -la "$WORKSPACE_BUILD_PATH/bin"
           # Add execution right on the tests
