@@ -38,7 +38,7 @@
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <string>
 
