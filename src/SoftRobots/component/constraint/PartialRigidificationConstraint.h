@@ -33,6 +33,7 @@
 
 #include <sofa/core/behavior/Constraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
+#include <sofa/linearalgebra/BaseVector.h>
 
 namespace sofa
 {
@@ -45,7 +46,7 @@ namespace constraintset
 using sofa::core::behavior::ConstraintResolution ;
 using sofa::core::ConstraintParams ;
 using sofa::core::behavior::Constraint ;
-using sofa::defaulttype::BaseVector ;
+using sofa::linearalgebra::BaseVector ;
 using sofa::type::Vec ;
 
 class PartialRigidificationConstraintResolution6Dof : public ConstraintResolution

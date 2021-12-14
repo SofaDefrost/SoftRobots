@@ -50,7 +50,7 @@ namespace _surfacepressureconstraint_
 {
 
     using sofa::core::ConstraintParams ;
-    using sofa::defaulttype::BaseVector ;
+    using sofa::linearalgebra::BaseVector ;
     using sofa::core::behavior::ConstraintResolution ;
     using type::vector;
 

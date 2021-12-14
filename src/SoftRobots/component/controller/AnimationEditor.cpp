@@ -31,7 +31,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 
 #include "AnimationEditor.inl"
 
@@ -44,7 +44,7 @@ namespace component
 namespace controller
 {
 
-using sofa::defaulttype::Quat;
+using Quat = sofa::type::Quat<double>;
 using sofa::defaulttype::Vec3Types ;
 using sofa::defaulttype::Rigid3Types ;
 

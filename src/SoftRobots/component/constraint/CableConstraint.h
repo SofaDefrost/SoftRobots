@@ -48,7 +48,7 @@ using sofa::type::Vec3d;
 using sofa::helper::WriteAccessor;
 using sofa::type::vector;
 using sofa::core::ConstraintParams;
-using sofa::defaulttype::BaseVector;
+using sofa::linearalgebra::BaseVector;
 using sofa::core::visual::VisualParams ;
 using sofa::core::behavior::ConstraintResolution;
 
