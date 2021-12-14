@@ -45,7 +45,7 @@ namespace constraintset
 
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
-using sofa::defaulttype::BaseVector;
+using sofa::linearalgebra::BaseVector;
 using sofa::helper::ReadAccessor;
 
 template<class DataTypes>
@@ -245,7 +245,7 @@ void AffineFunctionModel<DataTypes>::getConstraintViolation(const ConstraintPara
 template<class DataTypes>
 void AffineFunctionModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
                                         core::MultiVecDerivId res,
-                                        const sofa::defaulttype::BaseVector* lambda)
+                                        const sofa::linearalgebra::BaseVector* lambda)
 {
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);

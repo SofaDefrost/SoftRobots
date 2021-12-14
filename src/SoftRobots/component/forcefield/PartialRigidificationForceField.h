@@ -63,7 +63,7 @@ using sofa::core::behavior::BaseForceField ;
 using sofa::component::mapping::SubsetMultiMapping ;
 using sofa::core::behavior::MultiMatrixAccessor ;
 using sofa::component::mapping::RigidMapping ;
-using sofa::defaulttype::BaseMatrix ;
+using sofa::linearalgebra::BaseMatrix ;
 using sofa::core::MechanicalParams ;
 using sofa::type::Mat ;
 

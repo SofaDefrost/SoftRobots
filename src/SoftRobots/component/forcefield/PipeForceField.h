@@ -31,8 +31,8 @@
 #define SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_H
 
 #include <SofaDeformable/MeshSpringForceField.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
@@ -54,7 +54,7 @@ using sofa::type::Vec ;
 using sofa::type::Mat ;
 using sofa::type::vector;
 using sofa::core::MechanicalParams;
-using sofa::defaulttype::BaseMatrix;
+using sofa::linearalgebra::BaseMatrix;
 using sofa::core::behavior::ForceField ;
 using sofa::component::linearsolver::CompressedRowSparseMatrix ;
 using sofa::component::mapping::BarycentricMapping;

@@ -32,7 +32,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_INL
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include "CableModel.h"
 
@@ -47,7 +47,7 @@ namespace constraintset
 
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
-using sofa::defaulttype::BaseVector;
+using sofa::linearalgebra::BaseVector;
 using sofa::helper::ReadAccessor;
 using sofa::type::RGBAColor;
 using sofa::type::Vector3;
@@ -409,7 +409,7 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 template<class DataTypes>
 void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
                                         core::MultiVecDerivId res,
-                                        const sofa::defaulttype::BaseVector* lambda)
+                                        const sofa::linearalgebra::BaseVector* lambda)
 {
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);

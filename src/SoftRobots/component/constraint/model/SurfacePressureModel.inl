@@ -399,7 +399,7 @@ void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintPar
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
                                                   core::MultiVecDerivId res,
-                                                  const sofa::defaulttype::BaseVector* lambda)
+                                                  const sofa::linearalgebra::BaseVector* lambda)
 {
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);

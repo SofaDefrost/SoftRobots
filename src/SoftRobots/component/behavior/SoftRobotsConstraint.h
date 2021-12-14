@@ -46,7 +46,7 @@ namespace behavior
 
 using sofa::core::objectmodel::BaseContext ;
 using sofa::core::objectmodel::BaseObjectDescription ;
-using sofa::defaulttype::BaseVector;
+using sofa::linearalgebra::BaseVector;
 
 /**
  *  \brief Component computing inverse problem constraints within a simulated body.
@@ -135,7 +135,7 @@ public:
                                        const DataVecCoord &x) = 0;
 
 
-    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const defaulttype::BaseVector* lambda) override;
+    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const linearalgebra::BaseVector* lambda) override;
 
 
 protected:
@@ -147,7 +147,7 @@ protected:
     MechanicalState<DataTypes> *m_state; ///< Associated mechanical state
 
 private:
-    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda);
+    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda);
 };
 
 

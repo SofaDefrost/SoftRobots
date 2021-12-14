@@ -51,7 +51,7 @@ using sofa::core::objectmodel::Data ;
 using sofa::defaulttype::Vec3dTypes ;
 using sofa::defaulttype::Vec3fTypes ;
 using sofa::defaulttype::Rigid3dTypes ; 
-using sofa::defaulttype::BaseVector ;
+using sofa::linearalgebra::BaseVector ;
 using sofa::core::ConstraintParams ;
 using sofa::helper::ReadAccessor ;
 using sofa::core::VecCoordId ;
