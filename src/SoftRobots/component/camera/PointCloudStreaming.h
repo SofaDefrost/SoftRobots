@@ -28,8 +28,8 @@
 #include <SoftRobots/component/initSoftRobots.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/vector.h>
-#include<sofa/defaulttype/VecTypes.h>
+#include <sofa/type/vector.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <pcl/point_types.h>
 #include <pcl/surface/mls.h>

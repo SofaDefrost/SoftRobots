@@ -29,8 +29,8 @@
 #include <SoftRobots/component/initSoftRobots.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/vector.h>
-#include<sofa/defaulttype/VecTypes.h>
+#include <sofa/type/vector.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <Eigen/Dense>
 
