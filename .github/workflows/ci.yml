@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Setup SOFA and environment
         id: sofa
-        uses: sofa-framework/sofa-setup-action@v3.0
+        uses: sofa-framework/sofa-setup-action@v3
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
