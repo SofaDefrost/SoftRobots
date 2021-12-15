@@ -12,6 +12,10 @@ find_package(SofaMiscMapping REQUIRED)
 find_package(SofaEngine REQUIRED)
 find_package(SofaSparseSolver REQUIRED)
 sofa_find_package(Sofa.GL QUIET)
+
+message("CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
+message("CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
+
 sofa_find_package(SofaPython)
 sofa_find_package(SofaPython3)
 
