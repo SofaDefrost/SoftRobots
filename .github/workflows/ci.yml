@@ -32,16 +32,12 @@ jobs:
       - name: Build and install
         shell: bash
         run: |
-          ls -la /home/runner/work/SoftRobots/SoftRobots/sofa/plugins
-          ls -la /home/runner/work/SoftRobots/SoftRobots/sofa/plugins/SofaPython3/lib/cmake
-          
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
               && cd /d $WORKSPACE_BUILD_PATH \
               && cmake \
                   -GNinja \
-                  -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake;$SOFA_ROOT/plugins/SofaPython3/lib/cmake" \
-                  -DSofaPython3_DIR="$SOFA_ROOT/plugins/SofaPython3/lib/cmake" \
+                  -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
                   -DCMAKE_BUILD_TYPE=Release \
                   -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
                   -DSOFTROBOTS_BUILD_TESTS=True \
@@ -55,8 +51,7 @@ jobs:
               -GNinja \
               -DCMAKE_C_COMPILER_LAUNCHER=ccache \
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-              -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake;$SOFA_ROOT/plugins/SofaPython3/lib/cmake" \
-              -DSofaPython3_DIR="$SOFA_ROOT/plugins/SofaPython3/lib/cmake" \
+              -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
               -DSOFTROBOTS_BUILD_TESTS=True \
