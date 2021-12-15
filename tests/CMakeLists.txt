@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SoftRobots_test VERSION 1.0)
 
 find_package(SofaFramework REQUIRED)

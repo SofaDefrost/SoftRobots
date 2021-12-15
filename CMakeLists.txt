@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SoftRobots VERSION 1.0)
 
 include(cmake/environment.cmake)
@@ -12,12 +12,6 @@ find_package(SofaMiscMapping REQUIRED)
 find_package(SofaEngine REQUIRED)
 find_package(SofaSparseSolver REQUIRED)
 sofa_find_package(Sofa.GL QUIET)
-
-message("CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
-message("CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}")
-
-sofa_find_package(SofaPython)
-sofa_find_package(SofaPython3)
 
 option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
 if(NOT SOFTROBOTS_IGNORE_ERRORS)
@@ -288,7 +282,10 @@ if(Sofa.GL_FOUND)
 endif()
 
 sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
-if(SofaPython3_FOUND)
+find_file(SofaPython3Tools NAMES "SofaPython3/lib/cmake/SofaPython3/SofaPython3Tools.cmake")
+if(SofaPython3Tools)
+    message("-- Found SofaPython3Tools. Python3 packages will be installed.")
+    include(${SofaPython3Tools})
     SP3_add_python_package(
         SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python3/softrobots
         TARGET_DIRECTORY softrobots
