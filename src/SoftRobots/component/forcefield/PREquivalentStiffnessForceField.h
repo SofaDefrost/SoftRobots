@@ -38,7 +38,7 @@
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <string>
 
@@ -54,7 +54,7 @@ using sofa::type::Vec ;
 using sofa::type::Mat ;
 using sofa::type::vector;
 using sofa::core::MechanicalParams;
-using sofa::defaulttype::BaseMatrix;
+using sofa::linearalgebra::BaseMatrix;
 using sofa::core::behavior::ForceField ;
 using sofa::component::linearsolver::CompressedRowSparseMatrix ;
 
@@ -116,7 +116,7 @@ public :
     double getPotentialEnergy(const MechanicalParams* mparams,
                               const DataVecCoord& x) const override;
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix* matrix,
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix* matrix,
                       double kFact,
                       unsigned int& offset) override;
     ////////////////////////////////////////////////////////////////////////////
