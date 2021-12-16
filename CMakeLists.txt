@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.12)
 project(SoftRobots VERSION 1.0)
 
 include(cmake/environment.cmake)
@@ -12,30 +12,6 @@ find_package(SofaMiscMapping REQUIRED)
 find_package(SofaEngine REQUIRED)
 find_package(SofaSparseSolver REQUIRED)
 sofa_find_package(Sofa.GL QUIET)
-sofa_find_package(SofaPython QUIET)
-sofa_find_package(SofaPython3 QUIET)
-
-option(SOFTROBOTS_IGNORE_ERRORS "Enable this option to ignore the recommendations and generate anyway." OFF)
-if(NOT SOFTROBOTS_IGNORE_ERRORS)
-    if(SOFA_USE_MASK)
-        message(SEND_ERROR "
-            You should not use SoftRobots with SOFA_USE_MASK enabled.
-            Most components will not work correctly.
-            To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
-    endif()
-    if(NOT SofaPython_FOUND AND NOT SofaPython3_FOUND)
-        message(SEND_ERROR "
-            You should not use SoftRobots without SofaPython or SofaPython3.
-            Most examples and tutorials will not be loadable.
-            To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
-    endif()
-    if(NOT SofaSparseSolver_FOUND)
-        message(SEND_ERROR "
-            You should not use SoftRobots without SofaSparseSolver.
-            Most examples and some tests will not work.
-            To fix this error you can either follow the recommendation or enable SOFTROBOTS_IGNORE_ERRORS.")
-    endif()
-endif()
 
 option(SOFTROBOTS_COMMUNICATIONCONTROLLER "Enables Communication component. It requires ZeroMQ library (see controller/README for more info)" OFF)
 option(SOFTROBOTS_GAMETRAKCONTROLLER "Enables GameTrak component. It requires HIDAPI library (see controller/README for more info)" OFF)
@@ -284,7 +260,16 @@ if(Sofa.GL_FOUND)
 endif()
 
 sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
-if(SofaPython3_FOUND)
+find_file(SofaPython3Tools NAMES "SofaPython3/lib/cmake/SofaPython3/SofaPython3Tools.cmake")
+if(SofaPython3Tools)
+    message("-- Found SofaPython3Tools. Python3 packages will be installed.")
+    include(${SofaPython3Tools})
+    set(SP3_PYTHON_PACKAGES_DIRECTORY "python3/site-packages")
+else()
+    # try again with the find_package mechanism
+    find_package(SofaPython3 QUIET)
+endif()
+if(SofaPython3Tools OR SofaPython3_FOUND)
     SP3_add_python_package(
         SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python3/softrobots
         TARGET_DIRECTORY softrobots
