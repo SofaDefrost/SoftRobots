@@ -265,6 +265,11 @@ if(SofaPython3Tools)
     message("-- Found SofaPython3Tools. Python3 packages will be installed.")
     include(${SofaPython3Tools})
     set(SP3_PYTHON_PACKAGES_DIRECTORY "python3/site-packages")
+else()
+    # try again with the find_package mechanism
+    find_package(SofaPython3 QUIET)
+endif()
+if(SofaPython3Tools OR SofaPython3_FOUND)
     SP3_add_python_package(
         SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python3/softrobots
         TARGET_DIRECTORY softrobots
