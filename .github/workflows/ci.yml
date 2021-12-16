@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-10.15, windows-2019]
-        sofa_branch: [master]
+        sofa_branch: [master, v21.12]
 
     steps:
       - name: Setup SOFA and environment
