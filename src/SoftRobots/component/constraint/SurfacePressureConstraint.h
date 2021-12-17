@@ -31,11 +31,12 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSURECONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSURECONSTRAINT_H
 
-#include "model/SurfacePressureModel.h"
 #include <sofa/helper/OptionsGroup.h>
 
 #include <SoftRobots/component/initSoftRobots.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
+
+#include <SoftRobots/component/constraint/model/SurfacePressureModel.h>
 
 namespace sofa
 {

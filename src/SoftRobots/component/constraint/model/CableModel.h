@@ -33,7 +33,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include "../../behavior/SoftRobotsConstraint.h"
+#include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
 namespace sofa
 {
