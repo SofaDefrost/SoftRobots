@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-Step 9: Adding the rigidification to the tutorial.
+Step 8: Inverse
 
 '''
 from stlib3.scene import Scene

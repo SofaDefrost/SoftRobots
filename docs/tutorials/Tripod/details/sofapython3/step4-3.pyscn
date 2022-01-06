@@ -85,9 +85,8 @@ class Tripod(Sofa.Prefab):
                                     translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
                                     eulerRotation=eulerRotation, scale=[45, 15, 30])
 
-            box.drawBoxes = True
+            box.drawBoxes = False
             box.init()
-            # deformableObject.init()
             groupIndices.append([ind for ind in box.indices.value])
             frames.append(vec3.vadd(translation, [0.0, 25.0, 0.0]) + list(Quat.createFromEuler([0, float(i)*360/float(numstep), 0], inDegree=True)))
 
@@ -102,37 +101,48 @@ class Tripod(Sofa.Prefab):
         #####################################################################################################
 
         # Attach arms
+        rigidParts = rigidifiedstruct.RigidParts
         for i in range(0, numstep):
-            rigidifiedstruct.RigidParts.addObject('RestShapeSpringsForceField', name="rssff"+str(i),
-                                                     points=i,
-                                                     external_rest_shape=self.actuatedarms[i].servoarm.dofs.getLinkPath(),
-                                                     stiffness=1e12, angularStiffness=1e12)
+            self.actuatedarms[i].ServoMotor.BaseFrame.addChild(rigidParts)
+        rigidParts.addObject('SubsetMultiMapping', input=[self.actuatedarms[0].ServoMotor.BaseFrame.getLinkPath(),
+                                                          self.actuatedarms[1].ServoMotor.BaseFrame.getLinkPath(),
+                                                          self.actuatedarms[2].ServoMotor.BaseFrame.getLinkPath()],
+                                                   output='@./', indexPairs=[0,1,1,1,2,1])
+        rigidifiedstruct.removeChild(rigidParts)
+
 
 def createScene(rootNode):
     from splib3.animation import animate
     from stlib3.scene import Scene
-    from fixingbox import FixingBox
     import math
 
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False, plugins=['SofaBoundaryCondition', 'SofaGeneralAnimationLoop', 'SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
     scene.addMainHeader()
-    scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
-    rootNode.dt = 0.025
+    scene.addObject('FreeMotionAnimationLoop')
+    scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.Simulation.addObject('GenericConstraintCorrection')
+    rootNode.dt = 0.01
 
     scene.VisualStyle.displayFlags = "showBehavior"
 
     tripod = scene.Modelling.addChild(Tripod())
-    FixingBox(tripod, tripod.ElasticBody.ElasticMaterialObject, scale=[10, 10, 10], translation=[0., 25, 0.])
-    tripod.FixingBox.BoxROI.drawBoxes = True
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
-    scene.Simulation.addChild(tripod.ActuatedArm0)
-    scene.Simulation.addChild(tripod.ActuatedArm1)
-    scene.Simulation.addChild(tripod.ActuatedArm2)
+
+    motors = scene.Simulation.addChild("Motors")
+    for i in range(3):
+        motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
+        scene.Simulation.addObject('MechanicalMatrixMapper',
+                                     name="mmm"+str(i),
+                                     template='Vec1,Vec3',
+                                     object1="@Motors/ActuatedArm"+str(i)+"/ServoMotor/Angle/dofs",
+                                     object2="@RigidifiedStructure/DeformableParts/dofs",
+                                     skipJ2tKJ2=False if i==0 else True,
+                                     nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
 
     def myanimate(targets, factor):
         for arm in targets:
-            arm.ServoMotor.angleIn = -factor*math.pi/4.
+            arm.angleIn.value = -factor*math.pi/4.
 
     animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)

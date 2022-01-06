@@ -38,11 +38,11 @@ def ElasticBody(parent):
     return body
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine'], iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
-    rootNode.dt = 0.025
+    rootNode.dt = 0.01
     scene.VisualStyle.displayFlags = 'showBehavior'
 
     scene.addChild('Config')
@@ -50,13 +50,13 @@ def createScene(rootNode):
     scene.Config.addObject('OglModel', src='@loader')
 
     # Instanciating the prefab into the graph
-    body = ElasticBody(rootNode)
+    body = ElasticBody(rootNode.Simulation)
 
     # Instanciating the FixingBox prefab into the graph, constraining the mechanical object of the ElasticBody.
-    fix = FixingBox(rootNode,
+    fix = FixingBox(rootNode.Simulation,
                     body.ElasticMaterialObject,
                     translation=[10.0, 0.0, 0.0],
                     scale=[30., 30., 30.])
 
     # Changing the property of the Box ROI so that the constraint area appears on screen.
-    rootNode.FixingBox.BoxROI.drawBoxes = True
+    rootNode.Simulation.FixingBox.BoxROI.drawBoxes = True

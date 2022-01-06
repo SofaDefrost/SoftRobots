@@ -10,7 +10,6 @@
 '''
 import Sofa
 from splib3.numerics import vec3
-from splib3.objectmodel import SofaPrefab
 from stlib3.visuals import VisualModel
 from stlib3.components import addOrientedBoxRoi
 from splib3.scenegraph import *
@@ -43,6 +42,7 @@ class ServoArm(Sofa.Prefab):
                                showObject=True,
                                showObjectScale=5,
                                translation2=[0, 25, 0])
+        self.addObject('UniformMass', totalMass=0.01)
 
     def setRigidMapping(self,path):
 
@@ -57,8 +57,7 @@ class ActuatedArm(Sofa.Prefab):
            Parameters:
              - translation the position in space of the structure
              - eulerRotation the orientation of the structure
-             - attachingTo (MechanicalObject)    a rest shape forcefield will constraint the object
-                                                 to follow arm position
+
            Structure:
            Node : {
                 name : 'ActuatedArm'
@@ -71,8 +70,7 @@ class ActuatedArm(Sofa.Prefab):
         {'name':'name',                'type':'string', 'help':'Node name',                   'default':'ActuatedArm'},
         {'name':'rotation',            'type':'Vec3d',  'help':'Rotation',                    'default':[0.0, 0.0, 0.0]},
         {'name':'translation',         'type':'Vec3d',  'help':'Translation',                 'default':[0.0, 0.0, 0.0]},
-        {'name':'scale',               'type':'Vec3d',  'help':'Scale 3d',                    'default':[1.0, 1.0, 1.0]},
-        {'name':'attachingToLink',         'type':'string', 'help':'a rest shape forcefield will constraint the object to follow arm position','default':''}]
+        {'name':'scale',               'type':'Vec3d',  'help':'Scale 3d',                    'default':[1.0, 1.0, 1.0]}]
 
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
@@ -90,14 +88,6 @@ class ActuatedArm(Sofa.Prefab):
         ## add a public attribute and connect it to the internal one.
         self.addData(name='angleOut', group='ArmProperties', help='angle of rotation (in radians) of the arm', type='float', value=0)
         self.getData('angleOut').setParent(self.ServoMotor.getData('angleOut'))
-
-        if self.attachingToLink :
-            attachingTo = getFromRoot(self,self.attachingToLink)
-            constraint = self.addConstraint(attachingTo, self.translation.value, self.rotation.value)
-            self.attachingTo.addObject('RestShapeSpringsForceField', name='rssff'+self.name,
-                                     points=constraint.BoxROI.getData('indices'),
-                                     external_rest_shape=constraint.dofs,
-                                     stiffness='1e12')
 
     def addConstraint(self, deformableObject, translation, eulerRotation):
         constraint = self.addChild('Constraint')
@@ -127,21 +117,22 @@ class ActuatedArm(Sofa.Prefab):
 
 
 def createScene(rootNode):
-    from splib3.animation import animate, AnimationManager
+    from splib3.animation import animate
     from stlib3.scene import Scene
     import math
 
-    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaRigid'])
+    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaRigid'], iterative=False)
     scene.addMainHeader()
-    scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
+    scene.addObject('FreeMotionAnimationLoop')
+    scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
     scene.VisualStyle.displayFlags = 'showBehavior'
-    rootNode.dt = 0.003
-    rootNode.gravity = [0., -9810., 0.]
+    scene.dt = 0.01
+    scene.gravity = [0., -9810., 0.]
 
-    arm = rootNode.Simulation.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
+    arm = scene.Simulation.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
 
     def myanimate(target, factor):
-        target.angleIn = math.cos(factor * 2 * math.pi)
+        target.angleIn.value = math.cos(factor * 2 * math.pi)
 
-    animate(myanimate, {'target': arm.ServoMotor}, duration=5, mode='loop')
+    animate(myanimate, {'target': arm}, duration=10., mode='loop')

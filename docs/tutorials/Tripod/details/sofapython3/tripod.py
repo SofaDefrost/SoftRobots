@@ -8,7 +8,8 @@ from stlib3.physics.mixedmaterial import Rigidify
 from stlib3.components import addOrientedBoxRoi
 from splib3.numerics import vec3
 from splib3.numerics.quat import Quat
-# from tutorial import *
+from tutorial import *
+
 
 def ElasticBody(parent):
     body = parent.addChild("ElasticBody")
@@ -40,10 +41,10 @@ class Tripod(Sofa.Prefab):
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
-
     def init(self):
 
         self.elasticMaterialObject = ElasticBody(self)
+        self.rigidifiedstruct = None
 
         dist = self.radius.value
         numstep = self.numMotors.value
@@ -70,12 +71,9 @@ class Tripod(Sofa.Prefab):
         return translation, eulerRotation
 
     def addCollision(self):
-        CollisionMesh(self.ElasticBody.ElasticMaterialObject, surfaceMeshFileName="../data/mesh/tripod_low.stl", name="CollisionModel", translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
-    
-    #     for arm in self.actuatedarms:
-    #         CollisionMesh(arm.ServoMotor.ServoBody,
-    #                       surfaceMeshFileName="../data/mesh/servo_collision.stl",
-    #                       name="TopServoCollision", mappingType='RigidMapping')
+        CollisionMesh(self.ElasticBody.ElasticMaterialObject,
+                        surfaceMeshFileName="../data/mesh/tripod_low.stl", name="CollisionModel",
+                        translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
 
     def __attachToActuatedArms(self, radius=60, numMotors=3, angleShift=180.0):
         deformableObject = self.elasticMaterialObject
@@ -93,9 +91,17 @@ class Tripod(Sofa.Prefab):
 
             box.drawBoxes = False
             box.init()
-            # deformableObject.init()
             groupIndices.append([ind for ind in box.indices.value])
             frames.append(vec3.vadd(translation, [0.0, 25.0, 0.0]) + list(Quat.createFromEuler([0, float(i)*360/float(numstep), 0], inDegree=True)))
+
+        effectorPos = [0, 30, 0]
+        o = deformableObject.addObject('SphereROI', name='roi', template='Rigid3',
+                                                    centers=effectorPos, radii=[7.5], drawSphere=True)
+        o.init()
+        groupIndices.append(list(o.indices.value))
+
+        frames.append([effectorPos[0], effectorPos[1],
+                       effectorPos[2], 0, 0, 0, 1])
 
         # Rigidify the deformable part at extremity to attach arms
         rigidifiedstruct = Rigidify(self, deformableObject, groupIndices=groupIndices, frames=frames, name="RigidifiedStructure")
@@ -108,27 +114,49 @@ class Tripod(Sofa.Prefab):
         #####################################################################################################
 
         # Attach arms
+        rigidParts = rigidifiedstruct.RigidParts
+        freecenter = rigidifiedstruct.addChild('FreeCenter')
+        freecenter.addObject('MechanicalObject', name="dofs", template="Rigid3", position=[0,0,0,0,0,0,1])
+        freecenter.addChild(rigidParts)
         for i in range(0, numstep):
-            rigidifiedstruct.RigidParts.addObject('RestShapeSpringsForceField', name="rssff"+str(i),
-                                                     points=i,
-                                                     external_rest_shape=self.actuatedarms[i].servoarm.dofs.getLinkPath(),
-                                                     stiffness=1e12, angularStiffness=1e12)
+            self.actuatedarms[i].ServoMotor.BaseFrame.addChild(rigidParts)
+        rigidParts.addObject('SubsetMultiMapping', input=[self.actuatedarms[0].ServoMotor.BaseFrame.getLinkPath(),
+                                                          self.actuatedarms[1].ServoMotor.BaseFrame.getLinkPath(),
+                                                          self.actuatedarms[2].ServoMotor.BaseFrame.getLinkPath(),
+                                                          freecenter.getLinkPath()],
+                                                   output='@./', indexPairs=[0,1,1,1,2,1,3,0])
+        rigidifiedstruct.removeChild(rigidParts)
 
 
 def createScene(rootNode):
     from stlib3.scene import Scene
 
-    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.025, plugins=["SofaSparseSolver", 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
+    scene = Scene(rootNode, gravity=[0., -9810., 0.],dt=0.01, iterative=False, plugins=["SofaSparseSolver", 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
     scene.addMainHeader()
-    scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
+    scene.addObject('FreeMotionAnimationLoop')
+    scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.Simulation.addObject('GenericConstraintCorrection')
 
     scene.VisualStyle.displayFlags = "showBehavior"
 
     tripod = scene.Modelling.addChild(Tripod())
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
+    scene.Simulation.addObject('MechanicalMatrixMapper',
+                                 name="mmm",
+                                 template='Vec3,Rigid3',
+                                 object1="@RigidifiedStructure/DeformableParts/dofs",
+                                 object2="@RigidifiedStructure/FreeCenter/dofs",
+                                 nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+
     motors = scene.Simulation.addChild("Motors")
-    motors.addChild(tripod.ActuatedArm0)
-    motors.addChild(tripod.ActuatedArm1)
-    motors.addChild(tripod.ActuatedArm2)
+    for i in range(3):
+        motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
+        scene.Simulation.addObject('MechanicalMatrixMapper',
+                                     name="mmm"+str(i),
+                                     template='Vec1,Vec3',
+                                     object1="@Motors/ActuatedArm"+str(i)+"/ServoMotor/Angle/dofs",
+                                     object2="@RigidifiedStructure/DeformableParts/dofs",
+                                     skipJ2tKJ2=True,
+                                     nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
