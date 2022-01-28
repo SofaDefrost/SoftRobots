@@ -58,7 +58,7 @@ class GoalController(Sofa.Core.Controller):
 def addInverseComponents(arms, freecenter, goalNode, use_orientation):
     actuators=[]
     for arm in arms:
-        actuator = arm.ServoMotor.Angle.addChild('actuator')
+        actuator = arm.ServoMotor.Articulation.addChild('actuator')
         actuators.append(actuator)
         actuator.activated = False
         actuator.addObject('JointActuator', name='JointActuator', template='Vec1',
@@ -126,13 +126,13 @@ def createScene(rootNode):
 
     rigidifiedstruct = scene.Simulation.addChild(tripod.RigidifiedStructure)
     scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="mmm",
+                                 name="mmmFreeCenter",
                                  template='Vec3,Rigid3',
                                  object1="@RigidifiedStructure/DeformableParts/dofs",
                                  object2="@RigidifiedStructure/FreeCenter/dofs",
                                  nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
 
-    invCtr = scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.BaseFrame.RigidParts,
+    invCtr = scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,
                                                 tripod, serial,
                                                 [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
 
@@ -146,7 +146,7 @@ def createScene(rootNode):
         scene.Simulation.addObject('MechanicalMatrixMapper',
                                      name="mmm"+str(i),
                                      template='Vec1,Vec3',
-                                     object1="@Motors/ActuatedArm"+str(i)+"/ServoMotor/Angle/dofs",
-                                     object2="@RigidifiedStructure/DeformableParts/dofs",
+                                     object1="@Simulation/Motors/ActuatedArm"+str(i)+"/ServoMotor/Articulation/dofs",
+                                     object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
                                      skipJ2tKJ2=True,
-                                     nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+                                     nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")

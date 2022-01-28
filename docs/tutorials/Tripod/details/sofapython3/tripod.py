@@ -14,9 +14,9 @@ from tutorial import *
 def ElasticBody(parent):
     body = parent.addChild("ElasticBody")
 
-    elasticMaterialObject = body.addChild(ElasticMaterialObject( volumeMeshFileName="../data/mesh/tripod_mid.gidmsh",
-                                             translation=[0.0, 30, 0.0], rotation=[90, 0, 0],
-                                             youngModulus=800, poissonRatio=0.45, totalMass=0.032))
+    elasticMaterialObject = body.addChild(ElasticMaterialObject(volumeMeshFileName="../data/mesh/tripod_mid.gidmsh",
+                                                                 translation=[0.0, 30, 0.0], rotation=[90, 0, 0],
+                                                                 youngModulus=800, poissonRatio=0.45, totalMass=0.032))
 
     visual = body.addChild("Visual")
     visual.addObject("MeshSTLLoader", name="loader", filename="../data/mesh/tripod_mid.stl")
@@ -119,10 +119,10 @@ class Tripod(Sofa.Prefab):
         freecenter.addObject('MechanicalObject', name="dofs", template="Rigid3", position=[0,0,0,0,0,0,1])
         freecenter.addChild(rigidParts)
         for i in range(0, numstep):
-            self.actuatedarms[i].ServoMotor.BaseFrame.addChild(rigidParts)
-        rigidParts.addObject('SubsetMultiMapping', input=[self.actuatedarms[0].ServoMotor.BaseFrame.getLinkPath(),
-                                                          self.actuatedarms[1].ServoMotor.BaseFrame.getLinkPath(),
-                                                          self.actuatedarms[2].ServoMotor.BaseFrame.getLinkPath(),
+            self.actuatedarms[i].ServoMotor.Articulation.ServoWheel.addChild(rigidParts)
+        rigidParts.addObject('SubsetMultiMapping', input=[self.actuatedarms[0].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                                          self.actuatedarms[1].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                                          self.actuatedarms[2].ServoMotor.Articulation.ServoWheel.getLinkPath(),
                                                           freecenter.getLinkPath()],
                                                    output='@./', indexPairs=[0,1,1,1,2,1,3,0])
         rigidifiedstruct.removeChild(rigidParts)
@@ -156,7 +156,7 @@ def createScene(rootNode):
         scene.Simulation.addObject('MechanicalMatrixMapper',
                                      name="mmm"+str(i),
                                      template='Vec1,Vec3',
-                                     object1="@Motors/ActuatedArm"+str(i)+"/ServoMotor/Angle/dofs",
+                                     object1="@Motors/ActuatedArm"+str(i)+"/ServoMotor/Articulation/dofs",
                                      object2="@RigidifiedStructure/DeformableParts/dofs",
                                      skipJ2tKJ2=True,
                                      nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")

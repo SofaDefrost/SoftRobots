@@ -103,12 +103,12 @@ class Tripod(Sofa.Prefab):
         # Attach arms
         rigidParts = rigidifiedstruct.RigidParts
         for i in range(0, numstep):
-            self.actuatedarms[i].ServoMotor.BaseFrame.addChild(rigidParts)
-        rigidParts.addObject('SubsetMultiMapping', input=[self.actuatedarms[0].ServoMotor.BaseFrame.getLinkPath(),
-                                                          self.actuatedarms[1].ServoMotor.BaseFrame.getLinkPath(),
-                                                          self.actuatedarms[2].ServoMotor.BaseFrame.getLinkPath()],
+            self.actuatedarms[i].ServoMotor.Articulation.ServoWheel.addChild(rigidParts)
+        rigidParts.addObject('SubsetMultiMapping', input=[self.actuatedarms[0].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                                          self.actuatedarms[1].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                                          self.actuatedarms[2].ServoMotor.Articulation.ServoWheel.getLinkPath()],
                                                    output='@./', indexPairs=[0,1,1,1,2,1])
-        rigidifiedstruct.removeChild(rigidParts)
+        # rigidifiedstruct.removeChild(rigidParts)
 
 
 def createScene(rootNode):
@@ -136,10 +136,10 @@ def createScene(rootNode):
         scene.Simulation.addObject('MechanicalMatrixMapper',
                                      name="mmm"+str(i),
                                      template='Vec1,Vec3',
-                                     object1="@Motors/ActuatedArm"+str(i)+"/ServoMotor/Angle/dofs",
-                                     object2="@RigidifiedStructure/DeformableParts/dofs",
+                                     object1="@Modelling/Tripod/ActuatedArm"+str(i)+"/ServoMotor/Articulation/dofs",
+                                     object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
                                      skipJ2tKJ2=False if i==0 else True,
-                                     nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+                                     nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
 
     def myanimate(targets, factor):
         for arm in targets:

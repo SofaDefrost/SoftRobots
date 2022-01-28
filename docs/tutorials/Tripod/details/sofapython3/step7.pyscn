@@ -120,7 +120,7 @@ def createScene(rootNode):
         scene.Simulation.addObject('MechanicalMatrixMapper',
                                      name="mmm"+str(i),
                                      template='Vec1,Vec3',
-                                     object1="@Motors/ActuatedArm"+str(i)+"/ServoMotor/Angle/dofs",
-                                     object2="@RigidifiedStructure/DeformableParts/dofs",
+                                     object1="@Simulation/Motors/ActuatedArm"+str(i)+"/ServoMotor/Articulation/dofs",
+                                     object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
                                      skipJ2tKJ2=True,
-                                     nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+                                     nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")

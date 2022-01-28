@@ -24,7 +24,7 @@ def setupanimation(actuators, step, angularstep, factor):
        value.
     """
     for actuator in actuators:
-        rigid = RigidDof(actuator.ServoMotor.BaseFrame.dofs)
+        rigid = RigidDof(actuator.ServoMotor.ServoBody.dofs)
         rigid.setPosition(rigid.rest_position + rigid.forward * step * factor)
         actuator.angleIn = angularstep * factor
 
@@ -32,7 +32,7 @@ def setupanimation(actuators, step, angularstep, factor):
 def saveTripodPosition(actuators, step, angularstep, factor):
         t = []
         for actuator in actuators:
-                t.append(actuator.ServoMotor.BaseFrame.dofs.getData("position"))
+                t.append(actuator.ServoMotor.ServoBody.dofs.getData("position"))
                 t.append(actuator.ServoMotor.getData("angleIn"))
 
         dumpPosition(t, "tripodRestPosition.json")
