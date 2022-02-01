@@ -113,6 +113,7 @@ def createScene(rootNode):
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.Simulation.addObject('GenericConstraintCorrection')
     rootNode.dt = 0.01
 
     tripod = scene.Modelling.addChild(Tripod())
@@ -123,11 +124,6 @@ def createScene(rootNode):
     tripod.BoxROI2.drawBoxes = True
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
-    scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 template='Vec3,Rigid3',
-                                 object1="@RigidifiedStructure/DeformableParts/dofs",
-                                 object2="@RigidifiedStructure/RigidParts/dofs",
-                                 nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
 
     motors = scene.Simulation.addChild("Motors")
     motors.addChild(tripod.ActuatedArm0)
@@ -139,3 +135,11 @@ def createScene(rootNode):
             arm.ServoMotor.angleIn = -factor*math.pi/4.
 
     animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)
+
+    # Temporary additions to have the system correctly built in SOFA
+    # Will no longer be required in SOFA v22.06
+    scene.Simulation.addObject('MechanicalMatrixMapper',
+                                 template='Vec3,Rigid3',
+                                 object1="@RigidifiedStructure/DeformableParts/dofs",
+                                 object2="@RigidifiedStructure/RigidParts/dofs",
+                                 nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")

@@ -1,6 +1,5 @@
 import Sofa
 
-from splib3.numerics import sin, cos, radians
 from stlib3.physics.deformable import ElasticMaterialObject
 from actuatedarm import ActuatedArm
 from stlib3.physics.collision import CollisionMesh
@@ -115,16 +114,16 @@ class Tripod(Sofa.Prefab):
 
         # Attach arms
         rigidParts = rigidifiedstruct.RigidParts
-        freecenter = rigidifiedstruct.addChild('FreeCenter')
-        freecenter.addObject('MechanicalObject', name="dofs", template="Rigid3", position=[0,0,0,0,0,0,1])
-        freecenter.addChild(rigidParts)
+        freeCenter = rigidifiedstruct.addChild('FreeCenter')
+        freeCenter.addObject('MechanicalObject', name="dofs", template="Rigid3", position=[0, 30, 0, 0, 0, 0, 1], showObject=False, showObjectScale=10)
+        freeCenter.addChild(rigidParts)
         for i in range(0, numstep):
             self.actuatedarms[i].ServoMotor.Articulation.ServoWheel.addChild(rigidParts)
         rigidParts.addObject('SubsetMultiMapping', input=[self.actuatedarms[0].ServoMotor.Articulation.ServoWheel.getLinkPath(),
                                                           self.actuatedarms[1].ServoMotor.Articulation.ServoWheel.getLinkPath(),
                                                           self.actuatedarms[2].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                                          freecenter.getLinkPath()],
-                                                   output='@./', indexPairs=[0,1,1,1,2,1,3,0])
+                                                          freeCenter.getLinkPath()],
+                             output='@./', indexPairs=[0,1,1,1,2,1,3,0])
         rigidifiedstruct.removeChild(rigidParts)
 
 
@@ -143,20 +142,34 @@ def createScene(rootNode):
     tripod = scene.Modelling.addChild(Tripod())
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
+
+    motors = scene.Simulation.addChild("Motors")
+    for i in range(3):
+        motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
+
+    # Temporary additions to have the system correctly built in SOFA
+    # Will no longer be required in SOFA v22.06
     scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="mmm",
+                                 name="mmmFreeCenter",
                                  template='Vec3,Rigid3',
                                  object1="@RigidifiedStructure/DeformableParts/dofs",
                                  object2="@RigidifiedStructure/FreeCenter/dofs",
                                  nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
 
-    motors = scene.Simulation.addChild("Motors")
     for i in range(3):
-        motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
         scene.Simulation.addObject('MechanicalMatrixMapper',
-                                     name="mmm"+str(i),
-                                     template='Vec1,Vec3',
-                                     object1="@Motors/ActuatedArm"+str(i)+"/ServoMotor/Articulation/dofs",
-                                     object2="@RigidifiedStructure/DeformableParts/dofs",
-                                     skipJ2tKJ2=True,
-                                     nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+                                   name="mmmDeformableAndArm" + str(i),
+                                   template='Vec1,Vec3',
+                                   object1="@Modelling/Tripod/ActuatedArm" + str(i) + "/ServoMotor/Articulation/dofs",
+                                   object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
+                                   skipJ2tKJ2=True,
+                                   nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+
+        scene.Simulation.addObject('MechanicalMatrixMapper',
+                                   name="mmmArms" + str((i + 1) % 3) + str(i),
+                                   template='Vec1,Vec1',
+                                   object1="@Modelling/Tripod/ActuatedArm" + str(i) + "/ServoMotor/Articulation/dofs",
+                                   object2="@Modelling/Tripod/ActuatedArm" + str((i + 1) % 3) + "/ServoMotor/Articulation/dofs",
+                                   skipJ1tKJ1=True,
+                                   skipJ2tKJ2=True,
+                                   nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")

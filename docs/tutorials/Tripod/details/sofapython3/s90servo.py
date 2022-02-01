@@ -67,7 +67,8 @@ class ServoMotor(Sofa.Prefab):
 
         # Servo wheel
         angle = self.addChild('Articulation')
-        angle.addObject('MechanicalObject', name='dofs', template='Vec1', position=self.getData('angleIn').getLinkPath())
+        angle.addObject('MechanicalObject', name='dofs', template='Vec1', position=[[0]], rest_position=self.getData('angleIn').getLinkPath())
+        angle.addObject('RestShapeSpringsForceField', points=0, stiffness=1e9)
         angle.addObject('UniformMass', totalMass=0.01)
 
         servoWheel = angle.addChild('ServoWheel')
@@ -96,13 +97,12 @@ def createScene(rootNode):
     scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaOpenglVisual', 'SofaRigid'], iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
+    scene.addObject('FreeMotionAnimationLoop')
+    scene.addObject('GenericConstraintSolver', maxIterations=1e3, tolerance=1e-5)
+    scene.Simulation.addObject('GenericConstraintCorrection')
 
     scene.dt = 0.01
     scene.gravity = [0., -9810., 0.]
-
-    # Use these components on top of the scene to solve the constraint 'StopperConstraint'.
-    scene.addObject('FreeMotionAnimationLoop')
-    scene.addObject('GenericConstraintSolver', maxIterations=1e3, tolerance=1e-5)
 
     scene.Simulation.addChild(ServoMotor(name="ServoMotor"))
     animate(animation, {'target': scene.Simulation.ServoMotor}, duration=10., mode='loop')

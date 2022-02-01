@@ -42,7 +42,6 @@ class ServoArm(Sofa.Prefab):
                                showObject=True,
                                showObjectScale=5,
                                translation2=[0, 25, 0])
-        self.addObject('UniformMass', totalMass=0.01)
 
     def setRigidMapping(self,path):
 
@@ -127,6 +126,7 @@ def createScene(rootNode):
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.Simulation.addObject('GenericConstraintCorrection')
     scene.VisualStyle.displayFlags = 'showBehavior'
     scene.dt = 0.01
     scene.gravity = [0., -9810., 0.]

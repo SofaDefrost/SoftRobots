@@ -42,7 +42,6 @@ class Tripod(Sofa.Prefab):
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
-
     def init(self):
 
         self.elasticMaterialObject = ElasticBody(self)
@@ -108,7 +107,7 @@ class Tripod(Sofa.Prefab):
                                                           self.actuatedarms[1].ServoMotor.Articulation.ServoWheel.getLinkPath(),
                                                           self.actuatedarms[2].ServoMotor.Articulation.ServoWheel.getLinkPath()],
                                                    output='@./', indexPairs=[0,1,1,1,2,1])
-        # rigidifiedstruct.removeChild(rigidParts)
+        rigidifiedstruct.removeChild(rigidParts)
 
 
 def createScene(rootNode):
@@ -133,16 +132,30 @@ def createScene(rootNode):
     motors = scene.Simulation.addChild("Motors")
     for i in range(3):
         motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
-        scene.Simulation.addObject('MechanicalMatrixMapper',
-                                     name="mmm"+str(i),
-                                     template='Vec1,Vec3',
-                                     object1="@Modelling/Tripod/ActuatedArm"+str(i)+"/ServoMotor/Articulation/dofs",
-                                     object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
-                                     skipJ2tKJ2=False if i==0 else True,
-                                     nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
 
     def myanimate(targets, factor):
         for arm in targets:
             arm.angleIn.value = -factor*math.pi/4.
 
     animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)
+
+    # Temporary additions to have the system correctly built in SOFA
+    # Will no longer be required in SOFA v22.06
+    for i in range(3):
+        scene.Simulation.addObject('MechanicalMatrixMapper',
+                                     name="mmmDeformableAndArm"+str(i),
+                                     template='Vec1,Vec3',
+                                     object1="@Modelling/Tripod/ActuatedArm"+str(i)+"/ServoMotor/Articulation/dofs",
+                                     object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
+                                     skipJ2tKJ2=False if i==0 else True,
+                                     nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+
+        scene.Simulation.addObject('MechanicalMatrixMapper',
+                                   name="mmmArms"+ str((i+1) % 3) + str(i),
+                                   template='Vec1,Vec1',
+                                   object1="@Modelling/Tripod/ActuatedArm" + str(i) + "/ServoMotor/Articulation/dofs",
+                                   object2="@Modelling/Tripod/ActuatedArm" + str(
+                                       (i + 1) % 3) + "/ServoMotor/Articulation/dofs",
+                                   skipJ1tKJ1=True,
+                                   skipJ2tKJ2=True,
+                                   nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
