@@ -1,12 +1,18 @@
-Install ros,
+# Requirements
+
+- python2
+- SOFA with SofaPython plugin
+- Ros1
+
+# How To
 
 To run the example:
 - source it,
-- in a first terminal, "source ros", start roscore
-- in a second terminal, "source ros", start python recv.py
-- in a third terminal, "source ros", runSofa test_sofaros.py
+- in a first terminal, "source ros", start `roscore`
+- in a second terminal, "source ros", start `python recv.py`
+- in a third terminal, "source ros", `runSofa test_sofaros.py`
 
-The example is a simple scene composed of two MechanicalObject, one can be manipualted 
+The example is a simple scene composed of two MechanicalObject, one can be manipulated 
 with mouse interaction. The data position of this MechanicalObject is published as ros topic "/simulation/sender/position" using a dedicated RosSender (python script controller)
 
 The recv is subscribed to this published ros topic "/simulation/sender/position". Each time a data 
