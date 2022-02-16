@@ -11,7 +11,7 @@ def send(data):
 
 def recv(data, datafield):
     t = data.tolist()
-    datafield.value = [t[0] + 1.0, t[1], t[2]]
+    datafield.value = [[t[0] + 1.0, t[1], t[2]]]
 
 
 def createScene(rootNode):
@@ -36,12 +36,10 @@ def createScene(rootNode):
     a.receiver.showColor = [0,1,0,1]
 
     rosNode = sofaros.init("SofaNode")
-    rootNode.addObject(sofaros.RosSender(rosNode, "/simulation/sender/position",
-                                         s.sender.findData("position"), Float32MultiArray, send))
-
-    ##  Entre le sender et le receiver...il y un midpoint ros.
-
     rootNode.addObject(sofaros.RosReceiver(rosNode, "/animation/receiver/position",
                                            a.receiver.findData("position"), Float32MultiArray, recv))
+
+    rootNode.addObject(sofaros.RosSender(rosNode, "/simulation/sender/position",
+                                         s.sender.findData("position"), Float32MultiArray, send))
 
     return rootNode
