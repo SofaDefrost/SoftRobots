@@ -5,7 +5,7 @@ Step 2: Introducing elastic material modelling
 from stlib3.scene import Scene
 
 def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem'], iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
@@ -20,7 +20,7 @@ def createScene(rootNode):
     # - a deformation law (here linear elasticity)
     # - a solving method (here FEM)
     # - as we are using FEM we need a space discretization (here tetrahedron)
-    elasticbody = rootNode.addChild('ElasticBody')
+    elasticbody = rootNode.Simulation.addChild('ElasticBody')
 
     # Specific loader for the mechanical model
     elasticbody.addObject('GIDMeshLoader',
@@ -36,9 +36,6 @@ def createScene(rootNode):
                              showObject=True,
                              showObjectScale=5.0)
     elasticbody.addObject('UniformMass', totalMass=0.032)
-
-    elasticbody.addObject('EulerImplicitSolver')
-    elasticbody.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixd')
 
     # ForceField components
     elasticbody.addObject('TetrahedronFEMForceField',

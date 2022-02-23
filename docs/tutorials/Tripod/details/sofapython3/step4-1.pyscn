@@ -75,11 +75,12 @@ def createScene(rootNode):
     from fixingbox import FixingBox
     import math
 
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaRigid'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False, plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaRigid'])
     scene.addMainHeader()
-    scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
-    rootNode.dt = 0.025
+    scene.addObject('FreeMotionAnimationLoop')
+    scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
+    rootNode.dt = 0.01
 
     scene.VisualStyle.displayFlags = "showBehavior"
 
@@ -87,12 +88,13 @@ def createScene(rootNode):
     FixingBox(tripod, tripod.ElasticBody.ElasticMaterialObject, scale=[10, 10, 10], translation=[0., 25, 0.])
     tripod.FixingBox.BoxROI.drawBoxes = True
 
-    scene.Simulation.addChild(tripod.ActuatedArm0)
-    scene.Simulation.addChild(tripod.ActuatedArm1)
-    scene.Simulation.addChild(tripod.ActuatedArm2)
+    motors = scene.Simulation.addChild("Motors")
+    motors.addChild(tripod.ActuatedArm0)
+    motors.addChild(tripod.ActuatedArm1)
+    motors.addChild(tripod.ActuatedArm2)
 
     def myanimate(targets, factor):
         for arm in targets:
-            arm.ServoMotor.angleIn = -factor*math.pi/4.
+            arm.angleIn.value = -factor*math.pi/4
 
     animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)

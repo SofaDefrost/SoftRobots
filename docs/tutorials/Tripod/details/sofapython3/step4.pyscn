@@ -14,11 +14,13 @@ from tripod import Tripod
 def createScene(rootNode):
     from stlib3.scene import Scene
 
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False, plugins=['SofaSparseSolver', 'SofaGeneralAnimationLoop', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
     scene.addMainHeader()
-    scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
-    rootNode.dt = 0.025
+    scene.addObject('FreeMotionAnimationLoop')
+    scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.Simulation.addObject('GenericConstraintCorrection')
+    rootNode.dt = 0.01
 
     scene.VisualStyle.displayFlags = "showBehavior"
 
@@ -28,7 +30,20 @@ def createScene(rootNode):
     tripod.BoxROI2.drawBoxes = True
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
+    scene.Simulation.addObject('MechanicalMatrixMapper',
+                                 name="mmmFreeCenter",
+                                 template='Vec3,Rigid3',
+                                 object1="@RigidifiedStructure/DeformableParts/dofs",
+                                 object2="@RigidifiedStructure/FreeCenter/dofs",
+                                 nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+
     motors = scene.Simulation.addChild("Motors")
-    motors.addChild(tripod.ActuatedArm0)
-    motors.addChild(tripod.ActuatedArm1)
-    motors.addChild(tripod.ActuatedArm2)
+    for i in range(3):
+        motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
+        scene.Simulation.addObject('MechanicalMatrixMapper',
+                                     name="mmm"+str(i),
+                                     template='Vec1,Vec3',
+                                     object1="@Simulation/Motors/ActuatedArm"+str(i)+"/ServoMotor/Articulation/dofs",
+                                     object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
+                                     skipJ2tKJ2=True,
+                                     nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
