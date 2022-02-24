@@ -1,12 +1,12 @@
 def PullingCable(attachedTo=None,
-    name="Cable",
-    cableGeometry=[[1.0, 0.0, 0.0],[0.0, 0.0, 0.0]],
-    rotation=[0.0,0.0,0.0],
-    translation=[0.0,0.0,0.0],
-    uniformScale=1.0,
-    pullPointLocation=None,
-    initialValue=0.0,
-    valueType="displacement"):
+                 name="Cable",
+                 cableGeometry=[[1.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+                 rotation=[0.0, 0.0, 0.0],
+                 translation=[0.0, 0.0, 0.0],
+                 uniformScale=1.0,
+                 pullPointLocation=None,
+                 initialValue=0.0,
+                 valueType="displacement"):
     """Adds a cable constraint.
 
     The constraint apply to a parent mesh.
@@ -46,26 +46,26 @@ def PullingCable(attachedTo=None,
     # mechanical modelling. In the case of a cable it is a set of positions specifying
     # the points where the cable is passing by.
     cable.addObject('MechanicalObject', position=cableGeometry,
-                        rotation=rotation, translation=translation, scale=uniformScale)
+                    rotation=rotation, translation=translation, scale=uniformScale)
 
     # Add a CableConstraint object with a name.
     # the indices are referring to the MechanicalObject's positions.
     # The last indice is where the pullPoint is connected.
-    if pullPointLocation != None:
+    if pullPointLocation is not None:
         cable.addObject('CableConstraint',
-                            indices=list(range(len(cableGeometry))),
-                            pullPoint=pullPointLocation,
-                            value=initialValue,
-                            valueType=valueType,
-                            hasPullPoint=True
-                            )
+                        indices=list(range(len(cableGeometry))),
+                        pullPoint=pullPointLocation,
+                        value=initialValue,
+                        valueType=valueType,
+                        hasPullPoint=True
+                        )
     else:
         cable.addObject('CableConstraint',
-                            indices=list(range(len(cableGeometry))),
-                            value=initialValue,
-                            valueType=valueType,
-                            hasPullPoint=False
-                            )
+                        indices=list(range(len(cableGeometry))),
+                        value=initialValue,
+                        valueType=valueType,
+                        hasPullPoint=False
+                        )
 
     # This add a BarycentricMapping. A BarycentricMapping is a key element as it will add a bi-directional link
     # between the cable's DoFs and the parents's ones so that movements of the cable's DoFs will be mapped
@@ -73,6 +73,7 @@ def PullingCable(attachedTo=None,
     cable.addObject('BarycentricMapping', name="Mapping", mapForces=False, mapMasses=False)
 
     return cable
+
 
 def createScene(node):
     from stlib3.scene import MainHeader
