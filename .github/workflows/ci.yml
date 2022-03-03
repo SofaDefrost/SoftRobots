@@ -1,4 +1,4 @@
-name: SoftRobots-CI
+name: SoftRobots-PR
 
 on:
   workflow_dispatch:
