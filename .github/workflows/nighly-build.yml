@@ -6,18 +6,9 @@ on:
   push:
 
 
-jobs:
-  nightly-build:
-    name: "Generating master-nightly builds"
-    runs-on: ${{ matrix.os }}
-    steps:
-        - name: Setup SOFA and environment
-          shell: bash
-          run: |
-            echo "YOLO"
-            
+jobs:           
   build-and-test:
-    name: Building SoftRobot on ${{ matrix.os }} using SOFA ${{ matrix.sofa_branch }}
+    name: Building Nightly build for SoftRobot on ${{ matrix.os }} using SOFA ${{ matrix.sofa_branch }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -144,9 +135,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ github.ref_name }}
-          tag_name: release-${{ github.ref_name }}
+          tag_name: master-nightly
           fail_on_unmatched_files: true
           files: |
-            artifacts/SoftRobots_*_Linux.zip
-            artifacts/SoftRobots_*_Windows.zip
-            artifacts/SoftRobots_*_macOS.zip
+            artifacts/SoftRobots_master_nightly_Linux.zip
+            artifacts/SoftRobots_master_nightly_Windows.zip
+            artifacts/SoftRobots_master_nightly_macOS.zip
