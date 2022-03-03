@@ -127,6 +127,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/artifacts
           for artifact in *; do
+            echo "Now zipping "$artifact
             zip $artifact.zip -r $artifact/*
           done
 
