@@ -5,10 +5,9 @@ on:
   pull_request:
   push:
 
-
 jobs:           
   build-and-test:
-    name: Building Nightly build for SoftRobot on ${{ matrix.os }} using SOFA master nightly binary
+    name: Building master-nightly binary for SoftRobot on ${{ matrix.os }} using the SOFA master-nightly binaries
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -114,7 +113,6 @@ jobs:
 
   deploy:
     name: Deploy artifacts
-    if: always() && startsWith(github.ref, 'refs/heads/') # we are on a branch (not a PR)
     needs: [build-and-test]
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -136,7 +134,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ github.ref_name }}
-          tag_name: master-nightly
+          release_name: master-nightly
           fail_on_unmatched_files: true
           files: |
             artifacts/SoftRobots_master_nightly_Linux.zip
