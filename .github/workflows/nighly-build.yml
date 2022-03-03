@@ -7,7 +7,7 @@ on:
 
 jobs:           
   build-and-test:
-    name: Building master-nightly binary for SoftRobot on ${{ matrix.os }} using the SOFA master-nightly binaries
+    name: Building SoftRobot_master_nightly on ${{ matrix.os }} using the SOFA_master_nightly 
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -139,5 +139,6 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             artifacts/SoftRobots_master_nightly_Linux.zip
-            artifacts/SoftRobots_master_nightly_Windows.zip
-            artifacts/SoftRobots_master_nightly_macOS.zip
+            
+           #artifacts/SoftRobots_master_nightly_Windows.zip
+           #artifacts/SoftRobots_master_nightly_macOS.zip
