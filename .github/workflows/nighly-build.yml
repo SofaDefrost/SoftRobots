@@ -7,7 +7,7 @@ on:
 
 jobs:           
   build-and-test:
-    name: Building SoftRobot_master_nightly on ${{ matrix.os }} using the SOFA_master_nightly 
+    name: Building master-nightly on ${{ matrix.os }} using the SOFA_master_nightly 
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -117,6 +117,10 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"  
+    
       - name: Get artifacts
         uses: actions/download-artifact@v2
         with:
@@ -134,8 +138,9 @@ jobs:
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
-          name: master-nightly
+          name: ${{ github.ref_name }}
           tag_name: master-nightly
+          body: Generated the ${{ steps.date.outputs.date }}
           fail_on_unmatched_files: true
           files: |
             artifacts/SoftRobots_master_nightly_Linux.zip
