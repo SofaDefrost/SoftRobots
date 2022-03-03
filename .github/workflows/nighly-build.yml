@@ -9,7 +9,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
         - name: Setup SOFA and environment
-
+          shell: bash
+          run: |
+            echo "YOLO"
+            
   build-and-test:
     name: Building SoftRobot on ${{ matrix.os }} using SOFA ${{ matrix.sofa_branch }}
     runs-on: ${{ matrix.os }}

@@ -6,12 +6,6 @@ on:
   push:
 
 jobs:
-  nightly-build:
-    name: "Generating master-nightly builds"
-    runs-on: ${{ matrix.os }}
-    steps:
-        - name: Setup SOFA and environment
-
   build-and-test:
     name: Building SoftRobot on ${{ matrix.os }} using SOFA ${{ matrix.sofa_branch }}
     runs-on: ${{ matrix.os }}
