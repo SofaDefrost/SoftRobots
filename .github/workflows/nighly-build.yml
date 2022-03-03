@@ -1,9 +1,7 @@
-name: SoftRobots-CI
+name: SoftRobots-nightly-build
 
 on:
   workflow_dispatch:
-  pull_request:
-  push:
 
 jobs:
   nightly-build:
