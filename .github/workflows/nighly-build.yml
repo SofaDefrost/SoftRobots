@@ -133,8 +133,8 @@ jobs:
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ github.ref_name }}
-          release_name: master-nightly
+          name: master-nightly
+          tag_name: master-nightly
           fail_on_unmatched_files: true
           files: |
             artifacts/SoftRobots_master_nightly_Linux.zip
