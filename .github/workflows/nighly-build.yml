@@ -140,7 +140,7 @@ jobs:
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
-          name: master-nightly
+          name: ${{ github.ref_name }}-nightly
           tag_name: ${{ github.ref_name }}
           body: |
                 This Nighly build has been generated the ${{ steps.date.outputs.date }}
