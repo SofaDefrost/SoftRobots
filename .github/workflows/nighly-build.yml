@@ -3,6 +3,7 @@ name: Nightly-build
 on:
   workflow_dispatch:
   push:
+  cron: '0 5 * * *'  # every day at 6 am
 
 jobs:           
   build-and-test:
@@ -127,10 +128,10 @@ jobs:
 
       - name: Zip artifacts
         shell: bash
-        run: 
+        run: |
           cd $GITHUB_WORKSPACE/artifacts
           for artifact in *; do
-            echo "Now zipping " $artifact
+            echo "Now zipping "$artifact
             mv $artifact SoftRobots
             zip $artifact.zip -r SoftRobots
             rm -rf SoftRobots
