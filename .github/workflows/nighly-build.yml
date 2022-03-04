@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         #os: [ubuntu-20.04, macos-10.15, windows-2019]
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, windows-2019]
         sofa_branch: [master]
 
     steps:
@@ -159,7 +159,10 @@ jobs:
           files: |
             artifacts/SoftRobots_master_nightly_Linux.zip
             artifacts/SoftRobots_master_nightly_Linux.zip.md5
+            artifacts/SoftRobots_master_nightly_Windows.zip
+            artifacts/SoftRobots_master_nightly_Windows.zip.md5
             
             
-           #artifacts/SoftRobots_master_nightly_Windows.zip
-           #artifacts/SoftRobots_master_nightly_macOS.zip
+           #artifacts/SoftRobots_master_nightly_Darwin.zip
+           # artifacts/SoftRobots_master_nightly_Darwin.zip.md5
+            
