@@ -13,8 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-10.15, windows-2019]
-        #os: [ubuntu-20.04]
+        #os: [ubuntu-20.04, macos-10.15, windows-2019]
+        os: [ubuntu-20.04]
         sofa_branch: [master]
 
     steps:
@@ -135,6 +135,7 @@ jobs:
             echo "Now zipping "$artifact
             mv $artifact SoftRobots
             zip $artifact.zip -r SoftRobots
+            md5sum $artifact.zip > $artifact.zip.md5
             rm -rf SoftRobots
           done
 
@@ -157,6 +158,7 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             artifacts/SoftRobots_master_nightly_Linux.zip
+            artifacts/SoftRobots_master_nightly_Linux.zip.md5
             
             
            #artifacts/SoftRobots_master_nightly_Windows.zip
