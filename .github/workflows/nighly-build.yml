@@ -129,9 +129,9 @@ jobs:
         shell: bash
         run: SoftRobots_
           cd $GITHUB_WORKSPACE/artifacts
-          mv SoftRobots_master_nightly_Linux SoftRobots
           for artifact in *; do
             echo "Now zipping "$artifact
+            mv $artifact SoftRobots
             zip $artifact.zip -r $artifact/*
           done
 
