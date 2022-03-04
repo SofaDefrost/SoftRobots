@@ -157,5 +157,7 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             artifacts/SoftRobots_master_nightly_Linux.zip
-            artifacts/SoftRobots_master_nightly_Windows.zip
-            artifacts/SoftRobots_master_nightly_macOS.zip
+            
+            
+           #artifacts/SoftRobots_master_nightly_Windows.zip
+           #artifacts/SoftRobots_master_nightly_macOS.zip
