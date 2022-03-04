@@ -132,7 +132,8 @@ jobs:
           for artifact in *; do
             echo "Now zipping "$artifact"
             mv $artifact SoftRobots
-            zip $artifact.zip -r $artifact/*
+            zip $artifact.zip -r SoftRobots
+            rm -rf SoftRobots
           done
 
       - name: Upload release
