@@ -130,7 +130,7 @@ jobs:
         run: SoftRobots_
           cd $GITHUB_WORKSPACE/artifacts
           for artifact in *; do
-            echo "Now zipping "$artifact
+            echo "Now zipping "$artifact"
             mv $artifact SoftRobots
             zip $artifact.zip -r $artifact/*
           done
