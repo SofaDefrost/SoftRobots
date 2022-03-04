@@ -1,13 +1,11 @@
-name: Nightly-build
+name: Release-build
 
 on:
   workflow_dispatch:
-  schedule:
-      - cron: '0 5 * * *'  # every day at 6 am
 
 jobs:           
   build-and-test:
-    name: Building master-nightly on ${{ matrix.os }} using the SOFA_master_nightly 
+    name: Building release on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -64,13 +62,13 @@ jobs:
       - name: Create artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: SoftRobots_master_nightly_${{ runner.os }}
+          name: SoftRobots_${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.WORKSPACE_INSTALL_PATH }}
 
       - name: Install artifact
         uses: actions/download-artifact@v2
         with:
-          name: SoftRobots_master_nightly_${{ runner.os }}
+          name: SoftRobots_${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
 
       - name: Set env vars for tests
@@ -140,27 +138,18 @@ jobs:
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
-          name: master-nightly
-          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          tag_name: release-${{ github.ref_name }}
           body: |
-                This Nighly build has been generated the ${{ steps.date.outputs.date }}
-                This binary version should be compatible with nightly build of our plugins as well as with the nighly build of 
-                Sofa that are available at:
-                  - Linux: https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=master,CI_SCOPE=standard/lastSuccessfulBuild/artifact/Linux/*zip*/Linux.zip
-                  - Windows: https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=master,CI_SCOPE=standard/lastSuccessfulBuild/artifact/Windows/*zip*/Windows.zip
-                  - MacOS: https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=master,CI_SCOPE=standard/lastSuccessfulBuild/artifact/MacOS/*zip*/MacOS.zip
-                                
-                For ease of installation you can also install the nighly builds of Sofa and ours plugin using the Sofa Package Manager: https://github.com/SofaDefrost/SPM
-                spm install SoftRobots-bin-nightly
-                or 
-                spm install SoftDefrost-bin-nightly (to get all our software stack)
-                               
+                This release build has been generated the ${{ steps.date.outputs.date }}
+                This release should be compatible with binary builds of Sofa with same release number.
+                                               
           fail_on_unmatched_files: true
           files: |
-            artifacts/SoftRobots_master_nightly_Linux.zip
-            artifacts/SoftRobots_master_nightly_Linux.zip.md5
-            artifacts/SoftRobots_master_nightly_Windows.zip
-            artifacts/SoftRobots_master_nightly_Windows.zip.md5
-            artifacts/SoftRobots_master_nightly_macOS.zip
-            artifacts/SoftRobots_master_nightly_macOS.zip.md5
+            artifacts/SoftRobots_*_Linux.zip
+            artifacts/SoftRobots_*_Linux.zip.md5
+            artifacts/SoftRobots_*_Windows.zip
+            artifacts/SoftRobots_*_Windows.zip.md5
+            artifacts/SoftRobots_*_macOS.zip
+            artifacts/SoftRobots_*_macOS.zip.md5
             
