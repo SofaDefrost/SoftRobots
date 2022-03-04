@@ -13,8 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        #os: [ubuntu-20.04, macos-10.15, windows-2019]
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        #os: [ubuntu-20.04]
         sofa_branch: [master]
 
     steps:
@@ -120,7 +120,7 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d_%T')"
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d (at %T)')"
     
       - name: Get artifacts
         uses: actions/download-artifact@v2
@@ -143,10 +143,19 @@ jobs:
         with:
           name: master-nightly
           tag_name: ${{ github.ref_name }}
-          body: Nighly build generated ${{ steps.date.outputs.date }}
+          body: |
+                This Nighly build has been generated the ${{ steps.date.outputs.date }}
+                This binary version should be compatible with nightly build of our plugins as well as with the nighly build of 
+                Sofa that are available at:
+                  - Linux: https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=master,CI_SCOPE=standard/lastSuccessfulBuild/artifact/Linux/*zip*/Linux.zip
+                  - Windows: https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=master,CI_SCOPE=standard/lastSuccessfulBuild/artifact/Windows/*zip*/Windows.zip
+                  - MacOS: https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=master,CI_SCOPE=standard/lastSuccessfulBuild/artifact/MacOS/*zip*/MacOS.zip
+                                
+                But for ease of use we highly recommand you to install the nighly builds of Sofa and its plugin using the Sofa Package Manager: https://github.com/SofaDefrost/SPM
+                spm install SoftRobots-nightly-build
+                
           fail_on_unmatched_files: true
           files: |
             artifacts/SoftRobots_master_nightly_Linux.zip
-            
-           #artifacts/SoftRobots_master_nightly_Windows.zip
-           #artifacts/SoftRobots_master_nightly_macOS.zip
+            artifacts/SoftRobots_master_nightly_Windows.zip
+            artifacts/SoftRobots_master_nightly_macOS.zip
