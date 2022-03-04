@@ -13,7 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        #os: [ubuntu-20.04, macos-10.15, windows-2019]
+        os: [ubuntu-20.04]
         sofa_branch: [master]
 
     steps:
@@ -149,10 +150,6 @@ jobs:
                                                
           fail_on_unmatched_files: true
           files: |
-            artifacts/SoftRobots_*_Linux.zip
-            artifacts/SoftRobots_*_Linux.zip.md5
-            artifacts/SoftRobots_*_Windows.zip
-            artifacts/SoftRobots_*_Windows.zip.md5
-            artifacts/SoftRobots_*_macOS.zip
-            artifacts/SoftRobots_*_macOS.zip.md5
+            artifacts/SoftRobots_*_*.zip
+            artifacts/SoftRobots_*_*.zip.md5
             
