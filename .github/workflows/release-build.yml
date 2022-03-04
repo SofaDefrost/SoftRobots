@@ -8,14 +8,14 @@ on:
   
 jobs:           
   build-and-test:
-    name: Building release on ${{ matrix.os }}
+    name: Building release ${{ github.ref_name }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         #os: [ubuntu-20.04, macos-10.15, windows-2019]
         os: [ubuntu-20.04]
-        sofa_branch: ["${{ github.head_ref }}"]
+        sofa_branch: ["${{ github.ref_name }}"]
 
     steps:
       - name: Setup SOFA and environment
@@ -142,7 +142,7 @@ jobs:
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ github.ref_name }}
+          name: ${{ github. }}
           tag_name: release-${{ github.ref_name }}
           body: |
                 This release build has been generated the ${{ steps.date.outputs.date }}
