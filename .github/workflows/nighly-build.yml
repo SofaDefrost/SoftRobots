@@ -3,7 +3,8 @@ name: Nightly-build
 on:
   workflow_dispatch:
   push:
-  cron: '0 5 * * *'  # every day at 6 am
+  schedule:
+      cron: '0 5 * * *'  # every day at 6 am
 
 jobs:           
   build-and-test:
