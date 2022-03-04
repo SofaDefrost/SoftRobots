@@ -118,7 +118,7 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"  
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d_%T)
     
       - name: Get artifacts
         uses: actions/download-artifact@v2
@@ -127,10 +127,10 @@ jobs:
 
       - name: Zip artifacts
         shell: bash
-        run: SoftRobots_
+        run: 
           cd $GITHUB_WORKSPACE/artifacts
           for artifact in *; do
-            echo "Now zipping "$artifact"
+            echo "Now zipping " $artifact
             mv $artifact SoftRobots
             zip $artifact.zip -r SoftRobots
             rm -rf SoftRobots
