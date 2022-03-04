@@ -1,4 +1,4 @@
-name: PR-integration
+name: pr-integration
 
 on:
   workflow_dispatch:
