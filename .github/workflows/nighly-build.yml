@@ -138,8 +138,8 @@ jobs:
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ github.ref_name }}
-          tag_name: release-${{ github.ref_name }}
+          name: master
+          tag_name: release-master
           body: Generated the ${{ steps.date.outputs.date }}
           fail_on_unmatched_files: true
           files: |
