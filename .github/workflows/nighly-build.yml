@@ -138,9 +138,9 @@ jobs:
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
-          name: master
-          tag_name: release-master
-          body: Generated the ${{ steps.date.outputs.date }}
+          name: master-nightly
+          tag_name: ${{ github.ref_name }}
+          body: Nighly build generated ${{ steps.date.outputs.date }}
           fail_on_unmatched_files: true
           files: |
             artifacts/SoftRobots_master_nightly_Linux.zip
