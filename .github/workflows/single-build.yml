@@ -1,9 +1,9 @@
-name: PR-integration
+name: SoftRobots-release-build
 
 on:
-  #workflow_dispatch:
-  pull_request:
-  push:
+  workflow_dispatch:
+  #pull_request:
+  #push:
 
 jobs:
   build-and-test:
@@ -109,3 +109,34 @@ jobs:
         run: |
           cd $WORKSPACE_BUILD_PATH
           ./bin/SoftRobots_test${{ steps.sofa.outputs.exe }}
+
+  deploy:
+    name: Deploy artifacts
+    if: always() && startsWith(github.ref, 'refs/heads/') # we are on a branch (not a PR)
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Get artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Zip artifacts
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/artifacts
+          for artifact in *; do
+            zip $artifact.zip -r $artifact/*
+          done
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.ref_name }}
+          tag_name: release-${{ github.ref_name }}
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/SoftRobots_*_Linux.zip
+            artifacts/SoftRobots_*_Windows.zip
+            artifacts/SoftRobots_*_macOS.zip
