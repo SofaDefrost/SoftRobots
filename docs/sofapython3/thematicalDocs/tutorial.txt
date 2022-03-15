@@ -1,0 +1,36 @@
+Show case of tutorials
+
+0- Outline :
+      description of the robot / show demo
+      why us ? because very good approximation, real time/interactive, inverse!!!
+      content of the tutorial / simple simulation, why? / later real stuff
+      FEM
+      dynamic / static
+T1- Elements : tetra/hexa/beam
+      three simulations (just show/mention)
+      hands on tetra simulation
+T2- How to mesh (just show/mention)
+      CAD to simulation
+      make it beautiful: visual model / mapping
+T3- Setup material properties: elastic/hyperelastic
+      two simulations (just mention)
+      hands on elastic simulation
+T4- Direct actuation : cable/pressure/sliding/hydraulic
+      simulation with sliding
+      python controller
+      connection with real robot
+T5- Inverse simulation
+      see T5 for connection
+      communication between two simulations (direct/inverse) (just mention?)
+T6- Collision (just mention and show demos)
+      environment
+      direct and inverse (show show show)
+      demo with a real obstacle (fixed, not tracked)
+T7- From simplified to very good model
+      how to attach deformable to rigid
+T8- Closed loop
+T9- Conclusion and perspectives
+      model order reduction
+      friction
+      contact GPU
+No questions...

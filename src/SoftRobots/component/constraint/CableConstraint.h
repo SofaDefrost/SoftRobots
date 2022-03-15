@@ -31,9 +31,10 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLECONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINTSET_CABLECONSTRAINT_H
 
-#include "model/CableModel.h"
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
+
+#include <SoftRobots/component/constraint/model/CableModel.h>
 
 namespace sofa
 {

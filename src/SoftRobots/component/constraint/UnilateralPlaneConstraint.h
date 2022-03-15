@@ -37,9 +37,9 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/type/Vec.h>
 
-#include "../behavior/SoftRobotsConstraint.h"
 #include <SoftRobots/component/initSoftRobots.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
+#include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
 namespace sofa
 {

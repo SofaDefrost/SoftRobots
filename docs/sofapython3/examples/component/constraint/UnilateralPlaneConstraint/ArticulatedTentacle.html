@@ -1,0 +1,36 @@
+<html>
+
+<head>
+<link href="../../../../../examples/Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body bgcolor="#F0F8FF">
+
+	<div id="contenu">
+
+		<h1>UnilateralPlaneConstraint</h1>
+		
+		<p>In this scene we demonstrate how to use the <FONT COLOR="#0B2161">UnilateralPlaneConstraint</FONT> component.  
+		  This component is a simple point plane collision model.
+		  By providing 4 points to the component, the first point will be constrained to stay in one side of the plane described 
+		  by the three other points (in the direction of the plane normal). All the four points, the triangle and the normal can be 
+		  seen by allowing the "Collision Model" in the "View" tab.
+		</p>
+		<br>
+		<p>This scene simulates a tentacle articulated with a cable. The cable is controlled by a python script controller:
+		   At each time step the controller increases the displacement of the cable of 0.5mm.
+		   The "UnilateralPlaneConstraint" is use to set a simple collision model in the articulations. 
+		</p>
+		<br>
+		<center><img src="images/ArticulatedTentacle_1.png" /></center>
+		<center><img src="images/ArticulatedTentacle_2.png" /></center>
+		<center><img src="images/ArticulatedTentacle_3.png" /></center>
+		<p>More description can be found at:
+		  https://project.inria.fr/softrobot/documentation/constraint/UnilateralPlaneConstraint
+		</p>
+		<br>
+	</div>
+
+</body>
+
+</html>

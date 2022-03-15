@@ -32,8 +32,7 @@
 
 #include <SofaUserInteraction/Controller.h>
 
-#include "modules/Serial.h"
-
+#include <SoftRobots/component/controller/modules/Serial.h>
 #include <SoftRobots/component/initSoftRobots.h>
 
 #if defined (_WIN32) || defined( _WIN64)

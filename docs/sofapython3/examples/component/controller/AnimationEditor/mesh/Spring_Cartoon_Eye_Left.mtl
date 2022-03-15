@@ -1,0 +1,22 @@
+# MTL written from /Users/dequidt/tmp/Spring_Cartoon_Eye_Left.obj
+newmtl Base
+Kd 0.29757 0.443726 0.8
+Ns 256
+d 1
+illum 2
+Ka 0 0 0
+Ks 0.2 0.2 0.2
+newmtl Black
+Kd 0 0 0
+Ns 256
+d 1
+illum 2
+Ka 0 0 0
+Ks 0.2 0.2 0.2
+newmtl White
+Kd 0.8 0.8 0.8
+Ns 256
+d 1
+illum 2
+Ka 0 0 0
+Ks 0.2 0.2 0.2
