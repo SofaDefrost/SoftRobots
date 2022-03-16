@@ -27,7 +27,7 @@ def createScene(rootNode):
     # Specific loader for the mechanical model
     elasticbody.addObject('GIDMeshLoader',
                           name='loader',
-                          filename='data/mesh/tripod_high.gidmsh')
+                          filename='data/mesh/tripod_low.gidmsh')
     elasticbody.addObject('TetrahedronSetTopologyContainer',
                           src='@loader',
                           name='container')
@@ -41,7 +41,7 @@ def createScene(rootNode):
 
     # ForceField components
     elasticbody.addObject('TetrahedronFEMForceField',
-                          youngModulus=800,
+                          youngModulus=250,
                           poissonRatio=0.45)
     # It is possible to visualize the 'forcefields' by doing
     scene.VisualStyle.displayFlags = 'showForceFields'

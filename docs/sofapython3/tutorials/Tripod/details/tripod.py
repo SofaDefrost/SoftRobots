@@ -13,9 +13,9 @@ from tutorial import *
 def ElasticBody(parent):
     body = parent.addChild("ElasticBody")
 
-    elasticMaterialObject = body.addChild(ElasticMaterialObject(volumeMeshFileName="data/mesh/tripod_mid.gidmsh",
+    elasticMaterialObject = body.addChild(ElasticMaterialObject(volumeMeshFileName="data/mesh/tripod_low.gidmsh",
                                                                  translation=[0.0, 30, 0.0], rotation=[90, 0, 0],
-                                                                 youngModulus=800, poissonRatio=0.45, totalMass=0.032))
+                                                                 youngModulus=250, poissonRatio=0.45, totalMass=0.032))
 
     visual = body.addChild("Visual")
     visual.addObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod_mid.stl")
