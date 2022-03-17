@@ -1,4 +1,4 @@
-![](images/tripodtuto.png){width=100%}
+![](images/tripodtuto.png)
 
 <script language="javascript">
 function toggle(target) {
@@ -72,6 +72,7 @@ The resulting simulation looks like this:
 ```
 </div>
 </div>
+
 
 ### <i> Exploring the scene </i>
 
@@ -421,13 +422,13 @@ Keyboard keys                                                                   
 <img class="centered" src="../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                    Decrease                 2
 
 <pre>
-<a href="details/step6And7/step6.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="details/step6.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step6code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step6code' class='hide'>
 ```python
-..autofile::details/step6And7/step6.pyscn
+..autofile::details/step6.pyscn
 ```
 </div>
 </div>
@@ -464,13 +465,13 @@ Keyboard keys                                                                   
 
 
 <pre>
-<a href="details/step6And7/step7.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="details/step7.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step7code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step7code' class='hide'>
 ```python
-..autofile::details/step6And7/step7.pyscn
+..autofile::details/step7.pyscn
 ```
 </div>
 </div>
@@ -484,13 +485,13 @@ Keyboard keys                                                                   
 In the previous steps we where controlling  the robot by directly specifying the angle of the ServorMotor object. In this step we will use SOFA to inverse the model and adding an effector to the simulation so that it becomes possible to specify the effector's position and let the simulation compute the angular positions to apply to reach the effectors's position.
 
 <pre>
-<a href="details/step8/step8.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="details/step8.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
 <a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step8code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step8code' class='hide'>
 ```python
-..autofile::details/step8/step8.pyscn
+..autofile::details/step8.pyscn
 ```
 </div>
 </div>
