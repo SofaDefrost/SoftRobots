@@ -54,6 +54,7 @@ def createScene(rootNode):
 
     # Adding contact handling
     scene.addMainHeader()
+    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     scene.addObject('DefaultVisualManagerLoop')
     scene.VisualStyle.displayFlags = "showCollisionModels"
 

@@ -113,6 +113,7 @@ def createScene(rootNode):
                            'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
     scene.VisualStyle.displayFlags = "showBehavior"
     scene.addMainHeader()
+    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)

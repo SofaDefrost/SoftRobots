@@ -45,6 +45,7 @@ def createScene(rootNode):
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
+    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     rootNode.dt = 0.01
     scene.VisualStyle.displayFlags = 'showBehavior'
 

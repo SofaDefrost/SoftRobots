@@ -123,6 +123,7 @@ def createScene(rootNode):
                            'SofaSimpleFem', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping',
                            'SofaRigid'])
     scene.addMainHeader()
+    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
