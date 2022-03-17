@@ -22,9 +22,9 @@ def ElasticBody(parent):
 
     # Prefab ElasticMaterialObject implementing the whole mechanical model of the silicone piece
     e = ElasticMaterialObject(body,
-                              volumeMeshFileName="data/mesh/tripod_mid.gidmsh",
+                              volumeMeshFileName="data/mesh/tripod_low.gidmsh",
                               poissonRatio=0.45,
-                              youngModulus=800,
+                              youngModulus=250,
                               totalMass=0.032,
                               rotation=[90, 0, 0])
 
