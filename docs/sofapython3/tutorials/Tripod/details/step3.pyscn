@@ -16,9 +16,9 @@ def ElasticBody(parent):
 
     # Prefab ElasticMaterialObject implementing the whole mechanical model of the silicone piece
     e = body.addChild(ElasticMaterialObject(
-        volumeMeshFileName='data/mesh/tripod_mid.gidmsh',
+        volumeMeshFileName='data/mesh/tripod_low.gidmsh',
         poissonRatio=0.45,
-        youngModulus=100,
+        youngModulus=250,
         totalMass=0.032,
         rotation=[90, 0, 0]))
 
@@ -49,7 +49,7 @@ def createScene(rootNode):
     scene.VisualStyle.displayFlags = 'showBehavior'
 
     scene.addChild('Config')
-    scene.Config.addObject('MeshSTLLoader', name='loader', filename='../data/mesh/blueprint.stl')
+    scene.Config.addObject('MeshSTLLoader', name='loader', filename='data/mesh/blueprint.stl')
     scene.Config.addObject('OglModel', src='@loader')
 
     # Instanciating the prefab into the graph

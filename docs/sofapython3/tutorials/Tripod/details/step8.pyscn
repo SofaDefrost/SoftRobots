@@ -124,13 +124,6 @@ def createScene(rootNode):
     # serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
-    scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="mmmFreeCenter",
-                                 template='Vec3,Rigid3',
-                                 object1="@RigidifiedStructure/DeformableParts/dofs",
-                                 object2="@RigidifiedStructure/FreeCenter/dofs",
-                                 nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
-
     invCtr = scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,
                                                 tripod, serial,
                                                 [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
