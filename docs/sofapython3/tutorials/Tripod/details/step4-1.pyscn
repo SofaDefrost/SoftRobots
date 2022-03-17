@@ -73,7 +73,7 @@ def createScene(rootNode):
 
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False,
                   plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine',
-                           'SofaGeneralRigid', 'SofaRigid'])
+                           'SofaGeneralRigid', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition'])
     scene.addMainHeader()
     scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     scene.addObject('DefaultVisualManagerLoop')
