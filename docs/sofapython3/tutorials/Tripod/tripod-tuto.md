@@ -104,10 +104,10 @@ Unlike the rigid objects modelled in the FistSteps tutorial, the silicone piece 
 In order to implement the deformation behaviour, the `MechanicalObject` must be connected to one or multiple *ForceFields*. These Forcefieds are in charge of computing the internal forces that will guide the deformation of the soft piece. Many different mechanical behaviors exist and it is important to understand the one that best approximates the behavior of the real object. In particular, it is important to know how soft or stiff the material is, as well as if it has an elastic behaviour or a more complex one (hyperelastic, plastic, etc...). In our case, it has been chosen to implement a law of elastic deformation, modelled using the Finite Element Method (..autolink::General::FEM). Its parameters are the Young modulus, and the Poisson ratio.  
 
 ```python
-elasticbody.createObject("TetrahedronFEMForceField", youngModulus=800, poissonRatio=0.45)
+elasticbody.createObject("TetrahedronFEMForceField", youngModulus=250, poissonRatio=0.45)
 ```
 
-In SOFA, the ..autolink::STLIB::ElasticMaterialObject from `stlib.physics.deformable` provides a ready to use prefabricated object
+In SOFA, the ..autolink::STLIB::ElasticMaterialObject from `stlib3.physics.deformable` provides a ready to use prefabricated object
 to easily add such an object in our scene. It defines the whole mechanical model of a deformable elastic object.  
 
 ```python
@@ -351,7 +351,7 @@ Keyboard keys[^credits]                                                         
 <img class="centered" src="../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/>                         Increase                 2
 <img class="centered" src="../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                       Decrease                 2
 
-SOFA allows a default animation management: this is what was being used up to now. In this step, we want to add a more specific animation that updates the scene at each timestep, depending on the keys pressed by the user. The control of this animation is done thanks to a `PythonScriptController` that is added in our scene file. It uses the function (or *method*) `onKeyPressed()` that is included in SOFA by default and that triggers an action if a designated key is pressed.
+SOFA allows a default animation management: this is what was being used up to now. In this step, we want to add a more specific animation that updates the scene at each timestep, depending on the keys pressed by the user. The control of this animation is done thanks to a python script controller (`class CONTROLLER_NAME(Sofa.Core.Controller)`) that is added in our scene file. It uses the function (or *method*) `onKeypressedEvent()` that is included in SOFA by default and that triggers an action if a designated key is pressed.
 The controller is implemented such as, after each key press, the designated servomotor moves from  a `stepsize` value of *0.1* rad (that is a little less than 6°) by changing the value of the attribute `ServoMotor.angleIn`.  
 Moreover, another animation is added in the function `setupanimation(actuators, step, angularstep, factor)`, in order to move with one keystroke the three servomotors from their default angular position to the initial position of the real robot. It is triggered by the following keystroke:
 <img class="centered" src="../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
@@ -483,6 +483,12 @@ Keyboard keys                                                                   
 
 ## STEP 8: Inverse control
 In the previous steps we where controlling  the robot by directly specifying the angle of the ServorMotor object. In this step we will use SOFA to inverse the model and adding an effector to the simulation so that it becomes possible to specify the effector's position and let the simulation compute the angular positions to apply to reach the effectors's position.
+
+The same keystrokes as in the previous steps are used, adding a new one to start the inverse resolution.
+
+- Keystroke to start sending data to the real robot: <img class="centered" src="../../images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/>
+- Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
+- Keystroke to start the inverse resolution: <img class="centered" src="../../images/keys/Ctrl_I.png" alt="Ctrl + I" width="100px"/>
 
 <pre>
 <a href="details/step8.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
