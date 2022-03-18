@@ -87,10 +87,11 @@ def createScene(rootNode):
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False,
                   plugins=["SofaSparseSolver", "SofaOpenglVisual", "SofaSimpleFem", "SoftRobots",
                            'SofaBoundaryCondition', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid',
-                           'SofaMiscMapping', 'SofaRigid'])
+                           'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
 
     # Adding contact handling
     scene.addMainHeader()
+    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)

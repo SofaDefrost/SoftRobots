@@ -14,8 +14,9 @@ from tripod import Tripod
 def createScene(rootNode):
     from stlib3.scene import Scene
 
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False, plugins=['SofaSparseSolver', 'SofaGeneralAnimationLoop', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False, plugins=['SofaSparseSolver', 'SofaGeneralAnimationLoop', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition', 'SofaGeneralEngine'])
     scene.addMainHeader()
+    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
