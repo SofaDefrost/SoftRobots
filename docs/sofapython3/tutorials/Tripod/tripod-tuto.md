@@ -41,14 +41,14 @@ Note that with MacOS, you may have to use *cmd* instead of *Ctrl*.
 
 Moreover, please note that, in order to send data to the robot, it can be necessary to have administrator rights.
 
-## STEP 1: Building the Mechanical Model for the soft part & its Visual Model
+# STEP 1: Building the Mechanical Model for the soft part & its Visual Model
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Build the mechanical model of the silicone piece of the robot
 - Build the corresponding visual object
 - Use meshes for the mechanical description of a soft object
 
-### <i>Reminders of the First Steps tutorial </i>
+## <i>Reminders of the First Steps tutorial </i>
 - All the objects simulated in a scene are described in nodes attached to the main node `rootNode`. For this robot, there will be different objects, including one for the silicone piece (`ElasticBody`). Each of them is defined with the function `node.createChild()`.
 - In order to automatically reload the scene when changes are made, run the scene with the `-i` option.
 - The properties of any object can be accessed by double-clicking on it in the *Graph* panel of the SOFA GUI.
@@ -74,7 +74,7 @@ The resulting simulation looks like this:
 </div>
 
 
-### <i> Exploring the scene </i>
+## <i> Exploring the scene </i>
 
 <!-- For more information on vector graphics, see -> lien vers la doc -->
 
@@ -82,7 +82,7 @@ The resulting simulation looks like this:
 - In the *View* panel of SOFA GUI, by enabling the *Options*, you can see the discretization of the silicone piece into tetrahedral elements.
 - Identify the white squares, each representing one point (one degree of freedom) of the MechanicalObject, on which the deformations are computed.
 
-### <i>Remarks</i>
+## <i>Remarks</i>
 - SOFA implements default length and time units, as well as a default gravity force. The user defines his own time and space scale by defining the constants of the model. Here, the gravity of our simulation is defined such as the length unit is in centimeters; and the time unit chosen is the second, which means that the timestep is of one millisecond.
 - There is a graphic modelling in the scene to display the legends associated with the servomotors (see Figure 2 below), that are described in the file `blueprint.stl`.
 
@@ -94,9 +94,9 @@ The resulting simulation looks like this:
 </center>
 
 
-## STEP 2: Modelling the possible deformations of the soft material
+# STEP 2: Modelling the possible deformations of the soft material
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Build an elastic deformation model based on the Finite Element Method
 - Understand what a *ForceField* is
 
@@ -104,10 +104,10 @@ Unlike the rigid objects modelled in the FistSteps tutorial, the silicone piece 
 In order to implement the deformation behaviour, the `MechanicalObject` must be connected to one or multiple *ForceFields*. These Forcefieds are in charge of computing the internal forces that will guide the deformation of the soft piece. Many different mechanical behaviors exist and it is important to understand the one that best approximates the behavior of the real object. In particular, it is important to know how soft or stiff the material is, as well as if it has an elastic behaviour or a more complex one (hyperelastic, plastic, etc...). In our case, it has been chosen to implement a law of elastic deformation, modelled using the Finite Element Method (..autolink::General::FEM). Its parameters are the Young modulus, and the Poisson ratio.  
 
 ```python
-elasticbody.createObject("TetrahedronFEMForceField", youngModulus=800, poissonRatio=0.45)
+elasticbody.createObject("TetrahedronFEMForceField", youngModulus=250, poissonRatio=0.45)
 ```
 
-In SOFA, the ..autolink::STLIB::ElasticMaterialObject from `stlib.physics.deformable` provides a ready to use prefabricated object
+In SOFA, the ..autolink::STLIB::ElasticMaterialObject from `stlib3.physics.deformable` provides a ready to use prefabricated object
 to easily add such an object in our scene. It defines the whole mechanical model of a deformable elastic object.  
 
 ```python
@@ -138,13 +138,13 @@ However, before using this prefabricated object, let's first build our own, base
 </div>
 </div>
 
-### <i>Exploring the scene</i>
+## <i>Exploring the scene</i>
 - By starting the scene, the tetrahedral mesh with blue-ish elements appears. To control the visualization of this computation mesh, you can either check the *ForceFields* option within the *View* panel in the runSofa GUI
 or, as done here in the code, change the displayFlags property of the ..autolink::Sofa::VisualStyle.
 - Up to now, an elastic material has been modelled. It is subjected to the gravity force, and it follows an elastic law when it is deformed. Thus, once the scene is started ([*Animate*] button), the silicone piece 'falls' on the 3D window.
 - The links proposed in the tutorial are shortcuts to the automatically generated documentation of the plugin that you can see here: <a href="https://stlib.readthedocs.io/en/latest/"> Readthedocs for STLIB </a>. It contains a description of the templates that have been desingned in the STLIB plugin and helps when designing a scene.
 
-## STEP 3: Adding externals constraints
+# STEP 3: Adding externals constraints
 
 <center>
 <figure>
@@ -154,7 +154,7 @@ or, as done here in the code, change the displayFlags property of the ..autolink
 </center>
 
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Add constraints on specific areas through the use of the Fixing Box ROI prefab
 - Understand how the Fixing Box is implemented
 - Build functions to bring together all the components of an object
@@ -179,14 +179,14 @@ Such a function is defined at the beginning of the scene, and can be called as o
 </div>
 </div>
 
-### <i>Exploring the scene</i>
+## <i>Exploring the scene</i>
 - The constraint implemented by the FixingBox *prefab*, named `RestShapeSpringForceField`, applies in fact elastic spring forces on the points of the mechanical object (the degrees of freedom) included in the `FixingBox`, to bring them back to their resting position whenever a modification is computed (due to gravity forces for example). The stiffness of these 'springs' is set at a very high level, which produces immediate correction of any change in position: the constrained points cannot move anymore.
 - The box can be moved anywhere to constraint another area. For example, the translation `[30.0,0.0,30.0]`{.python} allows to constraint the end of the arm connected to servo 2.
 - By clicking on the [*Animate*] button, it can be observed that the FixingBox indeed prevents the silicone piece to fall under gravity force. The unconstrained tips of the piece, however, experience a light bending.
 - It is possible to deform the silicone piece with the mouse, by pressing *Maj* while left-clicking on the piece, then dragging the mouse. This can be used to observe how elastic the material is. By changing the value of the Young modulus, you can compare the rendering of the simulated piece with the real one (for example, test values from 10 to 2000 for the Young modulus after having manipulated the silicone piece on the real robot a bit, to get an idea of its elasticity).
 
 
-## STEP 4: Adding actuators and connecting to deformable part
+# STEP 4: Adding actuators and connecting to deformable part
 
 <center>
 <figure>
@@ -195,15 +195,15 @@ Such a function is defined at the beginning of the scene, and can be called as o
 </figure>
 </center>
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Add prefabs for the actuators (STEP 4-1)
 - Rigidify some parts of the deformable model (STEP 4-2)
 - Attach the the rigidified parts to the actuators (STEP 4-3)
 
 
-## STEP 4-1: Adding actuators
+# STEP 4-1: Adding actuators
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Add prefabs for the actuators
 - Position them according to the real robot positionning
 - Understand the structure of the prefabs modelling the S90 servomotors and the associated servo-arms used on the Tripod robot: `ServoMotor`, `ServoArm` and the prefab `ActuatedArm` that brings the first two together.
@@ -259,20 +259,20 @@ Tripod(parent, name="Tripod", radius, numMotors, angleShift)
 </div>
 </div>
 
-### <i>Exploring the scene</i>
+## <i>Exploring the scene</i>
 - Explore the *Info* panel in the window that appears when double-clicking on the different components: you can observe that the prefab objects propose some documentation and a description of specific properties
 - Explore the hierarchy of the nodes in the *Graph* panel, to observe the structure of the `ActuatedArm` prefab.
 More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWheel` prefab can be seen. It represents the capability - or degree of freedom - of the servo-arm to rotate around the motor shaft. It is implemented in the file *s90servo.py* and composed of a Rigid `MechanicalObject`, on which the rotations are applied, and then transferred to the `ActuatedArm` on which the `ServoWheel` is attached.
 - My modifying the `EulerRotation` and `translation` parameters of the `ActuatedArm` instances, try to constrain different parts of the model.
 
-### <i>Remarks</i>
+## <i>Remarks</i>
 
 - Different solvers have been used so far: `SparseLDLSolver` for the former steps, and here, the `CGLinearSolver` (using the Conjugate Gradient method) introduced in the *Simulation* object. The difference in the results of the simulation, depending on the solver used is negligible in the scenes presented in this tutorial.
 - However, the solving methods sometimes have properties that allow particular manipulations of the objects in the scene. By using the `CGLinearSolver` for the servomotors, it is possible to move the servomotor base in the simulation window by holding the *Shift* key while left-clicking on the servo base to drag it. This shows the connection with the silicone piece, that follows the mouvement, like it would with the real robot.
 - Note that the same *Shift + Click-and-drag* manipulation isn't possible on the servo-arm alone. Indeed, since the arm is constrained by the servomotor, trying to move it away from the servomotor would produce a conflict situation and the system would diverge.
 
 
-## STEP 4-2: Rigidify parts of the deformable piece
+# STEP 4-2: Rigidify parts of the deformable piece
 
 <center>
 <figure>
@@ -281,7 +281,7 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 </figure>
 </center>
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Rigidify some parts of a deformable object
 
 <pre>
@@ -297,7 +297,7 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 </div>
 
 
-## STEP 4-3: Attach the acutators to the deformable piece
+# STEP 4-3: Attach the acutators to the deformable piece
 
 <center>
 <figure>
@@ -306,7 +306,7 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 </figure>
 </center>
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Link a deformable object to a rigid actuator
 
 <pre>
@@ -322,7 +322,7 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 </div>
 
 
-## STEP 5: Adding controllers
+# STEP 5: Adding controllers
 
 <center>
 <figure>
@@ -331,7 +331,7 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 </figure>
 </center>
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Implement a controller for interactive change of the servomotors angular position with keyboard keys
 - Define an animation function, that acts on the actuators by translating & rotating them
 
@@ -351,7 +351,7 @@ Keyboard keys[^credits]                                                         
 <img class="centered" src="../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/>                         Increase                 2
 <img class="centered" src="../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                       Decrease                 2
 
-SOFA allows a default animation management: this is what was being used up to now. In this step, we want to add a more specific animation that updates the scene at each timestep, depending on the keys pressed by the user. The control of this animation is done thanks to a `PythonScriptController` that is added in our scene file. It uses the function (or *method*) `onKeyPressed()` that is included in SOFA by default and that triggers an action if a designated key is pressed.
+SOFA allows a default animation management: this is what was being used up to now. In this step, we want to add a more specific animation that updates the scene at each timestep, depending on the keys pressed by the user. The control of this animation is done thanks to a python script controller (`class CONTROLLER_NAME(Sofa.Core.Controller)`) that is added in our scene file. It uses the function (or *method*) `onKeypressedEvent()` that is included in SOFA by default and that triggers an action if a designated key is pressed.
 The controller is implemented such as, after each key press, the designated servomotor moves from  a `stepsize` value of *0.1* rad (that is a little less than 6°) by changing the value of the attribute `ServoMotor.angleIn`.  
 Moreover, another animation is added in the function `setupanimation(actuators, step, angularstep, factor)`, in order to move with one keystroke the three servomotors from their default angular position to the initial position of the real robot. It is triggered by the following keystroke:
 <img class="centered" src="../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
@@ -370,12 +370,14 @@ The controller is added as another node in the scene.
 </div>
 </div>
 
-### <i>Exploring the scene</i>
+## <i>Exploring the scene</i>
 - After clicking on the [*Animate*] button, and then anywhere in the simulation window, use the defined keystrokes to deform the silicone shape by controlling the angular position of the servomotors.
 - Try to implement a different animation, modifying the initial position of the angular position of the servomotors.
 
-### <i>Remark</i>
-When the scene is loaded and animated, it can be interesting to display the execution time's distribution between the different components of the simulation. For that purpose, activate the *Log Time* option in the *Stats* panel of the simulation window. The steps duration statistics appear then in the terminal window. A screenshot of it can be seen below:
+## <i>Remark</i>
+When the scene is loaded and animated, it can be interesting to display the execution time's distribution between the different components of the simulation. For that purpose, activate the *Log Time* option in the *Stats* panel of the simulation window. The steps duration statistics appear then in the terminal window. A screenshot of it can be seen below in Figure 9. If you're using the distributed binaries or have compiled SOFA with QtCharts and QtWebEngine installed, you can activate the *Display AdvanceTimer profiler* option in the *Stats* panel of the simulation window. A window with the steps duration statistics will pop up. A screenshot of it can be seen below in Figure 10.
+
+The most time consuming process - and thus the one requiring the greatest computing resources - is related to the computation of the Mechanical behaviour, with more than half of the resources allocated to the *solving* tools. This highlights the complexity of the system and explains why the mesh cannot be endlessly tightened: the simulation would take a great amount of time to compute, too much for any real time application.
 
 <center>
 <figure>
@@ -384,19 +386,23 @@ When the scene is loaded and animated, it can be interesting to display the exec
 </figure>
 </center>
 
-The most time consuming process - and thus the one requiring the greatest computing resources - is related to the computation of the Mechanical behaviour, with more than half of the resources allocated to the *solving* tools. This highlights the complexity of the system and explains why the mesh cannot be endlessly tightened: the simulation would take a great amount of time to compute, too much for any real time application.
+<center>
+<figure>
+  <img class="centered" src="images/StepsDurationStatsProfiler.png" alt="" width="800px"/>
+  <figcaption>Figure 10: Steps Duration Statistics, as seen in the AdvanceTimer Profiler window</figcaption>
+</figure>
+</center>
 
-
-## STEP 6: Adding collision models
+# STEP 6: Adding collision models
 
 <center>
 <figure>
   <img class="centered" src="images/tripodcollision.png" alt="" width="500px"/>
-  <figcaption>Figure 10: Tripod simulation with collision between a sphere, the deformable part and top of the three servomotors</figcaption>
+  <figcaption>Figure 11: Tripod simulation with collision between a sphere, the deformable part and top of the three servomotors</figcaption>
 </figure>
 </center>
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Add a rigid object that interacts with the robot thanks to a collision model
 - Add a collision model so that the silicone piece can no longer go through the servomotors.
 
@@ -433,14 +439,14 @@ Keyboard keys                                                                   
 </div>
 </div>
 
-### <i>Exploring the scene</i>
+## <i>Exploring the scene</i>
 - Once the scene animated, observe how the ball follows the mouvement of the silicone piece: as lond as the ball 'sits' into the small hole at the center of the piece, it follows its mouvements. However, if the silicone piece is sloped enough, the ball falls under gravity force.
 - Thanks to a collision model between the top of the servomotors and the silicone piece, the silicone piece can no longer go through the servomotors.
 
 
-## STEP 7: Connecting to the  physical robot
+# STEP 7: Connecting to the  physical robot
 
-### <i>At the end of this step, you will be able to:</i>
+## <i>At the end of this step, you will be able to:</i>
 - Connect the simulated robot to the real one.
 - Directly control the angular position of ther real servomotors by actuating the simulated ones.
 
@@ -476,13 +482,19 @@ Keyboard keys                                                                   
 </div>
 </div>
 
-### <i>Exploring the scene</i>
+## <i>Exploring the scene</i>
 - Start the scene with the [*Animate*] button, then click anywhere in the simulation window and type the keystroke to start sending data to the real robot. Observe how the real robot responds to the modifications of the simulation: this is the direct control, where the user specifies the angular position to reach, which are then also sent to the robot.
 - Remark how the real robot is limited in his movements, while nothing prevents the user to make complete turns aroud the motor shaft with the servo-arms in the simulation.
 
 
-## STEP 8: Inverse control
+# STEP 8: Inverse control
 In the previous steps we where controlling  the robot by directly specifying the angle of the ServorMotor object. In this step we will use SOFA to inverse the model and adding an effector to the simulation so that it becomes possible to specify the effector's position and let the simulation compute the angular positions to apply to reach the effectors's position.
+
+The same keystrokes as in the previous steps are used, adding a new one to start the inverse resolution.
+
+- Keystroke to start sending data to the real robot: <img class="centered" src="../../images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/>
+- Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
+- Keystroke to start the inverse resolution: <img class="centered" src="../../images/keys/Ctrl_I.png" alt="Ctrl + I" width="100px"/>
 
 <pre>
 <a href="details/step8.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
@@ -496,7 +508,7 @@ In the previous steps we where controlling  the robot by directly specifying the
 </div>
 </div>
 
-## Conclusion
+# Conclusion
 Congratulation, you completed this tutorial. You are strongly encouraged to pursue with the other tutorials.
 
 If you have any comments or suggestions, please submit issues on our ..autolink::github/SoftRobots page.
