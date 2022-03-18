@@ -384,6 +384,15 @@ When the scene is loaded and animated, it can be interesting to display the exec
 </figure>
 </center>
 
+If you're using the distributed binaries or have compiled SOFA with QtCharts and QtWebEngine installed, you can activate the *Display AdvanceTimer profiler* option in the *Stats* panel of the simulation window. A window with the steps duration statistics will pop up. A screenshot of it can be seen below:
+
+<center>
+<figure>
+  <img class="centered" src="images/StepsDurationStatsProfiler.png" alt="" width="800px"/>
+  <figcaption>Figure 10: Steps Duration Statistics, as seen in the AdvanceTimer Profiler window</figcaption>
+</figure>
+</center>
+
 The most time consuming process - and thus the one requiring the greatest computing resources - is related to the computation of the Mechanical behaviour, with more than half of the resources allocated to the *solving* tools. This highlights the complexity of the system and explains why the mesh cannot be endlessly tightened: the simulation would take a great amount of time to compute, too much for any real time application.
 
 
