@@ -30,16 +30,20 @@ jobs:
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'minimal'
           python_version: '3.8'
-          
-     #- name: Download SofaPython3
-     #  uses: robinraju/release-downloader@v1.3
-     #  with:
-     #    repository: 'guparan/SofaPython3'
-     #    tag: 'release-ci_improve_workflow'
-     #    fileName: 'SofaPython3_*_${{ runner.os }}.zip'
-     #    out-file-path: 'SofaPython3'
-          
-      - name: Download and install SofaPython3
+
+      - name: Install pybind11
+        shell: bash
+        run: |
+          ${{ steps.sofa.outputs.python_exe }} -m pip install pybind11==2.6.2
+          pybind11_DIR="pybind11-dir-not-found"
+          if [ -e "$(command -v pybind11-config-3.8)" ]; then
+            pybind11_DIR="$(pybind11-config-3.8 --cmakedir)"
+          elif [ -e "$(command -v pybind11-config)" ]; then
+            pybind11_DIR="$(pybind11-config --cmakedir)"
+          fi
+          echo "pybind11_DIR=$pybind11_DIR" | tee -a $GITHUB_ENV
+
+      - name: Install SofaPython3
         shell: bash
         run: |
           SofaPython3_ROOT="$GITHUB_WORKSPACE/SofaPython3"
