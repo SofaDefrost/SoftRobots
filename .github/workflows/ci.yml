@@ -39,18 +39,6 @@ jobs:
             rm -rf $SOFA_ROOT/plugins/SofaPython3
           fi
 
-      - name: Install pybind11
-        shell: bash
-        run: |
-          ${{ steps.sofa.outputs.python_exe }} -m pip install pybind11==2.6.2
-          pybind11_DIR="pybind11-dir-not-found"
-          if [ -e "$(command -v pybind11-config-3.8)" ]; then
-            pybind11_DIR="$(pybind11-config-3.8 --cmakedir)"
-          elif [ -e "$(command -v pybind11-config)" ]; then
-            pybind11_DIR="$(pybind11-config --cmakedir)"
-          fi
-          echo "pybind11_DIR=$pybind11_DIR" | tee -a $GITHUB_ENV
-
       - name: Install SofaPython3
         shell: bash
         run: |
@@ -60,7 +48,7 @@ jobs:
           echo "Getting SofaPython3 from $url"
           curl --output "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -L $url
           unzip -qq "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -d "${{ runner.temp }}/sp3_tmp/binaries"
-          mv ${{ runner.temp }}/sp3_tmp/binaries/SofaPython3_*/* "$SofaPython3_ROOT"
+          mv "${{ runner.temp }}"/sp3_tmp/binaries/SofaPython3_*/* "$SofaPython3_ROOT"
           echo "SofaPython3_ROOT=$SofaPython3_ROOT" | tee -a $GITHUB_ENV
           echo "SofaPython3_DIR=$SofaPython3_ROOT/lib/cmake/SofaPython3" | tee -a $GITHUB_ENV
 
