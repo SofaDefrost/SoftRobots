@@ -44,12 +44,17 @@ jobs:
         run: |
           SofaPython3_ROOT="$GITHUB_WORKSPACE/SofaPython3"
           SofaPython3_DIR="$SofaPython3_ROOT/lib/cmake/SofaPython3"
+          mkdir -p "${{ runner.temp }}/sp3_tmp/zip" "${{ runner.temp }}/sp3_tmp/binaries" "$SofaPython3_ROOT"
           url="https://github.com/guparan/SofaPython3/releases/download/release-ci_improve_workflow/SofaPython3_ci_improve_workflow_for-SOFA-master_Linux.zip"
           echo "Getting SofaPython3 from $url"
           curl --output "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -L $url
           unzip -qq "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -d "${{ runner.temp }}/sp3_tmp/binaries"
-          mkdir -p "$SofaPython3_ROOT"
-          mv "${{ runner.temp }}"/sp3_tmp/binaries/SofaPython3_*/* "$SofaPython3_ROOT"
+          echo "----------------------------"
+          ls -la ${{ runner.temp }}/sp3_tmp/binaries
+          echo "----------------------------"
+          ls -la ${{ runner.temp }}/sp3_tmp/binaries/SofaPython3_*
+          echo "----------------------------"
+          mv ${{ runner.temp }}/sp3_tmp/binaries/SofaPython3_*/* "$SofaPython3_ROOT"
           ls -la "$SofaPython3_ROOT"
           echo "SofaPython3_ROOT=$SofaPython3_ROOT" | tee -a $GITHUB_ENV
           echo "SofaPython3_DIR=$SofaPython3_DIR" | tee -a $GITHUB_ENV
