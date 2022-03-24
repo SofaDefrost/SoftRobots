@@ -1,4 +1,4 @@
-![](../../images/pluginimage.png)
+![](../../../images/pluginimage.png)
 
 ## Simulating a cable based soft gripper
 This tutorial describes how to set-up a simulation environment, a scene, using ..autolink::Sofa and how to use the
@@ -25,7 +25,7 @@ Before continuing this tutorial try the resulting simulation you need to achieve
 You can load the scene directly from this documentation by clicking on the following:
 <div>
 <pre>
-<a href="details/step0.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Try now the scene in Sofa.</a>
+<a href="details/step0.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Try now the scene in Sofa.</a>
 </pre>
 </div>
 
@@ -71,15 +71,15 @@ def createScene(rootNode):
 ```
 <div>
 <pre>
-<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/cablegripper.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step1.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/cablegripper.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
 </div>
 
 ####<i>Comments (things to present or do in this step):</i>
 
-- load "cablegripper.pyscn" in sofa (with option '-i') and in your text editor
+- load "cablegripper.py3scn" in sofa (with option '-i') and in your text editor
 
 - add a floor and a cube in the scene
 
@@ -126,8 +126,8 @@ def Finger(parentNode=None, name="Finger",
 ```
 <div>
 <pre>
-<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
-<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
+<a href="details/step2.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 </div>
@@ -168,8 +168,8 @@ def Finger(parentNode=None, name="Finger",
 ```
 <div>
 <pre>
-<a href="details/step2.2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step2.2.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
 </div>
@@ -222,8 +222,8 @@ def Finger(parentNode):
 
 <div>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
-<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
+<a href="details/step3.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 
@@ -261,8 +261,8 @@ The controller can then be attached to the object *finger* it is supposed to con
 
 <div>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
-<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
+<a href="details/step3.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 </div>
@@ -315,8 +315,8 @@ def Finger(parentNode):
 ```
 <div>
 <pre>
-<a href="details/step4.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step4.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
 
@@ -450,8 +450,8 @@ def Gripper(parentNode=None):
 ```
 <div>
 <pre>
-<a href="details/step5.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/gripper.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step5.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/gripper.py"> <img src="../../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
 </div>
@@ -471,7 +471,7 @@ reload of the 'gripper.py' each time the source file is changed.
 ## Step 6: Putting everything in a single simulation.
 
 
-Open the *'cablegripper.pyscn'* and add the Cube, the Floor and the Gripper which should resuts in something similar to:
+Open the *'cablegripper.py3scn'* and add the Cube, the Floor and the Gripper which should resuts in something similar to:
 <div>
 ```python
 from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
@@ -502,8 +502,8 @@ def createScene(rootNode):
 ```
 <div>
 <pre>
-<a href="details/step6.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
-<a href="myproject/cablegripper.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
+<a href="details/step6.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/cablegripper.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 </div>
