@@ -60,30 +60,28 @@ jobs:
       - name: Build and install
         shell: bash
         run: |
+          cmake_options="-GNinja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
+            -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
+            -DSOFTROBOTS_BUILD_TESTS=True \
+            -DSOFTROBOTS_IGNORE_ERRORS=True \
+            -DPYTHON_ROOT=$PYTHON_ROOT -DPython_ROOT=$PYTHON_ROOT \
+            -DPYTHON_EXECUTABLE=$PYTHON_EXE -DPython_EXECUTABLE=$PYTHON_EXE"
+          if [ -e "$(command -v ccache)" ]; then
+            cmake_options="$cmake_options -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+          fi
+          cmake_options="$(echo $cmake_options)" # prettify
+          
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
               && cd /d $WORKSPACE_BUILD_PATH \
-              && cmake \
-                  -GNinja \
-                  -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
-                  -DCMAKE_BUILD_TYPE=Release \
-                  -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
-                  -DSOFTROBOTS_BUILD_TESTS=True \
-                  ../src \
+              && cmake $cmake_options ../src \
               && ninja install"
           else
             cd "$WORKSPACE_BUILD_PATH"
             ccache -z
-            cmake \
-              -GNinja \
-              -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-              -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-              -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
-              -DSOFTROBOTS_BUILD_TESTS=True \
-              -DSOFTROBOTS_IGNORE_ERRORS=True \
-              ../src
+            cmake $cmake_options ../src
             ninja install
             echo ${CCACHE_BASEDIR}
             ccache -s
@@ -131,7 +129,7 @@ jobs:
           echo '----------------------'
           python -c "import sys; print('sys.version = ' + str(sys.version)); print('sys.path = ' + str(sys.path))"
 
-      - name: Run tests SoftRobots_test
+      - name: Run tests
         if: always()
         shell: bash
         run: |
