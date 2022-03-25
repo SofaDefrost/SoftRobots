@@ -7,7 +7,7 @@ The simulation is done using the SOFA Open Source Framework and the "Soft-Robots
 To be able to simulate the soft robot, the first step is to discretise the soft robot in space, by creating a volumetric mesh, typically with tetrahedra. This can be done with any meshing tool such as Gmsh or CGAL. In this example, we use Gmsh. This will generate a vtk file containing all the information about postion of the nodes and connectivity between them through the tetrahedra.
 
 
-[Meshed finger](data/images/PneuNets-gripper_mesh.png)
+[Meshed finger](images/PneuNets-gripper_mesh.png)
 
 In a SOFA scene the mesh is loaded using the loader component:
 ```python
@@ -20,6 +20,7 @@ This mesh is then stored in a ```Mesh```  component (linked to the loader throug
 finger.addObject('Mesh', src='@loader', name='container')
 finger.addObject('MechanicalObject', name='tetras', template='Vec3d')
 ```
+
 [Step1](details/step1-meshLoading.py)
 ## Constitutive law of the material and Mass
 
@@ -111,7 +112,7 @@ finger.addObject('LinearSolverConstraintCorrection', solverName='directSolver')
 ```
 With all these components, the scene is now runable and can be used to inflate and deflate the finger.
 
-[Real images](data/images/PneuNets-gripper_OneFingerBendingAll.png)
+[Real images](images/PneuNets-gripper_OneFingerBendingAll.png)
 
 [Step6](details/step6-pneumaticActuatorAndPythonScriptController.py)
 
@@ -193,7 +194,7 @@ The gripper can be moved up, down, left and right by pressing respectively  ctrl
 [Step7](details/step7-grabTheCube.py)
 If you want to play around, you can add components OglModel for every object to have a visual representation that suits you.
 
-![Real images](data/images/PneuNets-gripper_inAction.png)
+![Real images](images/PneuNets-gripper_inAction.png)
 
 ## Appendix
 

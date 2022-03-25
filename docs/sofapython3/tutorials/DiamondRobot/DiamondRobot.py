@@ -29,7 +29,7 @@ def createScene(rootNode):
     robot.addObject('EulerImplicitSolver')
     robot.addObject('ShewchukPCGLinearSolver', iterations=1, name="linearsolver", tolerance=1e-5,
                     preconditioners="preconditioner", use_precond=True)
-    robot.addObject('SparseLDLSolver', name="preconditioner")
+    robot.addObject('SparseLDLSolver', name="preconditioner", template="CompressedRowSparseMatrixMat3x3d")
     # Load the volume mesh
     robot.addObject('MeshVTKLoader', name="loader", filename=meshRobot)
     robot.addObject('MeshTopology', src="@loader")

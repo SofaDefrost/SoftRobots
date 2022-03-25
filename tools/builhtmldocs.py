@@ -1,10 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# A small tool to generate .html from the .md contains in the plugin
+# A small tool to generate .html from the .md contained in the plugin
+#
+# Syntax:
+#   ./buildhtmldocs dirname <hook1.ah> <hook2.ah> <hook3.ah>
+#
+# The tools scans the dirname to locate all .md
+# For each .md it then replace all the ..autolink:: command or ..autofile:: using the replacement rules provided in the .ah files.
+# During the ..autolink:: remplacement, the link validity is checked to insure there is no deadlink in the generated documentation.
+# When the replacement is done pandoc is called to generate the final.html documentation.
+#
+# This documentation system should be one day replaced with a full sphinx documentation.
 #
 # Contributors:
 #  	damien.marchal@univ-lille1.fr
-#
 import os
 import subprocess
 import sys
@@ -12,8 +21,10 @@ import re
 import ntpath
 import json
 import re
-import urllib2
+import urllib.request
+import urllib.parse
 import io
+from bs4 import BeautifulSoup
 
 sofaext=['.scn', ".pyscn", ".psl"]
 
@@ -31,7 +42,7 @@ def doAutoFile(aFile, outFile):
             toImportFile = os.path.join(path, m.group(1))
 
             if not os.path.exists(toImportFile):
-                print("Missing autofile in line: "+str(lineno) + " => "+toImportFile )
+                print("  -- Missing autofile in line: "+str(lineno) + " => "+toImportFile )
                 continue
             f = open(toImportFile, "r")
             fo.write(f.read())
@@ -52,6 +63,7 @@ def replaceStringInFile(aFile, outFile, aDictionary):
                     if aDictionary[aString]["regex"].search(line) != None:
                         url = None
                         validUrl =False
+                        exception = None
                         if not "url" in aDictionary[aString]:
                             if "absolutepath" in aDictionary[aString]:
                                 commonprefix = os.path.commonprefix([aFile, aDictionary[aString]["absolutepath"]])
@@ -61,16 +73,16 @@ def replaceStringInFile(aFile, outFile, aDictionary):
                         else:
                             url = aDictionary[aString]["url"]
                             try:
-                                ret = urllib2.urlopen(url, timeout=0.5)
+                                ret = urllib.request.urlopen(url, timeout=10.0)
                                 if ret.code == 200:
                                     validUrl = True
-                            except:
-                                pass
-
+                            except Exception as e:
+                                exception = e
                         if validUrl:
                             line = aDictionary[aString]["regex"].sub("<a href=\"" + url + "\">" + aDictionary[aString]["name"] + "</a>", line)
                         else:
-                            print("Cannot retrieve autlink target '"+str(aDictionary[aString]["name"])+"' in line "+str(lineno)+" pointing to: "+str(url) )
+                            print("  -- Cannot retrieve autolink target '"+str(aDictionary[aString]["name"])+"' in line "+str(lineno)+" pointing to: "+str(url) )
+                            print("     possible cause:", exception)
                             line = aDictionary[aString]["regex"].sub(aDictionary[aString]["name"], line)
 
                 m=re.search("..autolink::(.)*", line)
@@ -78,7 +90,7 @@ def replaceStringInFile(aFile, outFile, aDictionary):
                     res = m.group(0)
                     if len(res) > 60:
                         res = res[:60]+" ... "
-                    print("Missing autolink in line "+str(lineno)+" : "+res)
+                    print("  -- Missing autolink in line "+str(lineno)+" : "+res)
 
                 lineno += 1
 
@@ -94,7 +106,6 @@ if len(sys.argv) <= 2:
         sys.exit(-1)
 
 dictionary={}
-
 print("Loading hooks...")
 for hook in sys.argv[2:]:
     if os.path.exists(hook):
@@ -113,17 +124,44 @@ for hook in sys.argv[2:]:
             else:
                 dictionary[k]["regex"] = re.compile("\.\.autolink::"+ns+"::"+dk+"(?!::)")
 
-            if "url" not in dictionary[k] and "relativepath" in dictionary[k] :
+            if "url" not in dictionary[k] and "relativepath" in dictionary[k]:
                 abspath = os.path.abspath(os.path.dirname(hook))+"/"+dictionary[k]["relativepath"]
-                if os.path.exists(abspath):
+                purl = urllib.parse.urlparse(abspath)
+                if os.path.exists(purl.path):
                     dictionary[k]["absolutepath"] = abspath
                 else:
-                    print("WARNING: Invalid absolute path... " + abspath)
+                    print("WARNING: Invalid absolute path... " + purl.path)
 
             if "desc" not in dictionary[k]:
                 dictionary[k]["desc"] = ""
 
     print(str(len(d))+" hooks loaded.")
+
+def checkAllUrl(dirpath, filename):
+    print("  -- Checking of all URL: "+filename)
+    soup = BeautifulSoup(open(filename,"r").read(), 'html.parser')
+    for link in soup.find_all("a"):
+        turl = link.get('href')
+        if turl is not None and turl != "javascript:void(0)":
+            p = urllib.parse.urlparse(turl)
+            if p is not None:
+                if p.netloc == '':
+                   turl = "file://" + dirpath + "/" + p.path
+                try:
+                    r = urllib.request.urlopen(turl,timeout=10)
+                except Exception as e:
+                    print("     Unable to get", e)
+    for link in soup.find_all("img"):
+        turl = link.get('src')
+        if turl is not None and turl != "javascript:void(0)":
+            p = urllib.parse.urlparse(turl)
+            if p is not None:
+                if p.netloc == '':
+                   turl = "file://" + dirpath + "/" + p.path
+                try:
+                    r = urllib.request.urlopen(turl,timeout=10)
+                except Exception as e:
+                    print("     Unable to get", e)
 
 pathprefix = os.path.abspath(sys.argv[1]) + "/"
 for (dirpath, dirnames, aFilenames) in os.walk(pathprefix):
@@ -140,9 +178,10 @@ for (dirpath, dirnames, aFilenames) in os.walk(pathprefix):
                         doAutoFile(dirpath + "/" + aFilename, dirpath + "/" + aFile + "_tmp.md" )
 
                         ### Pandoc pass
-                        retcode = subprocess.call(["pandoc", dirpath + "/" +aFile + "_tmp.md", "-s", "-c", relpathstyle+"/docs/style.css", "-o", dirpath + "/" + aFile + ".html.tmp"])
+                        retcode = subprocess.call(["pandoc", dirpath + "/" +aFile + "_tmp.md", "-s", "-c", relpathstyle+"/docs/style.css", "-o", dirpath + "/" + aFile + ".html.tmp", "--metadata", "pagetitle='"+aFile+"'"])
                         os.remove( dirpath + "/" + aFile + "_tmp.md" )
                         ### Autolink pass
                         if retcode == 0 :
                                 replaceStringInFile(dirpath + "/" + aFile + ".html.tmp", dirpath + "/" + aFile + ".html", dictionary)
                                 os.remove( dirpath + "/" + aFile + ".html.tmp" )
+                                checkAllUrl(dirpath, dirpath + "/" + aFile + ".html")

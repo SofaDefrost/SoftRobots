@@ -18,4 +18,4 @@ To create a cable actuator for direct control, we will use the CableConstraint e
 
 Information on how to create a PythonScriptController to control the actuators via the keyboard can be found in this example: [driveTheRobot](../../driveTheRobot/simulation.pyscn)
 
-Instead of controlling the cable length, you can control the force applied from the cable pull point. You can see this in the scene [CableForce.pyscn](CableForce.pyscn).
+Instead of controlling the cable length, you can control the force applied from the cable pull point. You can see this in the scene [CableForce.py3scn](CableForce.pys3cn).

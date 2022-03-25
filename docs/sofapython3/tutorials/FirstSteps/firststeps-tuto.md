@@ -1,4 +1,4 @@
-![](../../images/pluginimage.png){width=100%}
+![](../../../images/pluginimage.png){width=100%}
 
 <script language="javascript">
 function toggle(target) {
@@ -47,15 +47,15 @@ sudo PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.py
 - Modify the properties of these objects
 - Conveniently reload the scene after each modification
 
-The content of the `.py` simulation files is in fact standard python code with at least one function named `createScene` taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description.  
+The content of the `.py` simulation files is in fact standard python code with at least one function named `createScene` taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description.
 A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode". Additional components can be added to the scene, that aren't nodes (they cannot have children), related to the behaviour of the object (examples: *UniformMass* for vertexMass parameters definition, and *OGLModel* for the settings of the graphic display). 
 
 Making a very simple scene:
 <div>
 <pre>
-<a href="details/step1.py"> <img src="../../images/icons/play.png" width="14px"/> Try the scene in Sofa.</a>
-<a href="myproject/mystep1.py"> <img src="../../images/icons/play.png" width="14px"/> Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step1code');"> <img src="../../images/icons/play.png" width="14px"/> Show/Hide the code.</a>
+<a href="details/step1.py"> <img src="../../../images/icons/play.png" width="14px"/> Try the scene in Sofa.</a>
+<a href="myproject/mystep1.py"> <img src="../../../images/icons/play.png" width="14px"/> Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/> Show/Hide the code.</a>
 </pre>
 <div id='step1code' class='hide'>
 ```python
@@ -105,8 +105,8 @@ You can try the following manipulations, in order to get familiar with Sofa envi
 
 <div>
 <pre>
-<a href="javascript:void" onclick="toggle('step1exo');"> <img src="../../images/icons/play.png" width="14px"/>Change the position of the cube from the Sofa GUI</a>
-<a href="javascript:void" onclick="toggle('step1exo2');"> <img src="../../images/icons/play.png" width="14px"/>Change the color of the cube, directly in the code</a>
+<a href="javascript:void(0)" onclick="toggle('step1exo');"> <img src="../../../images/icons/play.png" width="14px"/>Change the position of the cube from the Sofa GUI</a>
+<a href="javascript:void(0)" onclick="toggle('step1exo2');"> <img src="../../../images/icons/play.png" width="14px"/>Change the color of the cube, directly in the code</a>
 </pre>
 <div id='step1exo' class='hide'>
 In the *Graph* panel on the left, expand the 'Cube' menu and double-click on 'MechanicalObject mstate'.  
@@ -164,9 +164,9 @@ Finally, in order to have the visual representation moving along with the mechan
 
 <div>
 <pre>
-<a href="details/step2.py"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
-<a href="myproject/mystep2.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step2code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/mystep2.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step2code' class='hide'>
 ```python
@@ -249,9 +249,9 @@ Finally, in order to map those collision DOFs with those of the mechanical model
 
 <div>
 <pre>
-<a href="details/step3.py"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
-<a href="myproject/mystep3.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step3code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="details/step3.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/mystep3.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step3code');"> <img src="../../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
 <div id='step3code' class='hide'>
 ```python  
@@ -356,9 +356,9 @@ Based on the prefab object `Cube()` and `Foor()`, as well as the collision manag
 
 <div>
 <pre>
-<a href="details/step4.py"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
-<a href="myproject/mystep4.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step4code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+<a href="details/step4.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/mystep4.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4code');"> <img src="../../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4code' class='hide'>
 ```python  
