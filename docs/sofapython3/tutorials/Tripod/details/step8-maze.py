@@ -6,6 +6,9 @@ import Sofa
 from tutorial import *
 from tripod import Tripod
 from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
+from maze import Maze, Sphere
+from mazecontroller import MazeController
+from stlib3.scene.contactheader import ContactHeader
 
 
 def EffectorGoal(node, position):
@@ -13,10 +16,10 @@ def EffectorGoal(node, position):
     goal.addObject('EulerImplicitSolver', firstOrder=True)
     goal.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
     goal.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
+    goal.addObject('RestShapeSpringsForceField', points=0, angularStiffness=1e5, stiffness=1e5)
 
     spheres = goal.addChild('Spheres')
     spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0],  [10, 0, 0],   [0, 10, 0],   [0, 0, 10]])
-    spheres.addObject('SphereCollisionModel', radius=5, group=1)
     spheres.addObject('RigidMapping')
 
     goal.addObject('UncoupledConstraintCorrection')
@@ -88,35 +91,38 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
 
 def createScene(rootNode):
     from stlib3.scene import Scene
+    ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0)
+    rootNode.removeObject(rootNode.GenericConstraintSolver)
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=["SofaSparseSolver", "SofaOpenglVisual", "SofaSimpleFem", "SoftRobots","SoftRobots.Inverse", 'SofaBoundaryCondition', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
     scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
 
     # Choose here to control position or orientation of end-effector
-    orientation = False
+    orientation = True
 
     if orientation:
         # inverse in orientation
-        goalNode = EffectorGoal(rootNode, [0, 50, 50])
+        goalNode = EffectorGoal(rootNode, [0, 30, 50])
     else:
         # inverse in position
         goalNode = EffectorGoal(rootNode, [0, 40, 0])
 
-    # You can add a GoalController and play with it
-    # GoalController(goalNode)
+    goalNode.addObject(MazeController(goalNode,False))
 
     # Adding contact handling
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
 
     # Inverse Solver
-    scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('QPInverseProblemSolver', name='QP', printLog=False)
     scene.Simulation.addObject('GenericConstraintCorrection')
 
-    scene.VisualStyle.displayFlags = "showBehavior showCollision"
+    scene.VisualStyle.displayFlags = "showBehavior showCollisionModels"
 
     tripod = scene.Modelling.addChild(Tripod())
     actuators = addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)
+    maze = tripod.RigidifiedStructure.FreeCenter.addChild(Maze())
+    maze.addObject("RigidMapping", index=0)
+    rootNode.addChild(Sphere())
 
     # Serial port bridge
     serial = SerialPortBridgeGeneric(rootNode)
