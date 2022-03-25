@@ -27,16 +27,16 @@ Tutorials prequisites:
 
 <!-- ### Step 1: Loading a scene on Sofa
 
-Sofa is loading the description of the simulation from *pyscn* files. Sofa is started with the command `runSofa`{.bash} in the terminal.  
-To run a file `MyScene.pyscn`, use the following command:
+Sofa is loading the description of the simulation from *.py* files. Sofa is started with the command `runSofa`{.bash} in the terminal.  
+To run a file `MyScene.py`, use the following command:
 
 ```bash
-PATH_TO_SOFA_DIRECTORY/build/bin/runSofa PATH_TO_SCENE_FILE/MyScene.pyscn
+PATH_TO_SOFA_DIRECTORY/build/bin/runSofa PATH_TO_SCENE_FILE/MyScene.py
 ```
 In order to be able to send data to a connected robot, one way is to start Sofa with administrator rights, using the command `sudo` (it requires the administrator password):  
 
 ```bash
-sudo PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.pyscn
+sudo PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.py
 ```
 -->
 
@@ -47,13 +47,13 @@ sudo PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.pyscn
 - Modify the properties of these objects
 - Conveniently reload the scene after each modification
 
-The content of the `pyscn` simulation files is in fact standard python code with at least one function named `createScene` taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description.  
+The content of the `.py` simulation files is in fact standard python code with at least one function named `createScene` taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation's content and this is the place where you will type your scene's description.  
 A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode". Additional components can be added to the scene, that aren't nodes (they cannot have children), related to the behaviour of the object (examples: *UniformMass* for vertexMass parameters definition, and *OGLModel* for the settings of the graphic display). 
 
 Making a very simple scene:
 <div>
 <pre>
-<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="14px"/> Try the scene in Sofa.</a>
+<a href="details/step1.py"> <img src="../../images/icons/play.png" width="14px"/> Try the scene in Sofa.</a>
 <a href="myproject/mystep1.py"> <img src="../../images/icons/play.png" width="14px"/> Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step1code');"> <img src="../../images/icons/play.png" width="14px"/> Show/Hide the code.</a>
 </pre>
@@ -96,7 +96,7 @@ def createScene(rootNode):
 
 - In order to reload the scene (after each modification of the code), press *Ctrl+R* or select *File \> Reload* in the menu bar.
 
-- To automatically reload the scene when there are changes, add the option `-i` when first loading the scene in the terminal: `runSofa firststeps.pyscn -i`{.bash}.
+- To automatically reload the scene when there are changes, add the option `-i` when first loading the scene in the terminal: `runSofa firststeps.py -i`{.bash}.
 
 - In order to vizualize the properties of the objects directly from the GUI, double-click on the wanted item in the *Graph* panel to open the corresponding settings window. The properties can be modified directly from this window (click on the [*Update*] button to reload the scene with the new parameters afterwards).
 
@@ -164,7 +164,7 @@ Finally, in order to have the visual representation moving along with the mechan
 
 <div>
 <pre>
-<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="details/step2.py"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
 <a href="myproject/mystep2.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step2code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
@@ -249,7 +249,7 @@ Finally, in order to map those collision DOFs with those of the mechanical model
 
 <div>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="details/step3.py"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
 <a href="myproject/mystep3.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step3code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
@@ -356,7 +356,7 @@ Based on the prefab object `Cube()` and `Foor()`, as well as the collision manag
 
 <div>
 <pre>
-<a href="details/step4.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="details/step4.py"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
 <a href="myproject/mystep4.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void" onclick="toggle('step4code');"> <img src="../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
