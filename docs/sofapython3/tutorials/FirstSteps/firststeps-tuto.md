@@ -59,10 +59,10 @@ Making a very simple scene:
 </pre>
 <div id='step1code' class='hide'>
 ```python
-from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
-from stlib.visuals import ShowGrid
-from stlib.physics.rigid import ..autolink::STLIB::Floor
-from stlib.physics.rigid import ..autolink::STLIB::Cube
+from stlib3.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
+from stlib3.visuals import ShowGrid
+from stlib3.physics.rigid import ..autolink::STLIB::Floor
+from stlib3.physics.rigid import ..autolink::STLIB::Cube
 
 def createScene(rootNode):
     """This is my first scene"""
@@ -170,10 +170,10 @@ Finally, in order to have the visual representation moving along with the mechan
 </pre>
 <div id='step2code' class='hide'>
 ```python
-from stlib.scene import MainHeader
-from stlib.visuals import ShowGrid
-from stlib.solver import DefaultSolver
-from stlib.physics.rigid import Floor
+from stlib3.scene import MainHeader
+from stlib3.visuals import ShowGrid
+from stlib3.solver import DefaultSolver
+from stlib3.physics.rigid import Floor
 
 def createScene(rootNode):
   ShowGrid(rootNode)
@@ -255,10 +255,10 @@ Finally, in order to map those collision DOFs with those of the mechanical model
 </pre>
 <div id='step3code' class='hide'>
 ```python  
-from stlib.scene import MainHeader, ContactHeader
-from stlib.visuals import ShowGrid
-from stlib.solver import DefaultSolver
-from stlib.physics.rigid import Floor
+from stlib3.scene import MainHeader, ContactHeader
+from stlib3.visuals import ShowGrid
+from stlib3.solver import DefaultSolver
+from stlib3.physics.rigid import Floor
 
 def createScene(rootNode):
   ShowGrid(rootNode)
@@ -362,10 +362,10 @@ Based on the prefab object `Cube()` and `Foor()`, as well as the collision manag
 </pre>
 <div id='step4code' class='hide'>
 ```python  
-from stlib.scene import MainHeader, ContactHeader
-from stlib.visuals import ShowGrid
-from stlib.physics.rigid import Floor
-from stlib.physics.rigid import Cube
+from stlib3.scene import MainHeader, ContactHeader
+from stlib3.visuals import ShowGrid
+from stlib3.physics.rigid import Floor
+from stlib3.physics.rigid import Cube
 
 def createScene(rootNode):
     """This is my first scene"""

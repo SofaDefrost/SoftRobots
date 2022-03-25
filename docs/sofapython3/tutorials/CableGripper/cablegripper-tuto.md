@@ -51,9 +51,9 @@ to fill the simulation's content and this is the place where you will type your 
 A very simple scene may look like:
 <div>
 ```python
-from stlib.visuals import ShowGrid
-from stlib.physics.rigid import ..autolink::STLIB::Floor
-from stlib.physics.rigid import ..autolink::STLIB::Cube
+from stlib3.visuals import ShowGrid
+from stlib3.physics.rigid import ..autolink::STLIB::Floor
+from stlib3.physics.rigid import ..autolink::STLIB::Cube
 
 def createScene(rootNode):
     """This is my first scene"""
@@ -95,7 +95,7 @@ it is important to understand the one that approximates the behavior of the real
 In particular, it is important to know how soft or stiff the material is, if it has an elastic or more complex 
 behaviour (Hyperelastic, plastic, etc...). In our case, the real material is silicon which we will approximate 
 with an elastic deformation law and simulate using the Finite Element Method (..autolink::General::FEM). In sofa, 
-the ..autolink::STLIB::ElasticMaterialObject from *stlib.physics.deformable* provides a scene template
+the ..autolink::STLIB::ElasticMaterialObject from *stlib3.physics.deformable* provides a scene template
 to easily add such an object in your scene. 
 
 To compute the deformation of the object using the Finite Element Method a volumetric representation of shape
@@ -105,7 +105,7 @@ provide the appropriate tetrahedral mesh in a file name "*finger.vtk*".
 Let's now work in *'finger.py'* to add:
 <div>
 ```python
-from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
+from stlib3.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
@@ -144,7 +144,7 @@ gravity. This can be done in the following way:
 Let's now work in *'finger.py'* to add:
 <div>
 ```python
-from stlib.physics.constraint import FixedBox
+from stlib3.physics.constraint import FixedBox
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
@@ -211,7 +211,7 @@ the ..autolink::SoftRobots plugin and use it in the following way:
 ```python
 ### ... similar to previous step ....
 from softrobots.actuators import ..autolink::SoftRobots::PullingCable
-from splib.loaders import loadPointListFromFile
+from splib3.loaders import loadPointListFromFile
 
 ### ... similar to previous step ....
 def Finger(parentNode):
@@ -295,7 +295,7 @@ The finger.py file should now contains :
 <div>
 ```python
 ## ... Same imports as in step 3 ...
-from stlib.physics.collision import ..autolink::STLIB::CollisionMesh
+from stlib3.physics.collision import ..autolink::STLIB::CollisionMesh
 
 ## ... Same as in step 3 ...
 def Finger(parentNode):
@@ -349,11 +349,11 @@ At this point the *finger.py* file should contains something similar to:
 ```python
 # -*- coding: utf-8 -*-
 import Sofa
-from stlib.scene import ..autolink::STLIB::Node
-from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
-from stlib.physics.constraints import ..autolink::STLIB::FixedBox
-from stlib.physics.collision import ..autolink::STLIB::CollisionMesh
-from splib.loaders import loadPointListFromFile
+from stlib3.scene import ..autolink::STLIB::Node
+from stlib3.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
+from stlib3.physics.constraints import ..autolink::STLIB::FixedBox
+from stlib3.physics.collision import ..autolink::STLIB::CollisionMesh
+from splib3.loaders import loadPointListFromFile
 from softrobots.actuators import ..autolink::SoftRobots::PullingCable
 
 class FingerController(Sofa.PythonScriptController):
@@ -474,8 +474,8 @@ reload of the 'gripper.py' each time the source file is changed.
 Open the *'cablegripper.py'* and add the Cube, the Floor and the Gripper which should resuts in something similar to:
 <div>
 ```python
-from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
-from stlib.physics.rigid import ..autolink::STLIB::Floor, ..autolink::STLIB::Cube
+from stlib3.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
+from stlib3.physics.rigid import ..autolink::STLIB::Floor, ..autolink::STLIB::Cube
 from gripper import Gripper
 
 def createScene(rootNode):
