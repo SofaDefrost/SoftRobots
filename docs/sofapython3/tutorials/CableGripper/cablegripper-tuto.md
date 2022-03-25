@@ -25,7 +25,7 @@ Before continuing this tutorial try the resulting simulation you need to achieve
 You can load the scene directly from this documentation by clicking on the following:
 <div>
 <pre>
-<a href="details/step0.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Try now the scene in Sofa.</a>
+<a href="details/step0.py"> <img src="../../images/icons/play.png" width="12px"/> Try now the scene in Sofa.</a>
 </pre>
 </div>
 
@@ -44,7 +44,7 @@ Note that with MacOS, you may have to use *cmd* instead of *ctrl*.
 
 ### Step 1: Setting up simple scene
 
-Sofa is loading the description of the simulation from *pyscn* files. The content of these file is in fact standard python code with 
+Sofa is loading the description of the simulation from *.py* files. The content of these file is in fact standard python code with 
 at least one function named *createScene* taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa
 to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode".
 
@@ -71,15 +71,15 @@ def createScene(rootNode):
 ```
 <div>
 <pre>
-<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/cablegripper.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step1.py"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/cablegripper.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
 </div>
 
 ####<i>Comments (things to present or do in this step):</i>
 
-- load "cablegripper.pyscn" in sofa (with option '-i') and in your text editor
+- load "cablegripper.py" in sofa (with option '-i') and in your text editor
 
 - add a floor and a cube in the scene
 
@@ -126,7 +126,7 @@ def Finger(parentNode=None, name="Finger",
 ```
 <div>
 <pre>
-<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="details/step2.py"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
@@ -168,7 +168,7 @@ def Finger(parentNode=None, name="Finger",
 ```
 <div>
 <pre>
-<a href="details/step2.2.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="details/step2.2.py"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
@@ -222,7 +222,7 @@ def Finger(parentNode):
 
 <div>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="details/step3.py"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
@@ -261,7 +261,7 @@ The controller can then be attached to the object *finger* it is supposed to con
 
 <div>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="details/step3.py"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
@@ -315,7 +315,7 @@ def Finger(parentNode):
 ```
 <div>
 <pre>
-<a href="details/step4.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="details/step4.py"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
@@ -450,7 +450,7 @@ def Gripper(parentNode=None):
 ```
 <div>
 <pre>
-<a href="details/step5.pyscn"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="details/step5.py"> <img src="../../images/icons/play.png" width="16px"/>Show me the result.</a>
 <a href="myproject/gripper.py"> <img src="../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
@@ -471,7 +471,7 @@ reload of the 'gripper.py' each time the source file is changed.
 ## Step 6: Putting everything in a single simulation.
 
 
-Open the *'cablegripper.pyscn'* and add the Cube, the Floor and the Gripper which should resuts in something similar to:
+Open the *'cablegripper.py'* and add the Cube, the Floor and the Gripper which should resuts in something similar to:
 <div>
 ```python
 from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
@@ -502,8 +502,8 @@ def createScene(rootNode):
 ```
 <div>
 <pre>
-<a href="details/step6.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
-<a href="myproject/cablegripper.pyscn"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
+<a href="details/step6.py"> <img src="../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/cablegripper.py"> <img src="../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 </div>
