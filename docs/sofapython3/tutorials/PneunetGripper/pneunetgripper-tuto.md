@@ -20,7 +20,7 @@ This mesh is then stored in a ```Mesh```  component (linked to the loader throug
 finger.createObject('Mesh', src='@loader', name='container')
 finger.createObject('MechanicalObject', name='tetras', template='Vec3d', rx='0', dz='0')
 ```
-[Step1](details/step1-meshLoading.pyscn)
+[Step1](details/step1-meshLoading.py)
 ## Constitutive law of the material and Mass
 
 ### Main Body
@@ -39,7 +39,7 @@ rootNode.findData('gravity').value='-9810 0 0';
 ```
 This corresponds to a gravity defined along the x axis, assuming the length unit is millimeters.
 
-[Step2](details/step2-forceFieldAndMass.pyscn)
+[Step2](details/step2-forceFieldAndMass.py)
 
 ### Stiff layer
 
@@ -52,7 +52,7 @@ modelSubTopo.createObject('Mesh', position='@loader.position', tetrahedra="@boxR
 modelSubTopo.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEM', method='large', poissonRatio='0.3',  youngModulus='1500')
 ```
 
-[Step3](details/step3-stiffLayer.pyscn)
+[Step3](details/step3-stiffLayer.py)
 
 ## Boundary Conditions
 
@@ -64,7 +64,7 @@ finger.createObject('BoxROI', name='boxROI', box='-10 0 -20 0 30 20')
 finger.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12', angularStiffness='1e12')
 ```
 
-[Step4](details/step4-boundaryConditions.pyscn)
+[Step4](details/step4-boundaryConditions.py)
 
 ## Implicit Time Integration and Matrix Solver
 
@@ -76,7 +76,7 @@ finger.createObject('SparseLDLSolver', name='directSolver')
 ```
 With the scene in this state, not much will happen in the simulation, merely a small deformation due to gravity on the finger. Indeed, we did not include the pneumatic actuator yet.
 
-[Step5](details/step5-timeIntegrationAndMatrixSolver.pyscn)
+[Step5](details/step5-timeIntegrationAndMatrixSolver.py)
 
 ## Pneumatic Actuator and Python script controller
 
@@ -113,7 +113,7 @@ With all these components, the scene is now runable and can be used to inflate a
 
 [Real images](data/images/PneuNets-gripper_OneFingerBendingAll.png)
 
-[Step6](details/step6-pneumaticActuatorAndPythonScriptController.pyscn)
+[Step6](details/step6-pneumaticActuatorAndPythonScriptController.py)
 
 ## Creating the gripper
 
@@ -190,7 +190,7 @@ collisionFinger.createObject('BarycentricMapping')
 In this case, the controller allows to inflate all the cavities by pressing ctrl + '+' and deflate them by pressing ctrl + '-'.
 The gripper can be moved up, down, left and right by pressing respectively  ctrl + Up, Down, Left, Right. It can be turned clockwise and anticlockwise by pressing ctrl + 'a' and ctrl + 'q'.
 
-[Step7](details/step7-grabTheCube.pyscn)
+[Step7](details/step7-grabTheCube.py)
 If you want to play around, you can add components OglModel for every object to have a visual representation that suits you.
 
 ![Real images](data/images/PneuNets-gripper_inAction.png)
