@@ -6,6 +6,8 @@ import Sofa
 from tutorial import *
 from tripod import Tripod
 from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
+from maze import Maze
+from mazecontroller import MazeController
 
 
 def EffectorGoal(node, position):
@@ -13,10 +15,10 @@ def EffectorGoal(node, position):
     goal.addObject('EulerImplicitSolver', firstOrder=True)
     goal.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
     goal.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
+    goal.addObject('RestShapeSpringsForceField', points=0, angularStiffness=1e5, stiffness=1e5)
 
     spheres = goal.addChild('Spheres')
     spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0],  [10, 0, 0],   [0, 10, 0],   [0, 0, 10]])
-    spheres.addObject('SphereCollisionModel', radius=5, group=1)
     spheres.addObject('RigidMapping')
 
     goal.addObject('UncoupledConstraintCorrection')
@@ -92,17 +94,16 @@ def createScene(rootNode):
     scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
 
     # Choose here to control position or orientation of end-effector
-    orientation = False
+    orientation = True
 
     if orientation:
         # inverse in orientation
-        goalNode = EffectorGoal(rootNode, [0, 50, 50])
+        goalNode = EffectorGoal(rootNode, [0, 30, 50])
     else:
         # inverse in position
         goalNode = EffectorGoal(rootNode, [0, 40, 0])
 
-    # You can add a GoalController and play with it
-    # GoalController(goalNode)
+    goalNode.addObject(MazeController(goalNode,False))
 
     # Adding contact handling
     scene.addMainHeader()
@@ -113,10 +114,12 @@ def createScene(rootNode):
     scene.addObject('QPInverseProblemSolver', name='QP', printLog=False)
     scene.Simulation.addObject('GenericConstraintCorrection')
 
-    scene.VisualStyle.displayFlags = "showBehavior showCollision"
+    scene.VisualStyle.displayFlags = "showBehavior showCollisionModels"
 
     tripod = scene.Modelling.addChild(Tripod())
     actuators = addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)
+    maze = tripod.RigidifiedStructure.FreeCenter.addChild(Maze())
+    maze.addObject("RigidMapping", index=0)
 
     # Serial port bridge
     serial = SerialPortBridgeGeneric(rootNode)
@@ -151,15 +154,6 @@ def createScene(rootNode):
                                    template='Vec1,Vec3',
                                    object1="@Modelling/Tripod/ActuatedArm" + str(i) + "/ServoMotor/Articulation/dofs",
                                    object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
-                                   skipJ2tKJ2=True,
-                                   nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
-
-        scene.Simulation.addObject('MechanicalMatrixMapper',
-                                   name="mmmArms" + str((i + 1) % 3) + str(i),
-                                   template='Vec1,Vec1',
-                                   object1="@Modelling/Tripod/ActuatedArm" + str(i) + "/ServoMotor/Articulation/dofs",
-                                   object2="@Modelling/Tripod/ActuatedArm" + str((i + 1) % 3) + "/ServoMotor/Articulation/dofs",
-                                   skipJ1tKJ1=True,
                                    skipJ2tKJ2=True,
                                    nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
 

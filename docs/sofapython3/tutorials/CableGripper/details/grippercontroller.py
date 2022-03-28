@@ -29,7 +29,7 @@ class GripperController(Sofa.Core.Controller):
         elif e["key"]==Key.rightarrow:
             direction = [-1.0, 0.0, 0.0]
 
-        if direction != None:
+        if direction is not None and self.fingers is not None:
             for finger in self.fingers:
                 m = finger.getChild("ElasticMaterialObject")
                 mecaobject = m.getObject("dofs")
@@ -38,3 +38,10 @@ class GripperController(Sofa.Core.Controller):
                 cable = m.getChild("PullingCable").getObject("CableConstraint")
                 p = cable.pullPoint.value
                 cable.findData("pullPoint").value = [p[0] + direction[0], p[1] + direction[1], p[2] + direction[2]]
+
+
+def createScene(rootNode):
+
+    rootNode.addObject(GripperController(None))
+
+    return
