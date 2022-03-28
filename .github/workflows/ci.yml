@@ -8,6 +8,16 @@ on:
         required: false
         default: false
         type: boolean
+      python_version:
+        description: 'Choose a python version'
+        required: false
+        default: '3.8'
+        type: choice
+        options: 
+        - '3.7'
+        - '3.8'
+        - '3.9'
+        - '3.10'
   pull_request:
   push:
 
@@ -29,7 +39,7 @@ jobs:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'standard'
-          python_version: '3.8'
+          python_version: '${{ github.event.inputs.python_version }}'
         
       - name: Remove SofaPython3 from SOFA binaries (if any)
         shell: bash
@@ -44,7 +54,8 @@ jobs:
         run: |
           SofaPython3_ROOT="$GITHUB_WORKSPACE/SofaPython3"
           mkdir -p "${{ runner.temp }}/sp3_tmp/zip" "${{ runner.temp }}/sp3_tmp/binaries" "$SofaPython3_ROOT"
-          url="https://github.com/guparan/SofaPython3/releases/download/release-ci_improve_workflow/SofaPython3_ci_improve_workflow_for-SOFA-master_${{ runner.os }}.zip"
+          url="https://github.com/guparan/SofaPython3/releases/download"
+          url="${url}/release-${RUN_BRANCH}/SofaPython3_${RUN_BRANCH}_python-${{ github.event.inputs.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}.zip"
           echo "Getting SofaPython3 from $url"
           curl --output "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -L $url
           unzip -qq "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -d "${{ runner.temp }}/sp3_tmp/binaries"
