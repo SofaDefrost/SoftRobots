@@ -16,6 +16,6 @@ To create a cable actuator for direct control, we will use the CableConstraint e
 	* The pull point is a static point from which the cable originates.
 4. Create a BarycentricMapping for the cable. This creates a bidirectional link between the cable and finger degrees of freedom. This allows the two bodies to interact. By default, this maps this node's MechanicalObject DOFs to the DOFs of the MechanicalObject in the parent node.
 
-Information on how to create a PythonScriptController to control the actuators via the keyboard can be found in this example: [driveTheRobot](../../driveTheRobot/simulation.pyscn)
+Information on how to create a PythonScriptController to control the actuators via the keyboard can be found in this example: [driveTheRobot](../../DriveTheRobot/Simulation.py)
 
-Instead of controlling the cable length, you can control the force applied from the cable pull point. You can see this in the scene [CableForce.py3scn](CableForce.pys3cn).
+Instead of controlling the cable length, you can control the force applied from the cable pull point. You can see this in the scene [CableForce.py3scn](CableForce.py).
