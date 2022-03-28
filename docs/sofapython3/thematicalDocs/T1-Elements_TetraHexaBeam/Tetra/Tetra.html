@@ -78,7 +78,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </head>
 <body>
 <h1 id="tetrahedron-topology-for-fem-simulation">Tetrahedron topology for FEM simulation</h1>
-<p>For the FEM simulation in Sofa the domain can be either a Tetrahedra (often just called ‘Tetra’) or Hexahedra (‘Hexa’) mesh. This example shows a robot that has been meshed into Tetra mesh. For more on how to generate this kind of mesh see also Step 1 in the <a href="../../../tutorials/CableGripper-Tutorial/step1-VolumetricMeshGeneration/01-MeshTetraGeneration.py">Cable Gripper tutorial</a></p>
+<p>For the FEM simulation in Sofa the domain can be either a Tetrahedra (often just called ‘Tetra’) or Hexahedra (‘Hexa’) mesh. This example shows a robot that has been meshed into Tetra mesh. For more on how to generate this kind of mesh see also Step 1 in the <a href="../../T2-FromMeshToSimulation/index.html">Cable Gripper tutorial</a></p>
 <p>After the mesh has been created a ‘TetrahedronFEMForceField’ can be applied to the mesh, with the two main properties: the Poisson Ratio and the Young Modulus of the material:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" title="1">robot.createObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, poissonRatio<span class="op">=</span><span class="st">&#39;0.45&#39;</span>,  youngModulus<span class="op">=</span><span class="st">&#39;600&#39;</span>)<span class="op">;</span></a></code></pre></div>
 <p>After clicking ‘Animate’, you can interact with the scene by using shift + <em>mouse left click</em>, which will generate a force that pulls on the robot.</p>
