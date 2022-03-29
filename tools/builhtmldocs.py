@@ -15,6 +15,7 @@
 # Contributors:
 #  	damien.marchal@univ-lille1.fr
 import os
+import ansicolor
 import subprocess
 import sys
 import re
@@ -42,7 +43,7 @@ def doAutoFile(aFile, outFile):
             toImportFile = os.path.join(path, m.group(1))
 
             if not os.path.exists(toImportFile):
-                print("  -- Missing autofile in line: "+str(lineno) + " => "+toImportFile )
+                print(ansicolor.red("  -- Missing autofile in line: "+str(lineno) + " => "+toImportFile))
                 continue
             f = open(toImportFile, "r")
             fo.write(f.read())
@@ -130,7 +131,7 @@ for hook in sys.argv[2:]:
                 if os.path.exists(purl.path):
                     dictionary[k]["absolutepath"] = abspath
                 else:
-                    print("WARNING: Invalid absolute path... " + purl.path)
+                    print(ansicolor.red("WARNING: Invalid absolute path... " + purl.path))
 
             if "desc" not in dictionary[k]:
                 dictionary[k]["desc"] = ""
@@ -144,13 +145,13 @@ def checkAllUrl(dirpath, filename):
         turl = link.get('href')
         if turl is not None and turl != "javascript:void(0)":
             p = urllib.parse.urlparse(turl)
-            if p is not None:
+            if p is not None and len(p.path) != 0:
                 if p.netloc == '':
                    turl = "file://" + dirpath + "/" + p.path
                 try:
                     r = urllib.request.urlopen(turl,timeout=10)
                 except Exception as e:
-                    print("     Unable to get", e)
+                    print(ansicolor.red("     Unable to get link " + str(turl) + " \n         because " + str(e)))
     for link in soup.find_all("img"):
         turl = link.get('src')
         if turl is not None and turl != "javascript:void(0)":
@@ -161,7 +162,7 @@ def checkAllUrl(dirpath, filename):
                 try:
                     r = urllib.request.urlopen(turl,timeout=10)
                 except Exception as e:
-                    print("     Unable to get", e)
+                    print(ansicolor.red("     Unable to get image " +  str(turl) + "  \n         because " + str(e)))
 
 pathprefix = os.path.abspath(sys.argv[1]) + "/"
 for (dirpath, dirnames, aFilenames) in os.walk(pathprefix):

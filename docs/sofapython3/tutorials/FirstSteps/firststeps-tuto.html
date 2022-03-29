@@ -98,7 +98,7 @@ function toggle(target) {
 </ul>
 <!-- ### Step 1: Loading a scene on Sofa
 
-Sofa is loading the description of the simulation from *.py* files. Sofa is started with the command `runSofa`{.bash} in the terminal.
+Sofa is loading the description of the simulation from *.py* files. Sofa is started with the command `runSofa`{.bash} in the terminal.  
 To run a file `MyScene.py`, use the following command:
 
 ```bash
@@ -112,8 +112,7 @@ sudo PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.py
 -->
 <h3 id="step-1-setting-up-a-simple-scene">Step 1: Setting up a simple scene</h3>
 <p>####<i>At the end of this step, you will be able to:</i> - Write a simple scene in Sofa using built-in objects called <em>prefabs</em> (or <em>templates</em>) - Modify the properties of these objects - Conveniently reload the scene after each modification</p>
-<p>The content of the <code>.py</code> simulation files is in fact standard python code with at least one function named <code>createScene</code> taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation’s content and this is the place where you will type your scene’s description.<br />
-A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand’s child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called “rootNode”. Additional components can be added to the scene, that aren’t nodes (they cannot have children), related to the behaviour of the object (examples: <em>UniformMass</em> for vertexMass parameters definition, and <em>OGLModel</em> for the settings of the graphic display).</p>
+<p>The content of the <code>.py</code> simulation files is in fact standard python code with at least one function named <code>createScene</code> taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation’s content and this is the place where you will type your scene’s description. A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand’s child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called “rootNode”. Additional components can be added to the scene, that aren’t nodes (they cannot have children), related to the behaviour of the object (examples: <em>UniformMass</em> for vertexMass parameters definition, and <em>OGLModel</em> for the settings of the graphic display).</p>
 Making a very simple scene:
 <div>
 <pre>
@@ -122,10 +121,10 @@ Making a very simple scene:
 <a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/> Show/Hide the code.</a>
 </pre>
 <div id="step1code" class="hide">
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" title="1"><span class="im">from</span> stlib.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a></a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid</a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="im">from</span> stlib.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a></a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" title="1"><span class="im">from</span> stlib3.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="im">from</span> stlib3.visuals <span class="im">import</span> ShowGrid</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a></a>
 <a class="sourceLine" id="cb1-5" title="5"></a>
 <a class="sourceLine" id="cb1-6" title="6"><span class="kw">def</span> createScene(rootNode):</a>
 <a class="sourceLine" id="cb1-7" title="7">    <span class="co">&quot;&quot;&quot;This is my first scene&quot;&quot;&quot;</span></a>
@@ -202,10 +201,10 @@ Finally, in order to have the visual representation moving along with the mechan
 <a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step2code" class="hide">
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb5-1" title="1"><span class="im">from</span> stlib.scene <span class="im">import</span> MainHeader</a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid</a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="im">from</span> stlib.solver <span class="im">import</span> DefaultSolver</a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="im">from</span> stlib.physics.rigid <span class="im">import</span> Floor</a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb5-1" title="1"><span class="im">from</span> stlib3.scene <span class="im">import</span> MainHeader</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="im">from</span> stlib3.visuals <span class="im">import</span> ShowGrid</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="im">from</span> stlib3.solver <span class="im">import</span> DefaultSolver</a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> Floor</a>
 <a class="sourceLine" id="cb5-5" title="5"></a>
 <a class="sourceLine" id="cb5-6" title="6"><span class="kw">def</span> createScene(rootNode):</a>
 <a class="sourceLine" id="cb5-7" title="7">  ShowGrid(rootNode)</a>
@@ -268,10 +267,10 @@ Finally, in order to map those collision DOFs with those of the mechanical model
 <a href="javascript:void(0)" onclick="toggle('step3code');"> <img src="../../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
 <div id="step3code" class="hide">
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb7-1" title="1"><span class="im">from</span> stlib.scene <span class="im">import</span> MainHeader, ContactHeader</a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid</a>
-<a class="sourceLine" id="cb7-3" title="3"><span class="im">from</span> stlib.solver <span class="im">import</span> DefaultSolver</a>
-<a class="sourceLine" id="cb7-4" title="4"><span class="im">from</span> stlib.physics.rigid <span class="im">import</span> Floor</a>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb7-1" title="1"><span class="im">from</span> stlib3.scene <span class="im">import</span> MainHeader, ContactHeader</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="im">from</span> stlib3.visuals <span class="im">import</span> ShowGrid</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="im">from</span> stlib3.solver <span class="im">import</span> DefaultSolver</a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> Floor</a>
 <a class="sourceLine" id="cb7-5" title="5"></a>
 <a class="sourceLine" id="cb7-6" title="6"><span class="kw">def</span> createScene(rootNode):</a>
 <a class="sourceLine" id="cb7-7" title="7">  ShowGrid(rootNode)</a>
@@ -369,10 +368,10 @@ Figure 3: Initial view of the simulation</i>
 <a href="javascript:void(0)" onclick="toggle('step4code');"> <img src="../../../images/icons/play.png" width="16px"/>Show/Hide the code.</a>
 </pre>
 <div id="step4code" class="hide">
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb8-1" title="1"><span class="im">from</span> stlib.scene <span class="im">import</span> MainHeader, ContactHeader</a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="im">from</span> stlib.visuals <span class="im">import</span> ShowGrid</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="im">from</span> stlib.physics.rigid <span class="im">import</span> Floor</a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="im">from</span> stlib.physics.rigid <span class="im">import</span> Cube</a>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb8-1" title="1"><span class="im">from</span> stlib3.scene <span class="im">import</span> MainHeader, ContactHeader</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="im">from</span> stlib3.visuals <span class="im">import</span> ShowGrid</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> Floor</a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> Cube</a>
 <a class="sourceLine" id="cb8-5" title="5"></a>
 <a class="sourceLine" id="cb8-6" title="6"><span class="kw">def</span> createScene(rootNode):</a>
 <a class="sourceLine" id="cb8-7" title="7">    <span class="co">&quot;&quot;&quot;This is my first scene&quot;&quot;&quot;</span></a>

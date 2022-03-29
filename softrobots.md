@@ -9,11 +9,11 @@ Tutorials:
 
 * First step for Sofa newcommers: ..autolink::SoftRobots::Docs::FirstStep
 
-* Make a soft-gripper actuated by cables. [Start the tutorial](docs/sofapython3/tutorials/CableGripper/cablegripper-tuto.pyscn)
+* Make a soft-gripper actuated by cables. [Start the tutorial](docs/sofapython3/tutorials/CableGripper/cablegripper-tuto.py)
 
-* Make a soft-gripper actuated by pneumatics. [Start the tutorial](docs/sofapython3/tutorials/PneunetGripper/pneunetgripper-tuto.pyscn)
+* Make a soft-gripper actuated by pneumatics. [Start the tutorial](docs/sofapython3/tutorials/PneunetGripper/pneunetgripper-tuto.py)
 
-* Make a soft-tripod actuated by servo motors. [Start the tutorial](docs/sofapython3/tutorials/Tripod/tripod-tuto.pyscn)
+* Make a soft-tripod actuated by servo motors. [Start the tutorial](docs/sofapython3/tutorials/Tripod/tripod-tuto.py)
 
 
 Thematical documentations:

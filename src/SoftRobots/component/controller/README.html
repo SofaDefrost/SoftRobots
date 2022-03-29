@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../../../../docs/style.css" />
+</head>
+<body>
+<h1 id="gametrakcontroller">GameTrakController</h1>
+<p>1- Install HIDAPI : https://github.com/signal11/hidapi<br />
+1.1- Download the archive</p>
+<p>1.2- <strong>On Linux</strong></p>
+<pre><code>sudo apt-get install libudev-dev libusb-1.0-0-dev libfox-1.6-dev
+sudo apt-get install autotools-dev autoconf automake libtool
+cd HIDAPI_DIR
+./bootstrap
+./configure
+make
+sudo make install</code></pre>
+<p>1.2- <strong>On Mac</strong></p>
+<pre><code>sudo port install fox
+cd HIDAPI_DIR
+./bootstrap
+./configure
+make
+sudo make install</code></pre>
+<p>1.2- <strong>On Windows</strong>, refer to the README file provided with the library</p>
+<p>2- In the cmake gui, enable: SOFTROBOTS_GAMETRAKCONTROLLER = true<br />
+3- If you’re working on Windows please improve this README</p>
+<h1 id="communicationcontroller">CommunicationController</h1>
+<p>1- Install ZMQ. Please ensure than your libzmq version is &gt;= 3.2</p>
+<p>1.1- <strong>On Linux</strong></p>
+<pre><code>#Debian/Ubuntu
+sudo apt-get install libzmq3-dev
+#Fedora
+sudo dnf install zeromq-devel</code></pre>
+<p>1.1- <strong>On Mac</strong> (missing)</p>
+<p>1.1- <strong>On Windows</strong>, download the Windows source of libzmq and build using Visual Studio. Put a copy of zmq.hpp from the cppzmq project (github) in the include folder of libzmq.</p>
+<p>2- In the cmake gui, enable: SOFTROBOTS_COMMUNICATIONCONTROLLER = true<br />
+3- If you’re working or Mac please improve this README</p>
+</body>
+</html>
