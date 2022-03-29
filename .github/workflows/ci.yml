@@ -8,28 +8,19 @@ on:
         required: false
         default: false
         type: boolean
-      python_version:
-        description: 'Choose a python version'
-        required: false
-        default: '3.8'
-        type: choice
-        options: 
-        - '3.7'
-        - '3.8'
-        - '3.9'
-        - '3.10'
   pull_request:
   push:
 
 jobs:
   build-and-test:
-    name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }}
+    name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }} and python ${{ matrix.python_version }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-10.15, windows-2019]
         sofa_branch: [master, v21.12]
+        python_version: ['3.7', '3.8', '3.9', '3.10']
 
     steps:
       - name: Setup SOFA and environment
@@ -40,7 +31,7 @@ jobs:
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'standard'
           sofa_with_sofapython3: 'false'
-          python_version: ${{ github.event.inputs.python_version }}
+          python_version: '${{ matrix.python_version }}'
 
       - name: Install SofaPython3
         shell: bash
@@ -48,7 +39,7 @@ jobs:
           SofaPython3_ROOT="$GITHUB_WORKSPACE/SofaPython3"
           mkdir -p "${{ runner.temp }}/sp3_tmp/zip" "${{ runner.temp }}/sp3_tmp/binaries" "$SofaPython3_ROOT"
           url="https://github.com/guparan/SofaPython3/releases/download"
-          url="${url}/release-${RUN_BRANCH}/SofaPython3_${RUN_BRANCH}_python-${{ github.event.inputs.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}.zip"
+          url="${url}/release-${RUN_BRANCH}/SofaPython3_${RUN_BRANCH}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}.zip"
           echo "Getting SofaPython3 from $url"
           curl --output "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -L $url
           unzip -qq "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -d "${{ runner.temp }}/sp3_tmp/binaries"
@@ -94,13 +85,13 @@ jobs:
       - name: Create artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: SoftRobots_${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
+          name: SoftRobots_${{ steps.sofa.outputs.run_branch }}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.WORKSPACE_INSTALL_PATH }}
 
       - name: Install artifact
         uses: actions/download-artifact@v2
         with:
-          name: SoftRobots_${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
+          name: SoftRobots_${{ steps.sofa.outputs.run_branch }}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
 
       - name: Set env vars for tests
@@ -174,7 +165,16 @@ jobs:
           echo "RELEASE_TAGNAME=$RELEASE_TAGNAME" | tee -a $GITHUB_ENV
           echo "RELEASE_DATE=$RELEASE_DATE" | tee -a $GITHUB_ENV
 
-      - name: Upload release
+      - name: Delete old release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          tag_name: ${{ env.RELEASE_TAGNAME }}
+          delete_release: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new release
+        if: success() || failure()
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ env.RELEASE_NAME }}
