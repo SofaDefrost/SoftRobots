@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Setup SOFA and environment
         id: sofa
-        uses: guparan/sofa-setup-action@add_qt_install
+        uses: guparan/sofa-setup-action@ci_improve_workflow
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
