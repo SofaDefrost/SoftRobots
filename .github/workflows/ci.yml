@@ -39,15 +39,8 @@ jobs:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'standard'
+          sofa_with_sofapython3: 'false'
           python_version: '${{ github.event.inputs.python_version }}'
-        
-      - name: Remove SofaPython3 from SOFA binaries (if any)
-        shell: bash
-        run: |
-          # TODO: remove this step when SOFA "standard" no longer contains SP3
-          if [ -d "$SOFA_ROOT/plugins/SofaPython3" ]; then
-            rm -rf $SOFA_ROOT/plugins/SofaPython3
-          fi
 
       - name: Install SofaPython3
         shell: bash
