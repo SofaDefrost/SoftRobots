@@ -40,7 +40,7 @@ jobs:
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'standard'
           sofa_with_sofapython3: 'false'
-          python_version: '${{ github.event.inputs.python_version }}'
+          python_version: ${{ github.event.inputs.python_version }}
 
       - name: Install SofaPython3
         shell: bash
