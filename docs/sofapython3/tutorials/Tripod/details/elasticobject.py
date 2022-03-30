@@ -1,57 +1,37 @@
 # -*- coding: utf-8 -*-
 '''
-Step 2: Introducing elastic material modelling
+Step 3: Move the content of the ElasticBody in a separated file for reusability
 '''
 import Sofa
-from stlib3.scene import Scene
 
-def createScene(rootNode):
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0],
-                  plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaGraphComponent'], iterative=False)
-    scene.addMainHeader()
-    scene.addObject('DefaultAnimationLoop')
-    scene.addObject('DefaultVisualManagerLoop')
-    scene.dt = 0.01
-        
-    # It is possible to visualize the 'forcefields' by doing
-    scene.VisualStyle.displayFlags = 'showForceFields'
-    
-    # Change the stiffness of the spring while interacting with the simulation
-    scene.Settings.mouseButton.stiffness = 1.0
-    
-    # Graphic modelling of the legends associated to the servomotors
-    blueprint = Sofa.Core.Node("Blueprints")
-    blueprint.addObject('MeshSTLLoader', name='loader', filename='data/mesh/blueprint.stl')
-    blueprint.addObject('OglModel', src='@loader')
-    scene.Modelling.addChild(blueprint)
-
+def ElasticBody():
     # To simulate an elastic object, we need:
     # - a deformation law (here linear elasticity)
     # - a solving method (here FEM)
     # - as we are using FEM we need a space discretization (here tetrahedron)
-    elasticbody = scene.Modelling.addChild('ElasticBody')
+    self = Sofa.Core.Node('ElasticBody')
 
     # Specific loader for the mechanical model
-    elasticbody.addObject('GIDMeshLoader',
+    self.addObject('GIDMeshLoader',
                           name='loader',
                           filename='data/mesh/tripod_low.gidmsh')
-    elasticbody.addObject('TetrahedronSetTopologyContainer',
+    self.addObject('TetrahedronSetTopologyContainer',
                           src='@loader',
                           name='tetras')
                           
-    mechanicalmodel = elasticbody.addChild("MechanicalModel")                      
-    mechanicalmodel.addObject('MechanicalObject',
+    self = elasticbody.addChild("MechanicalModel")                      
+    self.addObject('MechanicalObject',
                           name='dofs',
                           position=elasticbody.loader.position.getLinkPath(),
                           rotation=[90.0, 0.0, 0.0],
                           showObject=True,
                           showObjectScale=5.0)
-    mechanicalmodel.addObject('UniformMass', 
+    self.addObject('UniformMass', 
                           name="mass", 
                           totalMass=0.032)
 
     # ForceField components
-    mechanicalmodel.addObject('TetrahedronFEMForceField',
+    self.addObject('TetrahedronFEMForceField',
                           name="linearElasticBehavior",
                           youngModulus=250,
                           poissonRatio=0.45)
@@ -72,5 +52,6 @@ def createScene(rootNode):
     visual.addObject('BarycentricMapping',
                      input=mechanicalmodel.dofs.getLinkPath(),
                      output=visual.renderer.getLinkPath())
+    return self
    
                      

@@ -4,13 +4,9 @@ Step 5: Adding a controller.
 The controller will connect user actions to the simulated behaviour.
 """
 import Sofa
-from stlib3.scene import Scene
-from tripod import Tripod
-"""
-The controller is implemented in this file: tripodcontroller.py
-"""
-from tripodcontroller import TripodController
-
+from stlib3.scene import Scene                   #< Prefab for the scene
+from tripod import Tripod                        #< Prefab for the Tripod
+from tripodcontroller import TripodController    #< Implementation of a controller that modify the Tripod
 
 class MyController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
@@ -20,45 +16,37 @@ class MyController(Sofa.Core.Controller):
         def onKeypressedEvent(self, key):
             print("Key Pressed")
 
-
 def createScene(rootNode):
 
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=["SofaSparseSolver",'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
     scene.addMainHeader()
-    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
     scene.Simulation.addObject('GenericConstraintCorrection')
-
+    scene.Simulation.TimeIntegrationSchema.rayleighStiffness = 0.005
+    scene.Settings.mouseButton.stiffness = 10
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    tripod = scene.Modelling.addChild(Tripod())
-
-    scene.addObject(TripodController(name="TripodController",actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
-
-    scene.Simulation.addChild(tripod.RigidifiedStructure)
-
-    motors = scene.Simulation.addChild("Motors")
-    for i in range(3):
-        motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
+    tripod = Tripod()
+    scene.Modelling.addChild(tripod)
+    scene.Modelling.addObject(TripodController(name="TripodController",actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
+    scene.Simulation.addChild(tripod)
 
     # Temporary additions to have the system correctly built in SOFA
     # Will no longer be required in SOFA v22.06
     scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="mmmFreeCenter",
+                                 name="deformable-freecenter-coupling",
                                  template='Vec3,Rigid3',
-                                 object1="@RigidifiedStructure/DeformableParts/dofs",
-                                 object2="@RigidifiedStructure/FreeCenter/dofs",
-                                 nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+                                 object1=tripod.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),
+                                 object2=tripod.RigidifiedStructure.FreeCenter.dofs.getLinkPath(),
+                                 nodeToParse=tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())
 
     for i in range(3):
         scene.Simulation.addObject('MechanicalMatrixMapper',
-                                   name="mmmDeformableAndArm" + str(i),
+                                   name="deformable-arm{i}-coupling".format(i=i),
                                    template='Vec1,Vec3',
-                                   object1="@Modelling/Tripod/ActuatedArm" + str(i) + "/ServoMotor/Articulation/dofs",
-                                   object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
+                                   object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
+                                   object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
                                    skipJ2tKJ2=True,
-                                   nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
-
-
+                                   nodeToParse=tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())
