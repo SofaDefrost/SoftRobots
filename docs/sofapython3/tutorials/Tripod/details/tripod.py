@@ -57,13 +57,6 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
         rigidifiedstruct = Rigidify(self, deformableObject, groupIndices=groupIndices, frames=frames,
                                     name="RigidifiedStructure")
 
-        # Use this to activate some rendering on the rigidified object ######################################
-        setData(rigidifiedstruct.RigidParts.dofs, showObject=True, showObjectScale=10, drawMode=2)
-        setData(rigidifiedstruct.RigidParts.RigidifiedParticules.dofs, showObject=True, showObjectScale=1,
-                drawMode=1, showColor=[1., 1., 0., 1.])
-        setData(rigidifiedstruct.DeformableParts.dofs, showObject=True, showObjectScale=1, drawMode=2)
-        #####################################################################################################
-
     def __attachToActuatedArms(self, numstep):
 
          rigidParts = self.RigidifiedStructure.RigidParts
@@ -147,7 +140,6 @@ def createScene(rootNode):
     setData(tripod.RigidifiedStructure.DeformableParts.dofs, showObject=True, showObjectScale=1, drawMode=2)
     #####################################################################################################
 
-
     scene.Simulation.addChild(tripod)
 
     def myanimate(targets, factor):
@@ -160,9 +152,9 @@ def createScene(rootNode):
     # Will no longer be required in SOFA v22.06
     for i in range(3):
         scene.Simulation.addObject('MechanicalMatrixMapper',
-                                   name="mmmDeformableAndArm" + str(i),
+                                   name="deformableAndArm{i}Coupling".format(i=i),
                                    template='Vec1,Vec3',
                                    object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
                                    object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
                                    skipJ2tKJ2=False if i == 0 else True,
-                                   nodeToParse=tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())
+                                   nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())

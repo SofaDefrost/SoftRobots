@@ -9,7 +9,7 @@ from splib3.numerics import vec3
 from splib3.numerics.quat import Quat
 from tutorial import *
 from actuatedarm import ActuatedArm
-from elasticbody import ElasticBody 
+from elasticbody import ElasticBody
 from blueprint import Blueprint
 
 def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
@@ -21,7 +21,7 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
         eulerRotation = [0, angle, 0]
         translation = [dist * sin(to_radians(angle2)), -1.35, dist * cos(to_radians(angle2))]
         return translation, eulerRotation
-        
+
     def __rigidify(self, radius=60, numMotors=3, angleShift=180.0):
         deformableObject = self.ElasticBody.MechanicalModel
         self.ElasticBody.init()
@@ -47,25 +47,25 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
         rigidifiedstruct = Rigidify(self, deformableObject, groupIndices=groupIndices, frames=frames,
                                     name="RigidifiedStructure")
 
-       
-    
+
+
     self = Sofa.Core.Node(name)
     self.actuatedarms = []
     for i in range(0, numMotors):
         name = "ActuatedArm" + str(i)
         translation, eulerRotation = __getTransform(i, numMotors, angleShift, radius, radius)
         arm = ActuatedArm(name=name, translation=translation, rotation=eulerRotation)
-        
+
         # Add limits to angle that correspond to limits on real robot
         arm.ServoMotor.minAngle = -2.0225
         arm.ServoMotor.maxAngle = -0.0255
         self.actuatedarms.append(arm)
         self.addChild(arm)
-            
+
     self.addChild(ElasticBody(translation=[0.0, 30, 0.0], rotation=[90,0,0], color=[1.0,1.0,1.0,0.5]))
-    
+
     __rigidify(self, radius, numMotors, angleShift)
-    return self  
+    return self
 
 
 def createScene(rootNode):
@@ -101,9 +101,9 @@ def createScene(rootNode):
     #####################################################################################################
 
     scene.Simulation.addChild(tripod)
-    
+
     FixingBox(scene.Modelling, tripod.ElasticBody.MechanicalModel, scale=[10, 10, 10], translation=[0., 25, 0.])
-    
+
     def myanimate(targets, factor):
         for arm in targets:
             arm.ServoMotor.angleIn = -factor * math.pi / 4.
@@ -114,6 +114,7 @@ def createScene(rootNode):
     # Will no longer be required in SOFA v22.06
     scene.Simulation.addObject('MechanicalMatrixMapper',
                                template='Vec3,Rigid3',
+                               name="RigidAndDeformableCoupling",
                                object1=tripod.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),
                                object2=tripod.RigidifiedStructure.RigidParts.dofs.getLinkPath(),
                                nodeToParse=tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())

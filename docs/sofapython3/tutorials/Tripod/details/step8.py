@@ -129,17 +129,17 @@ def createScene(rootNode):
     # Temporary additions to have the system correctly built in SOFA
     # Will no longer be required in SOFA v22.06
     scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="deformable-freecenter-coupling",
+                                 name="deformableAndFreeCenterCoupling",
                                  template='Vec3,Rigid3',
-                                 object1=tripod.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),
-                                 object2=tripod.RigidifiedStructure.FreeCenter.dofs.getLinkPath(),
-                                 nodeToParse=tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())
+                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
+                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
 
     for i in range(3):
         scene.Simulation.addObject('MechanicalMatrixMapper',
-                                   name="deformable-arm{i}-coupling".format(i=i),
+                                   name="deformableAndArm{i}Coupling".format(i=i),
                                    template='Vec1,Vec3',
                                    object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
                                    object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
                                    skipJ2tKJ2=True,
-                                   nodeToParse=tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())
+                                   nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())

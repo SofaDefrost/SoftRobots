@@ -73,4 +73,4 @@ def createScene(rootNode):
                      input=mechanicalmodel.dofs.getLinkPath(),
                      output=visual.renderer.getLinkPath())
    
-                     
+    scene.Simulation.addChild(elasticbody)                 

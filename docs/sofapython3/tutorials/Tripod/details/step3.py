@@ -29,7 +29,7 @@ def createScene(rootNode):
     scene.Modelling.addChild(Blueprint())
 
     # Add the elasticobject prefab        
-    scene.Modelling.addChild(ElasticBody())
+    scene.Modelling.addChild(ElasticBody(rotation=[90,0,0],color=[1.0,1.0,1.0,0.5]))
 
     # Instanciating the FixingBox prefab into the graph, constraining the mechanical object of the ElasticBody.
     box = FixingBox(scene.Modelling,
