@@ -25,7 +25,7 @@ Before continuing this tutorial try the resulting simulation you need to achieve
 You can load the scene directly from this documentation by clicking on the following:
 <div>
 <pre>
-<a href="details/step0.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Try now the scene in Sofa.</a>
+<a href="details/step0.py"> <img src="../../../images/icons/play.png" width="12px"/> Try now the scene in Sofa.</a>
 </pre>
 </div>
 
@@ -44,16 +44,16 @@ Note that with MacOS, you may have to use *cmd* instead of *ctrl*.
 
 ### Step 1: Setting up simple scene
 
-Sofa is loading the description of the simulation from *pyscn* files. The content of these file is in fact standard python code with 
+Sofa is loading the description of the simulation from *.py* files. The content of these file is in fact standard python code with 
 at least one function named *createScene* taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa
 to fill the simulation's content and this is the place where you will type your scene's description. A scene is an ordered tree of nodes (ex:gripper.), with parent/child relationship (ex: finger). Each node has one or a few components. Every node and component has a name and a few features. The main node at the top of the tree is called "rootNode".
 
 A very simple scene may look like:
 <div>
 ```python
-from stlib.visuals import ShowGrid
-from stlib.physics.rigid import ..autolink::STLIB::Floor
-from stlib.physics.rigid import ..autolink::STLIB::Cube
+from stlib3.visuals import ShowGrid
+from stlib3.physics.rigid import ..autolink::STLIB::Floor
+from stlib3.physics.rigid import ..autolink::STLIB::Cube
 
 def createScene(rootNode):
     """This is my first scene"""
@@ -71,15 +71,15 @@ def createScene(rootNode):
 ```
 <div>
 <pre>
-<a href="details/step1.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
-<a href="myproject/cablegripper.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Do it yourself.</a>
+<a href="details/step1.py"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="myproject/cablegripper.py"> <img src="../../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
 </div>
 
 ####<i>Comments (things to present or do in this step):</i>
 
-- load "cablegripper.py3scn" in sofa (with option '-i') and in your text editor
+- load "cablegripper.py" in sofa (with option '-i') and in your text editor
 
 - add a floor and a cube in the scene
 
@@ -95,7 +95,7 @@ it is important to understand the one that approximates the behavior of the real
 In particular, it is important to know how soft or stiff the material is, if it has an elastic or more complex 
 behaviour (Hyperelastic, plastic, etc...). In our case, the real material is silicon which we will approximate 
 with an elastic deformation law and simulate using the Finite Element Method (..autolink::General::FEM). In sofa, 
-the ..autolink::STLIB::ElasticMaterialObject from *stlib.physics.deformable* provides a scene template
+the ..autolink::STLIB::ElasticMaterialObject from *stlib3.physics.deformable* provides a scene template
 to easily add such an object in your scene. 
 
 To compute the deformation of the object using the Finite Element Method a volumetric representation of shape
@@ -105,7 +105,7 @@ provide the appropriate tetrahedral mesh in a file name "*finger.vtk*".
 Let's now work in *'finger.py'* to add:
 <div>
 ```python
-from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
+from stlib3.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
@@ -126,7 +126,7 @@ def Finger(parentNode=None, name="Finger",
 ```
 <div>
 <pre>
-<a href="details/step2.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="details/step2.py"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
@@ -144,7 +144,7 @@ gravity. This can be done in the following way:
 Let's now work in *'finger.py'* to add:
 <div>
 ```python
-from stlib.physics.constraint import FixedBox
+from stlib3.physics.constraint import FixedBox
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
@@ -168,7 +168,7 @@ def Finger(parentNode=None, name="Finger",
 ```
 <div>
 <pre>
-<a href="details/step2.2.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="details/step2.2.py"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
@@ -211,7 +211,7 @@ the ..autolink::SoftRobots plugin and use it in the following way:
 ```python
 ### ... similar to previous step ....
 from softrobots.actuators import ..autolink::SoftRobots::PullingCable
-from splib.loaders import loadPointListFromFile
+from splib3.loaders import loadPointListFromFile
 
 ### ... similar to previous step ....
 def Finger(parentNode):
@@ -222,7 +222,7 @@ def Finger(parentNode):
 
 <div>
 <pre>
-<a href="details/step3.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="details/step3.py"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
@@ -261,7 +261,7 @@ The controller can then be attached to the object *finger* it is supposed to con
 
 <div>
 <pre>
-<a href="details/step3.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="details/step3.py"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
@@ -295,7 +295,7 @@ The finger.py file should now contains :
 <div>
 ```python
 ## ... Same imports as in step 3 ...
-from stlib.physics.collision import ..autolink::STLIB::CollisionMesh
+from stlib3.physics.collision import ..autolink::STLIB::CollisionMesh
 
 ## ... Same as in step 3 ...
 def Finger(parentNode):
@@ -315,7 +315,7 @@ def Finger(parentNode):
 ```
 <div>
 <pre>
-<a href="details/step4.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="details/step4.py"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
 <a href="myproject/finger.py"> <img src="../../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
@@ -349,11 +349,11 @@ At this point the *finger.py* file should contains something similar to:
 ```python
 # -*- coding: utf-8 -*-
 import Sofa
-from stlib.scene import ..autolink::STLIB::Node
-from stlib.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
-from stlib.physics.constraints import ..autolink::STLIB::FixedBox
-from stlib.physics.collision import ..autolink::STLIB::CollisionMesh
-from splib.loaders import loadPointListFromFile
+from stlib3.scene import ..autolink::STLIB::Node
+from stlib3.physics.deformable import ..autolink::STLIB::ElasticMaterialObject
+from stlib3.physics.constraints import ..autolink::STLIB::FixedBox
+from stlib3.physics.collision import ..autolink::STLIB::CollisionMesh
+from splib3.loaders import loadPointListFromFile
 from softrobots.actuators import ..autolink::SoftRobots::PullingCable
 
 class FingerController(Sofa.PythonScriptController):
@@ -450,7 +450,7 @@ def Gripper(parentNode=None):
 ```
 <div>
 <pre>
-<a href="details/step5.py3scn"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
+<a href="details/step5.py"> <img src="../../../images/icons/play.png" width="16px"/>Show me the result.</a>
 <a href="myproject/gripper.py"> <img src="../../../images/icons/play.png" width="16px"/>Do it yourself.</a>
 </pre>
 </div>
@@ -471,11 +471,11 @@ reload of the 'gripper.py' each time the source file is changed.
 ## Step 6: Putting everything in a single simulation.
 
 
-Open the *'cablegripper.py3scn'* and add the Cube, the Floor and the Gripper which should resuts in something similar to:
+Open the *'cablegripper.py'* and add the Cube, the Floor and the Gripper which should resuts in something similar to:
 <div>
 ```python
-from stlib.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
-from stlib.physics.rigid import ..autolink::STLIB::Floor, ..autolink::STLIB::Cube
+from stlib3.scene import ..autolink::STLIB::MainHeader, ..autolink::STLIB::ContactHeader
+from stlib3.physics.rigid import ..autolink::STLIB::Floor, ..autolink::STLIB::Cube
 from gripper import Gripper
 
 def createScene(rootNode):
@@ -502,8 +502,8 @@ def createScene(rootNode):
 ```
 <div>
 <pre>
-<a href="details/step6.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
-<a href="myproject/cablegripper.py3scn"> <img src="../../../images/icons/play.png" width="12px"/> Do it yourself.</a>
+<a href="details/step6.py"> <img src="../../../images/icons/play.png" width="12px"/> Show me the result.</a>
+<a href="myproject/cablegripper.py"> <img src="../../../images/icons/play.png" width="12px"/> Do it yourself.</a>
 </pre>
 </div>
 </div>

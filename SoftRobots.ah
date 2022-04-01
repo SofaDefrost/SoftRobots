@@ -19,7 +19,7 @@
     "FirstStep" : {
         "ns": "SoftRobots::Docs",
         "name": "FirstStep",
-        "relativepath" : "docs/sofapython3/tutorials/FirstSteps/firststeps-tuto.html?sofafile=firststeps-tuto.pyscn"
+        "relativepath" : "docs/sofapython3/tutorials/FirstSteps/firststeps-tuto.html?sofafile=firststeps-tuto.py"
     }
 
 }

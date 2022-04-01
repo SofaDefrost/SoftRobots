@@ -94,7 +94,7 @@ Once completed, the knowledge acquired from this tutorial on the robot called �
 <ul>
 <li><p>you have installed <a href="https://www.sofa-framework.org/">SOFA</a> with the <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> and <a href="https://project.inria.fr/softrobot/">SoftRobots</a> plugins.</p></li>
 <li><p>you have basic knowledge of the <a href="https://www.python.org/">Python</a> programming language. If this is not the case you can go to <a href="https://www.python.org/">Python</a>Tutorials.</p></li>
-<li><p>you have basic knowledge of scene modelling with SOFA. If not, please complete the <a href="../FirstSteps/firststeps-tuto.html?sofafile=firststeps-tuto.pyscn">FirstStep</a> tutorial first.</p></li>
+<li><p>you have basic knowledge of scene modelling with SOFA. If not, please complete the <a href="../FirstSteps/firststeps-tuto.html?sofafile=firststeps-tuto.py">FirstStep</a> tutorial first.</p></li>
 </ul>
 <p>The robot “Tripod” considered here (see Figure 1 below) is actuated by three servomotors connected to a deformable silicone material. Each of them controls the deformation of one ‘arm’ of the silicone piece. By combining the effects of the three servomotors, is is possible to control the shape of the whole deformable part, which benefits from a theoritically infinite number of degrees of freedom.</p>
 <center>
@@ -123,14 +123,14 @@ Figure 1: Photo of the Tipod robot.
 <li>The properties of any object can be accessed by double-clicking on it in the <em>Graph</em> panel of the SOFA GUI.</li>
 <li>By right-clicking in the <em>Graph</em> panel, the code file can be opened (<em>Open file in editor</em> in the dropdown menu)</li>
 </ul>
-<p>The first two steps aim at modelling the deformable silicone piece of the robot. The objects composing it are added one by one with the function <code>node.createObject()</code>. Just like in the <a href="../FirstSteps/firststeps-tuto.html?sofafile=firststeps-tuto.pyscn">FirstStep</a> tutorial, a mechanical model of the piece is first created, called <code>ElasticBody</code>. As the silicone piece is soft and can be deformed through constraints, it is necessary to describe its entire volume (and not only its center of gravity as it is usually done for rigid objects). Based on its shape, it is discretized: here it is decomposed into tetrahedral elements, linking all the points - or nodes - of the volume. This discretization produces the following types of elements: tetrahedrons, triangles, lines, and points. These elements are listed into a <code>MechanicalObject</code> named “dofs”. The mesh file describing the discretization into tetrahedral elements is “tripod_mid.stl”. The data provided by the meshes must be organized and stored into different data fields (one for the positions of the nodes, one for the triangular elements, …) before SOFA uses them for computation. This formatting is done by means of code blocks called <em>loaders</em>. The loader used here, <code>MeshSTLLoader</code> is designed for <code>STL</code> files.<br />
+<p>The first two steps aim at modelling the deformable silicone piece of the robot. The objects composing it are added one by one with the function <code>node.createObject()</code>. Just like in the <a href="../FirstSteps/firststeps-tuto.html?sofafile=firststeps-tuto.py">FirstStep</a> tutorial, a mechanical model of the piece is first created, called <code>ElasticBody</code>. As the silicone piece is soft and can be deformed through constraints, it is necessary to describe its entire volume (and not only its center of gravity as it is usually done for rigid objects). Based on its shape, it is discretized: here it is decomposed into tetrahedral elements, linking all the points - or nodes - of the volume. This discretization produces the following types of elements: tetrahedrons, triangles, lines, and points. These elements are listed into a <code>MechanicalObject</code> named “dofs”. The mesh file describing the discretization into tetrahedral elements is “tripod_mid.stl”. The data provided by the meshes must be organized and stored into different data fields (one for the positions of the nodes, one for the triangular elements, …) before SOFA uses them for computation. This formatting is done by means of code blocks called <em>loaders</em>. The loader used here, <code>MeshSTLLoader</code> is designed for <code>STL</code> files.<br />
 The mass distribution of the piece is implemented, as well as a time integration scheme (implicit Euler method) and a solver (here the quick resolution method using the LDL matrix decomposition).<br />
 Then, a Visual model of the piece is built, using the same mesh file as for the mechanical model. Because it was decided (for the sake of simplicity) to use the same meshing for both models, the loader is introduced in the rootNode.<br />
 Finally, the two representations are linked together by a mapping, which allows to adapt the visual model to the deformations of the mechanical model of the soft piece. As the same mesh is used for both the mechanical and the visual model, the mapping is simply mirroring the mechanical model to adapt the visual one. This is why we use an <code>IdentityMapping</code> here.</p>
 The resulting simulation looks like this:
 <pre>
-<a href="details/step1.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="details/step1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step1code" class="hide">
@@ -224,8 +224,8 @@ In order to implement the deformation behaviour, the <code>MechanicalObject</cod
 <a class="sourceLine" id="cb3-10" title="10">                                    solver)</a></code></pre></div>
 <p>However, before using this prefabricated object, let’s first build our own, based on a corotational Finite Element Method with a tetrahedral volumetric representation of the shape. The mesh <code>tripod_mid.gidmsh</code> used to store the shape of the deformable object was built with the GiD mesh generator. Starting from the model obtained in the last step, the parameters of the elastic deformation are added to the silicone piece with a <code>ForceField</code> component.</p>
 <pre>
-<a href="details/step2.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="details/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step2code" class="hide">
@@ -322,7 +322,7 @@ Figure 3: Interaction with the soft material with the central part fixed.
 <p>In parallel, in order to lighten the code and ease the reading, the introduction of a function <code class="sourceCode python">ElasticBody(parent)</code> is proposed in this step, bringing together all the components of the silicone piece model. This function also uses the prefab <code>ElasticMaterialObject</code>, that implements the mechanical model of an elastic material (including a mesh loader, mass definition, time integration and solver tools, and the description of the Force Fields).<br />
 Such a function is defined at the beginning of the scene, and can be called as often as wished in the description of the scene (i.e. in the function <code class="sourceCode python">createScene(rootNode)</code>).</p>
 <pre>
-<a href="details/step3.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="details/step3.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
 <a href="myproject/step3.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step3code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
@@ -448,7 +448,7 @@ Figure 5: Display of the servomotor (left) from <em>SG90_servomotor.stl</em> and
 Just like for the <code>ElasticBody</code>, a function <code>Tripod()</code> is introduced, now that all the pieces of the robot have been modelled:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb10-1" title="1">Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius, numMotors, angleShift)</a></code></pre></div>
 <pre>
-<a href="details/step4-1.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="details/step4-1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
 <a href="myproject/step4.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step4-1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
@@ -580,7 +580,7 @@ Figure 6: Deformable piece with the extremities rigidified.
 <li>Rigidify some parts of a deformable object</li>
 </ul>
 <pre>
-<a href="details/step4-2.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="details/step4-2.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
 <a href="myproject/step4-2.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step4-2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
@@ -750,7 +750,7 @@ Figure 7: Deformable piece with the extremities rigidified and attached to the s
 <li>Link a deformable object to a rigid actuator</li>
 </ul>
 <pre>
-<a href="details/step4-3.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="details/step4-3.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
 <a href="myproject/step4-3.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step4-3code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
@@ -912,17 +912,7 @@ Figure 7: Deformable piece with the extremities rigidified and attached to the s
 <a class="sourceLine" id="cb13-155" title="155">                                   object1<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
 <a class="sourceLine" id="cb13-156" title="156">                                   object2<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/dofs&quot;</span>,</a>
 <a class="sourceLine" id="cb13-157" title="157">                                   skipJ2tKJ2<span class="op">=</span><span class="va">False</span> <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="va">True</span>,</a>
-<a class="sourceLine" id="cb13-158" title="158">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a>
-<a class="sourceLine" id="cb13-159" title="159"></a>
-<a class="sourceLine" id="cb13-160" title="160">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb13-161" title="161">                                   name<span class="op">=</span><span class="st">&quot;mmmArms&quot;</span> <span class="op">+</span> <span class="bu">str</span>((i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span>) <span class="op">+</span> <span class="bu">str</span>(i),</a>
-<a class="sourceLine" id="cb13-162" title="162">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec1&#39;</span>,</a>
-<a class="sourceLine" id="cb13-163" title="163">                                   object1<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb13-164" title="164">                                   object2<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(</a>
-<a class="sourceLine" id="cb13-165" title="165">                                       (i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span>) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb13-166" title="166">                                   skipJ1tKJ1<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb13-167" title="167">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb13-168" title="168">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb13-158" title="158">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a></code></pre></div>
 </div>
 </div>
 <h1 id="step-5-adding-controllers">STEP 5: Adding controllers</h1>
@@ -988,7 +978,7 @@ The following combinations allow to control the angular position of the servomot
 Moreover, another animation is added in the function <code>setupanimation(actuators, step, angularstep, factor)</code>, in order to move with one keystroke the three servomotors from their default angular position to the initial position of the real robot. It is triggered by the following keystroke: <img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/> The animation is implemented, using the function <code>animate(cb, params,duration)</code> from the STLIB plugin, and the function <code>setupanimation(actuators, step, angularstep, factor)</code>. The <code>animate</code> function calls <code>setupanimation</code> and provides the structure of the animation: a small variation of the parameters (<code>step</code> value) is computed each time that the <code>steupanimation</code> function is called; the <code>animate</code> function is a recursive function, that calls itself over and over again, as long as the <code>duration</code> value hasn’t been reached.<br />
 The controller is added as another node in the scene.</p>
 <pre>
-<a href="details/step5.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="details/step5.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
 <a href="myproject/step5.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step5code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
@@ -1055,16 +1045,7 @@ The controller is added as another node in the scene.</p>
 <a class="sourceLine" id="cb14-60" title="60">                                   object2<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/dofs&quot;</span>,</a>
 <a class="sourceLine" id="cb14-61" title="61">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
 <a class="sourceLine" id="cb14-62" title="62">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a>
-<a class="sourceLine" id="cb14-63" title="63"></a>
-<a class="sourceLine" id="cb14-64" title="64">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb14-65" title="65">                                   name<span class="op">=</span><span class="st">&quot;mmmArms&quot;</span><span class="op">+</span> <span class="bu">str</span>((i<span class="op">+</span><span class="dv">1</span>)<span class="op">%</span><span class="dv">3</span>) <span class="op">+</span> <span class="bu">str</span>(i),</a>
-<a class="sourceLine" id="cb14-66" title="66">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec1&#39;</span>,</a>
-<a class="sourceLine" id="cb14-67" title="67">                                   object1<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb14-68" title="68">                                   object2<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(</a>
-<a class="sourceLine" id="cb14-69" title="69">                                       (i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span>) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb14-70" title="70">                                   skipJ1tKJ1<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb14-71" title="71">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb14-72" title="72">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb14-63" title="63"></a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene-4"><i>Exploring the scene</i></h2>
@@ -1157,8 +1138,8 @@ Figure 11: Tripod simulation with collision between a sphere, the deformable par
 </tbody>
 </table>
 <pre>
-<a href="details/step6.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="details/step6.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step6code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step6code" class="hide">
@@ -1263,15 +1244,7 @@ Figure 11: Tripod simulation with collision between a sphere, the deformable par
 <a class="sourceLine" id="cb15-99" title="99">                                   object2<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/dofs&quot;</span>,</a>
 <a class="sourceLine" id="cb15-100" title="100">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
 <a class="sourceLine" id="cb15-101" title="101">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a>
-<a class="sourceLine" id="cb15-102" title="102"></a>
-<a class="sourceLine" id="cb15-103" title="103">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb15-104" title="104">                                   name<span class="op">=</span><span class="st">&quot;mmmArms&quot;</span> <span class="op">+</span> <span class="bu">str</span>((i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span>) <span class="op">+</span> <span class="bu">str</span>(i),</a>
-<a class="sourceLine" id="cb15-105" title="105">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec1&#39;</span>,</a>
-<a class="sourceLine" id="cb15-106" title="106">                                   object1<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb15-107" title="107">                                   object2<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>((i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span>) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb15-108" title="108">                                   skipJ1tKJ1<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb15-109" title="109">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb15-110" title="110">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb15-102" title="102"></a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene-5"><i>Exploring the scene</i></h2>
@@ -1336,8 +1309,8 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 </tbody>
 </table>
 <pre>
-<a href="details/step7.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="details/step7.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step7code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step7code" class="hide">
@@ -1478,17 +1451,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb16-135" title="135">                                   object1<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
 <a class="sourceLine" id="cb16-136" title="136">                                   object2<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/dofs&quot;</span>,</a>
 <a class="sourceLine" id="cb16-137" title="137">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb16-138" title="138">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a>
-<a class="sourceLine" id="cb16-139" title="139"></a>
-<a class="sourceLine" id="cb16-140" title="140">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb16-141" title="141">                                   name<span class="op">=</span><span class="st">&quot;mmmArms&quot;</span> <span class="op">+</span> <span class="bu">str</span>((i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span>) <span class="op">+</span> <span class="bu">str</span>(i),</a>
-<a class="sourceLine" id="cb16-142" title="142">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec1&#39;</span>,</a>
-<a class="sourceLine" id="cb16-143" title="143">                                   object1<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb16-144" title="144">                                   object2<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(</a>
-<a class="sourceLine" id="cb16-145" title="145">                                       (i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span>) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb16-146" title="146">                                   skipJ1tKJ1<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb16-147" title="147">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb16-148" title="148">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb16-138" title="138">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene-6"><i>Exploring the scene</i></h2>
@@ -1505,8 +1468,8 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <li>Keystroke to start the inverse resolution: <img class="centered" src="../../../images/keys/Ctrl_I.png" alt="Ctrl + I" width="100px"/></li>
 </ul>
 <pre>
-<a href="details/step8.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="details/step8.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step8code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step8code" class="hide">
@@ -1664,16 +1627,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb17-152" title="152">                                   object1<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
 <a class="sourceLine" id="cb17-153" title="153">                                   object2<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/dofs&quot;</span>,</a>
 <a class="sourceLine" id="cb17-154" title="154">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb17-155" title="155">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a>
-<a class="sourceLine" id="cb17-156" title="156"></a>
-<a class="sourceLine" id="cb17-157" title="157">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb17-158" title="158">                                   name<span class="op">=</span><span class="st">&quot;mmmArms&quot;</span> <span class="op">+</span> <span class="bu">str</span>((i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span>) <span class="op">+</span> <span class="bu">str</span>(i),</a>
-<a class="sourceLine" id="cb17-159" title="159">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec1&#39;</span>,</a>
-<a class="sourceLine" id="cb17-160" title="160">                                   object1<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb17-161" title="161">                                   object2<span class="op">=</span><span class="st">&quot;@Modelling/Tripod/ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>((i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span>) <span class="op">+</span> <span class="st">&quot;/ServoMotor/Articulation/dofs&quot;</span>,</a>
-<a class="sourceLine" id="cb17-162" title="162">                                   skipJ1tKJ1<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb17-163" title="163">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb17-164" title="164">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb17-155" title="155">                                   nodeToParse<span class="op">=</span><span class="st">&quot;@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject&quot;</span>)</a></code></pre></div>
 </div>
 </div>
 <h1 id="conclusion">Conclusion</h1>

@@ -62,9 +62,9 @@ Finally, the two representations are linked together by a mapping, which allows 
 
 The resulting simulation looks like this:
 <pre>
-<a href="details/step1.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step1code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step1.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step1code' class='hide'>
 ```python
@@ -126,9 +126,9 @@ However, before using this prefabricated object, let's first build our own, base
 
 
 <pre>
-<a href="details/step2.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step2code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step2.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step2code' class='hide'>
 ```python
@@ -167,9 +167,9 @@ In parallel, in order to lighten the code and ease the reading, the introduction
 Such a function is defined at the beginning of the scene, and can be called as often as wished in the description of the scene (i.e. in the function `createScene(rootNode)`{.python}).
 
 <pre>
-<a href="details/step3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step3.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step3code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step3.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step3.py"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step3code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step3code' class='hide'>
 ```python
@@ -247,9 +247,9 @@ Tripod(parent, name="Tripod", radius, numMotors, angleShift)
 ```
 
 <pre>
-<a href="details/step4-1.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step4-1code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step4-1.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step4.py"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4-1code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-1code' class='hide'>
 ```python
@@ -284,9 +284,9 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 - Rigidify some parts of a deformable object
 
 <pre>
-<a href="details/step4-2.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4-2.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step4-2code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step4-2.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step4-2.py"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4-2code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-2code' class='hide'>
 ```python
@@ -309,9 +309,9 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 - Link a deformable object to a rigid actuator
 
 <pre>
-<a href="details/step4-3.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4-3.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step4-3code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step4-3.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step4-3.py"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4-3code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-3code' class='hide'>
 ```python
@@ -358,9 +358,9 @@ The animation is implemented, using the function `animate(cb, params,duration)` 
 The controller is added as another node in the scene.
 
 <pre>
-<a href="details/step5.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step5.py"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step5code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step5.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step5.py"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step5code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step5code' class='hide'>
 ```python
@@ -421,9 +421,9 @@ Keyboard keys                                                                   
 <img class="centered" src="../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                    Decrease                 2
 
 <pre>
-<a href="details/step6And7/step6.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step6code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step6And7/step6.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step6code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step6code' class='hide'>
 ```python
@@ -464,9 +464,9 @@ Keyboard keys                                                                   
 
 
 <pre>
-<a href="details/step6And7/step7.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step7code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step6And7/step7.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step7code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step7code' class='hide'>
 ```python
@@ -484,9 +484,9 @@ Keyboard keys                                                                   
 In the previous steps we where controlling  the robot by directly specifying the angle of the ServorMotor object. In this step we will use SOFA to inverse the model and adding an effector to the simulation so that it becomes possible to specify the effector's position and let the simulation compute the angular positions to apply to reach the effectors's position.
 
 <pre>
-<a href="details/step8/step8.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.pyscn"> <img src="../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void" onclick="toggle('step8code');"> <img src="../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step8/step8.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/tripod.pyscn"> <img src="../../../images/iconsplay.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step8code');"> <img src="../../../images/iconsplay.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step8code' class='hide'>
 ```python

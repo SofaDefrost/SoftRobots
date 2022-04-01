@@ -3,7 +3,6 @@
 Step 4-2: Rigidify extremity of deformable part to be able to fix it to the actuated arms
 """
 from splib3.numerics import to_radians
-from stlib3.physics.collision import CollisionMesh
 from stlib3.physics.mixedmaterial import Rigidify
 from stlib3.components import addOrientedBoxRoi
 from splib3.numerics import vec3
@@ -44,36 +43,11 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
             frames.append(vec3.vadd(translation, [0.0, 25.0, 0.0]) + list(
                 Quat.createFromEuler([0, float(i) * 360 / float(numstep), 0], inDegree=True)))
 
-        effectorPos = [0, 30, 0]
-        o = deformableObject.addObject('SphereROI', name='roi', template='Rigid3',
-                                                    centers=effectorPos, radii=[7.5], drawSphere=True)
-        o.init()
-        groupIndices.append(list(o.indices.value))
-
-        frames.append([effectorPos[0], effectorPos[1],
-                       effectorPos[2], 0, 0, 0, 1])
-
         # Rigidify the deformable part at extremity to attach arms
         rigidifiedstruct = Rigidify(self, deformableObject, groupIndices=groupIndices, frames=frames,
                                     name="RigidifiedStructure")
 
-    def __attachToActuatedArms(self, numstep):
 
-         rigidParts = self.RigidifiedStructure.RigidParts
-         for arm in self.actuatedarms:
-            arm.ServoMotor.Articulation.ServoWheel.addChild(rigidParts)
-
-         freeCenter = self.RigidifiedStructure.addChild('FreeCenter')
-         freeCenter.addObject('MechanicalObject', name="dofs", template="Rigid3", position=[0, 30, 0, 0, 0, 0, 1], showObject=False, showObjectScale=10)
-         freeCenter.addChild(rigidParts)
-
-         rigidParts.addObject('SubsetMultiMapping',
-                              name="mapping",
-                              input=[self.actuatedarms[0].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                     self.actuatedarms[1].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                     self.actuatedarms[2].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                     freeCenter.getLinkPath()],
-                              output='@./', indexPairs=[0, 1, 1, 1, 2, 1,3,0])
 
     self = Sofa.Core.Node(name)
     self.actuatedarms = []
@@ -89,19 +63,9 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
         self.addChild(arm)
 
     self.addChild(ElasticBody(translation=[0.0, 30, 0.0], rotation=[90,0,0], color=[1.0,1.0,1.0,0.5]))
+
     __rigidify(self, radius, numMotors, angleShift)
-    __attachToActuatedArms(self, numMotors)
-
-
-    def addCollision():
-            CollisionMesh(self.ElasticBody.MechanicalModel,
-                        surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionModel",
-                        translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
-
-    self.addCollision = addCollision
-
     return self
-
 
 
 def createScene(rootNode):
@@ -120,14 +84,10 @@ def createScene(rootNode):
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
     scene.Simulation.addObject('GenericConstraintCorrection')
     scene.Settings.mouseButton.stiffness = 10
-    scene.Simulation.TimeIntegrationSchema.rayleighStiffness = 0.05
     scene.VisualStyle.displayFlags = "showBehavior"
     scene.dt = 0.01
 
-    # Add the blueprint
     scene.Modelling.addChild(Blueprint())
-
-    # Add the tripod
     tripod = scene.Modelling.addChild(Tripod())
     tripod.BoxROI0.drawBoxes = True
     tripod.BoxROI1.drawBoxes = True
@@ -142,28 +102,19 @@ def createScene(rootNode):
 
     scene.Simulation.addChild(tripod)
 
+    FixingBox(scene.Modelling, tripod.ElasticBody.MechanicalModel, scale=[10, 10, 10], translation=[0., 25, 0.])
+
     def myanimate(targets, factor):
         for arm in targets:
-            arm.angleIn = -factor * math.pi / 4.
+            arm.ServoMotor.angleIn = -factor * math.pi / 4.
 
     animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)
 
     # Temporary additions to have the system correctly built in SOFA
     # Will no longer be required in SOFA v22.06
     scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="deformableAndFreeCenterCoupling",
-                                 template='Vec3,Rigid3',
-                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
-                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
-                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
-
-    # Temporary additions to have the system correctly built in SOFA
-    # Will no longer be required in SOFA v22.06
-    for i in range(3):
-        scene.Simulation.addObject('MechanicalMatrixMapper',
-                                   name="deformableAndArm{i}Coupling".format(i=i),
-                                   template='Vec1,Vec3',
-                                   object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
-                                   object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
-                                   skipJ2tKJ2=False if i == 0 else True,
-                                   nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
+                               template='Vec3,Rigid3',
+                               name="RigidAndDeformableCoupling",
+                               object1=tripod.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),
+                               object2=tripod.RigidifiedStructure.RigidParts.dofs.getLinkPath(),
+                               nodeToParse=tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())

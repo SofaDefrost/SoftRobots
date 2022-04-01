@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="./docs/style.css" />
+</head>
+<body>
+<h1 id="softrobots-plugin-for-sofa">SoftRobots plugin for SOFA</h1>
+<p><a href="https://project.inria.fr/softrobot/"><img src="https://img.shields.io/badge/info-on_website-purple.svg" alt="Information" /></a> <a href="https://softrobotscomponents.readthedocs.io/en/latest/index.html"><img src="https://img.shields.io/badge/doc-on_website-blue.svg" alt="Documentation" /></a> <a href="https://project.inria.fr/softrobot/contact/"><img src="https://img.shields.io/badge/contact-form-green.svg" alt="Contact" /></a> <a href="https://github.com/SofaDefrost/sofa"><img src="https://img.shields.io/badge/SOFA-on_github-orange.svg" alt="SOFA" /></a> <a href="https://github.com/SofaDefrost/SoftRobots/actions/workflows/nighly-build.yml"><img src="https://github.com/SofaDefrost/SoftRobots/actions/workflows/nighly-build.yml/badge.svg?branch=master" alt="Nightly-build" /></a></p>
+<p>This plugin for SOFA contains components dedicated to soft robotics. You can find for example, models for cable and pneumatic actuations, tools to define trajectories for the robot’s end effector, or tools to communicate with microcontroller boards. Please refer to the dedicated <a href="https://project.inria.fr/softrobot/install-get-started-2/">documentation</a> for installation and build. You can explore the <em>docs</em> directory in this repository to find examples and tutorials.</p>
+<h2 id="templates">Templates</h2>
+<p>The plugin also provides scene templates that can be used to make the writing of SOFA scene more easy. These templates are used in many of our examples, and can be found in the <em>python</em> directory.<br />
+A dedicated documentation can be found at this address: <a href="https://softrobots.readthedocs.io/en/latest/index.html">https://softrobots.readthedocs.io</a><br />
+And general templates for SOFA can be found at this address: <a href="https://github.com/SofaDefrost/STLIB">https://github.com/SofaDefrost/STLIB</a></p>
+<h2 id="realsense-camera-module">Realsense camera module</h2>
+<p>This plugin also contains a component to retrieve and process point clouds coming from a realsense camera.<br />
+To use it, you need to: - download and install the latest release of the realsense2 SDK (instructions <a href="https://github.com/IntelRealSense/librealsense/">on github</a> ). Instructions for linux can be found <a href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#linux-distribution">here</a>. If your linux distribution is not supported, you will have to compile from sources. Of course you will also need the latest version of the firmware. - install the Point Cloud Library (<code>sudo apt install libpcl-dev</code> on ubuntu) - activate, in cmake, the following option for SoftRobots: <code>-DSOFTROBOTS_WITH_CAMERA=ON</code></p>
+<h2 id="author">Author</h2>
+<ul>
+<li>Team DEFROST (INRIA/CRISTAL), Lille</li>
+</ul>
+<h2 id="licence">Licence</h2>
+<ul>
+<li>LGPL</li>
+</ul>
+</body>
+</html>
