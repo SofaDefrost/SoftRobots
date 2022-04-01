@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Setup SOFA and environment
         id: sofa
-        uses: guparan/sofa-setup-action@ci_improve_workflow
+        uses: sofa-framework/sofa-setup-action@robosoft2022
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
@@ -36,7 +36,7 @@ jobs:
         run: |
           SofaPython3_ROOT="$GITHUB_WORKSPACE/SofaPython3"
           mkdir -p "${{ runner.temp }}/sp3_tmp/zip" "${{ runner.temp }}/sp3_tmp/binaries" "$SofaPython3_ROOT"
-          url="https://github.com/guparan/SofaPython3/releases/download"
+          url="https://github.com/SofaDefrost/SofaPython3/releases/download"
           url="${url}/release-${RUN_BRANCH}/SofaPython3_${RUN_BRANCH}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}.zip"
           echo "Getting SofaPython3 from $url"
           curl --output "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -L $url
