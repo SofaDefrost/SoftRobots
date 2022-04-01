@@ -6,7 +6,7 @@ import Sofa
 from tutorial import *
 from tripod import Tripod
 from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
-from maze import Maze
+from maze import Maze, Sphere
 from mazecontroller import MazeController
 
 
@@ -90,7 +90,10 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
 
 def createScene(rootNode):
     from stlib3.scene import Scene
+    import json
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=["SofaSparseSolver", "SofaOpenglVisual", "SofaSimpleFem", "SoftRobots","SoftRobots.Inverse", 'SofaBoundaryCondition', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
+    ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0)
+    scene.removeObject(scene.GenericConstraintSolver)
 
     # Choose here to control position or orientation of end-effector
     orientation = True
@@ -102,7 +105,9 @@ def createScene(rootNode):
         # inverse in position
         goalNode = EffectorGoal(rootNode, [0, 40, 0])
 
-    goalNode.addObject(MazeController(goalNode,False))
+    # Open maze planning from JSON file
+    data = json.load(open('mazeplanning.json'))
+    goalNode.addObject(MazeController(goalNode, data["anglePlanningTable"], False))
 
     # Adding contact handling
     scene.addMainHeader()
@@ -119,6 +124,7 @@ def createScene(rootNode):
     actuators = addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)
     maze = tripod.RigidifiedStructure.FreeCenter.addChild(Maze())
     maze.addObject("RigidMapping", index=0)
+    rootNode.addChild(Sphere())
 
     # Serial port bridge
     serial = SerialPortBridgeGeneric(rootNode)

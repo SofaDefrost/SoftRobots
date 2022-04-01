@@ -12,7 +12,8 @@ class MazeController(Sofa.Core.Controller):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
         self.name = "MazeController"
         self.goalNode = args[0]
-        self.activated = args[1]
+        self.anglePlanningTable = args[1]
+        self.activated = args[2]
         self.time = 0
 
         self.mo = self.goalNode.goalMO
@@ -35,17 +36,10 @@ class MazeController(Sofa.Core.Controller):
         working_y = 20
         timeBetweenKeyP = 0.5
 
-        anglePlanningTable = [[-0.3, 0.3],
-                              [0.3, 0.3],
-                              [0.3, -0.3],
-                              [0.3, 0.3],
-                              [0.3, -0.3]
-                              ]
-
         time = 0
         self.tableKeyPoints.append([0, 0, 0, 0])  # Time dy theta_x theta_z WARNING = Suppose time ordering
 
-        for t in anglePlanningTable:
+        for t in self.anglePlanningTable:
             time = time + timeBetweenKeyP
             self.tableKeyPoints.append([time, working_y, t[0], t[1]])
         return
