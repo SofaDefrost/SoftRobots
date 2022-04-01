@@ -150,6 +150,15 @@ def createScene(rootNode):
 
     # Temporary additions to have the system correctly built in SOFA
     # Will no longer be required in SOFA v22.06
+    scene.Simulation.addObject('MechanicalMatrixMapper',
+                                 name="deformableAndFreeCenterCoupling",
+                                 template='Vec3,Rigid3',
+                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
+                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
+
+    # Temporary additions to have the system correctly built in SOFA
+    # Will no longer be required in SOFA v22.06
     for i in range(3):
         scene.Simulation.addObject('MechanicalMatrixMapper',
                                    name="deformableAndArm{i}Coupling".format(i=i),
