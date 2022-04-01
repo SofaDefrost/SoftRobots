@@ -1,131 +1,67 @@
 # -*- coding: utf-8 -*-
 """
-Step 4-2: Rigidify extremity of deformable part to be able to fix it to the actuated arms
+Step 5: Adding a controller.
+The controller will connect user actions to the simulated behaviour.
 """
-from splib.numerics import sin, cos, to_radians
-from stlib.physics.deformable import ElasticMaterialObject
-from actuatedarm import ActuatedArm
-from splib.objectmodel import SofaPrefab, SofaObject
-from stlib.physics.mixedmaterial import Rigidify
-from stlib.components import addOrientedBoxRoi
-from splib.numerics import vec3
-from splib.numerics.quat import Quat
-from tutorial import *
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../details"))
+import Sofa
+from stlib3.scene import Scene                   #< Prefab for the scene
+from splib3.constants import Key                 #< Constants for keycode
+from tripod import Tripod                        #< Prefab for the Tripod
+from tripodcontroller import TripodController    #< Implementation of a controller that modify the Tripod
 
-
-def ElasticBody(parent):
-    body = parent.addChild("ElasticBody")
-
-    e = ElasticMaterialObject(body,
-                              volumeMeshFileName="data/mesh/tripod_low.gidmsh",
-                              translation=[0.0, 30, 0.0], rotation=[90, 0, 0],
-                              youngModulus=250, poissonRatio=0.45, totalMass=0.032)
-
-    visual = body.addChild("Visual")
-    visual.addObject("MeshSTLLoader", name="loader", filename="data/mesh/tripod_mid.stl")
-    visual.addObject("OglModel", name="renderer", src="@loader", color=[1.0, 1.0, 1.0, 0.5],
-                        rotation=[90, 0, 0], translation=[0, 30, 0])
-
-    visual.addObject("BarycentricMapping",
-                        input=e.dofs.getLinkPath(),
-                        output=visual.renderer.getLinkPath())
-
-    return body
-
-
-@SofaPrefab
-class Tripod(SofaObject):
-
-    def __init__(self, parent, name="Tripod", radius=60, numMotors=3, angleShift=180.0):
-        self.node = parent.addChild(name)
-        ElasticBody(self.node)
-
-        dist = radius
-        numstep = numMotors
-        self.actuatedarms = []
-        for i in range(0, numstep):
-            name = "ActuatedArm"+str(i)
-            translation, eulerRotation = self.__getTransform(i, numstep, angleShift, radius, dist)
-            arm = ActuatedArm(self.node, name=name,
-                              translation=translation, eulerRotation=eulerRotation)
-            self.actuatedarms.append(arm)
-            # Add limits to angle that correspond to limits on real robot
-            arm.ServoMotor.minAngle = -2.0225
-            arm.ServoMotor.maxAngle = -0.0255
-
-        self.__attachToActuatedArms(radius, numMotors, angleShift)
-
-    def __getTransform(self, index, numstep, angleShift, radius, dist):
-        fi = float(index)
-        fnumstep = float(numstep)
-        angle = fi*360/fnumstep
-        angle2 = fi*360/fnumstep+angleShift
-        eulerRotation = [0, angle, 0]
-        translation = [dist*sin(to_radians(angle2)), -1.35, dist*cos(to_radians(angle2))]
-
-        return translation, eulerRotation
-
-    def __attachToActuatedArms(self, radius=60, numMotors=3, angleShift=180.0):
-        deformableObject = self.node.ElasticBody.ElasticMaterialObject
-
-        dist = radius
-        numstep = numMotors
-        groupIndices = []
-        frames = []
-        for i in range(0, numstep):
-            translation, eulerRotation = self.__getTransform(i, numstep, angleShift, radius, dist)
-            box = addOrientedBoxRoi(self.node, position=deformableObject.dofs.getData("rest_position"), name="BoxROI"+str(i),
-                                    translation=vec3.vadd(translation, [0.0, 25.0, 0.0]),
-                                    eulerRotation=eulerRotation, scale=[45, 15, 30])
-
-            box.drawBoxes = False
-            box.init()
-            deformableObject.init()
-            groupIndices.append([ind[0] for ind in box.indices])
-            frames.append(vec3.vadd(translation, [0.0, 25.0, 0.0]) + list(Quat.createFromEuler([0, float(i)*360/float(numstep), 0], inDegree=True)))
-
-        # Rigidify the deformable part at extremity to attach arms
-        rigidifiedstruct = Rigidify(self.node, deformableObject, groupIndices=groupIndices, frames=frames, name="RigidifiedStructure")
-        rigidifiedstruct.DeformableParts.addObject("UncoupledConstraintCorrection")
-        rigidifiedstruct.RigidParts.addObject("UncoupledConstraintCorrection")
-
-        # Use this to activate some rendering on the rigidified object
-        setData(rigidifiedstruct.RigidParts.dofs, showObject=True, showObjectScale=10, drawMode=2)
-        setData(rigidifiedstruct.RigidParts.RigidifiedParticules.dofs, showObject=True, showObjectScale=1,
-                drawMode=1, showColor=[1., 1., 0., 1.])
-        setData(rigidifiedstruct.DeformableParts.dofs, showObject=True, showObjectScale=1, drawMode=2)
-
-        # Attach arms
-        for i in range(0, numstep):
-            rigidifiedstruct.RigidParts.addObject('RestShapeSpringsForceField', name="rssff"+str(i),
-                                                     points=i,
-                                                     external_rest_shape=self.actuatedarms[i].servoarm.dofs,
-                                                     stiffness='1e12', angularStiffness='1e12')
-
-
+#class MyController(Sofa.Core.Controller):
+    #def __init__(self, *args, **kwargs):
+        # These are needed (and the normal way to override from a python class)
+        #Sofa.Core.Controller.__init__(self, *args, **kwargs)
+        #self.actuators = kwargs.get("actuators", [])
+        
+    #def onEvent(self, event):
+    #    print("event ", event)
+    
+    #def onKeypressedEvent(self, event):
+        #key = event["key"]
+        #if key == Key.plus:            
+        #    for arm in self.actuators:
+        #        arm.angleIn.value += 0.1
+        #elif key == Key.minus:            
+        #    for arm in self.actuators:
+        #        arm.angleIn.value -= 0.1
+                
 def createScene(rootNode):
-    from splib.animation import animate
-    from fixingbox import FixingBox
-    import math
 
-    scene = Scene(rootNode)
-
+    scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=["SofaSparseSolver",'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
+    scene.addMainHeader()
+    scene.addObject('DefaultVisualManagerLoop')
+    scene.addObject('FreeMotionAnimationLoop')
+    scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.Simulation.addObject('GenericConstraintCorrection')
+    scene.Simulation.TimeIntegrationSchema.rayleighStiffness = 0.005
+    scene.Settings.mouseButton.stiffness = 10
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    tripod = Tripod(scene.Modelling)
-    FixingBox(tripod, tripod.ElasticBody.ElasticMaterialObject, scale=[10, 10, 10], translation=[0., 25, 0.])
-    tripod.FixingBox.BoxROI.drawBoxes = True
+    tripod = Tripod()
+    scene.Modelling.addChild(tripod)
+    #scene.Modelling.addObject(TripodController(name="TripodController",
+    #actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
+    
+    #scene.Modelling.addObject(MyController(name="react-to-keypressed"))
+    
+    scene.Simulation.addChild(tripod)
 
-    scene.Simulation.addChild(tripod.RigidifiedStructure)
-    scene.Simulation.addChild(tripod.ActuatedArm0)
-    scene.Simulation.addChild(tripod.ActuatedArm1)
-    scene.Simulation.addChild(tripod.ActuatedArm2)
+    # Temporary additions to have the system correctly built in SOFA
+    # Will no longer be required in SOFA v22.06
+    scene.Simulation.addObject('MechanicalMatrixMapper',
+                                 name="deformableAndFreeCenterCoupling",
+                                 template='Vec3,Rigid3',
+                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
+                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
 
-    def myanimate(targets, factor):
-        for arm in targets:
-            arm.ServoMotor.angleIn = -factor*math.pi/4.
-
-    animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)
+    for i in range(3):
+        scene.Simulation.addObject('MechanicalMatrixMapper',
+                                   name="deformableAndArm{i}Coupling".format(i=i),
+                                   template='Vec1,Vec3',
+                                   object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
+                                   object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                                   skipJ2tKJ2=True,
+                                   nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
