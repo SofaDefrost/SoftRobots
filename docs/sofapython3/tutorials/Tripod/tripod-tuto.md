@@ -487,7 +487,7 @@ Keyboard keys                                                                   
 - Remark how the real robot is limited in his movements, while nothing prevents the user to make complete turns aroud the motor shaft with the servo-arms in the simulation.
 
 
-# STEP 8: Inverse control
+# STEP 8.1: Inverse control
 In the previous steps we where controlling  the robot by directly specifying the angle of the ServorMotor object. In this step we will use SOFA to inverse the model and adding an effector to the simulation so that it becomes possible to specify the effector's position and let the simulation compute the angular positions to apply to reach the effectors's position.
 
 The same keystrokes as in the previous steps are used, adding a new one to start the inverse resolution.
@@ -507,6 +507,37 @@ The same keystrokes as in the previous steps are used, adding a new one to start
 ```
 </div>
 </div>
+
+# STEP 8.2: Defining a motion path for the maze
+In the previous steps we where controlling the robot in inverse mode. We want now to make the robot follow a predefined path. 
+
+<pre>
+<a href="details/maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step8.2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+</pre>
+<div id='step8.2code' class='hide'>
+```python
+..autofile::details/maze.py
+```
+</div>
+</div>
+
+# STEP 8.3: Inverse control to follow a predefined motion path
+We can now include the maze trajectory withing the tripod robot scene to make a full fimulation and compare it with the real-world example. 
+
+<pre>
+<a href="details/step8-maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step8-maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step8.3code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+</pre>
+<div id='step8.3code' class='hide'>
+```python
+..autofile::details/step8-maze.py
+```
+</div>
+</div>
+
 
 # Conclusion
 Congratulation, you completed this tutorial. You are strongly encouraged to pursue with the other tutorials.
