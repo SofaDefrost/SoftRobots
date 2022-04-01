@@ -113,7 +113,7 @@ def createScene(rootNode):
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('QPInverseProblemSolver', name='QP', printLog=False)
     scene.Simulation.addObject('GenericConstraintCorrection')
-
+    scene.Simulation.TimeIntegrationSchema.rayleighStiffness = 0.01
     scene.VisualStyle.displayFlags = "showBehavior showCollisionModels"
 
     tripod = scene.Modelling.addChild(Tripod())
@@ -126,8 +126,6 @@ def createScene(rootNode):
 
     # The real robot receives data from the 3 actuators
     # serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))
-
-    scene.Simulation.addChild(tripod.RigidifiedStructure)
     invCtr = scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,
                                                 tripod, serial,
                                                 [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
@@ -135,25 +133,22 @@ def createScene(rootNode):
     # The regular controller that is being used for the last 2 steps but with small additions
     scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))
 
-    motors = scene.Simulation.addChild("Motors")
-    for i in range(3):
-        motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
+    scene.Simulation.addChild(tripod)
 
     # Temporary additions to have the system correctly built in SOFA
     # Will no longer be required in SOFA v22.06
     scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="mmmFreeCenter",
+                                 name="deformableAndFreeCenterCoupling",
                                  template='Vec3,Rigid3',
-                                 object1="@RigidifiedStructure/DeformableParts/dofs",
-                                 object2="@RigidifiedStructure/FreeCenter/dofs",
-                                 nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
+                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
 
     for i in range(3):
         scene.Simulation.addObject('MechanicalMatrixMapper',
-                                   name="mmmDeformableAndArm" + str(i),
+                                   name="deformableAndArm{i}Coupling".format(i=i),
                                    template='Vec1,Vec3',
-                                   object1="@Modelling/Tripod/ActuatedArm" + str(i) + "/ServoMotor/Articulation/dofs",
-                                   object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
+                                   object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
+                                   object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
                                    skipJ2tKJ2=True,
-                                   nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
-
+                                   nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())

@@ -91,13 +91,12 @@ def createScene(rootNode):
 
     # Adding contact handling
     scene.addMainHeader()
-    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
     scene.Simulation.addObject('GenericConstraintCorrection')
-
     scene.VisualStyle.displayFlags = "showBehavior"
+    scene.Settings.mouseButton.stiffness = 10
 
     tripod = scene.Modelling.addChild(Tripod())
 
@@ -113,27 +112,22 @@ def createScene(rootNode):
     # You can set the animation from the python script by adding this call
     controller.initTripod('A')
 
-    scene.Simulation.addChild(tripod.RigidifiedStructure)
-
-    motors = scene.Simulation.addChild("Motors")
-    for i in range(3):
-        motors.addChild(tripod.getChild('ActuatedArm' + str(i)))
+    scene.Simulation.addChild(tripod)
 
     # Temporary additions to have the system correctly built in SOFA
     # Will no longer be required in SOFA v22.06
     scene.Simulation.addObject('MechanicalMatrixMapper',
-                               name="mmmFreeCenter",
-                               template='Vec3,Rigid3',
-                               object1="@RigidifiedStructure/DeformableParts/dofs",
-                               object2="@RigidifiedStructure/FreeCenter/dofs",
-                               nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+                                 name="deformableAndFreeCenterCoupling",
+                                 template='Vec3,Rigid3',
+                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
+                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
 
     for i in range(3):
         scene.Simulation.addObject('MechanicalMatrixMapper',
-                                   name="mmmDeformableAndArm" + str(i),
+                                   name="deformableAndArm{i}Coupling".format(i=i),
                                    template='Vec1,Vec3',
-                                   object1="@Modelling/Tripod/ActuatedArm" + str(i) + "/ServoMotor/Articulation/dofs",
-                                   object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
+                                   object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
+                                   object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
                                    skipJ2tKJ2=True,
-                                   nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
-
+                                   nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
