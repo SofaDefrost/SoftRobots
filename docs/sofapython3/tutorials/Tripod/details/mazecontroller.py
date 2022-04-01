@@ -33,7 +33,7 @@ class MazeController(Sofa.Core.Controller):
 
     def initTrajectoryByKeyPoint(self):
         working_y = 20
-        timeBetweenKeyP = 2.0
+        timeBetweenKeyP = 0.5
 
         anglePlanningTable = [[-0.3, 0.3],
                               [0.3, 0.3],

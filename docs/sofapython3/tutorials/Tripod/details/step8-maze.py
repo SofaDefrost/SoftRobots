@@ -65,7 +65,7 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
         actuator.activated = False
         actuator.addObject('JointActuator', name='JointActuator', template='Vec1',
                                                 index=0, applyForce=True,
-                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.002)
+                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.005)
 
     effector = freecenter.addChild("Effector")
     effector.activated = False
@@ -91,7 +91,6 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
 def createScene(rootNode):
     from stlib3.scene import Scene
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=["SofaSparseSolver", "SofaOpenglVisual", "SofaSimpleFem", "SoftRobots","SoftRobots.Inverse", 'SofaBoundaryCondition', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
-    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
 
     # Choose here to control position or orientation of end-effector
     orientation = True

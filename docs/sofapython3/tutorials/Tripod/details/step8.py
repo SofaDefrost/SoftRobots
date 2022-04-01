@@ -60,9 +60,10 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
         actuator.activated = False
         actuator.addObject('JointActuator', name='JointActuator', template='Vec1',
                                                 index=0, applyForce=True,
-                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.008)
+                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.1)
 
     effector = freecenter.addChild("Effector")
+    freecenter.dofs.showObject=True
     effector.activated = False
     actuators.append(effector)
     if goalNode is None:
@@ -73,8 +74,7 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
     elif use_orientation:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
                                useDirections=[0, 1, 0, 1, 0, 1],
-                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath(),
-                               limitShiftToTarget=True, maxShiftToTarget=5)
+                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath())
     else:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
                                useDirections=[1, 1, 1, 0, 0, 0],
