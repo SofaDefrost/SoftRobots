@@ -65,7 +65,7 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
         actuator.activated = False
         actuator.addObject('JointActuator', name='JointActuator', template='Vec1',
                                                 index=0, applyForce=True,
-                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.005)
+                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.1)
 
     effector = freecenter.addChild("Effector")
     effector.activated = False
@@ -76,10 +76,12 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
                                indices=0, effectorGoal=[10, 40, 0], limitShiftToTarget=True,
                                maxShiftToTarget=5)
     elif use_orientation:
-        effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[0, 1, 0, 1, 0, 1],
-                               indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position',
-                               limitShiftToTarget=True, maxShiftToTarget=5)
+        effector.addObject('PositionEffector', name='effectorY', template='Rigid3', weight=1.,
+                               useDirections=[0, 1, 0, 0, 0, 0],
+                               indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position')
+        effector.addObject('PositionEffector', name='effectorRXRZ', template='Rigid3', weight=1000.,
+                           useDirections=[0, 0, 0, 1, 0, 1],
+                           indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position')
     else:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
                                useDirections=[1, 1, 1, 0, 0, 0],
@@ -114,7 +116,6 @@ def createScene(rootNode):
     scene.addObject('DefaultVisualManagerLoop')
 
     # Inverse Solver
-    scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('QPInverseProblemSolver', name='QP', printLog=False)
     scene.Simulation.addObject('GenericConstraintCorrection')
     scene.Simulation.TimeIntegrationSchema.rayleighStiffness = 0.01
@@ -124,7 +125,7 @@ def createScene(rootNode):
     actuators = addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)
     maze = tripod.RigidifiedStructure.FreeCenter.addChild(Maze())
     maze.addObject("RigidMapping", index=0)
-    rootNode.addChild(Sphere())
+    # rootNode.addChild(Sphere())
 
     # Serial port bridge
     serial = SerialPortBridgeGeneric(rootNode)
