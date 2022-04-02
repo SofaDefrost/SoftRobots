@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Step 4-2: Rigidify extremity of deformable part to be able to fix it to the actuated arms
+Tripod class
 """
 from splib3.numerics import to_radians
 from stlib3.physics.collision import CollisionMesh
@@ -12,6 +12,7 @@ from tutorial import *
 from actuatedarm import ActuatedArm
 from elasticbody import ElasticBody
 from blueprint import Blueprint
+
 
 def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
     def __getTransform(index, numstep, angleShift, radius, dist):
@@ -92,7 +93,6 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
     __rigidify(self, radius, numMotors, angleShift)
     __attachToActuatedArms(self, numMotors)
 
-
     def addCollision():
             CollisionMesh(self.ElasticBody.MechanicalModel,
                         surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionModel",
@@ -103,11 +103,9 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
     return self
 
 
-
 def createScene(rootNode):
     from splib3.animation import animate
     from stlib3.scene import Scene
-    from fixingbox import FixingBox
     import math
 
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False,

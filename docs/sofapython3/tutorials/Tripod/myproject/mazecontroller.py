@@ -72,9 +72,8 @@ class MazeController(Sofa.Core.Controller):
             pos = [self.mo.position[0][0],
                    self.y + self.dy,
                    self.mo.position[0][2]]
-            quat = Quat.createFromEuler([self.theta_x, 0., self.theta_z])
+            quat = Quat.createFromEuler([self.theta_x, 0, self.theta_z])
             self.mo.rest_position = [[pos[0], pos[1], pos[2], quat[0], quat[1], quat[2], quat[3]]]
-
 
 
 

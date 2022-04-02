@@ -6,20 +6,24 @@ import Sofa
 from tutorial import *
 from tripod import Tripod
 from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
+from maze import Maze, Sphere
+from mazecontroller import MazeController
 
 
-def EffectorGoal(position):
-    self = Sofa.Core.Node('Goal')
-    self.addObject('EulerImplicitSolver', firstOrder=True)
-    self.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
-    self.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
-    self.addObject('UncoupledConstraintCorrection')
+def EffectorGoal(node, position):
+    goal = node.addChild('Goal')
+    goal.addObject('EulerImplicitSolver', firstOrder=True)
+    goal.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
+    goal.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
+    goal.addObject('RestShapeSpringsForceField', points=0, angularStiffness=1e5, stiffness=1e5)
 
-    spheres = self.addChild('Spheres')
+    spheres = goal.addChild('Spheres')
     spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0],  [10, 0, 0],   [0, 10, 0],   [0, 0, 10]])
-    spheres.addObject('SphereCollisionModel', radius=5, group=1)
     spheres.addObject('RigidMapping')
-    return self
+
+    goal.addObject('UncoupledConstraintCorrection')
+    return goal
+
 
 class GoalController(Sofa.Core.Controller):
     """This controller moves the goal position when the inverse control is activated
@@ -40,6 +44,7 @@ class GoalController(Sofa.Core.Controller):
             self.activated = True
 
     def onAnimateBeginEvent(self, e):
+
         if self.activated:
             self.time = self.time+self.dt
 
@@ -63,7 +68,6 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
                                                 minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.1)
 
     effector = freecenter.addChild("Effector")
-    freecenter.dofs.showObject=True
     effector.activated = False
     actuators.append(effector)
     if goalNode is None:
@@ -72,48 +76,59 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
                                indices=0, effectorGoal=[10, 40, 0], limitShiftToTarget=True,
                                maxShiftToTarget=5)
     elif use_orientation:
-        effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[0, 1, 0, 1, 0, 1],
-                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath())
+        effector.addObject('PositionEffector', name='effectorY', template='Rigid3', weight=1.,
+                               useDirections=[0, 1, 0, 0, 0, 0],
+                               indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position')
+        effector.addObject('PositionEffector', name='effectorRXRZ', template='Rigid3', weight=1000.,
+                           useDirections=[0, 0, 0, 1, 0, 1],
+                           indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position')
     else:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
                                useDirections=[1, 1, 1, 0, 0, 0],
-                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath(),
+                               indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position',
                                limitShiftToTarget=True, maxShiftToTarget=5)
     return actuators
 
 
 def createScene(rootNode):
     from stlib3.scene import Scene
+    import json
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=["SofaSparseSolver", "SofaOpenglVisual", "SofaSimpleFem", "SoftRobots","SoftRobots.Inverse", 'SofaBoundaryCondition', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
+    ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0)
+    scene.removeObject(scene.GenericConstraintSolver)
+
+    # Choose here to control position or orientation of end-effector
+    orientation = True
+
+    if orientation:
+        # inverse in orientation
+        goalNode = EffectorGoal(rootNode, [0, 30, 50])
+    else:
+        # inverse in position
+        goalNode = EffectorGoal(rootNode, [0, 40, 0])
+
+    # Open maze planning from JSON file
+    data = json.load(open('mazeplanning.json'))
+    goalNode.addObject(MazeController(goalNode, data["anglePlanningTable"], False))
 
     # Adding contact handling
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
 
     # Inverse Solver
-    scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('QPInverseProblemSolver', name='QP', printLog=False)
     scene.Simulation.addObject('GenericConstraintCorrection')
-    scene.Settings.mouseButton.stiffness = 10
-    scene.VisualStyle.displayFlags = "showBehavior showCollision"
+    scene.Simulation.TimeIntegrationSchema.rayleighStiffness = 0.01
+    scene.VisualStyle.displayFlags = "showBehavior showCollisionModels"
 
     tripod = scene.Modelling.addChild(Tripod())
+    actuators = addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)
+    maze = tripod.RigidifiedStructure.FreeCenter.addChild(Maze())
+    maze.addObject("RigidMapping", index=0)
+    # rootNode.addChild(Sphere())
 
     # Serial port bridge
     serial = SerialPortBridgeGeneric(rootNode)
-
-    # Choose here to control position or orientation of end-effector
-    orientation = False
-    if orientation:
-        # inverse in orientation
-        goalNode = EffectorGoal([0, 50, 50])
-    else:
-        # inverse in position
-        goalNode = EffectorGoal([0, 40, 0])
-    scene.Modelling.addChild(goalNode)
-
-    actuators = addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)
 
     # The real robot receives data from the 3 actuators
     # serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))
