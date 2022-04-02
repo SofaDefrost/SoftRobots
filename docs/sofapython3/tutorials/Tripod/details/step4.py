@@ -9,42 +9,59 @@ Step 4:
 from tutorial import *
 # Let's define a Tripod prefab in tripod.py, that we can later call in the createScene function
 from tripod import Tripod
+from blueprint import Blueprint
 
 
 def createScene(rootNode):
+    from splib3.animation import animate
     from stlib3.scene import Scene
+    import math
 
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False, plugins=['SofaSparseSolver', 'SofaGeneralAnimationLoop', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition', 'SofaGeneralEngine'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False,
+                  plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine',
+                           'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition',
+                           'SofaGeneralAnimationLoop', 'SofaConstraint'])
     scene.addMainHeader()
-    scene.addObject('AttachBodyButtonSetting', stiffness=10)  # Set mouse spring stiffness
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
     scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
     scene.Simulation.addObject('GenericConstraintCorrection')
-    rootNode.dt = 0.01
-
+    scene.Settings.mouseButton.stiffness = 10
+    scene.Simulation.TimeIntegrationSchema.rayleighStiffness = 0.05
     scene.VisualStyle.displayFlags = "showBehavior"
+    scene.dt = 0.01
 
-    tripod = Tripod(scene.Modelling)
+    # Add the blueprint
+    scene.Modelling.addChild(Blueprint())
+
+    # Add the tripod
+    tripod = scene.Modelling.addChild(Tripod())
     tripod.BoxROI0.drawBoxes = True
     tripod.BoxROI1.drawBoxes = True
     tripod.BoxROI2.drawBoxes = True
 
-    scene.Simulation.addChild(tripod.RigidifiedStructure)
-    scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="mmmFreeCenter",
-                                 template='Vec3,Rigid3',
-                                 object1="@RigidifiedStructure/DeformableParts/dofs",
-                                 object2="@RigidifiedStructure/FreeCenter/dofs",
-                                 nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+    scene.Simulation.addChild(tripod)
 
-    motors = scene.Simulation.addChild("Motors")
+    def myanimate(targets, factor):
+        for arm in targets:
+            arm.angleIn = -factor * math.pi / 4.
+
+    animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)
+
+    # Temporary additions to have the system correctly built in SOFA
+    # Will no longer be required in SOFA v22.06
+    scene.Simulation.addObject('MechanicalMatrixMapper',
+                                 name="deformableAndFreeCenterCoupling",
+                                 template='Vec3,Rigid3',
+                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
+                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
+
     for i in range(3):
-        motors.addChild(tripod.getChild('ActuatedArm'+str(i)))
         scene.Simulation.addObject('MechanicalMatrixMapper',
-                                     name="mmm"+str(i),
-                                     template='Vec1,Vec3',
-                                     object1="@Simulation/Motors/ActuatedArm"+str(i)+"/ServoMotor/Articulation/dofs",
-                                     object2="@Simulation/RigidifiedStructure/DeformableParts/dofs",
-                                     skipJ2tKJ2=True,
-                                     nodeToParse="@Simulation/RigidifiedStructure/DeformableParts/ElasticMaterialObject")
+                                   name="ArmAndDeformableCoupling" + str(i),
+                                   template='Vec1,Vec3',
+                                   object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
+                                   object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                                   skipJ2tKJ2=False if i == 0 else True,
+                                   nodeToParse=tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())

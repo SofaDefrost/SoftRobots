@@ -176,6 +176,8 @@ class InverseController(Sofa.Core.Controller):
     def onKeypressedEvent(self, event):
         key = event['key']
         if key == Key.I:
+            for i in range(3):
+                self.nodeTripod.actuatedarms[i].ServoMotor.Articulation.RestShapeSpringsForceField.stiffness.value = [0.]
             self.activate = True
             for node in self.nodesInverseComponents:
                 node.activated = bool(self.activate)

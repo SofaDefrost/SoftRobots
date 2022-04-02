@@ -31,19 +31,21 @@ class Sphere(Sofa.Prefab):
 
     properties = [
         {'name':'name',        'type':'string', 'help':'Node name',  'default':'Sphere'},
-        {'name':'position',    'type':'Vec3d', 'help':'',             'default':[-22,50,-27]}
+        {'name':'position',    'type':'Vec3d', 'help':'',            'default':[-22,50,-27]},
+        {'name':'withSolver',  'type':'bool', 'help':'',             'default':False}
     ]
 
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
-        self.addObject('EulerImplicitSolver')
-        self.addObject('SparseLDLSolver')
+        if self.withSolver.value:
+            self.addObject('EulerImplicitSolver')
+            self.addObject('SparseLDLSolver')
+            self.addObject('GenericConstraintCorrection')
         self.addObject("MechanicalObject", position=self.position.value)
-        self.addObject("UniformMass", totalMass=0.001)
+        self.addObject("UniformMass", totalMass=1e-3)
         self.addObject('SphereCollisionModel', radius=2)
-        self.addObject('GenericConstraintCorrection')
 
 
 def createScene(rootNode):
@@ -68,6 +70,6 @@ def createScene(rootNode):
     maze = effector.addChild(Maze())
     maze.addObject("RigidMapping", index=0)
 
-    rootNode.addChild(Sphere())
+    rootNode.addChild(Sphere(withSolver=True))
 
     return
