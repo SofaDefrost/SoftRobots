@@ -13,7 +13,7 @@ from mazecontroller import MazeController
 def EffectorGoal(node, position):
     goal = node.addChild('Goal')
     goal.addObject('EulerImplicitSolver', firstOrder=True)
-    goal.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
+    goal.addObject('CGLinearSolver', iterations=100, threshold=1e-12, tolerance=1e-10)
     goal.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
     goal.addObject('RestShapeSpringsForceField', points=0, angularStiffness=1e5, stiffness=1e5)
     goal.addObject('UncoupledConstraintCorrection')
@@ -60,7 +60,7 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
         actuator.activated = False
         actuator.addObject('JointActuator', name='JointActuator', template='Vec1',
                                                 index=0, applyForce=True,
-                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.1)
+                                                minAngle=-1.0, maxAngle=1.0, maxAngleVariation=0.1)
 
     effector = freecenter.addChild("Effector")
     effector.activated = False
@@ -75,7 +75,7 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
                             useDirections=[0, 1, 0, 0, 0, 0],
                             indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position',
                             limitShiftToTarget=True, maxShiftToTarget=5)
-        effector.addObject('PositionEffector', name='effectorRXRZ', template='Rigid3', weight=1e3,
+        effector.addObject('PositionEffector', name='effectorRXRZ', template='Rigid3', 
                             useDirections=[0, 0, 0, 1, 0, 1],
                             indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position')
     else:
@@ -93,7 +93,7 @@ def createScene(rootNode):
     ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0)
     scene.removeObject(scene.GenericConstraintSolver)
 
-    goalNode = EffectorGoal(rootNode, [0, 30, 50])
+    goalNode = EffectorGoal(rootNode, [0, 30, 0])
 
     # Open maze planning from JSON file
     data = json.load(open('mazeplanning.json'))
