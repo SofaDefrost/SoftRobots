@@ -44,7 +44,7 @@ class ServoArm(Sofa.Prefab):
 
         self.addObject('RigidRigidMapping',name='mapping', input=path, index=self.indexInput.value)
 
-        visual = self.addChild(VisualModel(visualMeshPath='../details/data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.], color=[1., 1., 1., 0.75]))
+        visual = self.addChild(VisualModel(visualMeshPath='data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.], color=[1., 1., 1., 0.75]))
         visual.OglModel.writeZTransparent = True
         visual.addObject('RigidMapping', name='mapping')
 
