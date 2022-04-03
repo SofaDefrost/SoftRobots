@@ -6,7 +6,6 @@ from stlib3.scene import Scene
 from tripod import Tripod
 import math
 
-
 def dumpPosition(fields, filename):
     import json
     data = {}
@@ -109,7 +108,7 @@ class TripodControllerWithCom(TripodController):
 # CHANGE HERE the serialport that correspond to your computer
 # def SerialPortBridgeGeneric(rootNode, serialport='/dev/cu.usbserial-1420'):
 # def SerialPortBridgeGeneric(rootNode, serialport='COM3'):
-def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
+def SerialPortBridgeGeneric(rootNode, serialport="/dev/cu.usbserial-1420"):
     return rootNode.addObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True, header=255)
 
 
@@ -192,46 +191,34 @@ class InverseController(Sofa.Core.Controller):
         if self.state == "no-comm":
             return
 
-        if(self.nodeActuators.activated):
-            W_R_Dof = [0]*4;
-            W_R_Ref = [0]*4;
-            Ndir = [[ ]]*3;
+        if(self.activate):
+            #W_R_Dof = [0]*4;
+            #W_R_Ref = [0]*4;
+            #Ndir = [[ ]]*3;
             Angles = [0]*3;
-            for i in range(0,4):
-                W_R_Dof[i] = self.nodeDofRigid.dofs.position[0][i+3]
-                W_R_Ref[i] = self.nodeTripod.ActuatedArm0.ServoArm.dofs.position[0][i+3]
 
-            [Ndir[0], Angles[0]] = Quat.product(Quat(W_R_Ref).getInverse(), Quat(W_R_Dof)).getAxisAngle()
-
-            for i in range(0, 4):
-                W_R_Dof[i] = self.nodeDofRigid.dofs.position[1][i+3]
-                W_R_Ref[i] = self.nodeTripod.ActuatedArm1.ServoArm.dofs.position[0][i+3]
-
-            [Ndir[1], Angles[1]] = Quat.product(Quat(W_R_Ref).getInverse(), Quat(W_R_Dof)).getAxisAngle()
-
-            for i in range(0, 4):
-                W_R_Dof[i] = self.nodeDofRigid.dofs.position[2][i+3]
-                W_R_Ref[i] = self.nodeTripod.ActuatedArm2.ServoArm.dofs.position[0][i+3]
-
-            [Ndir[2], Angles[2]] = Quat.product(Quat(W_R_Ref).getInverse(), Quat(W_R_Dof)).getAxisAngle()
-
-            # conversion to degree (centred on 150)
-            # envoie des infos aux servoMoteurs
-            AnglesDeg = [0]*3;
+            Angles[0] = self.nodeTripod.actuatedarms[0].ServoMotor.Articulation.dofs.position[0][0];
+            Angles[1] = self.nodeTripod.actuatedarms[1].ServoMotor.Articulation.dofs.position[0][0];
+            Angles[2] = self.nodeTripod.actuatedarms[2].ServoMotor.Articulation.dofs.position[0][0];            
+            AnglesOut = [];
             for i in range(3):
-                if(Ndir[i][0]>0):
-                    AnglesDeg[i] = Angles[i]*180/3.14159265359 + 90;
-                else:
-                    AnglesDeg[i] = -Angles[i]*180/3.14159265359 + 90;
+                # Conversion of the angle values from radians to degrees
+                angleDegree = Angles[i]*360/(2.0*math.pi)
+                angleByte = int(math.floor(angleDegree)) + 179
 
-                if AnglesDeg[i] < 60:
-                    AnglesDeg[i] = 60
-                if AnglesDeg[i] > 180:
-                    AnglesDeg[i] = 180
+                # Limitation of the angular position's command
+                if angleByte < 60:
+                    angleByte = 60
+                if angleByte > 180:
+                    angleByte = 180
 
-            # The controller board of the real robot receives `AnglesDeg` values
+                # Filling the list of the 3 angle values
+                AnglesOut.append(angleByte)
+                
+            # The controller board of the real robot receives `AnglesOut` values
             if(self.serialport):
-                self.serialport.packetOut = [int(AnglesDeg[0]+0), int(AnglesDeg[2]-0), int(AnglesDeg[1])]
+                self.serialport.packetOut = [AnglesOut[0], AnglesOut[1],  AnglesOut[2]]
+                #self.serialport.packetOut = [int(AnglesDeg[0]+0), int(AnglesDeg[1]-0), int(AnglesDeg[2])]
 
 
 class DirectController(Sofa.Core.Controller):
