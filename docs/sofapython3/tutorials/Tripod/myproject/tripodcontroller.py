@@ -4,6 +4,7 @@ from splib3.animation import animate
 from splib3.constants import Key
 from stlib3.scene import Scene
 from tripod import Tripod
+import math
 
 
 def dumpPosition(fields, filename):
@@ -176,6 +177,8 @@ class InverseController(Sofa.Core.Controller):
     def onKeypressedEvent(self, event):
         key = event['key']
         if key == Key.I:
+            for i in range(3):
+                self.nodeTripod.actuatedarms[i].ServoMotor.Articulation.RestShapeSpringsForceField.stiffness.value = [0.]
             self.activate = True
             for node in self.nodesInverseComponents:
                 node.activated = bool(self.activate)

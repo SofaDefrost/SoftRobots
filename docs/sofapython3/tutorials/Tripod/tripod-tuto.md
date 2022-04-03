@@ -63,7 +63,7 @@ Finally, the two representations are linked together by a mapping, which allows 
 The resulting simulation looks like this:
 <pre>
 <a href="details/step1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step1.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step1code' class='hide'>
@@ -128,7 +128,7 @@ However, before using this prefabricated object, let's first build our own, base
 
 <pre>
 <a href="details/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step2code' class='hide'>
@@ -249,7 +249,7 @@ Tripod(parent, name="Tripod", radius, numMotors, angleShift)
 
 <pre>
 <a href="details/step4-1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step4-1.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step4-1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-1code' class='hide'>
@@ -429,7 +429,7 @@ Keyboard keys                                                                   
 
 <pre>
 <a href="details/step6.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step6.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step6code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step6code' class='hide'>
@@ -472,7 +472,7 @@ Keyboard keys                                                                   
 
 <pre>
 <a href="details/step7.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step7.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step7code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step7code' class='hide'>
@@ -498,7 +498,7 @@ The same keystrokes as in the previous steps are used, adding a new one to start
 
 <pre>
 <a href="details/step8.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step8.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step8code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step8code' class='hide'>
