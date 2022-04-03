@@ -130,7 +130,7 @@ Finally, the two representations are linked together by a mapping, which allows 
 The resulting simulation looks like this:
 <pre>
 <a href="details/step1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step1.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step1code" class="hide">
@@ -229,7 +229,7 @@ In order to implement the deformation behaviour, the <code>MechanicalObject</cod
 <p>However, before using this prefabricated object, let’s first build our own, based on a corotational Finite Element Method with a tetrahedral volumetric representation of the shape. The mesh <code>tripod_mid.gidmsh</code> used to store the shape of the deformable object was built with the GiD mesh generator. Starting from the model obtained in the last step, the parameters of the elastic deformation are added to the silicone piece with a <code>ForceField</code> component.</p>
 <pre>
 <a href="details/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step2code" class="hide">
@@ -441,7 +441,7 @@ Just like for the <code>ElasticBody</code>, a function <code>Tripod()</code> is 
 <div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb10-1" title="1">Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius, numMotors, angleShift)</a></code></pre></div>
 <pre>
 <a href="details/step4-1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step4-1.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step4-1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step4-1code" class="hide">
@@ -706,75 +706,75 @@ Figure 7: Deformable piece with the extremities rigidified and attached to the s
 <a class="sourceLine" id="cb13-12" title="12"><span class="im">from</span> elasticbody <span class="im">import</span> ElasticBody</a>
 <a class="sourceLine" id="cb13-13" title="13"><span class="im">from</span> blueprint <span class="im">import</span> Blueprint</a>
 <a class="sourceLine" id="cb13-14" title="14"></a>
-<a class="sourceLine" id="cb13-15" title="15"><span class="kw">def</span> Tripod(name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="dv">60</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):</a>
-<a class="sourceLine" id="cb13-16" title="16">    <span class="kw">def</span> __getTransform(index, numstep, angleShift, radius, dist):</a>
-<a class="sourceLine" id="cb13-17" title="17">        fi <span class="op">=</span> <span class="bu">float</span>(index)</a>
-<a class="sourceLine" id="cb13-18" title="18">        fnumstep <span class="op">=</span> <span class="bu">float</span>(numstep)</a>
-<a class="sourceLine" id="cb13-19" title="19">        angle <span class="op">=</span> fi <span class="op">*</span> <span class="dv">360</span> <span class="op">/</span> fnumstep</a>
-<a class="sourceLine" id="cb13-20" title="20">        angle2 <span class="op">=</span> fi <span class="op">*</span> <span class="dv">360</span> <span class="op">/</span> fnumstep <span class="op">+</span> angleShift</a>
-<a class="sourceLine" id="cb13-21" title="21">        eulerRotation <span class="op">=</span> [<span class="dv">0</span>, angle, <span class="dv">0</span>]</a>
-<a class="sourceLine" id="cb13-22" title="22">        translation <span class="op">=</span> [dist <span class="op">*</span> sin(to_radians(angle2)), <span class="fl">-1.35</span>, dist <span class="op">*</span> cos(to_radians(angle2))]</a>
-<a class="sourceLine" id="cb13-23" title="23">        <span class="cf">return</span> translation, eulerRotation</a>
-<a class="sourceLine" id="cb13-24" title="24"></a>
-<a class="sourceLine" id="cb13-25" title="25">    <span class="kw">def</span> __rigidify(<span class="va">self</span>, radius<span class="op">=</span><span class="dv">60</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):</a>
-<a class="sourceLine" id="cb13-26" title="26">        deformableObject <span class="op">=</span> <span class="va">self</span>.ElasticBody.MechanicalModel</a>
-<a class="sourceLine" id="cb13-27" title="27">        <span class="va">self</span>.ElasticBody.init()</a>
-<a class="sourceLine" id="cb13-28" title="28">        dist <span class="op">=</span> radius</a>
-<a class="sourceLine" id="cb13-29" title="29">        numstep <span class="op">=</span> numMotors</a>
-<a class="sourceLine" id="cb13-30" title="30">        groupIndices <span class="op">=</span> []</a>
-<a class="sourceLine" id="cb13-31" title="31">        frames <span class="op">=</span> []</a>
-<a class="sourceLine" id="cb13-32" title="32">        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, numstep):</a>
-<a class="sourceLine" id="cb13-33" title="33">            translation, eulerRotation <span class="op">=</span> __getTransform(i, numstep, angleShift, radius, dist)</a>
-<a class="sourceLine" id="cb13-34" title="34"></a>
-<a class="sourceLine" id="cb13-35" title="35">            box <span class="op">=</span> addOrientedBoxRoi(<span class="va">self</span>, position<span class="op">=</span>[<span class="bu">list</span>(i) <span class="cf">for</span> i <span class="kw">in</span> deformableObject.dofs.rest_position.value],</a>
-<a class="sourceLine" id="cb13-36" title="36">                                    name<span class="op">=</span><span class="st">&quot;BoxROI&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i),</a>
-<a class="sourceLine" id="cb13-37" title="37">                                    translation<span class="op">=</span>vec3.vadd(translation, [<span class="fl">0.0</span>, <span class="fl">25.0</span>, <span class="fl">0.0</span>]),</a>
-<a class="sourceLine" id="cb13-38" title="38">                                    eulerRotation<span class="op">=</span>eulerRotation, scale<span class="op">=</span>[<span class="dv">45</span>, <span class="dv">15</span>, <span class="dv">30</span>])</a>
-<a class="sourceLine" id="cb13-39" title="39"></a>
-<a class="sourceLine" id="cb13-40" title="40">            box.drawBoxes <span class="op">=</span> <span class="va">False</span></a>
-<a class="sourceLine" id="cb13-41" title="41">            box.init()</a>
-<a class="sourceLine" id="cb13-42" title="42">            groupIndices.append([ind <span class="cf">for</span> ind <span class="kw">in</span> box.indices.value])</a>
-<a class="sourceLine" id="cb13-43" title="43">            frames.append(vec3.vadd(translation, [<span class="fl">0.0</span>, <span class="fl">25.0</span>, <span class="fl">0.0</span>]) <span class="op">+</span> <span class="bu">list</span>(</a>
-<a class="sourceLine" id="cb13-44" title="44">                Quat.createFromEuler([<span class="dv">0</span>, <span class="bu">float</span>(i) <span class="op">*</span> <span class="dv">360</span> <span class="op">/</span> <span class="bu">float</span>(numstep), <span class="dv">0</span>], inDegree<span class="op">=</span><span class="va">True</span>)))</a>
-<a class="sourceLine" id="cb13-45" title="45"></a>
-<a class="sourceLine" id="cb13-46" title="46">        <span class="co"># Rigidify the deformable part at extremity to attach arms</span></a>
-<a class="sourceLine" id="cb13-47" title="47">        rigidifiedstruct <span class="op">=</span> Rigidify(<span class="va">self</span>, deformableObject, groupIndices<span class="op">=</span>groupIndices, frames<span class="op">=</span>frames,</a>
-<a class="sourceLine" id="cb13-48" title="48">                                    name<span class="op">=</span><span class="st">&quot;RigidifiedStructure&quot;</span>)</a>
-<a class="sourceLine" id="cb13-49" title="49"></a>
-<a class="sourceLine" id="cb13-50" title="50">    <span class="kw">def</span> __attachToActuatedArms(<span class="va">self</span>, numstep):</a>
-<a class="sourceLine" id="cb13-51" title="51">         rigidParts <span class="op">=</span> <span class="va">self</span>.RigidifiedStructure.RigidParts</a>
-<a class="sourceLine" id="cb13-52" title="52">         <span class="cf">for</span> arm <span class="kw">in</span> <span class="va">self</span>.actuatedarms:</a>
-<a class="sourceLine" id="cb13-53" title="53">            arm.ServoMotor.Articulation.ServoWheel.addChild(rigidParts)</a>
-<a class="sourceLine" id="cb13-54" title="54"></a>
-<a class="sourceLine" id="cb13-55" title="55">         rigidParts.addObject(<span class="st">&#39;SubsetMultiMapping&#39;</span>,</a>
-<a class="sourceLine" id="cb13-56" title="56">                              <span class="bu">input</span><span class="op">=</span>[<span class="va">self</span>.actuatedarms[<span class="dv">0</span>].ServoMotor.Articulation.ServoWheel.getLinkPath(),</a>
-<a class="sourceLine" id="cb13-57" title="57">                                     <span class="va">self</span>.actuatedarms[<span class="dv">1</span>].ServoMotor.Articulation.ServoWheel.getLinkPath(),</a>
-<a class="sourceLine" id="cb13-58" title="58">                                     <span class="va">self</span>.actuatedarms[<span class="dv">2</span>].ServoMotor.Articulation.ServoWheel.getLinkPath()],</a>
-<a class="sourceLine" id="cb13-59" title="59">                              output<span class="op">=</span><span class="st">&#39;@./&#39;</span>, indexPairs<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>])</a>
-<a class="sourceLine" id="cb13-60" title="60"></a>
-<a class="sourceLine" id="cb13-61" title="61">    <span class="va">self</span> <span class="op">=</span> Sofa.Core.Node(name)</a>
-<a class="sourceLine" id="cb13-62" title="62">    <span class="va">self</span>.actuatedarms <span class="op">=</span> []</a>
-<a class="sourceLine" id="cb13-63" title="63">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, numMotors):</a>
-<a class="sourceLine" id="cb13-64" title="64">        name <span class="op">=</span> <span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i)</a>
-<a class="sourceLine" id="cb13-65" title="65">        translation, eulerRotation <span class="op">=</span> __getTransform(i, numMotors, angleShift, radius, radius)</a>
-<a class="sourceLine" id="cb13-66" title="66">        arm <span class="op">=</span> ActuatedArm(name<span class="op">=</span>name, translation<span class="op">=</span>translation, rotation<span class="op">=</span>eulerRotation)</a>
-<a class="sourceLine" id="cb13-67" title="67"></a>
-<a class="sourceLine" id="cb13-68" title="68">        <span class="co"># Add limits to angle that correspond to limits on real robot</span></a>
-<a class="sourceLine" id="cb13-69" title="69">        arm.ServoMotor.minAngle <span class="op">=</span> <span class="fl">-2.0225</span></a>
-<a class="sourceLine" id="cb13-70" title="70">        arm.ServoMotor.maxAngle <span class="op">=</span> <span class="fl">-0.0255</span></a>
-<a class="sourceLine" id="cb13-71" title="71">        <span class="va">self</span>.actuatedarms.append(arm)</a>
-<a class="sourceLine" id="cb13-72" title="72">        <span class="va">self</span>.addChild(arm)</a>
-<a class="sourceLine" id="cb13-73" title="73"></a>
-<a class="sourceLine" id="cb13-74" title="74">    <span class="va">self</span>.addChild(ElasticBody(translation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">30</span>, <span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>], color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>]))</a>
-<a class="sourceLine" id="cb13-75" title="75">    __rigidify(<span class="va">self</span>, radius, numMotors, angleShift)</a>
-<a class="sourceLine" id="cb13-76" title="76">    __attachToActuatedArms(<span class="va">self</span>, numMotors)</a>
-<a class="sourceLine" id="cb13-77" title="77">    <span class="cf">return</span> <span class="va">self</span></a>
-<a class="sourceLine" id="cb13-78" title="78"></a>
+<a class="sourceLine" id="cb13-15" title="15"></a>
+<a class="sourceLine" id="cb13-16" title="16"><span class="kw">def</span> Tripod(name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius<span class="op">=</span><span class="dv">60</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):</a>
+<a class="sourceLine" id="cb13-17" title="17">    <span class="kw">def</span> __getTransform(index, numstep, angleShift, radius, dist):</a>
+<a class="sourceLine" id="cb13-18" title="18">        fi <span class="op">=</span> <span class="bu">float</span>(index)</a>
+<a class="sourceLine" id="cb13-19" title="19">        fnumstep <span class="op">=</span> <span class="bu">float</span>(numstep)</a>
+<a class="sourceLine" id="cb13-20" title="20">        angle <span class="op">=</span> fi <span class="op">*</span> <span class="dv">360</span> <span class="op">/</span> fnumstep</a>
+<a class="sourceLine" id="cb13-21" title="21">        angle2 <span class="op">=</span> fi <span class="op">*</span> <span class="dv">360</span> <span class="op">/</span> fnumstep <span class="op">+</span> angleShift</a>
+<a class="sourceLine" id="cb13-22" title="22">        eulerRotation <span class="op">=</span> [<span class="dv">0</span>, angle, <span class="dv">0</span>]</a>
+<a class="sourceLine" id="cb13-23" title="23">        translation <span class="op">=</span> [dist <span class="op">*</span> sin(to_radians(angle2)), <span class="fl">-1.35</span>, dist <span class="op">*</span> cos(to_radians(angle2))]</a>
+<a class="sourceLine" id="cb13-24" title="24">        <span class="cf">return</span> translation, eulerRotation</a>
+<a class="sourceLine" id="cb13-25" title="25"></a>
+<a class="sourceLine" id="cb13-26" title="26">    <span class="kw">def</span> __rigidify(<span class="va">self</span>, radius<span class="op">=</span><span class="dv">60</span>, numMotors<span class="op">=</span><span class="dv">3</span>, angleShift<span class="op">=</span><span class="fl">180.0</span>):</a>
+<a class="sourceLine" id="cb13-27" title="27">        deformableObject <span class="op">=</span> <span class="va">self</span>.ElasticBody.MechanicalModel</a>
+<a class="sourceLine" id="cb13-28" title="28">        <span class="va">self</span>.ElasticBody.init()</a>
+<a class="sourceLine" id="cb13-29" title="29">        dist <span class="op">=</span> radius</a>
+<a class="sourceLine" id="cb13-30" title="30">        numstep <span class="op">=</span> numMotors</a>
+<a class="sourceLine" id="cb13-31" title="31">        groupIndices <span class="op">=</span> []</a>
+<a class="sourceLine" id="cb13-32" title="32">        frames <span class="op">=</span> []</a>
+<a class="sourceLine" id="cb13-33" title="33">        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, numstep):</a>
+<a class="sourceLine" id="cb13-34" title="34">            translation, eulerRotation <span class="op">=</span> __getTransform(i, numstep, angleShift, radius, dist)</a>
+<a class="sourceLine" id="cb13-35" title="35"></a>
+<a class="sourceLine" id="cb13-36" title="36">            box <span class="op">=</span> addOrientedBoxRoi(<span class="va">self</span>, position<span class="op">=</span>[<span class="bu">list</span>(i) <span class="cf">for</span> i <span class="kw">in</span> deformableObject.dofs.rest_position.value],</a>
+<a class="sourceLine" id="cb13-37" title="37">                                    name<span class="op">=</span><span class="st">&quot;BoxROI&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i),</a>
+<a class="sourceLine" id="cb13-38" title="38">                                    translation<span class="op">=</span>vec3.vadd(translation, [<span class="fl">0.0</span>, <span class="fl">25.0</span>, <span class="fl">0.0</span>]),</a>
+<a class="sourceLine" id="cb13-39" title="39">                                    eulerRotation<span class="op">=</span>eulerRotation, scale<span class="op">=</span>[<span class="dv">45</span>, <span class="dv">15</span>, <span class="dv">30</span>])</a>
+<a class="sourceLine" id="cb13-40" title="40"></a>
+<a class="sourceLine" id="cb13-41" title="41">            box.drawBoxes <span class="op">=</span> <span class="va">False</span></a>
+<a class="sourceLine" id="cb13-42" title="42">            box.init()</a>
+<a class="sourceLine" id="cb13-43" title="43">            groupIndices.append([ind <span class="cf">for</span> ind <span class="kw">in</span> box.indices.value])</a>
+<a class="sourceLine" id="cb13-44" title="44">            frames.append(vec3.vadd(translation, [<span class="fl">0.0</span>, <span class="fl">25.0</span>, <span class="fl">0.0</span>]) <span class="op">+</span> <span class="bu">list</span>(</a>
+<a class="sourceLine" id="cb13-45" title="45">                Quat.createFromEuler([<span class="dv">0</span>, <span class="bu">float</span>(i) <span class="op">*</span> <span class="dv">360</span> <span class="op">/</span> <span class="bu">float</span>(numstep), <span class="dv">0</span>], inDegree<span class="op">=</span><span class="va">True</span>)))</a>
+<a class="sourceLine" id="cb13-46" title="46"></a>
+<a class="sourceLine" id="cb13-47" title="47">        <span class="co"># Rigidify the deformable part at extremity to attach arms</span></a>
+<a class="sourceLine" id="cb13-48" title="48">        rigidifiedstruct <span class="op">=</span> Rigidify(<span class="va">self</span>, deformableObject, groupIndices<span class="op">=</span>groupIndices, frames<span class="op">=</span>frames,</a>
+<a class="sourceLine" id="cb13-49" title="49">                                    name<span class="op">=</span><span class="st">&quot;RigidifiedStructure&quot;</span>)</a>
+<a class="sourceLine" id="cb13-50" title="50"></a>
+<a class="sourceLine" id="cb13-51" title="51">    <span class="kw">def</span> __attachToActuatedArms(<span class="va">self</span>, numstep):</a>
+<a class="sourceLine" id="cb13-52" title="52">         rigidParts <span class="op">=</span> <span class="va">self</span>.RigidifiedStructure.RigidParts</a>
+<a class="sourceLine" id="cb13-53" title="53">         <span class="cf">for</span> arm <span class="kw">in</span> <span class="va">self</span>.actuatedarms:</a>
+<a class="sourceLine" id="cb13-54" title="54">            arm.ServoMotor.Articulation.ServoWheel.addChild(rigidParts)</a>
+<a class="sourceLine" id="cb13-55" title="55"></a>
+<a class="sourceLine" id="cb13-56" title="56">         rigidParts.addObject(<span class="st">&#39;SubsetMultiMapping&#39;</span>,</a>
+<a class="sourceLine" id="cb13-57" title="57">                              <span class="bu">input</span><span class="op">=</span>[<span class="va">self</span>.actuatedarms[<span class="dv">0</span>].ServoMotor.Articulation.ServoWheel.getLinkPath(),</a>
+<a class="sourceLine" id="cb13-58" title="58">                                     <span class="va">self</span>.actuatedarms[<span class="dv">1</span>].ServoMotor.Articulation.ServoWheel.getLinkPath(),</a>
+<a class="sourceLine" id="cb13-59" title="59">                                     <span class="va">self</span>.actuatedarms[<span class="dv">2</span>].ServoMotor.Articulation.ServoWheel.getLinkPath()],</a>
+<a class="sourceLine" id="cb13-60" title="60">                              output<span class="op">=</span><span class="st">&#39;@./&#39;</span>, indexPairs<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb13-61" title="61"></a>
+<a class="sourceLine" id="cb13-62" title="62">    <span class="va">self</span> <span class="op">=</span> Sofa.Core.Node(name)</a>
+<a class="sourceLine" id="cb13-63" title="63">    <span class="va">self</span>.actuatedarms <span class="op">=</span> []</a>
+<a class="sourceLine" id="cb13-64" title="64">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, numMotors):</a>
+<a class="sourceLine" id="cb13-65" title="65">        name <span class="op">=</span> <span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i)</a>
+<a class="sourceLine" id="cb13-66" title="66">        translation, eulerRotation <span class="op">=</span> __getTransform(i, numMotors, angleShift, radius, radius)</a>
+<a class="sourceLine" id="cb13-67" title="67">        arm <span class="op">=</span> ActuatedArm(name<span class="op">=</span>name, translation<span class="op">=</span>translation, rotation<span class="op">=</span>eulerRotation)</a>
+<a class="sourceLine" id="cb13-68" title="68"></a>
+<a class="sourceLine" id="cb13-69" title="69">        <span class="co"># Add limits to angle that correspond to limits on real robot</span></a>
+<a class="sourceLine" id="cb13-70" title="70">        arm.ServoMotor.minAngle <span class="op">=</span> <span class="fl">-2.0225</span></a>
+<a class="sourceLine" id="cb13-71" title="71">        arm.ServoMotor.maxAngle <span class="op">=</span> <span class="fl">-0.0255</span></a>
+<a class="sourceLine" id="cb13-72" title="72">        <span class="va">self</span>.actuatedarms.append(arm)</a>
+<a class="sourceLine" id="cb13-73" title="73">        <span class="va">self</span>.addChild(arm)</a>
+<a class="sourceLine" id="cb13-74" title="74"></a>
+<a class="sourceLine" id="cb13-75" title="75">    <span class="va">self</span>.addChild(ElasticBody(translation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">30</span>, <span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>], color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>]))</a>
+<a class="sourceLine" id="cb13-76" title="76">    __rigidify(<span class="va">self</span>, radius, numMotors, angleShift)</a>
+<a class="sourceLine" id="cb13-77" title="77">    __attachToActuatedArms(<span class="va">self</span>, numMotors)</a>
+<a class="sourceLine" id="cb13-78" title="78">    <span class="cf">return</span> <span class="va">self</span></a>
 <a class="sourceLine" id="cb13-79" title="79"></a>
-<a class="sourceLine" id="cb13-80" title="80"><span class="kw">def</span> createScene(rootNode):</a>
-<a class="sourceLine" id="cb13-81" title="81">    <span class="im">from</span> splib3.animation <span class="im">import</span> animate</a>
-<a class="sourceLine" id="cb13-82" title="82">    <span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
-<a class="sourceLine" id="cb13-83" title="83">    <span class="im">from</span> fixingbox <span class="im">import</span> FixingBox</a>
+<a class="sourceLine" id="cb13-80" title="80"></a>
+<a class="sourceLine" id="cb13-81" title="81"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb13-82" title="82">    <span class="im">from</span> splib3.animation <span class="im">import</span> animate</a>
+<a class="sourceLine" id="cb13-83" title="83">    <span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
 <a class="sourceLine" id="cb13-84" title="84">    <span class="im">import</span> math</a>
 <a class="sourceLine" id="cb13-85" title="85"></a>
 <a class="sourceLine" id="cb13-86" title="86">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>], iterative<span class="op">=</span><span class="va">False</span>,</a>
@@ -1033,7 +1033,7 @@ Figure 11: Tripod simulation with collision between a sphere, the deformable par
 </table>
 <pre>
 <a href="details/step6.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step6.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step6code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step6code" class="hide">
@@ -1202,7 +1202,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 </table>
 <pre>
 <a href="details/step7.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step7.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step7code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step7code" class="hide">
@@ -1356,7 +1356,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 </ul>
 <pre>
 <a href="details/step8.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/tripod.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="myproject/step8.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
 <a href="javascript:void(0)" onclick="toggle('step8code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step8code" class="hide">
@@ -1527,7 +1527,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb18-10" title="10">    properties <span class="op">=</span> [</a>
 <a class="sourceLine" id="cb18-11" title="11">        {<span class="st">&#39;name&#39;</span>:<span class="st">&#39;name&#39;</span>,           <span class="st">&#39;type&#39;</span>:<span class="st">&#39;string&#39;</span>, <span class="st">&#39;help&#39;</span>:<span class="st">&#39;Node name&#39;</span>,                  <span class="st">&#39;default&#39;</span>:<span class="st">&#39;Maze&#39;</span>},</a>
 <a class="sourceLine" id="cb18-12" title="12">        {<span class="st">&#39;name&#39;</span>:<span class="st">&#39;index&#39;</span>,          <span class="st">&#39;type&#39;</span>:<span class="st">&#39;int&#39;</span>, <span class="st">&#39;help&#39;</span>:<span class="st">&#39;index of rigid to attach to&#39;</span>,   <span class="st">&#39;default&#39;</span>:<span class="dv">0</span>},</a>
-<a class="sourceLine" id="cb18-13" title="13">        {<span class="st">&#39;name&#39;</span>:<span class="st">&#39;translation&#39;</span>,    <span class="st">&#39;type&#39;</span>:<span class="st">&#39;Vec3d&#39;</span>, <span class="st">&#39;help&#39;</span>:<span class="st">&#39;&#39;</span>,                            <span class="st">&#39;default&#39;</span>:[<span class="op">-</span><span class="dv">50</span>,<span class="dv">5</span>,<span class="dv">50</span>]},</a>
+<a class="sourceLine" id="cb18-13" title="13">        {<span class="st">&#39;name&#39;</span>:<span class="st">&#39;translation&#39;</span>,    <span class="st">&#39;type&#39;</span>:<span class="st">&#39;Vec3d&#39;</span>, <span class="st">&#39;help&#39;</span>:<span class="st">&#39;&#39;</span>,                            <span class="st">&#39;default&#39;</span>:[<span class="dv">0</span>,<span class="dv">5</span>,<span class="dv">0</span>]},</a>
 <a class="sourceLine" id="cb18-14" title="14">        {<span class="st">&#39;name&#39;</span>:<span class="st">&#39;rotation&#39;</span>,       <span class="st">&#39;type&#39;</span>:<span class="st">&#39;Vec3d&#39;</span>, <span class="st">&#39;help&#39;</span>:<span class="st">&#39;&#39;</span>,                            <span class="st">&#39;default&#39;</span>:[<span class="op">-</span><span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>]}</a>
 <a class="sourceLine" id="cb18-15" title="15">    ]</a>
 <a class="sourceLine" id="cb18-16" title="16"></a>
@@ -1535,7 +1535,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb18-18" title="18">        Sofa.Prefab.<span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</a>
 <a class="sourceLine" id="cb18-19" title="19"></a>
 <a class="sourceLine" id="cb18-20" title="20">    <span class="kw">def</span> init(<span class="va">self</span>):</a>
-<a class="sourceLine" id="cb18-21" title="21">        <span class="va">self</span>.addObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/maze/maze_4_coarse.stl&quot;</span>,</a>
+<a class="sourceLine" id="cb18-21" title="21">        <span class="va">self</span>.addObject(<span class="st">&quot;MeshSTLLoader&quot;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;data/mesh/maze/maze_12_coarse.stl&quot;</span>,</a>
 <a class="sourceLine" id="cb18-22" title="22">                       translation<span class="op">=</span><span class="va">self</span>.translation.value, rotation<span class="op">=</span><span class="va">self</span>.rotation.value)</a>
 <a class="sourceLine" id="cb18-23" title="23">        <span class="va">self</span>.addObject(<span class="st">&quot;MeshTopology&quot;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>)</a>
 <a class="sourceLine" id="cb18-24" title="24">        <span class="va">self</span>.addObject(<span class="st">&quot;MechanicalObject&quot;</span>)</a>
@@ -1548,46 +1548,48 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb18-31" title="31"></a>
 <a class="sourceLine" id="cb18-32" title="32">    properties <span class="op">=</span> [</a>
 <a class="sourceLine" id="cb18-33" title="33">        {<span class="st">&#39;name&#39;</span>:<span class="st">&#39;name&#39;</span>,        <span class="st">&#39;type&#39;</span>:<span class="st">&#39;string&#39;</span>, <span class="st">&#39;help&#39;</span>:<span class="st">&#39;Node name&#39;</span>,  <span class="st">&#39;default&#39;</span>:<span class="st">&#39;Sphere&#39;</span>},</a>
-<a class="sourceLine" id="cb18-34" title="34">        {<span class="st">&#39;name&#39;</span>:<span class="st">&#39;position&#39;</span>,    <span class="st">&#39;type&#39;</span>:<span class="st">&#39;Vec3d&#39;</span>, <span class="st">&#39;help&#39;</span>:<span class="st">&#39;&#39;</span>,             <span class="st">&#39;default&#39;</span>:[<span class="op">-</span><span class="dv">22</span>,<span class="dv">50</span>,<span class="op">-</span><span class="dv">27</span>]}</a>
-<a class="sourceLine" id="cb18-35" title="35">    ]</a>
-<a class="sourceLine" id="cb18-36" title="36"></a>
-<a class="sourceLine" id="cb18-37" title="37">    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</a>
-<a class="sourceLine" id="cb18-38" title="38">        Sofa.Prefab.<span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</a>
-<a class="sourceLine" id="cb18-39" title="39"></a>
-<a class="sourceLine" id="cb18-40" title="40">    <span class="kw">def</span> init(<span class="va">self</span>):</a>
-<a class="sourceLine" id="cb18-41" title="41">        <span class="va">self</span>.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>)</a>
-<a class="sourceLine" id="cb18-42" title="42">        <span class="va">self</span>.addObject(<span class="st">&#39;SparseLDLSolver&#39;</span>)</a>
-<a class="sourceLine" id="cb18-43" title="43">        <span class="va">self</span>.addObject(<span class="st">&quot;MechanicalObject&quot;</span>, position<span class="op">=</span><span class="va">self</span>.position.value)</a>
-<a class="sourceLine" id="cb18-44" title="44">        <span class="va">self</span>.addObject(<span class="st">&quot;UniformMass&quot;</span>, totalMass<span class="op">=</span><span class="fl">0.001</span>)</a>
-<a class="sourceLine" id="cb18-45" title="45">        <span class="va">self</span>.addObject(<span class="st">&#39;SphereCollisionModel&#39;</span>, radius<span class="op">=</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb18-46" title="46">        <span class="va">self</span>.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb18-47" title="47"></a>
-<a class="sourceLine" id="cb18-48" title="48"></a>
-<a class="sourceLine" id="cb18-49" title="49"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb18-34" title="34">        {<span class="st">&#39;name&#39;</span>:<span class="st">&#39;position&#39;</span>,    <span class="st">&#39;type&#39;</span>:<span class="st">&#39;Vec3d&#39;</span>, <span class="st">&#39;help&#39;</span>:<span class="st">&#39;&#39;</span>,            <span class="st">&#39;default&#39;</span>:[<span class="op">-</span><span class="dv">22</span>,<span class="dv">50</span>,<span class="op">-</span><span class="dv">27</span>]},</a>
+<a class="sourceLine" id="cb18-35" title="35">        {<span class="st">&#39;name&#39;</span>:<span class="st">&#39;withSolver&#39;</span>,  <span class="st">&#39;type&#39;</span>:<span class="st">&#39;bool&#39;</span>, <span class="st">&#39;help&#39;</span>:<span class="st">&#39;&#39;</span>,             <span class="st">&#39;default&#39;</span>:<span class="va">False</span>}</a>
+<a class="sourceLine" id="cb18-36" title="36">    ]</a>
+<a class="sourceLine" id="cb18-37" title="37"></a>
+<a class="sourceLine" id="cb18-38" title="38">    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</a>
+<a class="sourceLine" id="cb18-39" title="39">        Sofa.Prefab.<span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</a>
+<a class="sourceLine" id="cb18-40" title="40"></a>
+<a class="sourceLine" id="cb18-41" title="41">    <span class="kw">def</span> init(<span class="va">self</span>):</a>
+<a class="sourceLine" id="cb18-42" title="42">        <span class="cf">if</span> <span class="va">self</span>.withSolver.value:</a>
+<a class="sourceLine" id="cb18-43" title="43">            <span class="va">self</span>.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>)</a>
+<a class="sourceLine" id="cb18-44" title="44">            <span class="va">self</span>.addObject(<span class="st">&#39;SparseLDLSolver&#39;</span>)</a>
+<a class="sourceLine" id="cb18-45" title="45">            <span class="va">self</span>.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb18-46" title="46">        <span class="va">self</span>.addObject(<span class="st">&quot;MechanicalObject&quot;</span>, position<span class="op">=</span><span class="va">self</span>.position.value)</a>
+<a class="sourceLine" id="cb18-47" title="47">        <span class="va">self</span>.addObject(<span class="st">&quot;UniformMass&quot;</span>, totalMass<span class="op">=</span><span class="fl">1e-4</span>)</a>
+<a class="sourceLine" id="cb18-48" title="48">        <span class="va">self</span>.addObject(<span class="st">&#39;SphereCollisionModel&#39;</span>, radius<span class="op">=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb18-49" title="49"></a>
 <a class="sourceLine" id="cb18-50" title="50"></a>
-<a class="sourceLine" id="cb18-51" title="51">    rootNode.gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>]</a>
-<a class="sourceLine" id="cb18-52" title="52">    rootNode.dt<span class="op">=</span><span class="fl">0.01</span></a>
-<a class="sourceLine" id="cb18-53" title="53">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb18-54" title="54">    rootNode.addObject(<span class="st">&#39;VisualStyle&#39;</span>, displayFlags<span class="op">=</span>[<span class="st">&#39;showCollisionModels&#39;</span>, <span class="st">&#39;showBehavior&#39;</span>])</a>
-<a class="sourceLine" id="cb18-55" title="55">    rootNode.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb18-56" title="56"></a>
-<a class="sourceLine" id="cb18-57" title="57">    effector <span class="op">=</span> rootNode.addChild(<span class="st">&#39;Effector&#39;</span>)</a>
-<a class="sourceLine" id="cb18-58" title="58">    effector.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
-<a class="sourceLine" id="cb18-59" title="59">    effector.addObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="dv">100</span>, threshold<span class="op">=</span><span class="fl">1e-5</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
-<a class="sourceLine" id="cb18-60" title="60">    effector.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, name<span class="op">=</span><span class="st">&#39;goalMO&#39;</span>, position<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">40</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>], showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb18-61" title="61">    effector.addObject(<span class="st">&#39;RestShapeSpringsForceField&#39;</span>, points<span class="op">=</span><span class="dv">0</span>, angularStiffness<span class="op">=</span><span class="fl">1e5</span>, stiffness<span class="op">=</span><span class="fl">1e5</span>)</a>
-<a class="sourceLine" id="cb18-62" title="62">    effector.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>, compliance<span class="op">=</span><span class="st">&#39;1e-10  1e-10  0 0 1e-10  0 1e-10 &#39;</span>)</a>
-<a class="sourceLine" id="cb18-63" title="63"></a>
-<a class="sourceLine" id="cb18-64" title="64">    <span class="co"># Open maze planning from JSON file</span></a>
-<a class="sourceLine" id="cb18-65" title="65">    data <span class="op">=</span> json.load(<span class="bu">open</span>(<span class="st">&#39;mazeplanning.json&#39;</span>))</a>
-<a class="sourceLine" id="cb18-66" title="66">    effector.addObject(MazeController(effector, data[<span class="st">&quot;anglePlanningTable&quot;</span>], <span class="va">True</span>))</a>
-<a class="sourceLine" id="cb18-67" title="67"></a>
-<a class="sourceLine" id="cb18-68" title="68">    maze <span class="op">=</span> effector.addChild(Maze())</a>
-<a class="sourceLine" id="cb18-69" title="69">    maze.addObject(<span class="st">&quot;RigidMapping&quot;</span>, index<span class="op">=</span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb18-70" title="70"></a>
-<a class="sourceLine" id="cb18-71" title="71">    rootNode.addChild(Sphere())</a>
+<a class="sourceLine" id="cb18-51" title="51"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb18-52" title="52"></a>
+<a class="sourceLine" id="cb18-53" title="53">    rootNode.gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>]</a>
+<a class="sourceLine" id="cb18-54" title="54">    rootNode.dt<span class="op">=</span><span class="fl">0.01</span></a>
+<a class="sourceLine" id="cb18-55" title="55">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb18-56" title="56">    rootNode.addObject(<span class="st">&#39;VisualStyle&#39;</span>, displayFlags<span class="op">=</span>[<span class="st">&#39;showCollisionModels&#39;</span>, <span class="st">&#39;showBehavior&#39;</span>])</a>
+<a class="sourceLine" id="cb18-57" title="57">    rootNode.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb18-58" title="58"></a>
+<a class="sourceLine" id="cb18-59" title="59">    effector <span class="op">=</span> rootNode.addChild(<span class="st">&#39;Effector&#39;</span>)</a>
+<a class="sourceLine" id="cb18-60" title="60">    effector.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb18-61" title="61">    effector.addObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="dv">100</span>, threshold<span class="op">=</span><span class="fl">1e-5</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb18-62" title="62">    effector.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, name<span class="op">=</span><span class="st">&#39;goalMO&#39;</span>, position<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">40</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>], showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb18-63" title="63">    effector.addObject(<span class="st">&#39;RestShapeSpringsForceField&#39;</span>, points<span class="op">=</span><span class="dv">0</span>, angularStiffness<span class="op">=</span><span class="fl">1e5</span>, stiffness<span class="op">=</span><span class="fl">1e5</span>)</a>
+<a class="sourceLine" id="cb18-64" title="64">    effector.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>, compliance<span class="op">=</span><span class="st">&#39;1e-10  1e-10  0 0 1e-10  0 1e-10 &#39;</span>)</a>
+<a class="sourceLine" id="cb18-65" title="65"></a>
+<a class="sourceLine" id="cb18-66" title="66">    <span class="co"># Open maze planning from JSON file</span></a>
+<a class="sourceLine" id="cb18-67" title="67">    data <span class="op">=</span> json.load(<span class="bu">open</span>(<span class="st">&#39;mazeplanning.json&#39;</span>))</a>
+<a class="sourceLine" id="cb18-68" title="68">    effector.addObject(MazeController(effector, data[<span class="st">&quot;anglePlanningTable&quot;</span>], <span class="va">True</span>))</a>
+<a class="sourceLine" id="cb18-69" title="69"></a>
+<a class="sourceLine" id="cb18-70" title="70">    maze <span class="op">=</span> effector.addChild(Maze())</a>
+<a class="sourceLine" id="cb18-71" title="71">    maze.addObject(<span class="st">&quot;RigidMapping&quot;</span>, index<span class="op">=</span><span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb18-72" title="72"></a>
-<a class="sourceLine" id="cb18-73" title="73">    <span class="cf">return</span></a></code></pre></div>
+<a class="sourceLine" id="cb18-73" title="73">    rootNode.addChild(Sphere(withSolver<span class="op">=</span><span class="va">True</span>))</a>
+<a class="sourceLine" id="cb18-74" title="74"></a>
+<a class="sourceLine" id="cb18-75" title="75">    <span class="cf">return</span></a></code></pre></div>
 </div>
 </div>
 <h1 id="step-8.3-inverse-control-to-follow-a-predefined-motion-path">STEP 8.3: Inverse control to follow a predefined motion path</h1>
@@ -1613,151 +1615,138 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb19-13" title="13"><span class="kw">def</span> EffectorGoal(node, position):</a>
 <a class="sourceLine" id="cb19-14" title="14">    goal <span class="op">=</span> node.addChild(<span class="st">&#39;Goal&#39;</span>)</a>
 <a class="sourceLine" id="cb19-15" title="15">    goal.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
-<a class="sourceLine" id="cb19-16" title="16">    goal.addObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="dv">100</span>, threshold<span class="op">=</span><span class="fl">1e-5</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb19-16" title="16">    goal.addObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="dv">100</span>, threshold<span class="op">=</span><span class="fl">1e-12</span>, tolerance<span class="op">=</span><span class="fl">1e-10</span>)</a>
 <a class="sourceLine" id="cb19-17" title="17">    goal.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;goalMO&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, position<span class="op">=</span>position<span class="op">+</span>[<span class="fl">0.</span>, <span class="fl">0.</span>, <span class="fl">0.</span>, <span class="fl">1.</span>], showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb19-18" title="18">    goal.addObject(<span class="st">&#39;RestShapeSpringsForceField&#39;</span>, points<span class="op">=</span><span class="dv">0</span>, angularStiffness<span class="op">=</span><span class="fl">1e5</span>, stiffness<span class="op">=</span><span class="fl">1e5</span>)</a>
-<a class="sourceLine" id="cb19-19" title="19"></a>
-<a class="sourceLine" id="cb19-20" title="20">    spheres <span class="op">=</span> goal.addChild(<span class="st">&#39;Spheres&#39;</span>)</a>
-<a class="sourceLine" id="cb19-21" title="21">    spheres.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;mo&#39;</span>, position<span class="op">=</span>[[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],  [<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">0</span>],   [<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">0</span>],   [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">10</span>]])</a>
-<a class="sourceLine" id="cb19-22" title="22">    spheres.addObject(<span class="st">&#39;RigidMapping&#39;</span>)</a>
-<a class="sourceLine" id="cb19-23" title="23"></a>
-<a class="sourceLine" id="cb19-24" title="24">    goal.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb19-25" title="25">    <span class="cf">return</span> goal</a>
+<a class="sourceLine" id="cb19-19" title="19">    goal.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb19-20" title="20">    <span class="cf">return</span> goal</a>
+<a class="sourceLine" id="cb19-21" title="21"></a>
+<a class="sourceLine" id="cb19-22" title="22"></a>
+<a class="sourceLine" id="cb19-23" title="23"><span class="kw">class</span> GoalController(Sofa.Core.Controller):</a>
+<a class="sourceLine" id="cb19-24" title="24">    <span class="co">&quot;&quot;&quot;This controller moves the goal position when the inverse control is activated</span></a>
+<a class="sourceLine" id="cb19-25" title="25"><span class="co">    &quot;&quot;&quot;</span></a>
 <a class="sourceLine" id="cb19-26" title="26"></a>
-<a class="sourceLine" id="cb19-27" title="27"></a>
-<a class="sourceLine" id="cb19-28" title="28"><span class="kw">class</span> GoalController(Sofa.Core.Controller):</a>
-<a class="sourceLine" id="cb19-29" title="29">    <span class="co">&quot;&quot;&quot;This controller moves the goal position when the inverse control is activated</span></a>
-<a class="sourceLine" id="cb19-30" title="30"><span class="co">    &quot;&quot;&quot;</span></a>
-<a class="sourceLine" id="cb19-31" title="31"></a>
-<a class="sourceLine" id="cb19-32" title="32">    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</a>
-<a class="sourceLine" id="cb19-33" title="33">        Sofa.Core.Controller.<span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</a>
-<a class="sourceLine" id="cb19-34" title="34">        <span class="va">self</span>.name <span class="op">=</span> <span class="st">&quot;GoalController&quot;</span></a>
-<a class="sourceLine" id="cb19-35" title="35">        <span class="va">self</span>.activated <span class="op">=</span> <span class="va">False</span></a>
-<a class="sourceLine" id="cb19-36" title="36">        <span class="va">self</span>.time <span class="op">=</span> <span class="dv">0</span></a>
-<a class="sourceLine" id="cb19-37" title="37">        <span class="va">self</span>.dy <span class="op">=</span> <span class="fl">0.1</span></a>
-<a class="sourceLine" id="cb19-38" title="38">        goalNode <span class="op">=</span> args[<span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb19-39" title="39">        <span class="va">self</span>.mo <span class="op">=</span> goalNode.goalMO</a>
-<a class="sourceLine" id="cb19-40" title="40">        <span class="va">self</span>.dt <span class="op">=</span> goalNode.getRoot().dt.value</a>
-<a class="sourceLine" id="cb19-41" title="41"></a>
-<a class="sourceLine" id="cb19-42" title="42">    <span class="kw">def</span> onKeyPressed(<span class="va">self</span>, key):</a>
-<a class="sourceLine" id="cb19-43" title="43">        <span class="cf">if</span> key <span class="op">==</span> Key.I:</a>
-<a class="sourceLine" id="cb19-44" title="44">            <span class="va">self</span>.activated <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb19-27" title="27">    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</a>
+<a class="sourceLine" id="cb19-28" title="28">        Sofa.Core.Controller.<span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</a>
+<a class="sourceLine" id="cb19-29" title="29">        <span class="va">self</span>.name <span class="op">=</span> <span class="st">&quot;GoalController&quot;</span></a>
+<a class="sourceLine" id="cb19-30" title="30">        <span class="va">self</span>.activated <span class="op">=</span> <span class="va">False</span></a>
+<a class="sourceLine" id="cb19-31" title="31">        <span class="va">self</span>.time <span class="op">=</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb19-32" title="32">        <span class="va">self</span>.dy <span class="op">=</span> <span class="fl">0.1</span></a>
+<a class="sourceLine" id="cb19-33" title="33">        goalNode <span class="op">=</span> args[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb19-34" title="34">        <span class="va">self</span>.mo <span class="op">=</span> goalNode.goalMO</a>
+<a class="sourceLine" id="cb19-35" title="35">        <span class="va">self</span>.dt <span class="op">=</span> goalNode.getRoot().dt.value</a>
+<a class="sourceLine" id="cb19-36" title="36"></a>
+<a class="sourceLine" id="cb19-37" title="37">    <span class="kw">def</span> onKeyPressed(<span class="va">self</span>, key):</a>
+<a class="sourceLine" id="cb19-38" title="38">        <span class="cf">if</span> key <span class="op">==</span> Key.I:</a>
+<a class="sourceLine" id="cb19-39" title="39">            <span class="va">self</span>.activated <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb19-40" title="40"></a>
+<a class="sourceLine" id="cb19-41" title="41">    <span class="kw">def</span> onAnimateBeginEvent(<span class="va">self</span>, e):</a>
+<a class="sourceLine" id="cb19-42" title="42"></a>
+<a class="sourceLine" id="cb19-43" title="43">        <span class="cf">if</span> <span class="va">self</span>.activated:</a>
+<a class="sourceLine" id="cb19-44" title="44">            <span class="va">self</span>.time <span class="op">=</span> <span class="va">self</span>.time<span class="op">+</span><span class="va">self</span>.dt</a>
 <a class="sourceLine" id="cb19-45" title="45"></a>
-<a class="sourceLine" id="cb19-46" title="46">    <span class="kw">def</span> onAnimateBeginEvent(<span class="va">self</span>, e):</a>
-<a class="sourceLine" id="cb19-47" title="47"></a>
-<a class="sourceLine" id="cb19-48" title="48">        <span class="cf">if</span> <span class="va">self</span>.activated:</a>
-<a class="sourceLine" id="cb19-49" title="49">            <span class="va">self</span>.time <span class="op">=</span> <span class="va">self</span>.time<span class="op">+</span><span class="va">self</span>.dt</a>
-<a class="sourceLine" id="cb19-50" title="50"></a>
-<a class="sourceLine" id="cb19-51" title="51">        <span class="cf">if</span> <span class="va">self</span>.time <span class="op">&gt;=</span> <span class="dv">1</span>:</a>
-<a class="sourceLine" id="cb19-52" title="52">            <span class="va">self</span>.time <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></a>
-<a class="sourceLine" id="cb19-53" title="53">            <span class="va">self</span>.dy <span class="op">=</span> <span class="op">-</span><span class="va">self</span>.dy</a>
+<a class="sourceLine" id="cb19-46" title="46">        <span class="cf">if</span> <span class="va">self</span>.time <span class="op">&gt;=</span> <span class="dv">1</span>:</a>
+<a class="sourceLine" id="cb19-47" title="47">            <span class="va">self</span>.time <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb19-48" title="48">            <span class="va">self</span>.dy <span class="op">=</span> <span class="op">-</span><span class="va">self</span>.dy</a>
+<a class="sourceLine" id="cb19-49" title="49"></a>
+<a class="sourceLine" id="cb19-50" title="50">        pos <span class="op">=</span> [<span class="va">self</span>.mo.position[<span class="dv">0</span>][<span class="dv">0</span>], <span class="va">self</span>.mo.position[<span class="dv">0</span>][<span class="dv">1</span>], <span class="va">self</span>.mo.position[<span class="dv">0</span>][<span class="dv">2</span>]]</a>
+<a class="sourceLine" id="cb19-51" title="51">        pos[<span class="dv">1</span>] <span class="op">+=</span> <span class="va">self</span>.dy</a>
+<a class="sourceLine" id="cb19-52" title="52">        <span class="va">self</span>.mo.position <span class="op">=</span> [[pos[<span class="dv">0</span>], pos[<span class="dv">1</span>], pos[<span class="dv">2</span>], <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb19-53" title="53"></a>
 <a class="sourceLine" id="cb19-54" title="54"></a>
-<a class="sourceLine" id="cb19-55" title="55">        pos <span class="op">=</span> [<span class="va">self</span>.mo.position[<span class="dv">0</span>][<span class="dv">0</span>], <span class="va">self</span>.mo.position[<span class="dv">0</span>][<span class="dv">1</span>], <span class="va">self</span>.mo.position[<span class="dv">0</span>][<span class="dv">2</span>]]</a>
-<a class="sourceLine" id="cb19-56" title="56">        pos[<span class="dv">1</span>] <span class="op">+=</span> <span class="va">self</span>.dy</a>
-<a class="sourceLine" id="cb19-57" title="57">        <span class="va">self</span>.mo.position <span class="op">=</span> [[pos[<span class="dv">0</span>], pos[<span class="dv">1</span>], pos[<span class="dv">2</span>], <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb19-58" title="58"></a>
-<a class="sourceLine" id="cb19-59" title="59"></a>
-<a class="sourceLine" id="cb19-60" title="60"><span class="kw">def</span> addInverseComponents(arms, freecenter, goalNode, use_orientation):</a>
-<a class="sourceLine" id="cb19-61" title="61">    actuators<span class="op">=</span>[]</a>
-<a class="sourceLine" id="cb19-62" title="62">    <span class="cf">for</span> arm <span class="kw">in</span> arms:</a>
-<a class="sourceLine" id="cb19-63" title="63">        actuator <span class="op">=</span> arm.ServoMotor.Articulation.addChild(<span class="st">&#39;actuator&#39;</span>)</a>
-<a class="sourceLine" id="cb19-64" title="64">        actuators.append(actuator)</a>
-<a class="sourceLine" id="cb19-65" title="65">        actuator.activated <span class="op">=</span> <span class="va">False</span></a>
-<a class="sourceLine" id="cb19-66" title="66">        actuator.addObject(<span class="st">&#39;JointActuator&#39;</span>, name<span class="op">=</span><span class="st">&#39;JointActuator&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec1&#39;</span>,</a>
-<a class="sourceLine" id="cb19-67" title="67">                                                index<span class="op">=</span><span class="dv">0</span>, applyForce<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb19-68" title="68">                                                minAngle<span class="op">=-</span><span class="fl">1.5</span>, maxAngle<span class="op">=</span><span class="fl">1.5</span>, maxAngleVariation<span class="op">=</span><span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb19-69" title="69"></a>
-<a class="sourceLine" id="cb19-70" title="70">    effector <span class="op">=</span> freecenter.addChild(<span class="st">&quot;Effector&quot;</span>)</a>
-<a class="sourceLine" id="cb19-71" title="71">    effector.activated <span class="op">=</span> <span class="va">False</span></a>
-<a class="sourceLine" id="cb19-72" title="72">    actuators.append(effector)</a>
-<a class="sourceLine" id="cb19-73" title="73">    <span class="cf">if</span> goalNode <span class="kw">is</span> <span class="va">None</span>:</a>
-<a class="sourceLine" id="cb19-74" title="74">        effector.addObject(<span class="st">&#39;PositionEffector&#39;</span>, name<span class="op">=</span><span class="st">&#39;effector&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>,</a>
-<a class="sourceLine" id="cb19-75" title="75">                               useDirections<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</a>
-<a class="sourceLine" id="cb19-76" title="76">                               indices<span class="op">=</span><span class="dv">0</span>, effectorGoal<span class="op">=</span>[<span class="dv">10</span>, <span class="dv">40</span>, <span class="dv">0</span>], limitShiftToTarget<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb19-77" title="77">                               maxShiftToTarget<span class="op">=</span><span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb19-78" title="78">    <span class="cf">elif</span> use_orientation:</a>
-<a class="sourceLine" id="cb19-79" title="79">        effector.addObject(<span class="st">&#39;PositionEffector&#39;</span>, name<span class="op">=</span><span class="st">&#39;effectorY&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, weight<span class="op">=</span><span class="fl">1.</span>,</a>
-<a class="sourceLine" id="cb19-80" title="80">                               useDirections<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</a>
-<a class="sourceLine" id="cb19-81" title="81">                               indices<span class="op">=</span><span class="dv">0</span>, effectorGoal<span class="op">=</span>goalNode.goalMO.getLinkPath() <span class="op">+</span> <span class="st">&#39;.position&#39;</span>)</a>
-<a class="sourceLine" id="cb19-82" title="82">        effector.addObject(<span class="st">&#39;PositionEffector&#39;</span>, name<span class="op">=</span><span class="st">&#39;effectorRXRZ&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, weight<span class="op">=</span><span class="fl">1000.</span>,</a>
-<a class="sourceLine" id="cb19-83" title="83">                           useDirections<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</a>
-<a class="sourceLine" id="cb19-84" title="84">                           indices<span class="op">=</span><span class="dv">0</span>, effectorGoal<span class="op">=</span>goalNode.goalMO.getLinkPath() <span class="op">+</span> <span class="st">&#39;.position&#39;</span>)</a>
-<a class="sourceLine" id="cb19-85" title="85">    <span class="cf">else</span>:</a>
-<a class="sourceLine" id="cb19-86" title="86">        effector.addObject(<span class="st">&#39;PositionEffector&#39;</span>, name<span class="op">=</span><span class="st">&#39;effector&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>,</a>
-<a class="sourceLine" id="cb19-87" title="87">                               useDirections<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</a>
-<a class="sourceLine" id="cb19-88" title="88">                               indices<span class="op">=</span><span class="dv">0</span>, effectorGoal<span class="op">=</span>goalNode.goalMO.getLinkPath() <span class="op">+</span> <span class="st">&#39;.position&#39;</span>,</a>
-<a class="sourceLine" id="cb19-89" title="89">                               limitShiftToTarget<span class="op">=</span><span class="va">True</span>, maxShiftToTarget<span class="op">=</span><span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb19-90" title="90">    <span class="cf">return</span> actuators</a>
-<a class="sourceLine" id="cb19-91" title="91"></a>
-<a class="sourceLine" id="cb19-92" title="92"></a>
-<a class="sourceLine" id="cb19-93" title="93"><span class="kw">def</span> createScene(rootNode):</a>
-<a class="sourceLine" id="cb19-94" title="94">    <span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
-<a class="sourceLine" id="cb19-95" title="95">    <span class="im">import</span> json</a>
-<a class="sourceLine" id="cb19-96" title="96">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>, plugins<span class="op">=</span>[<span class="st">&quot;SofaSparseSolver&quot;</span>, <span class="st">&quot;SofaOpenglVisual&quot;</span>, <span class="st">&quot;SofaSimpleFem&quot;</span>, <span class="st">&quot;SoftRobots&quot;</span>,<span class="st">&quot;SoftRobots.Inverse&quot;</span>, <span class="st">&#39;SofaBoundaryCondition&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>, <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaMiscMapping&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>, <span class="st">&#39;SofaGeneralAnimationLoop&#39;</span>, <span class="st">&#39;SofaGeneralEngine&#39;</span>])</a>
-<a class="sourceLine" id="cb19-97" title="97">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb19-98" title="98">    scene.removeObject(scene.GenericConstraintSolver)</a>
-<a class="sourceLine" id="cb19-99" title="99"></a>
-<a class="sourceLine" id="cb19-100" title="100">    <span class="co"># Choose here to control position or orientation of end-effector</span></a>
-<a class="sourceLine" id="cb19-101" title="101">    orientation <span class="op">=</span> <span class="va">True</span></a>
-<a class="sourceLine" id="cb19-102" title="102"></a>
-<a class="sourceLine" id="cb19-103" title="103">    <span class="cf">if</span> orientation:</a>
-<a class="sourceLine" id="cb19-104" title="104">        <span class="co"># inverse in orientation</span></a>
-<a class="sourceLine" id="cb19-105" title="105">        goalNode <span class="op">=</span> EffectorGoal(rootNode, [<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">50</span>])</a>
-<a class="sourceLine" id="cb19-106" title="106">    <span class="cf">else</span>:</a>
-<a class="sourceLine" id="cb19-107" title="107">        <span class="co"># inverse in position</span></a>
-<a class="sourceLine" id="cb19-108" title="108">        goalNode <span class="op">=</span> EffectorGoal(rootNode, [<span class="dv">0</span>, <span class="dv">40</span>, <span class="dv">0</span>])</a>
-<a class="sourceLine" id="cb19-109" title="109"></a>
-<a class="sourceLine" id="cb19-110" title="110">    <span class="co"># Open maze planning from JSON file</span></a>
-<a class="sourceLine" id="cb19-111" title="111">    data <span class="op">=</span> json.load(<span class="bu">open</span>(<span class="st">&#39;mazeplanning.json&#39;</span>))</a>
-<a class="sourceLine" id="cb19-112" title="112">    goalNode.addObject(MazeController(goalNode, data[<span class="st">&quot;anglePlanningTable&quot;</span>], <span class="va">False</span>))</a>
-<a class="sourceLine" id="cb19-113" title="113"></a>
-<a class="sourceLine" id="cb19-114" title="114">    <span class="co"># Adding contact handling</span></a>
-<a class="sourceLine" id="cb19-115" title="115">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb19-116" title="116">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb19-117" title="117"></a>
-<a class="sourceLine" id="cb19-118" title="118">    <span class="co"># Inverse Solver</span></a>
-<a class="sourceLine" id="cb19-119" title="119">    scene.addObject(<span class="st">&#39;QPInverseProblemSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;QP&#39;</span>, printLog<span class="op">=</span><span class="va">False</span>)</a>
-<a class="sourceLine" id="cb19-120" title="120">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb19-121" title="121">    scene.Simulation.TimeIntegrationSchema.rayleighStiffness <span class="op">=</span> <span class="fl">0.01</span></a>
-<a class="sourceLine" id="cb19-122" title="122">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior showCollisionModels&quot;</span></a>
-<a class="sourceLine" id="cb19-123" title="123"></a>
-<a class="sourceLine" id="cb19-124" title="124">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
-<a class="sourceLine" id="cb19-125" title="125">    actuators <span class="op">=</span> addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)</a>
-<a class="sourceLine" id="cb19-126" title="126">    maze <span class="op">=</span> tripod.RigidifiedStructure.FreeCenter.addChild(Maze())</a>
-<a class="sourceLine" id="cb19-127" title="127">    maze.addObject(<span class="st">&quot;RigidMapping&quot;</span>, index<span class="op">=</span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb19-128" title="128">    <span class="co"># rootNode.addChild(Sphere())</span></a>
-<a class="sourceLine" id="cb19-129" title="129"></a>
-<a class="sourceLine" id="cb19-130" title="130">    <span class="co"># Serial port bridge</span></a>
-<a class="sourceLine" id="cb19-131" title="131">    serial <span class="op">=</span> SerialPortBridgeGeneric(rootNode)</a>
-<a class="sourceLine" id="cb19-132" title="132"></a>
-<a class="sourceLine" id="cb19-133" title="133">    <span class="co"># The real robot receives data from the 3 actuators</span></a>
-<a class="sourceLine" id="cb19-134" title="134">    <span class="co"># serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))</span></a>
-<a class="sourceLine" id="cb19-135" title="135">    invCtr <span class="op">=</span> scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,</a>
-<a class="sourceLine" id="cb19-136" title="136">                                                tripod, serial,</a>
-<a class="sourceLine" id="cb19-137" title="137">                                                [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
-<a class="sourceLine" id="cb19-138" title="138"></a>
-<a class="sourceLine" id="cb19-139" title="139">    <span class="co"># The regular controller that is being used for the last 2 steps but with small additions</span></a>
-<a class="sourceLine" id="cb19-140" title="140">    scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))</a>
-<a class="sourceLine" id="cb19-141" title="141"></a>
-<a class="sourceLine" id="cb19-142" title="142">    scene.Simulation.addChild(tripod)</a>
-<a class="sourceLine" id="cb19-143" title="143"></a>
-<a class="sourceLine" id="cb19-144" title="144">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb19-145" title="145">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
-<a class="sourceLine" id="cb19-146" title="146">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb19-147" title="147">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
-<a class="sourceLine" id="cb19-148" title="148">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
-<a class="sourceLine" id="cb19-149" title="149">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb19-150" title="150">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb19-151" title="151">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
-<a class="sourceLine" id="cb19-152" title="152"></a>
-<a class="sourceLine" id="cb19-153" title="153">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
-<a class="sourceLine" id="cb19-154" title="154">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb19-155" title="155">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
-<a class="sourceLine" id="cb19-156" title="156">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
-<a class="sourceLine" id="cb19-157" title="157">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb19-158" title="158">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb19-159" title="159">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb19-160" title="160">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
+<a class="sourceLine" id="cb19-55" title="55"><span class="kw">def</span> addInverseComponents(arms, freecenter, goalNode, use_orientation):</a>
+<a class="sourceLine" id="cb19-56" title="56">    actuators<span class="op">=</span>[]</a>
+<a class="sourceLine" id="cb19-57" title="57">    <span class="cf">for</span> arm <span class="kw">in</span> arms:</a>
+<a class="sourceLine" id="cb19-58" title="58">        actuator <span class="op">=</span> arm.ServoMotor.Articulation.addChild(<span class="st">&#39;actuator&#39;</span>)</a>
+<a class="sourceLine" id="cb19-59" title="59">        actuators.append(actuator)</a>
+<a class="sourceLine" id="cb19-60" title="60">        actuator.activated <span class="op">=</span> <span class="va">False</span></a>
+<a class="sourceLine" id="cb19-61" title="61">        actuator.addObject(<span class="st">&#39;JointActuator&#39;</span>, name<span class="op">=</span><span class="st">&#39;JointActuator&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec1&#39;</span>,</a>
+<a class="sourceLine" id="cb19-62" title="62">                                                index<span class="op">=</span><span class="dv">0</span>, applyForce<span class="op">=</span><span class="va">True</span>,</a>
+<a class="sourceLine" id="cb19-63" title="63">                                                minAngle<span class="op">=-</span><span class="fl">1.0</span>, maxAngle<span class="op">=</span><span class="fl">1.0</span>, maxAngleVariation<span class="op">=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb19-64" title="64"></a>
+<a class="sourceLine" id="cb19-65" title="65">    effector <span class="op">=</span> freecenter.addChild(<span class="st">&quot;Effector&quot;</span>)</a>
+<a class="sourceLine" id="cb19-66" title="66">    effector.activated <span class="op">=</span> <span class="va">False</span></a>
+<a class="sourceLine" id="cb19-67" title="67">    actuators.append(effector)</a>
+<a class="sourceLine" id="cb19-68" title="68">    <span class="cf">if</span> goalNode <span class="kw">is</span> <span class="va">None</span>:</a>
+<a class="sourceLine" id="cb19-69" title="69">        effector.addObject(<span class="st">&#39;PositionEffector&#39;</span>, name<span class="op">=</span><span class="st">&#39;effector&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb19-70" title="70">                               useDirections<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</a>
+<a class="sourceLine" id="cb19-71" title="71">                               indices<span class="op">=</span><span class="dv">0</span>, effectorGoal<span class="op">=</span>[<span class="dv">10</span>, <span class="dv">40</span>, <span class="dv">0</span>], limitShiftToTarget<span class="op">=</span><span class="va">True</span>,</a>
+<a class="sourceLine" id="cb19-72" title="72">                               maxShiftToTarget<span class="op">=</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb19-73" title="73">    <span class="cf">elif</span> use_orientation:</a>
+<a class="sourceLine" id="cb19-74" title="74">        effector.addObject(<span class="st">&#39;PositionEffector&#39;</span>, name<span class="op">=</span><span class="st">&#39;effectorY&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb19-75" title="75">                            useDirections<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</a>
+<a class="sourceLine" id="cb19-76" title="76">                            indices<span class="op">=</span><span class="dv">0</span>, effectorGoal<span class="op">=</span>goalNode.goalMO.getLinkPath() <span class="op">+</span> <span class="st">&#39;.position&#39;</span>,</a>
+<a class="sourceLine" id="cb19-77" title="77">                            limitShiftToTarget<span class="op">=</span><span class="va">True</span>, maxShiftToTarget<span class="op">=</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb19-78" title="78">        effector.addObject(<span class="st">&#39;PositionEffector&#39;</span>, name<span class="op">=</span><span class="st">&#39;effectorRXRZ&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, </a>
+<a class="sourceLine" id="cb19-79" title="79">                            useDirections<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb19-80" title="80">                            indices<span class="op">=</span><span class="dv">0</span>, effectorGoal<span class="op">=</span>goalNode.goalMO.getLinkPath() <span class="op">+</span> <span class="st">&#39;.position&#39;</span>)</a>
+<a class="sourceLine" id="cb19-81" title="81">    <span class="cf">else</span>:</a>
+<a class="sourceLine" id="cb19-82" title="82">        effector.addObject(<span class="st">&#39;PositionEffector&#39;</span>, name<span class="op">=</span><span class="st">&#39;effector&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb19-83" title="83">                               useDirections<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</a>
+<a class="sourceLine" id="cb19-84" title="84">                               indices<span class="op">=</span><span class="dv">0</span>, effectorGoal<span class="op">=</span>goalNode.goalMO.getLinkPath() <span class="op">+</span> <span class="st">&#39;.position&#39;</span>,</a>
+<a class="sourceLine" id="cb19-85" title="85">                               limitShiftToTarget<span class="op">=</span><span class="va">True</span>, maxShiftToTarget<span class="op">=</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb19-86" title="86">    <span class="cf">return</span> actuators</a>
+<a class="sourceLine" id="cb19-87" title="87"></a>
+<a class="sourceLine" id="cb19-88" title="88"></a>
+<a class="sourceLine" id="cb19-89" title="89"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb19-90" title="90">    <span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
+<a class="sourceLine" id="cb19-91" title="91">    <span class="im">import</span> json</a>
+<a class="sourceLine" id="cb19-92" title="92">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="dv">-9810</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>, plugins<span class="op">=</span>[<span class="st">&quot;SofaSparseSolver&quot;</span>, <span class="st">&quot;SofaOpenglVisual&quot;</span>, <span class="st">&quot;SofaSimpleFem&quot;</span>, <span class="st">&quot;SoftRobots&quot;</span>,<span class="st">&quot;SoftRobots.Inverse&quot;</span>, <span class="st">&#39;SofaBoundaryCondition&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>, <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaMiscMapping&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>, <span class="st">&#39;SofaGeneralAnimationLoop&#39;</span>, <span class="st">&#39;SofaGeneralEngine&#39;</span>])</a>
+<a class="sourceLine" id="cb19-93" title="93">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb19-94" title="94">    scene.removeObject(scene.GenericConstraintSolver)</a>
+<a class="sourceLine" id="cb19-95" title="95"></a>
+<a class="sourceLine" id="cb19-96" title="96">    goalNode <span class="op">=</span> EffectorGoal(rootNode, [<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb19-97" title="97"></a>
+<a class="sourceLine" id="cb19-98" title="98">    <span class="co"># Open maze planning from JSON file</span></a>
+<a class="sourceLine" id="cb19-99" title="99">    data <span class="op">=</span> json.load(<span class="bu">open</span>(<span class="st">&#39;mazeplanning.json&#39;</span>))</a>
+<a class="sourceLine" id="cb19-100" title="100">    goalNode.addObject(MazeController(goalNode, data[<span class="st">&quot;anglePlanningTable&quot;</span>], <span class="va">False</span>))</a>
+<a class="sourceLine" id="cb19-101" title="101"></a>
+<a class="sourceLine" id="cb19-102" title="102">    <span class="co"># Adding contact handling</span></a>
+<a class="sourceLine" id="cb19-103" title="103">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb19-104" title="104">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb19-105" title="105"></a>
+<a class="sourceLine" id="cb19-106" title="106">    <span class="co"># Inverse Solver</span></a>
+<a class="sourceLine" id="cb19-107" title="107">    scene.addObject(<span class="st">&#39;QPInverseProblemSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;QP&#39;</span>, printLog<span class="op">=</span><span class="va">False</span>, epsilon<span class="op">=</span><span class="fl">0.01</span>)</a>
+<a class="sourceLine" id="cb19-108" title="108">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb19-109" title="109">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior showCollisionModels&quot;</span></a>
+<a class="sourceLine" id="cb19-110" title="110"></a>
+<a class="sourceLine" id="cb19-111" title="111">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
+<a class="sourceLine" id="cb19-112" title="112">    actuators <span class="op">=</span> addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, <span class="va">True</span>)</a>
+<a class="sourceLine" id="cb19-113" title="113">    maze <span class="op">=</span> tripod.RigidifiedStructure.FreeCenter.addChild(Maze())</a>
+<a class="sourceLine" id="cb19-114" title="114">    maze.addObject(<span class="st">&quot;RigidMapping&quot;</span>, index<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb19-115" title="115">    scene.Simulation.addChild(Sphere())</a>
+<a class="sourceLine" id="cb19-116" title="116"></a>
+<a class="sourceLine" id="cb19-117" title="117">    <span class="co"># Serial port bridge</span></a>
+<a class="sourceLine" id="cb19-118" title="118">    serial <span class="op">=</span> SerialPortBridgeGeneric(rootNode)</a>
+<a class="sourceLine" id="cb19-119" title="119"></a>
+<a class="sourceLine" id="cb19-120" title="120">    <span class="co"># The real robot receives data from the 3 actuators</span></a>
+<a class="sourceLine" id="cb19-121" title="121">    <span class="co"># serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))</span></a>
+<a class="sourceLine" id="cb19-122" title="122">    invCtr <span class="op">=</span> scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,</a>
+<a class="sourceLine" id="cb19-123" title="123">                                                tripod, serial,</a>
+<a class="sourceLine" id="cb19-124" title="124">                                                [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
+<a class="sourceLine" id="cb19-125" title="125"></a>
+<a class="sourceLine" id="cb19-126" title="126">    <span class="co"># The regular controller that is being used for the last 2 steps but with small additions</span></a>
+<a class="sourceLine" id="cb19-127" title="127">    scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))</a>
+<a class="sourceLine" id="cb19-128" title="128"></a>
+<a class="sourceLine" id="cb19-129" title="129">    scene.Simulation.addChild(tripod)</a>
+<a class="sourceLine" id="cb19-130" title="130"></a>
+<a class="sourceLine" id="cb19-131" title="131">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
+<a class="sourceLine" id="cb19-132" title="132">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb19-133" title="133">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb19-134" title="134">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
+<a class="sourceLine" id="cb19-135" title="135">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb19-136" title="136">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb19-137" title="137">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb19-138" title="138">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
+<a class="sourceLine" id="cb19-139" title="139"></a>
+<a class="sourceLine" id="cb19-140" title="140">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
+<a class="sourceLine" id="cb19-141" title="141">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb19-142" title="142">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
+<a class="sourceLine" id="cb19-143" title="143">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
+<a class="sourceLine" id="cb19-144" title="144">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb19-145" title="145">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb19-146" title="146">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
+<a class="sourceLine" id="cb19-147" title="147">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
 </div>
 </div>
 <h1 id="conclusion">Conclusion</h1>

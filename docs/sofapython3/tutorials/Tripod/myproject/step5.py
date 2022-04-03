@@ -5,28 +5,17 @@ The controller will connect user actions to the simulated behaviour.
 """
 import Sofa
 from stlib3.scene import Scene                   #< Prefab for the scene
-from splib3.constants import Key                 #< Constants for keycode
 from tripod import Tripod                        #< Prefab for the Tripod
 from tripodcontroller import TripodController    #< Implementation of a controller that modify the Tripod
 
-#class MyController(Sofa.Core.Controller):
-    #def __init__(self, *args, **kwargs):
+class MyController(Sofa.Core.Controller):
+    def __init__(self, *args, **kwargs):
         # These are needed (and the normal way to override from a python class)
-        #Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        #self.actuators = kwargs.get("actuators", [])
-        
-    #def onEvent(self, event):
-    #    print("event ", event)
-    
-    #def onKeypressedEvent(self, event):
-        #key = event["key"]
-        #if key == Key.plus:            
-        #    for arm in self.actuators:
-        #        arm.angleIn.value += 0.1
-        #elif key == Key.minus:            
-        #    for arm in self.actuators:
-        #        arm.angleIn.value -= 0.1
-                
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
+
+        def onKeypressedEvent(self, key):
+            print("Key Pressed")
+
 def createScene(rootNode):
 
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=["SofaSparseSolver",'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
@@ -41,11 +30,7 @@ def createScene(rootNode):
 
     tripod = Tripod()
     scene.Modelling.addChild(tripod)
-    #scene.Modelling.addObject(TripodController(name="TripodController",
-    #actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
-    
-    #scene.Modelling.addObject(MyController(name="react-to-keypressed"))
-    
+    scene.Modelling.addObject(TripodController(name="TripodController",actuators=[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
     scene.Simulation.addChild(tripod)
 
     # Temporary additions to have the system correctly built in SOFA

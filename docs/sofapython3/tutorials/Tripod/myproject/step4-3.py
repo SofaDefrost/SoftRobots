@@ -12,6 +12,7 @@ from actuatedarm import ActuatedArm
 from elasticbody import ElasticBody
 from blueprint import Blueprint
 
+
 def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
     def __getTransform(index, numstep, angleShift, radius, dist):
         fi = float(index)
@@ -80,7 +81,6 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
 def createScene(rootNode):
     from splib3.animation import animate
     from stlib3.scene import Scene
-    from fixingbox import FixingBox
     import math
 
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False,

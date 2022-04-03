@@ -4,9 +4,7 @@ from splib3.numerics import getOrientedBoxFromTransform
 
 
 def FixingBox(parent, target, name='FixingBox',
-              translation=[0.0, 0.0, 0.0], 
-              eulerRotation=[0.0, 0.0, 0.0], 
-              scale=[1.0, 1.0, 1.0]):
+              translation=[0.0, 0.0, 0.0], eulerRotation=[0.0, 0.0, 0.0], scale=[1.0, 1.0, 1.0]):
         '''Fix a set of 'dofs' according to a translation & orientation'''
 
         ob = getOrientedBoxFromTransform(translation=translation, eulerRotation=eulerRotation, scale=scale)
@@ -15,10 +13,9 @@ def FixingBox(parent, target, name='FixingBox',
         self.addObject('BoxROI',
                                orientedBox=ob,
                                name='BoxROI',
-                               position=[], 
+                               position=target.dofs.getData('rest_position').getLinkPath(),
                                drawBoxes=False)
 
-        self.BoxROI.position.setParent(target.dofs.getData('rest_position'))
         c = self.addChild('Constraint')
         target.addChild(c)
 
