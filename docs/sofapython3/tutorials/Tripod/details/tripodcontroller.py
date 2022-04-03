@@ -4,6 +4,7 @@ from splib3.animation import animate
 from splib3.constants import Key
 from stlib3.scene import Scene
 from tripod import Tripod
+import math
 
 
 def dumpPosition(fields, filename):
