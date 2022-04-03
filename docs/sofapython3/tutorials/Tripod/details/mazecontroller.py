@@ -64,17 +64,13 @@ class MazeController(Sofa.Core.Controller):
         self.theta_z = interpolFactor * self.tableKeyPoints[self.currentKey][3] + (1 - interpolFactor) * self.tableKeyPoints[self.currentKey + 1][3]
 
     def onAnimateBeginEvent(self, e):
-
         dt = self.goalNode.getRoot().dt.value
         if self.activated:
             self.time = self.time + dt
             self.defineTrajectoryByKeyPoint(self.time)
-            pos = [self.mo.position[0][0],
+            pos = [0.0,
                    self.y + self.dy,
-                   self.mo.position[0][2]]
+                   0.0]
             quat = Quat.createFromEuler([self.theta_x, 0., self.theta_z])
             self.mo.rest_position = [[pos[0], pos[1], pos[2], quat[0], quat[1], quat[2], quat[3]]]
-
-
-
 

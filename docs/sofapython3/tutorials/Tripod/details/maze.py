@@ -10,7 +10,7 @@ class Maze(Sofa.Prefab):
     properties = [
         {'name':'name',           'type':'string', 'help':'Node name',                  'default':'Maze'},
         {'name':'index',          'type':'int', 'help':'index of rigid to attach to',   'default':0},
-        {'name':'translation',    'type':'Vec3d', 'help':'',                            'default':[-50,5,50]},
+        {'name':'translation',    'type':'Vec3d', 'help':'',                            'default':[0,5,0]},
         {'name':'rotation',       'type':'Vec3d', 'help':'',                            'default':[-90,0,0]}
     ]
 
@@ -18,7 +18,7 @@ class Maze(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
-        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze_4_coarse.stl",
+        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze_12_coarse.stl",
                        translation=self.translation.value, rotation=self.rotation.value)
         self.addObject("MeshTopology", src='@loader')
         self.addObject("MechanicalObject")
@@ -44,7 +44,7 @@ class Sphere(Sofa.Prefab):
             self.addObject('SparseLDLSolver')
             self.addObject('GenericConstraintCorrection')
         self.addObject("MechanicalObject", position=self.position.value)
-        self.addObject("UniformMass", totalMass=1e-3)
+        self.addObject("UniformMass", totalMass=1e-4)
         self.addObject('SphereCollisionModel', radius=2)
 
 
