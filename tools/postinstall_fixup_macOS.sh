@@ -1,4 +1,4 @@
-#!bash
+#!/bin/bash
 
 INSTALL_DIR="$1"
 
