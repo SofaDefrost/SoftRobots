@@ -88,13 +88,13 @@ class WholeGripperController(Sofa.Core.Controller):
         # Direct rotation
         elif e["key"] == "A":
             for i in range(3):
-                results = moveRestPos(self.dofs[i].rest_position.value, math.pi / 16, self.centerPosY, self.centerPosZ)
+                results = rotateRestPos(self.dofs[i].rest_position.value, math.pi / 16, self.centerPosY, self.centerPosZ)
                 self.dofs[i].rest_position.value = results
             self.rotAngle = self.rotAngle + math.pi/16
 
         # Indirect rotation
         elif e["key"] == "Q":
             for i in range(3):
-                results = moveRestPos(self.dofs[i].rest_position.value, -math.pi / 16, self.centerPosY, self.centerPosZ)
+                results = rotateRestPos(self.dofs[i].rest_position.value, -math.pi / 16, self.centerPosY, self.centerPosZ)
                 self.dofs[i].rest_position.value = results
             self.rotAngle = self.rotAngle - math.pi/16
