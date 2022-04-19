@@ -43,6 +43,8 @@ def createScene(rootNode):
     from stlib3.scene import MainHeader
     MainHeader(rootNode, plugins=["SoftRobots"])
     rootNode.VisualStyle.displayFlags = "showBehavior showCollisionModels"
+    rootNode.addObject('FreeMotionAnimationLoop')
+    rootNode.addObject('GenericConstraintSolver', tolerance=1e-5, maxIterations=100)
 
     Finger(rootNode)
 

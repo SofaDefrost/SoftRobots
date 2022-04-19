@@ -1,21 +1,24 @@
+# -*- coding: utf-8 -*-
 from stlib.physics.deformable import ElasticMaterialObject
 from stlib.physics.constraints import FixedBox
-from stlib.scene import Node 
-# -*- coding: utf-8 -*-
+from stlib.scene import Node
 from softrobots.actuators import PullingCable
 from splib.loaders import loadPointListFromFile
 
 import Sofa
+
+
 class FingerController(Sofa.PythonScriptController):
     def __init__(self, node, cable):
         self.cableconstraintvalue = cable.getObject("CableConstraint").findData('value')
         self.name = "FingerController"
 
     def onKeyPressed(self,c):
-        if (c == "+"):
-            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] + 1.
-        if (c == "-"):
-            self.cableconstraintvalue.value =  self.cableconstraintvalue.value[0][0] - 1.
+        if c == "+":
+            self.cableconstraintvalue.value = self.cableconstraintvalue.value[0][0] + 1.
+        if c == "-":
+            self.cableconstraintvalue.value = self.cableconstraintvalue.value[0][0] - 1.
+
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
@@ -29,13 +32,14 @@ def Finger(parentNode=None, name="Finger",
    
     FingerController(finger, cable)
 
+
 def createScene(rootNode):
     # -*- coding: utf-8 -*-
     from stlib.scene import MainHeader
     from stlib.visuals import ShowGrid
-    from stlib.physics.rigid import Floor
-    from stlib.physics.rigid import Cube
     m=MainHeader(rootNode, plugins=["SoftRobots"])
+    rootNode.createObject('FreeMotionAnimationLoop')
+    rootNode.createObject('GenericConstraintSolver', tolerance=1e-5, maxIterations=100)
 
     m.getObject("VisualStyle").displayFlags='showForceFields showBehaviorModels showInteractionForceFields'
  
