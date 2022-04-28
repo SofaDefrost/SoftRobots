@@ -17,13 +17,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-10.15, windows-2019]
-        sofa_branch: [robosoft2022]
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        sofa_branch: [master]
+        python_version: ['3.9']
 
     steps:
       - name: Setup SOFA and environment
         id: sofa
-        uses: sofa-framework/sofa-setup-action@robosoft2022
+        uses: sofa-framework/sofa-setup-action@v4
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
