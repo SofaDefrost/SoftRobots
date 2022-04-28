@@ -16,8 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        #os: [ubuntu-20.04, macos-10.15, windows-2019]
-        os: [macos-10.15]
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
         sofa_branch: [robosoft2022]
         python_version: ['3.7', '3.8', '3.9', '3.10']
 
@@ -81,13 +80,13 @@ jobs:
             ccache -s
           fi
           
-      - name: Postinstall fixup
-        shell: bash
-        run: |
-          chmod a+x $WORKSPACE_SRC_PATH/tools/postinstall_fixup_*.sh
-          if [[ "$RUNNER_OS" == "macOS" ]]; then
-            $WORKSPACE_SRC_PATH/tools/postinstall_fixup_macOS.sh "$WORKSPACE_INSTALL_PATH"
-          fi
+      #- name: Postinstall fixup
+      #  shell: bash
+      #  run: |
+      #    chmod a+x $WORKSPACE_SRC_PATH/tools/postinstall_fixup_*.sh
+      #    if [[ "$RUNNER_OS" == "macOS" ]]; then
+      #      $WORKSPACE_SRC_PATH/tools/postinstall_fixup_macOS.sh "$WORKSPACE_INSTALL_PATH"
+      #    fi
 
       - name: Create artifact
         uses: actions/upload-artifact@v2.2.4
