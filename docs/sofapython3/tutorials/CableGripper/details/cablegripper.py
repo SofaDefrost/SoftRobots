@@ -13,13 +13,13 @@ def createScene(rootNode):
     Gripper(rootNode)
 
     Floor(rootNode, name="Floor",
-          color=[1.0,0.0,0.0],
+          color=[1.0,0.0,0.0,1.0],
           translation=[0.0,-160.0,0.0],
           isAStaticObject=True)
 
     Cube(rootNode, name="Cube",
           uniformScale=20.0,
-          color=[1.0,1.0,0.0],
+          color=[1.0,1.0,0.0,1.0],
           totalMass=0.03,
           volume=20,
           inertiaMatrix=[1000.0,0.0,0.0,0.0,1000.0,0.0,0.0,0.0,1000.0],

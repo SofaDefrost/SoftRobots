@@ -12,7 +12,7 @@ def Finger(parentNode=None, name="Finger",
                                     poissonRatio=0.3,
                                     youngModulus=18000,
                                     totalMass=0.5,
-                                    surfaceColor=[0.0, 0.8, 0.7],
+                                    surfaceColor=[0.0, 0.8, 0.7, 1.0],
                                     surfaceMeshFileName="data/mesh/finger.stl",
                                     rotation=rotation,
                                     translation=translation)

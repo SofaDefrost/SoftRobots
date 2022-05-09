@@ -18,7 +18,7 @@ def createScene(rootNode):
     Floor(rootNode,
           name="FloorObstacle",
           translation=[0.0, -80.0, 0.0],
-          color=[0.0, 1.0, 0.0],
+          color=[0.0, 1.0, 0.0, 1.0],
           uniformScale=0.8,
           isAStaticObject=True)
 
@@ -26,7 +26,7 @@ def createScene(rootNode):
         cube = Cube(rootNode,
                     name="Cube" + str(-210 + c * 70),
                     translation=[-210 + c * 70, 0.0, 0.0],
-                    color=[c / 10.0, c * 0.7 / 10.0, 0.9],
+                    color=[c / 10.0, c * 0.7 / 10.0, 0.9, 1.0],
                     uniformScale=20.0)
         cube.addObject('UncoupledConstraintCorrection')
 

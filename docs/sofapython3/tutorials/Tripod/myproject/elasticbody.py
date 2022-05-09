@@ -4,7 +4,8 @@ Step 3: Move the content of the ElasticBody in a separated file for reusability
 '''
 import Sofa
 
-def ElasticBody(name="ElasticBody", rotation=[0,0,0], translation=[0,0,0], color=[1.0,1.,01.0,1.0]):
+
+def ElasticBody(name="ElasticBody", rotation=[0,0,0], translation=[0,0,0], color=[1.0,1.0,1.0,1.0]):
     # To simulate an elastic object, we need:
     # - a deformation law (here linear elasticity)
     # - a solving method (here FEM)

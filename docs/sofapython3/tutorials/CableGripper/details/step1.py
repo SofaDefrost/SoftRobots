@@ -14,6 +14,6 @@ def createScene(rootNode):
     Cube(rootNode,
           translation=[0.0,0.0,0.0],
           uniformScale=20,
-          color=[1.0,0.0,0.0])
+          color=[1.0,0.0,0.0,1.0])
 
     return rootNode

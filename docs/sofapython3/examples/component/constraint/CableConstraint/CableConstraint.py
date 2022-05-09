@@ -91,7 +91,7 @@ def createScene(rootNode):
     # Visualization                          #
     ##########################################
     # In Sofa, visualization is handled by adding a rendering model.
-    finger.addChild(VisualModel(visualMeshPath=path + "finger.stl", color=[0.0, 0.7, 0.7]))
+    finger.addChild(VisualModel(visualMeshPath=path + "finger.stl", color=[0.0, 0.7, 0.7, 1.0]))
     finger.VisualModel.addObject('BarycentricMapping', name='mapping')
 
     return rootNode
