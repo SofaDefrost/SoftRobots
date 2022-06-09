@@ -52,6 +52,21 @@ def createScene(rootNode):
 
     rootNode.gravity=[0., -9810., 0.]
     rootNode.dt=0.01
+
+    rootNode.addObject('RequiredPlugin', pluginName=["Sofa.Component.AnimationLoop",
+                                                     "Sofa.Component.Collision.Detection.Algorithm",
+                                                     "Sofa.Component.Collision.Detection.Intersection",
+                                                     "Sofa.Component.Collision.Geometry",
+                                                     "Sofa.Component.Collision.Response.Contact",
+                                                     "Sofa.Component.Constraint.Lagrangian.Correction",
+                                                     "Sofa.Component.Constraint.Lagrangian.Solver",
+                                                     "Sofa.Component.IO.Mesh", "Sofa.Component.LinearSolver.Direct",
+                                                     "Sofa.Component.LinearSolver.Iterative", "Sofa.Component.Mass",
+                                                     "Sofa.Component.ODESolver.Backward",
+                                                     "Sofa.Component.SolidMechanics.Spring",
+                                                     "Sofa.Component.Topology.Container.Constant",
+                                                     "Sofa.Component.Visual", ])
+    
     ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0)
     rootNode.addObject('VisualStyle', displayFlags=['showCollisionModels', 'showBehavior'])
     rootNode.addObject('DefaultVisualManagerLoop')
