@@ -38,7 +38,6 @@ class ServoMotor(Sofa.Prefab):
         servo.angle.value = 1.0
     '''
     prefabData = [
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'ServoMotor'},
         {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'scale3d', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}]
@@ -47,6 +46,7 @@ class ServoMotor(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
+
         # The inputs
         self.addData(name='minAngle', group='S90Properties', help='min angle of rotation (in radians)', type='float',
                      value=-100)
@@ -57,9 +57,11 @@ class ServoMotor(Sofa.Prefab):
 
         # Servo body
         servoBody = self.addChild('ServoBody')
-        servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[[0., 0., 0., 0., 0., 0., 1.]],
+        servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3',
+                            position=[[0., 0., 0., 0., 0., 0., 1.]],
                             translation=list(self.translation.value), rotation=list(self.rotation.value),
-                            scale3d=list(self.scale3d.value))
+                            scale3d=list(self.scale3d.value)
+                            )
         servoBody.addObject('FixedConstraint', indices=0)
         servoBody.addObject('UniformMass', totalMass=0.01)
 
@@ -80,7 +82,8 @@ class ServoMotor(Sofa.Prefab):
         servoWheel.addObject('MechanicalObject', name='dofs', template='Rigid3',
                              position=[[0., 0., 0., 0., 0., 0., 1.], [0., 0., 0., 0., 0., 0., 1.]], showObjectScale=20,
                              translation=list(self.translation.value), rotation=list(self.rotation.value),
-                             scale3d=list(self.scale3d.value))
+                             scale3d=list(self.scale3d.value)
+                             )
         servoWheel.addObject('ArticulatedSystemMapping', input1="@../dofs", input2="@../../ServoBody/dofs",
                              output="@./")
 

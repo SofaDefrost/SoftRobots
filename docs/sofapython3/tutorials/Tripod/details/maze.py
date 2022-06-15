@@ -7,7 +7,6 @@ import json
 
 class Maze(Sofa.Prefab):
     prefabData = [
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'Maze'},
         {'name': 'index', 'type': 'int', 'help': 'index of rigid to attach to', 'default': 0},
         {'name': 'translation', 'type': 'Vec3d', 'help': '', 'default': [0, 5, 0]},
         {'name': 'rotation', 'type': 'Vec3d', 'help': '', 'default': [-90, 0, 0]}
@@ -28,7 +27,6 @@ class Maze(Sofa.Prefab):
 
 class Sphere(Sofa.Prefab):
     prefabData = [
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'Sphere'},
         {'name': 'position', 'type': 'Vec3d', 'help': '', 'default': [-22, 50, -27]},
         {'name': 'withSolver', 'type': 'bool', 'help': '', 'default': False}
     ]

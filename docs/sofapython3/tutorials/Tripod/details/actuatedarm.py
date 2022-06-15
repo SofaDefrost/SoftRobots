@@ -66,7 +66,6 @@ class ActuatedArm(Sofa.Prefab):
             }
     '''
     prefabData = [
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'ActuatedArm'},
         {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'scale', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}]
