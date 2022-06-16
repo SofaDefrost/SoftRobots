@@ -18,9 +18,9 @@ class FingerController(Sofa.Core.Controller):
         return
 
     def onKeypressedEvent(self, e):
-        inputvalue = self.node.aCableActuator.value
+        inputvalue = self.node.PullingCable.CableConstraint.value
 
-        displacement = 0
+        displacement = inputvalue.value
         if e["key"] == Sofa.constants.Key.plus:
             displacement = inputvalue.value[0] + 1.0
         elif e["key"] == Sofa.constants.Key.minus:
@@ -34,13 +34,14 @@ class FingerController(Sofa.Core.Controller):
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
-           fixingBox=[0.0, 0.0, 0.0], pullPointLocation=[0.0, 0.0, 0.0], youngModulus=18000, valueType='position'):
+           fixingBox=[-1.0, -1.0, -1.0, 1.0, 15.0, 15.0], pullPointLocation=[0.0, 0.0, 0.0], youngModulus=18000, valueType='position'):
+
     eobject = ElasticMaterialObject(name=name, volumeMeshFileName=os.path.join(templatepath, "mesh/finger.vtk"),
                                     # MISK need to change the relative file
                                     poissonRatio=0.3,
                                     youngModulus=youngModulus,
                                     totalMass=0.5,
-                                    surfaceColor=[0.0, 0.8, 0.65],
+                                    surfaceColor=[0.0, 0.8, 0.65, 1.0],
                                     surfaceMeshFileName=os.path.join(templatepath, "mesh/finger.stl"),
                                     rotation=rotation,
                                     translation=translation)
@@ -48,16 +49,15 @@ def Finger(parentNode=None, name="Finger",
 
     FixedBox(eobject, atPositions=fixingBox, doVisualization=True)
 
-    cable = PullingCable(eobject,
-                         "PullingCable",
-                         pullPointLocation=pullPointLocation,
-                         rotation=rotation,
-                         translation=translation,
-                         cableGeometry=loadPointListFromFile(os.path.join(templatepath, "mesh/cable.json")),
-                         valueType=valueType);
+    PullingCable(eobject,
+                 "PullingCable",
+                 pullPointLocation=pullPointLocation,
+                 rotation=rotation,
+                 translation=translation,
+                 cableGeometry=loadPointListFromFile(os.path.join(templatepath, "mesh/cable.json")),
+                 valueType=valueType)
 
-    # Eulalie.C (21/09/18): this feature does not work, either fix it or remove this comment before SoftRobots v19
-    # FingerController(eobject, cable, valueType) #MISK may change to vary variation based on value type
+    eobject.addObject(FingerController(node=eobject))  # MISK may change to vary variation based on value type
 
     CollisionMesh(eobject, name="CollisionMesh",
                   surfaceMeshFileName=os.path.join(templatepath, "mesh/finger.stl"),
@@ -74,13 +74,36 @@ def Finger(parentNode=None, name="Finger",
                   rotation=rotation, translation=translation,
                   collisionGroup=[2])
 
-    return finger
+    return eobject
 
 
 def createScene(rootNode):
-    from stlib.scene import MainHeader, ContactHeader
-    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
+    from stlib3.scene import MainHeader, ContactHeader
+    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots", 'SofaPython3'])
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, frictionCoef=0.08)
+    rootNode.addObject('RequiredPlugin', pluginName=[
+                            "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
+                            "Sofa.Component.Collision.Detection.Algorithm",
+                            # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                            "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
+                            "Sofa.Component.Collision.Geometry",
+                            # Needed to use components LineCollisionModel, PointCollisionModel, TriangleCollisionModel
+                            "Sofa.Component.Collision.Response.Contact",  # Needed to use components RuleBasedContactManager
+                            "Sofa.Component.Constraint.Lagrangian.Correction",
+                            # Needed to use components LinearSolverConstraintCorrection
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
+                            "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
+                            "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
+                            "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
+                            "Sofa.Component.Mass",  # Needed to use components UniformMass
+                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
+                            "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
+                            "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
+                            "Sofa.Component.Topology.Container.Dynamic",  # Needed to use components TetrahedronSetTopologyContainer
+                            "Sofa.Component.Visual",  # Needed to use components VisualStyle
+                            "Sofa.GL.Component.Rendering3D",  # Needed to use components OglModel, OglSceneFrame
+                        ])
 
-    Finger(rootNode, translation=[1.0, 0.0, 0.0])
+    Finger(rootNode)
     return rootNode

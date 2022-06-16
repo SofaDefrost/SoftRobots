@@ -6,6 +6,7 @@ def createScene(rootNode):
     INVERSE = False  # Option to use the inverse solvers from the plugin SoftRobots.Inverse
 
     rootNode.addObject('RequiredPlugin', name='SoftRobots')
+    rootNode.addObject("RequiredPlugin", name='SofaPython3')
     rootNode.addObject('RequiredPlugin', pluginName=[
                                         "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                                         "Sofa.Component.Collision.Geometry",  # Needed to use components SphereCollisionModel
