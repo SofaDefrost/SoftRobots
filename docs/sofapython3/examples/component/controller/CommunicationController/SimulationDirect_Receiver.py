@@ -4,6 +4,7 @@ from modules.accordion3 import addAccordion
 
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SoftRobots')
+    rootNode.addObject("RequiredPlugin", name='SofaPython3')
     rootNode.addObject('RequiredPlugin', pluginName=[
                                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                                             "Sofa.Component.Constraint.Lagrangian.Correction",

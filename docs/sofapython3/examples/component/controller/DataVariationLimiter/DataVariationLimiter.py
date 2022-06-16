@@ -11,7 +11,7 @@ pathMesh = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 def createScene(rootNode):
     INVERSE = False  # Option to use the inverse solvers from the plugin SoftRobots.Inverse
 
-    rootNode.addObject('RequiredPlugin', pluginName=['SoftRobots',
+    rootNode.addObject('RequiredPlugin', pluginName=['SoftRobots', 'SofaPython3',
                                                      "Sofa.Component.AnimationLoop",
                                                      # Needed to use components FreeMotionAnimationLoop
                                                      "Sofa.Component.Constraint.Lagrangian.Correction",

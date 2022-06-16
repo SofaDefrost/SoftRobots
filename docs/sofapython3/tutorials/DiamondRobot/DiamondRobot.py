@@ -14,10 +14,24 @@ def createScene(rootNode):
                        displayFlags='showCollision showVisualModels showForceFields showInteractionForceFields hideCollisionModels hideBoundingCollisionModels hideWireframe')
 
     # Required plugin
-    rootNode.addObject('RequiredPlugin', name='ExternalPlugins', pluginName='SoftRobots')
-    rootNode.addObject('RequiredPlugin', name='SofaPlugins',
-                       pluginName=['SofaBoundaryCondition', 'SofaImplicitOdeSolver', 'SofaPreconditioner',
-                                   'SofaSimpleFem', 'SofaSparseSolver', 'SofaLoader', 'SofaEngine', 'SofaConstraint'])
+    rootNode.addObject('RequiredPlugin', name='SoftRobots')
+    rootNode.addObject('RequiredPlugin', name='SofaPython3')
+    rootNode.addObject('RequiredPlugin', pluginName=[
+                            "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
+                            "Sofa.Component.Constraint.Lagrangian.Correction",
+                            # Needed to use components LinearSolverConstraintCorrection
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
+                            "Sofa.Component.Constraint.Projective",  # Needed to use components FixedConstraint
+                            "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
+                            "Sofa.Component.IO.Mesh",  # Needed to use components MeshVTKLoader
+                            "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
+                            "Sofa.Component.LinearSolver.Iterative",  # Needed to use components ShewchukPCGLinearSolver
+                            "Sofa.Component.Mass",  # Needed to use components UniformMass
+                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
+                            "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
+                            "Sofa.Component.Visual",  # Needed to use components VisualStyle
+                        ])
 
     # Constraint solver, here we use a Gauss Seidel algorithm
     rootNode.addObject('FreeMotionAnimationLoop')

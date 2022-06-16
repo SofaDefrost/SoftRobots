@@ -5,12 +5,22 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 
 
 def createScene(rootNode):
-    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaOpenglVisual')
+    rootNode.addObject('RequiredPlugin', name='SoftRobots')
+    rootNode.addObject("RequiredPlugin", name='SofaPython3')
     rootNode.addObject('VisualStyle',
                        displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')
-
-    rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
-    rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+    rootNode.addObject('RequiredPlugin', pluginName=[
+                            "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
+                            "Sofa.Component.LinearSolver.Iterative",  # Needed to use components CGLinearSolver
+                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
+                            "Sofa.Component.Topology.Container.Dynamic",
+                            # Needed to use components TetrahedronSetTopologyContainer, TetrahedronSetTopologyModifier
+                            "Sofa.Component.Visual",  # Needed to use components VisualStyle
+                            "Sofa.GL.Component.Rendering3D",  # Needed to use components OglModel
+                        ])
+    rootNode.addObject('DefaultAnimationLoop')
+    rootNode.addObject('DefaultVisualManagerLoop')
 
     ##########################################
     # FEM Model                              #
