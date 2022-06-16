@@ -47,7 +47,7 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
 
         effectorPos = [0, 30, 0]
         o = deformableObject.addObject('SphereROI', name='roi', template='Rigid3',
-                                                    centers=effectorPos, radii=[7.5], drawSphere=True)
+                                       centers=effectorPos, radii=[7.5], drawSphere=True)
         o.init()
         groupIndices.append(list(o.indices.value))
 
@@ -60,21 +60,22 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
 
     def __attachToActuatedArms(self, numstep):
 
-         rigidParts = self.RigidifiedStructure.RigidParts
-         for arm in self.actuatedarms:
+        rigidParts = self.RigidifiedStructure.RigidParts
+        for arm in self.actuatedarms:
             arm.ServoMotor.Articulation.ServoWheel.addChild(rigidParts)
 
-         freeCenter = self.RigidifiedStructure.addChild('FreeCenter')
-         freeCenter.addObject('MechanicalObject', name="dofs", template="Rigid3", position=[0, 30, 0, 0, 0, 0, 1], showObject=False, showObjectScale=10)
-         freeCenter.addChild(rigidParts)
+        freeCenter = self.RigidifiedStructure.addChild('FreeCenter')
+        freeCenter.addObject('MechanicalObject', name="dofs", template="Rigid3", position=[0, 30, 0, 0, 0, 0, 1],
+                             showObject=False, showObjectScale=10)
+        freeCenter.addChild(rigidParts)
 
-         rigidParts.addObject('SubsetMultiMapping',
-                              name="mapping",
-                              input=[self.actuatedarms[0].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                     self.actuatedarms[1].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                     self.actuatedarms[2].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                     freeCenter.getLinkPath()],
-                              output='@./', indexPairs=[0, 1, 1, 1, 2, 1,3,0])
+        rigidParts.addObject('SubsetMultiMapping',
+                             name="mapping",
+                             input=[self.actuatedarms[0].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                    self.actuatedarms[1].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                    self.actuatedarms[2].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                    freeCenter.getLinkPath()],
+                             output='@./', indexPairs=[0, 1, 1, 1, 2, 1, 3, 0])
 
     self = Sofa.Core.Node(name)
     self.actuatedarms = []
@@ -89,14 +90,14 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
         self.actuatedarms.append(arm)
         self.addChild(arm)
 
-    self.addChild(ElasticBody(translation=[0.0, 30, 0.0], rotation=[90,0,0], color=[1.0,1.0,1.0,0.5]))
+    self.addChild(ElasticBody(translation=[0.0, 30, 0.0], rotation=[90, 0, 0], color=[1.0, 1.0, 1.0, 0.5]))
     __rigidify(self, radius, numMotors, angleShift)
     __attachToActuatedArms(self, numMotors)
 
     def addCollision():
-            CollisionMesh(self.ElasticBody.MechanicalModel,
-                        surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionModel",
-                        translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
+        CollisionMesh(self.ElasticBody.MechanicalModel,
+                      surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionModel",
+                      translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
 
     self.addCollision = addCollision
 
@@ -110,7 +111,8 @@ def createScene(rootNode):
 
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False,
                   plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine',
-                           'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition',
+                           'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent',
+                           'SofaBoundaryCondition',
                            'SofaGeneralAnimationLoop', 'SofaConstraint'])
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
@@ -149,11 +151,11 @@ def createScene(rootNode):
     # Temporary additions to have the system correctly built in SOFA
     # Will no longer be required in SOFA v22.06
     scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="deformableAndFreeCenterCoupling",
-                                 template='Vec3,Rigid3',
-                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
-                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
-                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
+                               name="deformableAndFreeCenterCoupling",
+                               template='Vec3,Rigid3',
+                               object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                               object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
+                               nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
 
     # Temporary additions to have the system correctly built in SOFA
     # Will no longer be required in SOFA v22.06
@@ -161,7 +163,9 @@ def createScene(rootNode):
         scene.Simulation.addObject('MechanicalMatrixMapper',
                                    name="deformableAndArm{i}Coupling".format(i=i),
                                    template='Vec1,Vec3',
-                                   object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
+                                   object1=tripod[
+                                       "ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
                                    object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
                                    skipJ2tKJ2=False if i == 0 else True,
-                                   nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
+                                   nodeToParse=tripod[
+                                       "RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())

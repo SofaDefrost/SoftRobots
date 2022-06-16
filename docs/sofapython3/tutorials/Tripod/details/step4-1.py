@@ -37,7 +37,8 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
             
     self.addChild(ElasticBody(translation=[0.0, 30, 0.0],rotation=[90,0,0],color=[1.0,1.0,1.0,0.5]))
     return self  
-    
+
+
 def createScene(rootNode):
     from splib3.animation import animate
     from stlib3.scene import Scene
@@ -66,7 +67,7 @@ def createScene(rootNode):
     scene.Simulation.addChild(scene.Modelling.Tripod)
     scene.Simulation.addChild(scene.Modelling.FixingBox)
 
-    ## Add animations 
+    # Add animations
     def myanimate(targets, factor):
         for arm in targets:
             arm.angleIn.value = -factor * math.pi / 4

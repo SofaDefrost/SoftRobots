@@ -24,7 +24,6 @@ class ServoArm(Sofa.Prefab):
     """
 
     prefabData = [
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'ServoArm'},
         {'name': 'mappingInputLink', 'type': 'string',
          'help': 'the rigid mechanical object that will control the orientation of the servo arm', 'default': ''},
         {'name': 'indexInput', 'type': 'int', 'help': 'index of the rigid the ServoArm should be mapped to',
@@ -33,14 +32,13 @@ class ServoArm(Sofa.Prefab):
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
-    def init(self):
         self.addObject('MechanicalObject',
                        name='dofs',
                        size=1,
                        template='Rigid3',
                        showObject=True,
                        showObjectScale=5,
-                       translation2=[0, 25, 0])
+                       translation=[0, 25, 0])
 
     def setRigidMapping(self, path):
         self.addObject('RigidRigidMapping', name='mapping', input=path, index=self.indexInput.value)
@@ -52,7 +50,7 @@ class ServoArm(Sofa.Prefab):
 
 
 class ActuatedArm(Sofa.Prefab):
-    '''ActuatedArm is a reusable sofa model of a S90 servo motor and the tripod actuation arm.
+    """ActuatedArm is a reusable sofa model of a S90 servo motor and the tripod actuation arm.
            Parameters:
              - translation the position in space of the structure
              - eulerRotation the orientation of the structure
@@ -64,8 +62,8 @@ class ActuatedArm(Sofa.Prefab):
                 ServoMotor           // The s90 servo motor with its actuated wheel
                 ServoArm             // The actuation arm connected to ServoMotor.ServoWheel
             }
-    '''
-    prefabData = [
+    """
+    prefabParameters = [
         {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'scale', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}]
@@ -73,7 +71,6 @@ class ActuatedArm(Sofa.Prefab):
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
-    def init(self):
         self.servomotor = self.addChild(
             ServoMotor(name="ServoMotor", translation=self.translation.value, rotation=self.rotation.value))
         self.servoarm = self.servomotor.Articulation.ServoWheel.addChild(ServoArm(name="ServoArm"))

@@ -6,7 +6,7 @@ dirPath = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 
 class ServoMotor(Sofa.Prefab):
-    '''A S90 servo motor
+    """A S90 servo motor
 
     This prefab is implementing a S90 servo motor.
     https://servodatabase.com/servo/towerpro/sg90
@@ -36,24 +36,20 @@ class ServoMotor(Sofa.Prefab):
 
         ## Direct access to the components
         servo.angle.value = 1.0
-    '''
-    prefabData = [
+    """
+    prefabParameters = [
         {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'scale3d', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}]
 
+    prefabData = [
+        {'name': 'minAngle', 'help': 'min angle of rotation (in radians)', 'type': 'float', 'default': -100},
+        {'name': 'maxAngle', 'help': 'max angle of rotation (in radians)', 'type': 'float', 'default': 100},
+        {'name': 'angleIn', 'help': 'angle of rotation (in radians)', 'type': 'float', 'default': 0}
+    ]
+
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
-
-    def init(self):
-
-        # The inputs
-        self.addData(name='minAngle', group='S90Properties', help='min angle of rotation (in radians)', type='float',
-                     value=-100)
-        self.addData(name='maxAngle', group='S90Properties', help='max angle of rotation (in radians)', type='float',
-                     value=100)
-        self.addData(name='angleIn', group='S90Properties', help='angle of rotation (in radians)', type='float',
-                     value=0)
 
         # Servo body
         servoBody = self.addChild('ServoBody')
