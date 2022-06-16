@@ -6,11 +6,29 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 
 
 def createScene(rootNode):
-    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaPython3 SofaSparseSolver SofaOpenglVisual')
+    rootNode.addObject("RequiredPlugin", name='SoftRobots')
+    rootNode.addObject("RequiredPlugin", name='SofaPython3')
+    rootNode.addObject('RequiredPlugin', pluginName=[
+                            "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
+                            "Sofa.Component.Constraint.Lagrangian.Correction",  # Needed to use components GenericConstraintCorrection
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
+                            "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
+                            "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
+                            "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
+                            "Sofa.Component.Mass",  # Needed to use components UniformMass
+                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
+                            "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
+                            "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
+                            "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
+                            "Sofa.Component.Visual",  # Needed to use components VisualStyle
+                            "Sofa.GL.Component.Rendering3D",  # Needed to use components OglModel, OglSceneFrame
+                        ])
     rootNode.addObject('VisualStyle',
                        displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
     rootNode.addObject('FreeMotionAnimationLoop')
+    rootNode.addObject('DefaultVisualManagerLoop')
 
     # Add a QPInverseProblemSolver to the scene if you need to solve inverse problem like the one that involved
     # when manipulating the robots by specifying their effector's position instead of by direct control
@@ -21,8 +39,6 @@ def createScene(rootNode):
 
     rootNode.gravity = [0, -9810, 0]
     rootNode.dt = 0.01
-    rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
-    rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
     ##########################################
     # FEM Model                              #
@@ -31,11 +47,11 @@ def createScene(rootNode):
     finger.addObject('EulerImplicitSolver', name='odesolver', rayleighMass=0.1, rayleighStiffness=0.1)
     finger.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d')
 
-    # Add a componant to load a VTK tetrahedral mesh and expose the resulting topology in the scene .
+    # Add a component to load a VTK tetrahedral mesh and expose the resulting topology in the scene .
     finger.addObject('MeshVTKLoader', name='loader', filename=path + 'finger.vtk')
     finger.addObject('MeshTopology', src='@loader', name='container')
 
-    # Create a mechanicaobject component to stores the DoFs of the model
+    # Create a MechanicaObject component to stores the DoFs of the model
     finger.addObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale=4e-5)
 
     # Gives a mass to the model

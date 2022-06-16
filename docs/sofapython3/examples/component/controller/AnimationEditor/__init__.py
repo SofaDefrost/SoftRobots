@@ -4,8 +4,7 @@
 The **AnimationEditor** component is used to build an animation from key points motion, or typically to build effector goals trajectories.
 In this directory you will find one example showing how to use the component:
 
-- **Accordion_AnimationEditor.pyscn** : Soft actuated accordion
-- **RigidAnimation.pyscn** : Rigid cube
+- **RigidAnimation.py** : Rigid cube
 
 .. image:: http://project.inria.fr/softrobot/files/2016/02/RigidAnimation-2.gif
    :width: 60%
@@ -40,17 +39,17 @@ Example
 
 .. sourcecode:: python
 
-    	goal = rootNode.createChild('goal')
-        goal.createObject('EulerImplicitSolver', firstOrder=True)
-        goal.createObject('CGLinearSolver', iterations='100', tolerance="1e-5", threshold="1e-5")
-        goal.createObject('MechanicalObject', name='goalMO',
-                position='0 0 8',
-                showObject="1",
-                showObjectScale="0.5",
-                drawMode="1",
-                showColor="255 255 255 255")
-
-        ## The AnimationEditor takes multiple options
+    def createScene(rootNode):
+        point = rootNode.addChild('point')
+        point.addObject('EulerImplicitSolver', firstOrder=True)
+        point.addObject('CGLinearSolver', iterations=100, tolerance=1e-5, threshold=1e-5)
+        point.addObject('MechanicalObject', template='Rigid3',
+                        position=[0, 0, 0, 0, 0, 0, 1],
+                        showObject=True,
+                        showObjectScale=0.1,
+                        drawMode=1,
+                        showColor=[255, 255, 255, 255])
+        # The AnimationEditor takes multiple options
         # template : should be the same as the mechanical you want to animate
         # filename : file in which the animation will be saved
         # load : set to true to load the animation at init (default is true)
@@ -59,9 +58,18 @@ Example
         # frameTime (default is 0.01)
         # drawTimeline (default is true)
         # drawTrajectory (default is true)
-        # drawSize : coeff size of diplayed elements of trajectory
-        goal.createObject('AnimationEditor', filename=path+"Accordion_Animation.txt", drawTrajectory=0)
-        goal.createObject('UncoupledConstraintCorrection')
+        # drawSize : coefficient size of displayed elements of trajectory
+        point.addObject('AnimationEditor', name='animation',
+                        template='Rigid3', filename=path + 'RigidAnimation.txt',
+                        load=True,
+                        drawTimeline=True, drawTrajectory=True)
+
+        visu = point.addChild('visu')
+        visu.addObject('MeshOBJLoader', name='loader', filename='mesh/cube.obj')
+        visu.addObject('OglModel', src='@loader', filename='mesh/cube.obj')
+        visu.addObject('RigidMapping')
+
+        return rootNode
 
 
 Data fields

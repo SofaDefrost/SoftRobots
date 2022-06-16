@@ -17,8 +17,8 @@ def effectorTarget(parentNode, position=[0., 0., 200]):
     return target
 
 
-class Trunk():
-    ''' This prefab is implementing a soft robot inspired by the elephant's trunk.
+class Trunk:
+    """ This prefab is implementing a soft robot inspired by the elephant's trunk.
         The robot is entirely soft and actuated with 8 cables.
 
         The prefab is composed of:
@@ -39,7 +39,7 @@ class Trunk():
 
             ## Direct access to the components
             trunk.displacements = [0., 0., 0., 0., 5., 0., 0., 0.]
-    '''
+    """
 
     def __init__(self, parentNode, youngModulus=450, poissonRatio=0.45, totalMass=0.042, inverseMode=False):
 
@@ -145,10 +145,26 @@ def createScene(rootNode):
     # 2- inverseMode=False, solve the direct problem and set the cable displacements by hand
     inverseMode = False
 
-    rootNode.addObject('RequiredPlugin', pluginName=['SoftRobots','SofaSparseSolver','SofaPreconditioner','SofaPython3','SofaConstraint',
-                                                     'SofaImplicitOdeSolver','SofaLoader','SofaSimpleFem','SofaBoundaryCondition','SofaEngine',
-                                                     'SofaOpenglVisual'])
+    rootNode.addObject('RequiredPlugin', name='SoftRobots')
+    rootNode.addObject('RequiredPlugin', name='SofaPython3')
+    rootNode.addObject('RequiredPlugin', pluginName=[
+                            "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
+                            "Sofa.Component.Constraint.Lagrangian.Correction",  # Needed to use components GenericConstraintCorrection
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
+                            "Sofa.Component.Constraint.Projective",  # Needed to use components PartialFixedConstraint
+                            "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
+                            "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
+                            "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
+                            "Sofa.Component.LinearSolver.Iterative",  # Needed to use components ShewchukPCGLinearSolver
+                            "Sofa.Component.Mass",  # Needed to use components UniformMass
+                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
+                            "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
+                            "Sofa.Component.Visual",  # Needed to use components VisualStyle
+                            "Sofa.GL.Component.Rendering3D",  # Needed to use components OglModel
+                        ])
     AnimationManager(rootNode)
+    rootNode.addObject('DefaultVisualManagerLoop')
     rootNode.addObject('VisualStyle', displayFlags='showBehavior')
     rootNode.gravity = [0., -9810., 0.]
 

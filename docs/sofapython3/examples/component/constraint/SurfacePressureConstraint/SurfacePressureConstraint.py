@@ -5,11 +5,33 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 
 
 def createScene(rootNode):
-    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaOpenglVisual SofaSparseSolver SofaPreconditioner')
+    rootNode.addObject('RequiredPlugin', name='SoftRobots')
+    rootNode.addObject('RequiredPlugin', name='SofaPython3')
+    rootNode.addObject('RequiredPlugin', pluginName=[
+                                "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
+                                "Sofa.Component.Constraint.Lagrangian.Correction",
+                                # Needed to use components LinearSolverConstraintCorrection
+                                "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
+                                "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
+                                "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader, MeshVTKLoader
+                                "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
+                                "Sofa.Component.LinearSolver.Iterative",  # Needed to use components ShewchukPCGLinearSolver
+                                "Sofa.Component.Mass",  # Needed to use components UniformMass
+                                "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                                "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
+                                "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
+                                "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
+                                "Sofa.Component.Topology.Container.Dynamic",
+                                # Needed to use components TetrahedronSetTopologyContainer, TetrahedronSetTopologyModifier, TriangleSetTopologyContainer, TriangleSetTopologyModifier
+                                "Sofa.Component.Topology.Mapping",  # Needed to use components Tetra2TriangleTopologicalMapping
+                                "Sofa.Component.Visual",  # Needed to use components VisualStyle
+                                "Sofa.GL.Component.Rendering3D",  # Needed to use components OglModel
+                            ])
     rootNode.addObject('VisualStyle',
                        displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
     rootNode.addObject('FreeMotionAnimationLoop')
+    rootNode.addObject('DefaultVisualManagerLoop')
     rootNode.addObject('GenericConstraintSolver', maxIterations=100, tolerance=0.0000001)
 
     # bunny
@@ -36,7 +58,7 @@ def createScene(rootNode):
 
     # bunny/cavity
     cavity = bunny.addChild('cavity')
-    cavity.addObject('MeshObjLoader', name='loader', filename=path + 'Hollow_Bunny_Body_Cavity.obj')
+    cavity.addObject('MeshOBJLoader', name='loader', filename=path + 'Hollow_Bunny_Body_Cavity.obj')
     cavity.addObject('MeshTopology', src='@loader', name='topo')
     cavity.addObject('MechanicalObject', name='cavity')
     cavity.addObject('SurfacePressureConstraint', triangles='@topo.triangles', value=40, valueType=1)

@@ -10,8 +10,31 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 def createScene(rootNode):
 
     rootNode.addObject('RequiredPlugin', name='SoftRobots')
+    rootNode.addObject('RequiredPlugin', pluginName=[
+                                "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
+                                "Sofa.Component.Collision.Detection.Algorithm",
+                                # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                                "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
+                                "Sofa.Component.Collision.Response.Contact",  # Needed to use components DefaultContactManager
+                                "Sofa.Component.Constraint.Lagrangian.Correction",
+                                # Needed to use components LinearSolverConstraintCorrection
+                                "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
+                                "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
+                                "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
+                                "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
+                                "Sofa.Component.Mass",  # Needed to use components UniformMass
+                                "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                                "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
+                                "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
+                                "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
+                                "Sofa.Component.Topology.Container.Dynamic",
+                                # Needed to use components TetrahedronSetTopologyContainer, TetrahedronSetTopologyModifier
+                                "Sofa.Component.Visual",  # Needed to use components VisualStyle
+                                "Sofa.GL.Component.Rendering3D",  # Needed to use components OglModel, OglSceneFrame
+                            ])
     rootNode.addObject('VisualStyle', displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe")
     rootNode.addObject('FreeMotionAnimationLoop')
+    rootNode.addObject('DefaultVisualManagerLoop')
     rootNode.addObject('GenericConstraintSolver', maxIterations=1000, tolerance=1e-3)
 
     rootNode.addObject('DefaultPipeline')

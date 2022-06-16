@@ -30,7 +30,7 @@ class FingerController(Sofa.Core.Controller):
         """
         inputValue = self.node.aCableActuator.value
 
-        displacement = 0
+        displacement = inputValue.value
         if e["key"] == Sofa.constants.Key.plus:
             displacement = inputValue.value[0] + 1.0
         elif e["key"] == Sofa.constants.Key.minus:
