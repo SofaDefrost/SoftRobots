@@ -82,7 +82,7 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                                "flipNormal to true."))
 
     , d_pressure(initData(&d_pressure, double(0.0), "pressure",
-                             "Output pressure."))
+                             "Output pressure. Warning: to get the actual pressure you should divide this value by dt."))
 
 
     , d_maxPressure(initData(&d_maxPressure, "maxPressure",
@@ -253,10 +253,6 @@ void SurfacePressureModel<DataTypes>::internalInit()
     auto triangles = d_triangles.getValue() ;
     for(int i=0;i<numTris;i++){
         for(int j=0;j<3;j++){
-            if( triangles[i][j] < 0 )
-                msg_error() << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
-                                   <<". is too small regarding mechanicalState size of(" << positions.size() << ")" ;
-
             if( triangles[i][j] >= positions.size() )
                 msg_error() << "triangles[" << i << "]["<< j << "]="<< triangles[i][j]
                                    <<". is too large regarding mechanicalState size of(" << positions.size() << ")" ;
@@ -269,11 +265,6 @@ void SurfacePressureModel<DataTypes>::internalInit()
     auto quads = d_quads.getValue() ;
     for(int i=0;i<numQuads;i++){
         for(int j=0;j<4;j++){
-            if( quads[i][j] < 0 )
-                msg_error() << "quads [" <<i << "][" << j << "]=" << quads[i][j]
-                                   << " is too small regarding mechanicalState size of("
-                                   << positions.size() << ")" ;
-
             if( quads[i][j] >= positions.size() )
                 msg_error() << "quads [" <<i << "][" << j << "]=" << quads[i][j]
                                    << " is too large regarding mechanicalState size of("

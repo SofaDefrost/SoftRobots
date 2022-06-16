@@ -76,7 +76,7 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
     , d_cableLength(initData(&d_cableLength, Real(0.0), "cableLength","Computation done at the end of the time step"))
 
     , d_force(initData(&d_force,double(0.0), "force",
-                                         "Output force."))
+                                         "Output force. Warning: to get the actual force you should divide this value by dt."))
 
     , d_displacement(initData(&d_displacement,double(0.0), "displacement",
                           "Output displacement compared to the initial cable length."))
@@ -257,8 +257,6 @@ void CableModel<DataTypes>::checkIndicesRegardingState()
     {
         if (positions.size() <= d_indices.getValue()[i])
             msg_error() << "Indices at index " << i << " is too large regarding mechanicalState [position] size" ;
-        if (d_indices.getValue()[i] < 0)
-            msg_error() << "Indices at index " << i << " is negative" ;
     }
 }
 
