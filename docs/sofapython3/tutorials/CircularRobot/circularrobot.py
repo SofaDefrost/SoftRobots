@@ -17,7 +17,7 @@ def Target(parentNode):
 
 def Floor(parentNode, color=[0.5, 0.5, 0.5, 1.], rotation=[90, 0, 180], translation=[50, -21, -100]):
     floor = parentNode.addChild('Floor')
-    floor.addObject('MeshObjLoader', name='loader', filename='mesh/square1.obj', scale=250, rotation=rotation,
+    floor.addObject('MeshOBJLoader', name='loader', filename='mesh/square1.obj', scale=250, rotation=rotation,
                     translation=translation)
     floor.addObject('OglModel', src='@loader', color=color)
     floor.addObject('MeshTopology', src='@loader', name='topo')
@@ -30,7 +30,7 @@ def Floor(parentNode, color=[0.5, 0.5, 0.5, 1.], rotation=[90, 0, 180], translat
 
 def Wall(parentNode, color=[0.5, 0.5, 0.5, 1.], rotation=[0, 0, 0], translation=[-200, -271, 100]):
     wall = parentNode.addChild('Wall')
-    wall.addObject('MeshObjLoader', name='loader', filename='mesh/square1.obj', scale=250, rotation=rotation,
+    wall.addObject('MeshOBJLoader', name='loader', filename='mesh/square1.obj', scale=250, rotation=rotation,
                    translation=translation)
     wall.addObject('OglModel', src='@loader', color=color)
     return wall
@@ -105,22 +105,54 @@ class CircularRobot():
 
 
 def createScene(rootNode):
-    rootNode.addObject('RequiredPlugin',
-                       pluginName='SoftRobots SoftRobots.Inverse SofaOpenglVisual SofaSparseSolver SofaImplicitOdeSolver SofaLoader SofaMeshCollision SofaSimpleFem SofaConstraint')
+
+    INVERSE = False  # Option to use the inverse solvers from the plugin SoftRobots.Inverse
+
+    rootNode.addObject('RequiredPlugin', pluginName=[
+                        "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
+                        "Sofa.Component.Collision.Detection.Algorithm",
+                        # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                        "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
+                        "Sofa.Component.Collision.Geometry",
+                        # Needed to use components LineCollisionModel, PointCollisionModel, TriangleCollisionModel
+                        "Sofa.Component.Collision.Response.Contact",  # Needed to use components DefaultContactManager
+                        "Sofa.Component.Constraint.Lagrangian.Correction",
+                        # Needed to use components GenericConstraintCorrection, UncoupledConstraintCorrection
+                        "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
+                        "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader, MeshSTLLoader, MeshVTKLoader
+                        "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
+                        "Sofa.Component.LinearSolver.Iterative",  # Needed to use components CGLinearSolver
+                        "Sofa.Component.Mass",  # Needed to use components UniformMass
+                        "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                        "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
+                        "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
+                        "Sofa.Component.Topology.Container.Dynamic",
+                        # Needed to use components TetrahedronSetTopologyContainer, TetrahedronSetTopologyModifier
+                        "Sofa.Component.Visual",  # Needed to use components VisualStyle
+                        "Sofa.GL.Component.Rendering3D",  # Needed to use components OglModel
+                        ])
+
     rootNode.addObject('VisualStyle',
-                       displayFlags='hideWireframe showVisualModels showBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields hideInteractionForceFields')
+                       displayFlags='hideWireframe showVisualModels showBehaviorModels hideCollisionModels '
+                                    'hideBoundingCollisionModels hideForceFields hideInteractionForceFields')
     rootNode.findData('gravity').value = [0, -9180, 0]
     rootNode.findData('dt').value = 0.01
 
     # Add solver for inverse resolution
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('QPInverseProblemSolver', epsilon=2e-0, maxIterations=2500, tolerance=1e-7, responseFriction=0.8)
+    rootNode.addObject('DefaultVisualManagerLoop')
+    if INVERSE:
+        rootNode.addObject('RequiredPlugin', name='SoftRobots.Inverse')
+        rootNode.addObject('QPInverseProblemSolver', epsilon=2e-0, maxIterations=2500, tolerance=1e-7,
+                           responseFriction=0.8)
+    else:
+        rootNode.addObject('GenericConstraintSolver', maxIterations=500, tolerance=1e-5)
 
     # Contact detection methods
     rootNode.addObject('DefaultPipeline')
-    rootNode.addObject('BruteForceBroadPhase', name="N2")
+    rootNode.addObject('BruteForceBroadPhase')
     rootNode.addObject('BVHNarrowPhase')
-    rootNode.addObject('DefaultContactManager', response="FrictionContact", responseParams="mu=0.8")
+    rootNode.addObject('DefaultContactManager', response="FrictionContactConstraint", responseParams="mu=0.8")
     rootNode.addObject('LocalMinDistance', alarmDistance=5, contactDistance=1, angleCone=0.0)
 
     # Add linear solver
@@ -130,9 +162,11 @@ def createScene(rootNode):
     simulation.addObject("GenericConstraintCorrection", solverName="SparseLDLSolver")
 
     Floor(rootNode)
-    target = Target(rootNode)
+    if INVERSE:
+        target = Target(rootNode)
 
-    circularrobot = CircularRobot(simulation, effectorTarget=target.dofs.getData("position").getLinkPath())
+    circularrobot = CircularRobot(simulation, effectorTarget=target.dofs.getData("position").getLinkPath(),
+                                  inverseMode=INVERSE)
     circularrobot.addVisualModel()
     circularrobot.addCollisionModel()
 
