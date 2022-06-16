@@ -63,7 +63,7 @@ AffineFunctionModel<DataTypes>::AffineFunctionModel(MechanicalState* object)
 
     , d_functionValue(initData(&d_functionValue, Real(0.0), "functionValue","Function value."))
 
-    , d_force(initData(&d_force,double(0.0), "force", "Output force."))
+    , d_force(initData(&d_force,double(0.0), "force", "Output force. Warning: to get the actual force you should divide this value by dt."))
 
     , d_displacement(initData(&d_displacement,double(0.0), "displacement",
                           "Output function value compared to the initial function value."))
@@ -160,9 +160,7 @@ void AffineFunctionModel<DataTypes>::checkSizes()
 	for (unsigned int i = 0; i<d_indices.getValue().size(); i++)
 	{
 		if (positions.size() <= d_indices.getValue()[i])
-			msg_error() << "Indices at index " << i << " is too large regarding mechanicalState [position] size";
-		if (d_indices.getValue()[i] < 0)
-			msg_error() << "Indices at index " << i << " is negative";
+            msg_error() << "Indices at index " << i << " is too large regarding mechanicalState [position] size";
 	}
 
     int nbIndices = d_indices.getValue().size();
