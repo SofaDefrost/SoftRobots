@@ -108,7 +108,7 @@ def createScene(rootNode):
 
     INVERSE = False  # Option to use the inverse solvers from the plugin SoftRobots.Inverse
 
-    rootNode.addObject('RequiredPlugin', pluginName=[
+    rootNode.addObject('RequiredPlugin', pluginName=['SoftRobots',
                         "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                         "Sofa.Component.Collision.Detection.Algorithm",
                         # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
