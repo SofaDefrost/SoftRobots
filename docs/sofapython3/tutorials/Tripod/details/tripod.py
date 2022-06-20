@@ -47,7 +47,7 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
 
         effectorPos = [0, 30, 0]
         o = deformableObject.addObject('SphereROI', name='roi', template='Rigid3',
-                                       centers=effectorPos, radii=[7.5], drawSphere=True)
+                                       centers=effectorPos, radii=[7.5], drawSphere=False)
         o.init()
         groupIndices.append(list(o.indices.value))
 

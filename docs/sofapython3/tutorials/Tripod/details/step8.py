@@ -21,6 +21,7 @@ def EffectorGoal(position):
     spheres.addObject('RigidMapping')
     return self
 
+
 class GoalController(Sofa.Core.Controller):
     """This controller moves the goal position when the inverse control is activated
     """
