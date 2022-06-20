@@ -34,7 +34,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ConstraintParams.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/type/Vec.h>
 
 #include <SoftRobots/component/initSoftRobots.h>

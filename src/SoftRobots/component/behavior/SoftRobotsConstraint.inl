@@ -31,7 +31,7 @@
 #define SOFA_CORE_BEHAVIOR_SoftRobotsConstraint_INL
 
 #include "SoftRobotsConstraint.h"
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/core/ConstraintParams.h>
 
 namespace sofa
@@ -43,7 +43,7 @@ namespace core
 namespace behavior
 {
 
-using component::linearsolver::FullVector;
+using sofa::linearalgebra::FullVector;
 using helper::ReadAccessor;
 
 template<class DataTypes>

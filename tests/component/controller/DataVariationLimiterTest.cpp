@@ -34,7 +34,7 @@ using std::string ;
 #include <sofa/testing/BaseTest.h>
 #include <sofa/helper/BackTrace.h>
 
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullVector.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;

@@ -159,7 +159,7 @@ void CommunicationController<DataTypes>::openCommunication()
             //uint64_t HWM = d_HWM.getValue();
             //m_socket->setsockopt(ZMQ_RCVHWM, &HWM, sizeof(HWM));
 
-            m_socket->setsockopt(ZMQ_SUBSCRIBE, "", 0); // Arg2: publisher name - Arg3: size of publisher name
+            m_socket->set(zmq::sockopt::subscribe, ""); // Arg2: publisher name
             m_socket->connect(adress.c_str());
         }
         else
@@ -172,8 +172,8 @@ void CommunicationController<DataTypes>::openCommunication()
     if(d_timeOut.getValue()>0)
     {
         // Set timeout: if reached, the communication will close and the component status will switch to invalid
-        m_socket->setsockopt(ZMQ_RCVTIMEO,d_timeOut.getValue());
-        m_socket->setsockopt(ZMQ_SNDTIMEO,d_timeOut.getValue());
+        m_socket->setsockopt(ZMQ_RCVTIMEO, d_timeOut.getValue());
+        m_socket->setsockopt(ZMQ_SNDTIMEO, d_timeOut.getValue());
     }
 }
 
@@ -303,8 +303,8 @@ void CommunicationController<DataTypes>::sendData()
 
     memcpy(message.data(), messageStr.c_str(), messageStr.length());
 
-    bool status = m_socket->send(message);
-    if(!status)
+    zmq::send_result_t status = m_socket->send(message, zmq::send_flags::none);
+    if(!status.has_value())
     {
         msg_warning() << "A problem with the communication has been detected. The component won't work anymore. "
                       << "If a timeOut has been set, you may consider a greater value.";
@@ -321,7 +321,7 @@ void CommunicationController<DataTypes>::receiveData()
 		sendRequest();
 
     zmq::message_t message;
-    bool status = m_socket->recv(&message);
+    zmq::recv_result_t status = m_socket->recv(message, zmq::recv_flags::none);
 
     if(status)
     {
@@ -359,7 +359,7 @@ void CommunicationController<DataTypes>::receiveData()
             stream << messageChar[i];
         }
         convertStringStreamToData(&stream);
-        delete messageChar;
+        delete[] messageChar;
     }
     else
     {
@@ -375,7 +375,7 @@ template<class DataTypes>
 void CommunicationController<DataTypes>::sendRequest()
 {
     zmq::message_t request;
-    m_socket->send(request);
+    m_socket->send(request, zmq::send_flags::none);
 }
 
 
@@ -383,7 +383,8 @@ template<class DataTypes>
 void CommunicationController<DataTypes>::receiveRequest()
 {
     zmq::message_t request;
-    m_socket->recv(&request);
+    auto status = m_socket->recv(request, zmq::recv_flags::none);
+    SOFA_UNUSED(status);
 }
 
 
