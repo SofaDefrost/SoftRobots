@@ -165,7 +165,7 @@ def createScene(rootNode):
     if INVERSE:
         target = Target(rootNode)
 
-    circularrobot = CircularRobot(simulation, effectorTarget=target.dofs.getData("position").getLinkPath(),
+    circularrobot = CircularRobot(simulation, effectorTarget=target.dofs.getData("position").getLinkPath() if INVERSE else '',
                                   inverseMode=INVERSE)
     circularrobot.addVisualModel()
     circularrobot.addCollisionModel()
