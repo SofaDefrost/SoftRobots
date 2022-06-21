@@ -112,8 +112,6 @@ void UnilateralPlaneConstraint<DataTypes>::checkIndicesRegardingState()
     {
         if (positions.size() <= d_indices.getValue()[i])
             msg_error() << "Indices at index " << i << " is to large regarding mechanicalState [position] size" ;
-        if (d_indices.getValue()[i] < 0)
-            msg_error() << "Indices at index " << i << " is negative" ;
     }
 }
 
