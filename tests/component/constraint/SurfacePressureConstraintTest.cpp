@@ -33,7 +33,7 @@
 #include <SoftRobots/component/constraint/SurfacePressureConstraint.h>
 using sofa::component::constraintset::SurfacePressureConstraint;
 
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/Locale.h>
 

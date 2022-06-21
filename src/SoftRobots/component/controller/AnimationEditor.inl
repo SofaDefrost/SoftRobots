@@ -441,10 +441,9 @@ void AnimationEditor<DataTypes>::moveCursor(const char key)
         }
     }
 
-    if (d_cursor.getValue()<0)
+    if (d_cursor.getValue()==0)
     {
         m_isFrameDirty = false;
-        d_cursor.setValue(0);
     }
 
     if (d_cursor.getValue()>d_maxKeyFrame.getValue())
