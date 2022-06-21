@@ -32,6 +32,7 @@ class ServoArm(Sofa.Prefab):
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
+    def init(self):
         self.addObject('MechanicalObject',
                        name='dofs',
                        size=1,
@@ -66,13 +67,22 @@ class ActuatedArm(Sofa.Prefab):
     prefabParameters = [
         {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
-        {'name': 'scale', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}]
+        {'name': 'scale', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}
+    ]
+
+    prefabData = [
+        {'name': 'angleOut', 'group': 'ArmProperties', 'type': 'float', 'help': 'angle of rotation (in radians) of '
+                                                                                'the arm', 'default': 0}
+    ]
 
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
+        self.servoarm = None
+        self.servomotor = None
 
-        self.servomotor = self.addChild(
-            ServoMotor(name="ServoMotor", translation=self.translation.value, rotation=self.rotation.value))
+    def init(self):
+        self.servomotor = self.addChild(ServoMotor(name="ServoMotor", translation=self.translation.value,
+                                                   rotation=self.rotation.value))
         self.servoarm = self.servomotor.Articulation.ServoWheel.addChild(ServoArm(name="ServoArm"))
         self.servoarm.setRigidMapping(self.ServoMotor.Articulation.ServoWheel.dofs.getLinkPath())
 
@@ -81,9 +91,7 @@ class ActuatedArm(Sofa.Prefab):
                      type='float', value=0)
         self.ServoMotor.getData('angleIn').setParent(self.getData('angleIn'))
 
-        # add a public attribute and connect it to the internal one.
-        self.addData(name='angleOut', group='ArmProperties', help='angle of rotation (in radians) of the arm',
-                     type='float', value=0)
+        # connect the public attribute to the internal one.
         self.getData('angleOut').setParent(self.ServoMotor.getData('angleOut'))
 
 

@@ -45,7 +45,8 @@ class ServoMotor(Sofa.Prefab):
     prefabData = [
         {'name': 'minAngle', 'help': 'min angle of rotation (in radians)', 'type': 'float', 'default': -100},
         {'name': 'maxAngle', 'help': 'max angle of rotation (in radians)', 'type': 'float', 'default': 100},
-        {'name': 'angleIn', 'help': 'angle of rotation (in radians)', 'type': 'float', 'default': 0}
+        {'name': 'angleIn', 'help': 'angle of rotation (in radians)', 'type': 'float', 'default': 0},
+        {'name': 'angleOut', 'help': 'angle of rotation (in degree)', 'type': 'float', 'default': 0}
     ]
 
     def __init__(self, *args, **kwargs):
@@ -92,8 +93,7 @@ class ServoMotor(Sofa.Prefab):
         angle.addObject('ArticulatedHierarchyContainer', printLog=False)
 
         # The output
-        self.addData(name='angleOut', group='S90Properties', help='angle of rotation (in degree)', type='float',
-                     value=angle.dofs.getData('position').getLinkPath())
+        self.getData('angleOut').setParent(angle.dofs.getData('position'))
 
 
 def createScene(rootNode):

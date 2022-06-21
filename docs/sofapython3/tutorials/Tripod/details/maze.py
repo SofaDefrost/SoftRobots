@@ -18,6 +18,7 @@ class Maze(Sofa.Prefab):
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
+    def init(self):
         self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze_12_coarse.stl",
                        translation=self.translation.value, rotation=self.rotation.value)
         self.addObject("MeshTopology", src='@loader')
@@ -36,6 +37,7 @@ class Sphere(Sofa.Prefab):
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
+    def init(self):
         if self.withSolver.value:
             self.addObject('EulerImplicitSolver')
             self.addObject('SparseLDLSolver')
