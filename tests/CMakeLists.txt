@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SoftRobots_test VERSION 1.0)
 
 find_package(SofaFramework REQUIRED)
-find_package(Sofa.Testing REQUIRED)
+find_package(SofaTest REQUIRED)
 find_package(SofaGTestMain REQUIRED)
 
 set(HEADER_FILES)
