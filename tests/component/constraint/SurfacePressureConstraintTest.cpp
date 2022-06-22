@@ -28,8 +28,6 @@
 *                                                                             *
 ******************************************************************************/
 
-#include <SofaTest/Sofa_test.h>
-
 #include <SoftRobots/component/constraint/SurfacePressureConstraint.h>
 using sofa::component::constraintset::SurfacePressureConstraint;
 
@@ -37,8 +35,12 @@ using sofa::component::constraintset::SurfacePressureConstraint;
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/Locale.h>
 
+#include <sofa/testing/BaseSimulationTest.h>
+
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
+
+#include <sofa/simulation/graph/SimpleApi.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -56,7 +58,7 @@ using sofa::core::objectmodel::ComponentState;
 namespace sofa {
 
     template <typename _DataTypes>
-    struct SurfacePressureConstraintTest : public Sofa_test<typename _DataTypes::Real>, SurfacePressureConstraint<_DataTypes>
+    struct SurfacePressureConstraintTest : public sofa::testing::BaseTest, SurfacePressureConstraint<_DataTypes>
     {
 
         using SurfacePressureConstraint<_DataTypes>::d_componentState;
@@ -79,6 +81,8 @@ namespace sofa {
 
         void SetUp()
         {
+            simpleapi::importPlugin("Sofa.Component");
+
             simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
 
             /// Load the scene
