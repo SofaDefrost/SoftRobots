@@ -71,6 +71,8 @@ class ActuatedArm(Sofa.Prefab):
     ]
 
     prefabData = [
+        {'name': 'angleIn', 'group': 'ArmProperties', 'help': 'angle of rotation (in radians) of the arm',
+         'type': 'float', 'default':0},
         {'name': 'angleOut', 'group': 'ArmProperties', 'type': 'float', 'help': 'angle of rotation (in radians) of '
                                                                                 'the arm', 'default': 0}
     ]
@@ -87,12 +89,10 @@ class ActuatedArm(Sofa.Prefab):
         self.servoarm.setRigidMapping(self.ServoMotor.Articulation.ServoWheel.dofs.getLinkPath())
 
         # add a public attribute and connect it to the private one.
-        self.addData(name='angleIn', group='ArmProperties', help='angle of rotation (in radians) of the arm',
-                     type='float', value=0)
-        self.ServoMotor.getData('angleIn').setParent(self.getData('angleIn'))
+        self.ServoMotor.angleIn.setParent(self.angleIn)
 
         # connect the public attribute to the internal one.
-        self.getData('angleOut').setParent(self.ServoMotor.getData('angleOut'))
+        self.angleOut.setParent(self.ServoMotor.angleOut)
 
 
 def createScene(rootNode):
@@ -117,9 +117,10 @@ def createScene(rootNode):
     scene.dt = 0.01
     scene.gravity = [0., -9810., 0.]
 
-    arm = scene.Simulation.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
+    arm = scene.Modelling.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
 
     def myanimate(target, factor):
         target.angleIn.value = math.cos(factor * 2 * math.pi)
 
     animate(myanimate, {'target': arm}, duration=10., mode='loop')
+    scene.Simulation.addChild(scene.Modelling)

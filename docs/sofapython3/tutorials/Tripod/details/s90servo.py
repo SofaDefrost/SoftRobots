@@ -56,8 +56,8 @@ class ServoMotor(Sofa.Prefab):
         servoBody = self.addChild('ServoBody')
         servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3',
                             position=[[0., 0., 0., 0., 0., 0., 1.]],
-                            translation=list(self.translation.value), rotation=list(self.rotation.value),
-                            scale3d=list(self.scale3d.value)
+                            translation=self.translation.value, rotation=self.rotation.value,
+                            scale3d=self.scale3d.value
                             )
         servoBody.addObject('FixedConstraint', indices=0)
         servoBody.addObject('UniformMass', totalMass=0.01)
@@ -71,15 +71,15 @@ class ServoMotor(Sofa.Prefab):
         # Servo wheel
         angle = self.addChild('Articulation')
         angle.addObject('MechanicalObject', name='dofs', template='Vec1', position=[[0]],
-                        rest_position=self.getData('angleIn').getLinkPath())
+                        rest_position=self.angleIn.getLinkPath())
         angle.addObject('RestShapeSpringsForceField', points=0, stiffness=1e9)
         angle.addObject('UniformMass', totalMass=0.01)
 
         servoWheel = angle.addChild('ServoWheel')
         servoWheel.addObject('MechanicalObject', name='dofs', template='Rigid3',
                              position=[[0., 0., 0., 0., 0., 0., 1.], [0., 0., 0., 0., 0., 0., 1.]], showObjectScale=20,
-                             translation=list(self.translation.value), rotation=list(self.rotation.value),
-                             scale3d=list(self.scale3d.value)
+                             translation=self.translation.value, rotation=self.rotation.value,
+                             scale3d=self.scale3d.value
                              )
         servoWheel.addObject('ArticulatedSystemMapping', input1="@../dofs", input2="@../../ServoBody/dofs",
                              output="@./")
@@ -93,7 +93,7 @@ class ServoMotor(Sofa.Prefab):
         angle.addObject('ArticulatedHierarchyContainer', printLog=False)
 
         # The output
-        self.getData('angleOut').setParent(angle.dofs.getData('position'))
+        self.angleOut.setParent(angle.dofs.position)
 
 
 def createScene(rootNode):
