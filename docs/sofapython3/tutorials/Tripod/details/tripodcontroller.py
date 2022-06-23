@@ -32,8 +32,8 @@ def setupanimation(actuators, step, angularstep, factor):
 def saveTripodPosition(actuators, step, angularstep, factor):
         t = []
         for actuator in actuators:
-                t.append(actuator.ServoMotor.ServoBody.dofs.getData("position"))
-                t.append(actuator.ServoMotor.getData("angleIn"))
+                t.append(actuator.ServoMotor.ServoBody.dofs.position)
+                t.append(actuator.ServoMotor.angleIn)
 
         dumpPosition(t, "tripodRestPosition.json")
 
@@ -199,7 +199,7 @@ class InverseController(Sofa.Core.Controller):
 
             Angles[0] = self.nodeTripod.actuatedarms[0].ServoMotor.Articulation.dofs.position[0][0];
             Angles[1] = self.nodeTripod.actuatedarms[1].ServoMotor.Articulation.dofs.position[0][0];
-            Angles[2] = self.nodeTripod.actuatedarms[2].ServoMotor.Articulation.dofs.position[0][0];            
+            Angles[2] = self.nodeTripod.actuatedarms[2].ServoMotor.Articulation.dofs.position[0][0];
             AnglesOut = [];
             for i in range(3):
                 # Conversion of the angle values from radians to degrees
@@ -214,7 +214,7 @@ class InverseController(Sofa.Core.Controller):
 
                 # Filling the list of the 3 angle values
                 AnglesOut.append(angleByte)
-                
+
             # The controller board of the real robot receives `AnglesOut` values
             if(self.serialport):
                 self.serialport.packetOut = [AnglesOut[0], AnglesOut[1],  AnglesOut[2]]
