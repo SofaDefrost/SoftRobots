@@ -1,11 +1,12 @@
 import os
 import Sofa
 from stlib3.scene import Scene
-dirPath = os.path.dirname(os.path.abspath(__file__))+'/'
+
+dirPath = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 
 class ServoMotor(Sofa.Prefab):
-    '''A S90 servo motor
+    """A S90 servo motor
 
     This prefab is implementing a S90 servo motor.
     https://servodatabase.com/servo/towerpro/sg90
@@ -35,59 +36,67 @@ class ServoMotor(Sofa.Prefab):
 
         ## Direct access to the components
         servo.angle.value = 1.0
-    '''
-    properties = [
-        {'name':'name',                'type':'string', 'help':'Node name',                   'default':'ServoMotor'},
-        {'name':'rotation',            'type':'Vec3d',  'help':'Rotation',                    'default':[0.0, 0.0, 0.0]},
-        {'name':'translation',         'type':'Vec3d',  'help':'Translation',                 'default':[0.0, 0.0, 0.0]},
-        {'name':'scale3d',               'type':'Vec3d',  'help':'Scale 3d',                    'default':[1.0, 1.0, 1.0]}]
+    """
+    prefabParameters = [
+        {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
+        {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
+        {'name': 'scale3d', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}]
+
+    prefabData = [
+        {'name': 'minAngle', 'help': 'min angle of rotation (in radians)', 'type': 'float', 'default': -100},
+        {'name': 'maxAngle', 'help': 'max angle of rotation (in radians)', 'type': 'float', 'default': 100},
+        {'name': 'angleIn', 'help': 'angle of rotation (in radians)', 'type': 'float', 'default': 0},
+        {'name': 'angleOut', 'help': 'angle of rotation (in degree)', 'type': 'float', 'default': 0}
+    ]
 
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
-    def init(self):
-
-        # The inputs
-        self.addData(name='minAngle', group='S90Properties', help='min angle of rotation (in radians)', type='float', value=-100)
-        self.addData(name='maxAngle', group='S90Properties', help='max angle of rotation (in radians)', type='float', value=100)
-        self.addData(name='angleIn', group='S90Properties', help='angle of rotation (in radians)', type='float', value=0)
-
         # Servo body
         servoBody = self.addChild('ServoBody')
-        servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[[0., 0., 0., 0., 0., 0., 1.]],
-                                    translation=list(self.translation.value),rotation=list(self.rotation.value),scale3d=list(self.scale3d.value))
+        servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3',
+                            position=[[0., 0., 0., 0., 0., 0., 1.]],
+                            translation=self.translation.value, rotation=self.rotation.value,
+                            scale3d=self.scale3d.value
+                            )
         servoBody.addObject('FixedConstraint', indices=0)
         servoBody.addObject('UniformMass', totalMass=0.01)
 
         visual = servoBody.addChild('VisualModel')
-        visual.addObject('MeshSTLLoader', name='loader', filename=dirPath+'data/mesh/SG90_servomotor.stl')
+        visual.addObject('MeshSTLLoader', name='loader', filename=dirPath + 'data/mesh/SG90_servomotor.stl')
         visual.addObject('MeshTopology', src='@loader')
         visual.addObject('OglModel', color=[0.15, 0.45, 0.75, 0.7], writeZTransparent=True)
         visual.addObject('RigidMapping', index=0)
 
         # Servo wheel
         angle = self.addChild('Articulation')
-        angle.addObject('MechanicalObject', name='dofs', template='Vec1', position=[[0]], rest_position=self.getData('angleIn').getLinkPath())
+        angle.addObject('MechanicalObject', name='dofs', template='Vec1', position=[[0]],
+                        rest_position=self.angleIn.getLinkPath())
         angle.addObject('RestShapeSpringsForceField', points=0, stiffness=1e9)
         angle.addObject('UniformMass', totalMass=0.01)
 
         servoWheel = angle.addChild('ServoWheel')
-        servoWheel.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[[0., 0., 0., 0., 0., 0., 1.],[0., 0., 0., 0., 0., 0., 1.]], showObjectScale=20,
-                                    translation=list(self.translation.value),rotation=list(self.rotation.value),scale3d=list(self.scale3d.value))
-        servoWheel.addObject('ArticulatedSystemMapping', input1="@../dofs", input2="@../../ServoBody/dofs", output="@./")
+        servoWheel.addObject('MechanicalObject', name='dofs', template='Rigid3',
+                             position=[[0., 0., 0., 0., 0., 0., 1.], [0., 0., 0., 0., 0., 0., 1.]], showObjectScale=20,
+                             translation=self.translation.value, rotation=self.rotation.value,
+                             scale3d=self.scale3d.value
+                             )
+        servoWheel.addObject('ArticulatedSystemMapping', input1="@../dofs", input2="@../../ServoBody/dofs",
+                             output="@./")
 
         articulationCenter = angle.addChild('ArticulationCenter')
-        articulationCenter.addObject('ArticulationCenter', parentIndex=0, childIndex=1, posOnParent=[0., 0., 0.], posOnChild=[0., 0., 0.])
+        articulationCenter.addObject('ArticulationCenter', parentIndex=0, childIndex=1, posOnParent=[0., 0., 0.],
+                                     posOnChild=[0., 0., 0.])
         articulation = articulationCenter.addChild('Articulations')
-        articulation.addObject('Articulation', translation=False, rotation=True, rotationAxis=[1, 0, 0], articulationIndex=0)
+        articulation.addObject('Articulation', translation=False, rotation=True, rotationAxis=[1, 0, 0],
+                               articulationIndex=0)
         angle.addObject('ArticulatedHierarchyContainer', printLog=False)
 
         # The output
-        self.addData(name='angleOut', group='S90Properties', help='angle of rotation (in degree)', type='float', value=angle.dofs.getData('position').getLinkPath())
+        self.angleOut.setParent(angle.dofs.position)
 
 
 def createScene(rootNode):
-
     import math
     from splib3.animation import animate
 

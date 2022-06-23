@@ -105,7 +105,8 @@ class CircularRobot:
 
 
 def createScene(rootNode):
-    INVERSE = False  # Option to use the inverse solvers from the plugin SoftRobots.Inverse
+
+    INVERSE = True  # Option to use the inverse solvers from the plugin SoftRobots.Inverse
 
     rootNode.addObject('RequiredPlugin', pluginName=['SoftRobots', 'SofaPython3',
                                                      "Sofa.Component.AnimationLoop",
@@ -176,6 +177,7 @@ def createScene(rootNode):
     circularrobot = CircularRobot(rootNode,
                                   effectorTarget=target.dofs.getData("position").getLinkPath() if INVERSE else '',
                                   inverseMode=INVERSE)
+
     circularrobot.addCollisionModel()
 
     return rootNode

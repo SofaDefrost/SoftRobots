@@ -8,6 +8,7 @@ from stlib3.scene import Scene                   #< Prefab for the scene
 from tripod import Tripod                        #< Prefab for the Tripod
 from tripodcontroller import TripodController    #< Implementation of a controller that modify the Tripod
 
+
 class MyController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
         # These are needed (and the normal way to override from a python class)
@@ -15,6 +16,7 @@ class MyController(Sofa.Core.Controller):
 
         def onKeypressedEvent(self, key):
             print("Key Pressed")
+
 
 def createScene(rootNode):
 
