@@ -513,11 +513,12 @@ The same keystrokes as in the previous steps are used, adding a new one to start
 <center>
 <figure>
   <img class="centered" src="images/maze.png" alt="" width="200px"/>
-  <figcaption>Figure 12: Maze</figcaption>
+  <figcaption>Figure 12: Maze with a little ball.</figcaption>
 </figure>
 </center>
 
-In the previous steps we where controlling the robot in inverse mode. We want now to make the robot follow a predefined path. 
+In the previous steps we where controlling the robot in inverse mode interactively. We want now to make the robot follow a predefined path. For that we will play with a maze. Let's try to define a path that will move a little ball inside the maze. Open the file mazeplanning.json, and add new points, then press ctrl+r to reload the scene and verify the results in simulation. Tips: To make the trajectory work well on the robot, try to emphasize the movements. Sometimes the ball rolls 
+better in the simulation than in reality.
 
 <pre>
 <a href="details/maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
@@ -540,7 +541,7 @@ In the previous steps we where controlling the robot in inverse mode. We want no
 </figure>
 </center>
 
-We can now include the maze trajectory withing the tripod robot scene to make a full fimulation and compare it with the real-world example. 
+We can now include the maze trajectory withing the tripod robot scene to make a full simulation and compare it with the real-world example. Run the scene step8-maze.py, and press ctrl+a to set the Tripod in the starting configuration, then press ctrl+i to start the inverse resolution. 
 
 <pre>
 <a href="details/step8-maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
