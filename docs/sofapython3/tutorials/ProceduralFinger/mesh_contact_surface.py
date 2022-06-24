@@ -5,8 +5,8 @@ import gmsh
 from mesh_clamping import define_parameters
 import sys
 
-def gen_contact_surface(L,l,e1,e2,e3,n,d,w,lc):
 
+def gen_contact_surface(L, l, e1, e2, e3, n, d, w, lc):
     ea1, ea2, La, la, inter, rHole = define_parameters();
 
     gmsh.option.setNumber("Mesh.MeshSizeMin", 0.2)
@@ -18,9 +18,9 @@ def gen_contact_surface(L,l,e1,e2,e3,n,d,w,lc):
     # Create a model for the finger surface contact 1
     gmsh.model.add("finger_contact_surface_in1")
 
-    gmsh.model.occ.addPoint(ea1,0,0,lc,1)
-    gmsh.model.occ.addPoint(e1, L-e2, 0, lc, 2)
-    gmsh.model.occ.addPoint(e1, L-e2, w, lc, 3)
+    gmsh.model.occ.addPoint(ea1, 0, 0, lc, 1)
+    gmsh.model.occ.addPoint(e1, L - e2, 0, lc, 2)
+    gmsh.model.occ.addPoint(e1, L - e2, w, lc, 3)
     gmsh.model.occ.addPoint(ea1, 0, w, lc, 4)
 
     # Draw lies between the points
@@ -59,16 +59,16 @@ def gen_contact_surface(L,l,e1,e2,e3,n,d,w,lc):
     # Create a model for the finger surface contact 2
     gmsh.model.add("finger_contact_surface_in2")
 
-    gmsh.model.occ.addPoint(l-e3, L-e2, 0, lc, 1)
+    gmsh.model.occ.addPoint(l - e3, L - e2, 0, lc, 1)
     gmsh.model.occ.addPoint(l - e3, L - e2, w, lc, 2)
 
     for k in range(1, n + 1):
-        gmsh.model.occ.addPoint(e1 + d[k - 1], L - e2 - k * (L - e2) / (n + 1), 0, lc, 2*k+1)
+        gmsh.model.occ.addPoint(e1 + d[k - 1], L - e2 - k * (L - e2) / (n + 1), 0, lc, 2 * k + 1)
         gmsh.model.occ.addPoint(e1 + d[k - 1], L - e2 - k * (L - e2) / (n + 1), w, lc, 2 * k + 2)
 
     # Draw lies between the points
-    for k in range(1, n+1):
-        gmsh.model.occ.addLine(2*(k-1)+1, 2*(k-1)+2, 4 * (k - 1) + 1)
+    for k in range(1, n + 1):
+        gmsh.model.occ.addLine(2 * (k - 1) + 1, 2 * (k - 1) + 2, 4 * (k - 1) + 1)
         gmsh.model.occ.addLine(2 * (k - 1) + 2, 2 * (k - 1) + 4, 4 * (k - 1) + 2)
         gmsh.model.occ.addLine(2 * (k - 1) + 4, 2 * (k - 1) + 3, 4 * (k - 1) + 3)
         gmsh.model.occ.addLine(2 * (k - 1) + 3, 2 * (k - 1) + 1, 4 * (k - 1) + 4)
@@ -76,9 +76,9 @@ def gen_contact_surface(L,l,e1,e2,e3,n,d,w,lc):
     #         gmsh.model.occ.addLine(k, k + 1, 4*(k-1)+1)
     # gmsh.model.occ.addLine(2 * n + 2, 1, 2 * n + 2)
 
-    for k in range(1,n+1):
+    for k in range(1, n + 1):
         # Define the contour
-        gmsh.model.occ.addCurveLoop(range(4*(k-1)+1,4*(k-1)+5), k);
+        gmsh.model.occ.addCurveLoop(range(4 * (k - 1) + 1, 4 * (k - 1) + 5), k);
 
         # Create the surface delimited by the contour
         surf = gmsh.model.occ.addPlaneSurface([k]);
@@ -148,4 +148,3 @@ def gen_contact_surface(L,l,e1,e2,e3,n,d,w,lc):
 
     # # This should be called when you are done using the Gmsh Python API:
     # gmsh.finalize()
-

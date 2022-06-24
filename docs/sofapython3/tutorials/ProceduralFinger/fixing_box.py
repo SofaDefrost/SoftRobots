@@ -3,7 +3,7 @@ from splib3.numerics import getOrientedBoxFromTransform
 
 
 class FixingBox(SofaPrefab):
-    '''Fix a set of 'dofs' according to a translation & orientation'''
+    """Fix a set of 'dofs' according to a translation & orientation"""
 
     def __init__(self, parent, target, name='FixingBox',
                  translation=[0.0, 0.0, 0.0], eulerRotation=[0.0, 0.0, 0.0], scale=[1.0, 1.0, 1.0]):
