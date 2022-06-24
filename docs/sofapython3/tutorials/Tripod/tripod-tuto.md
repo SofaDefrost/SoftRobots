@@ -509,6 +509,14 @@ The same keystrokes as in the previous steps are used, adding a new one to start
 </div>
 
 # STEP 8.2: Defining a motion path for the maze
+
+<center>
+<figure>
+  <img class="centered" src="images/maze.png" alt="" width="200px"/>
+  <figcaption>Figure 12: Maze</figcaption>
+</figure>
+</center>
+
 In the previous steps we where controlling the robot in inverse mode. We want now to make the robot follow a predefined path. 
 
 <pre>
@@ -524,6 +532,14 @@ In the previous steps we where controlling the robot in inverse mode. We want no
 </div>
 
 # STEP 8.3: Inverse control to follow a predefined motion path
+
+<center>
+<figure>
+  <img class="centered" src="images/tripodWithMazeDeformed.png" alt="" width="400px"/>
+  <figcaption>Figure 13: Tripod with maze on top.</figcaption>
+</figure>
+</center>
+
 We can now include the maze trajectory withing the tripod robot scene to make a full fimulation and compare it with the real-world example. 
 
 <pre>
