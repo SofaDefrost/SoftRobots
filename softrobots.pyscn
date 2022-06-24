@@ -3,4 +3,4 @@ import softrobots
 
 # This scene is just there to autoload the softrobots.html.
 def createScene(rootNode):
-	rootNode.createObject("RequiredPlugin", name="SoftRobots")
+	rootNode.addObject("RequiredPlugin", name="SoftRobots")
