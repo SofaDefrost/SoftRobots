@@ -3,11 +3,11 @@
 Step 8: Here we are showing how to setup the inverse control
 """
 import Sofa
-from tutorial import *
-from tripod import Tripod
-from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
-from maze import Maze, Sphere
-from mazecontroller import MazeController
+from parts.tutorial import *
+from parts.tripod import Tripod
+from parts.tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
+from parts.maze import Maze, Sphere
+from parts.mazecontroller import MazeController
 
 
 def EffectorGoal(node, position):
