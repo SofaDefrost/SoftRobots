@@ -25,7 +25,7 @@ def generate_volume_clamping(idx, n, lc):
     # Definition of the points forming the contour of the clamped portion
     gmsh.model.occ.addPoint(0, -La, 0, lc, 1)
     gmsh.model.occ.addPoint(0, 0, 0, lc, 2)
-    idxfin = 2 + 2 + n + 4 + n + 2
+    idxfin = 2 + 2 + 1 + n + 4 + n + 2
     gmsh.model.occ.addPoint(ea1, 0, 0, lc, idxfin + 1)
     gmsh.model.occ.addPoint(ea1, -La, 0, lc, idxfin + 2)
 
