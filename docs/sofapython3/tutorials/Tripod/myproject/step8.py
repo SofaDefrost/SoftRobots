@@ -3,23 +3,16 @@
 Step 8: Here we are showing how to setup the inverse control
 """
 import Sofa
-from tutorial import *
-from tripod import Tripod
-from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
+from parts.tutorial import *
+from parts.tripod import Tripod
+from parts.tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
 
 
 def EffectorGoal(position):
-    self = Sofa.Core.Node('Goal')
-    self.addObject('EulerImplicitSolver', firstOrder=True)
-    self.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
-    self.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
-    self.addObject('UncoupledConstraintCorrection')
-
-    spheres = self.addChild('Spheres')
-    spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0],  [10, 0, 0],   [0, 10, 0],   [0, 0, 10]])
-    spheres.addObject('SphereCollisionModel', radius=5, group=1)
-    spheres.addObject('RigidMapping')
+    self = Sofa.Core.Node("Goal")
+    # TODO: Define your effector goal here
     return self
+
 
 class GoalController(Sofa.Core.Controller):
     """This controller moves the goal position when the inverse control is activated
@@ -53,33 +46,19 @@ class GoalController(Sofa.Core.Controller):
 
 
 def addInverseComponents(arms, freecenter, goalNode, use_orientation):
-    actuators=[]
+    actuators = []
     for arm in arms:
         actuator = arm.ServoMotor.Articulation.addChild('actuator')
         actuators.append(actuator)
         actuator.activated = False
-        actuator.addObject('JointActuator', name='JointActuator', template='Vec1',
-                                                index=0, applyForce=True,
-                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.1)
+        # TODO: Add the actuator
 
     effector = freecenter.addChild("Effector")
-    freecenter.dofs.showObject=True
+    freecenter.dofs.showObject = True
     effector.activated = False
     actuators.append(effector)
-    if goalNode is None:
-        effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[1, 1, 1, 0, 0, 0],
-                               indices=0, effectorGoal=[10, 40, 0], limitShiftToTarget=True,
-                               maxShiftToTarget=5)
-    elif use_orientation:
-        effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[0, 1, 0, 1, 0, 1],
-                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath())
-    else:
-        effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[1, 1, 1, 0, 0, 0],
-                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath(),
-                               limitShiftToTarget=True, maxShiftToTarget=5)
+    # TODO: Add the effector
+
     return actuators
 
 
@@ -93,7 +72,9 @@ def createScene(rootNode):
 
     # Inverse Solver
     scene.addObject('FreeMotionAnimationLoop')
-    scene.addObject('QPInverseProblemSolver', name='QP', printLog=False)
+    # TODO: Replace the constraint solver with the inverse solver
+    scene.Simulation.addObject('GenericConstraintSolver')
+
     scene.Simulation.addObject('GenericConstraintCorrection')
     scene.Settings.mouseButton.stiffness = 10
     scene.VisualStyle.displayFlags = "showBehavior showCollision"
@@ -102,18 +83,10 @@ def createScene(rootNode):
 
     # Serial port bridge
     serial = SerialPortBridgeGeneric(rootNode)
-
-    # Choose here to control position or orientation of end-effector
-    orientation = False
-    if orientation:
-        # inverse in orientation
-        goalNode = EffectorGoal([0, 50, 50])
-    else:
-        # inverse in position
-        goalNode = EffectorGoal([0, 40, 0])
+    goalNode = EffectorGoal([0, 40, 0])
     scene.Modelling.addChild(goalNode)
 
-    actuators = addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)
+    actuators = addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, False)
 
     # The real robot receives data from the 3 actuators
     # serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))
