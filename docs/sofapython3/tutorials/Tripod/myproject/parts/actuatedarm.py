@@ -11,7 +11,7 @@
 import Sofa
 from stlib3.visuals import VisualModel
 
-from s90servo import ServoMotor
+from parts.s90servo import ServoMotor
 
 
 class ServoArm(Sofa.Prefab):
@@ -24,7 +24,6 @@ class ServoArm(Sofa.Prefab):
     """
 
     prefabData = [
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'ServoArm'},
         {'name': 'mappingInputLink', 'type': 'string',
          'help': 'the rigid mechanical object that will control the orientation of the servo arm', 'default': ''},
         {'name': 'indexInput', 'type': 'int', 'help': 'index of the rigid the ServoArm should be mapped to',
@@ -66,7 +65,6 @@ class ActuatedArm(Sofa.Prefab):
             }
     """
     prefabData = [
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'ActuatedArm'},
         {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'scale', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}]

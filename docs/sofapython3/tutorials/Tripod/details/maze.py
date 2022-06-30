@@ -19,7 +19,7 @@ class Maze(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
-        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze_12_coarse.stl",
+        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze.stl",
                        translation=self.translation.value, rotation=self.rotation.value)
         self.addObject("MeshTopology", src='@loader')
         self.addObject("MechanicalObject")
@@ -30,7 +30,7 @@ class Maze(Sofa.Prefab):
 
 class Sphere(Sofa.Prefab):
     prefabParameters = [
-        {'name': 'position', 'type': 'Vec3d', 'help': '', 'default': [-22, 50, -27]},
+        {'name': 'position', 'type': 'Vec3d', 'help': '', 'default': [3, 50, -8]},
         {'name': 'withSolver', 'type': 'bool', 'help': '', 'default': False}
     ]
 
