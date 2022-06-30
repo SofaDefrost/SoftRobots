@@ -168,7 +168,7 @@ Don’t hesitate to go through the commented code of the SOFA scene for further 
 finger behavior and determine the final contact force, you must:
 
 - Launch the scene, by typing the following command in the terminal (for windows users, this
-command works if runsofa.exe was previously included in the PATH environment variable) `runsofa tripod_gripper_CG.py`
+command works if runSofa.exe was previously included in the PATH environment variable) `runSofa procedural-finger.py`
 - Press the Animate button. The servomotor is controlled to reach the angular displacement in 5s.
 - Print the contact force in the terminal by pressing on the keys “Ctrl+P”. Make sure you activated
 the visualization window of SOFA by clinking on it when you want to interact with the simulation.

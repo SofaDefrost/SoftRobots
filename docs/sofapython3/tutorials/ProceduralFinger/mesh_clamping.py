@@ -1,5 +1,4 @@
 import gmsh
-import sys
 
 
 def define_parameters():
@@ -47,7 +46,7 @@ def generate_holes_clamping(w, e1):
     # Definition of the cylindrical holes for the fixation
     gmsh.model.occ.cut(e1, [(3, 10), (3, 11)])
 
-# # Draw lies between the points
+# # Draw lines between the points
 # for k in range(9,12):
 # 	gmsh.model.occ.addLine(k,k+1,k)
 
