@@ -67,7 +67,7 @@ class SerialPortController(Sofa.Core.Controller):
 
         for arm in self.actuatedarms:
             # Conversion of the angle values from radians to degrees
-            angleDegree = arm.servomotor.angleOut.value * 360 / (2.0 * pi)
+            angleDegree = arm.ServoMotor.angleOut.value * 360 / (2.0 * pi)
             angleByte = int(floor(angleDegree)) + 179
 
             # Limitation of the angular position's command
