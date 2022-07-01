@@ -27,7 +27,7 @@ satisfying size and fabrication constraints.
 
 <img src="images/fingers.png" width="600" title="Figure 1: Concept of soft gripper actuated with the Tripod structure" alt="Figure 1: Concept of soft gripper actuated with the Tripod structure"/>
 
-The goal of this hands-on session is to learn how to use parametric Computer Assisted Design (CAD) and
+The goal of this hands-on session is to learn how to leverage parametric Computer Assisted Design (CAD) and
 mechanical models to optimize the finger design iteratively. We propose in particular the use of a python
 script that will automatically generate a geometry and a mesh, starting from a base finger design and
 following simple inputs of design parameters. Participants who are already comfortable with soft
@@ -67,9 +67,9 @@ The last version of the software can be found here:
 https://ultimaker.com/fr/software/ultimaker-cura
 
 ### Hands-on session starting directory
-The starting directory for this hands-on session is composed of several files and folders:
+The starting directory for this hands-on session includes a `details` directory that contains several files and folders:
 - A `Data` directory where the generated meshes are stored. The directory initially contains the
-servomotor 2D mesh (STL CAD) files
+servomotor 2D mesh (STL CAD) files and the mesh of the cylinder to grasp.
 - Python scripts for the generation of the finger geometry and meshes:
   - `mesh_finger.py`
   - `mesh_clamping.py`
@@ -81,6 +81,7 @@ servomotor 2D mesh (STL CAD) files
   - `actuated_arm.py`
   - `fixing_box.py`
   - `s90_servo.py`
+  - `cylinder.py`
 - A CURA file to prepare the 3D printing program of the designed finger
   - `finger_cura.3mf`
 
@@ -148,7 +149,7 @@ To generate a new design of finger, you must:
 
 - Choose a set of design parameters
 - Write their value at the beginning of the code using your favorite code editor
-- Execute the Python script using the command: `python3 mesh_finger.py`
+- From the `details` directory, execute the Python script using the command: `python3 details/mesh_finger.py`
 - Check visually the consistency of the generated part using the now opened Gmsh window
 
 The script will then automatically store the generated mesh files in the `Data` of the starting repository.
@@ -179,12 +180,26 @@ servomotor rotation
 between the inner surfaces of the left and right walls
 
 <pre>
-<a href="details/procedural-finger.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/gripper_simulation.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
 </pre>
+
+[//]: # (<a href="javascript:void&#40;0&#41;" onclick="toggle&#40;'step1code'&#41;;"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>)
+
+[//]: # ()
+[//]: # (<div id='step1code' class='hide'>)
+
+[//]: # (```python )
+
+[//]: # (..autofile::details/gripper_simulation.py)
+
+[//]: # (```)
+
+[//]: # (</div>)
+
+
 [comment]: <> (<div id='step1code' class='hide'>)
 [comment]: <> (```python)
-[comment]: <> (..autofile::procedural-finger.py)
+[comment]: <> (..autofile::gripper_simulation.py)
 [comment]: <> (```)
 [comment]: <> (</div>)
 
