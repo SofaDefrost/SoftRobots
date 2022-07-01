@@ -107,7 +107,8 @@ def createScene(rootNode):
                   "Sofa.Component.Visual",
                   "Sofa.GL.Component.Rendering3D",
                   "Sofa.GUI.Component",
-                  "SoftRobots"]
+                  "SoftRobots",
+                  "SoftRobots.Inverse"]
 
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=pluginList)
 
