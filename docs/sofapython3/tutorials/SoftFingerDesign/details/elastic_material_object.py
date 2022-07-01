@@ -7,7 +7,6 @@ class ElasticMaterialObject(Sofa.Prefab):
     """Creates an object composed of an elastic material."""
     prefabParameters = [
         {'name': 'volumeMeshFileName', 'type': 'string', 'help': 'Path to volume mesh file', 'default': ''},
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'ElasticMaterialObject'},
         {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'scale', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]},

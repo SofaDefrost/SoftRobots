@@ -6,16 +6,12 @@ from fixing_box import FixingBox
 from actuated_arm import ActuatedArm
 from stlib3.components import addOrientedBoxRoi
 
-from splib3.numerics import vec3
-
-from numpy.linalg import norm
 from splib3.constants import Key
 import math
 
 
 class ActuatedFinger(Sofa.Prefab):
     prefabParameters = [
-        {"name": "name", "type": "string", "help": "Node name", "default": "ActuatedFinger"},
         {"name": "rotation", "type": "Vec3d", "help": "Rotation in base frame", "default": [0.0, 0.0, 0.0]},
         {"name": "translation", "type": "Vec3d", "help": "Translation in base frame",
          "default": [0.0, 0.0, 0.0]}
@@ -163,7 +159,7 @@ class FingerController(Sofa.Core.Controller):
             if contact > 0:
                 self.numContact += 1
                 self.forceContact += contact
-        self.forceContact = self.forceContact/self.node.dt.value
+        self.forceContact /= self.node.dt.value
 
 
 def createScene(rootNode):

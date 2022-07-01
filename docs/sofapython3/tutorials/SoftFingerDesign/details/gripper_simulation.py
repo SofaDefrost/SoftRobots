@@ -41,7 +41,7 @@ def createScene(rootNode):
     scene.Modelling.addChild('Obstacle')
 
     cylObst = Cylinder(parent=scene.Modelling.Obstacle, translation=[30.0e-3, 0.0, 50.0e-3],
-                        surfaceMeshFileName = 'Data/cylinder.stl',
+                        surfaceMeshFileName='Data/cylinder.stl',
                         MOscale=10e-3,
                         uniformScale=0.5,
                         totalMass=0.032,
