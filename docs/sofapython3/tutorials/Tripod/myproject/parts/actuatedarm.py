@@ -11,7 +11,7 @@
 import Sofa
 from stlib3.visuals import VisualModel
 
-from s90servo import ServoMotor
+from parts.s90servo import ServoMotor
 
 
 class ServoArm(Sofa.Prefab):

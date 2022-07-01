@@ -1,7 +1,16 @@
-# Hands-on session: Model-based Design and Fabrication of a Soft Gripper
+![](images/proceduraltuto.png){ width=100% }
 
-![](images/fingers.png)
-Figure 1. Soft Gripper
+<script language="javascript">
+function toggle(target) {
+    d = document.getElementById(target);
+    if(d.className === "show")
+        d.className = "hide"
+    else
+        d.className = "show"
+    return false;
+}
+</script>
+
 
 ## Context and objectives
 In this hands on session, you are going to optimize the design a soft gripper. There exists many design of
@@ -25,7 +34,7 @@ Flex material, extruder of diameter 0.4 mm, layer thickness of 0.3 mm.
 The goal of this hands on session is to learn how to use parametric Computer Assisted Design (CAD) and
 mechanical models to optimize the finger design iteratively. We propose in particular the use of a python
 script that will automatically generate a geometry and a mesh, starting from a base finger design and
-following simple inputs of design parameters. Participants who are already comfortable with soft 
+following simple inputs of design parameters. Participants who are already comfortable with soft
 finger/robot design are free to propose their own CAD design of finger. Don’t hesitate to call the
 session’s supervisors to discuss your designs! The fingers will be simulated using the mechanical FEM
 model implemented in the SOFA software in order to have an evaluation of the grasping force. According
@@ -34,14 +43,14 @@ until the design specifications are achieved.
 
 Each participant will have to propose a design of finger at the end of the session, and justify their choice
 by filling the form at the end of this document. The finger designs will be reviewed by the school
-organizers, and the 3 of them will be 3D printed, assembled and tested. 
+organizers, and the 3 of them will be 3D printed, assembled and tested.
 
 ## Requirements
 
 ### Python + Editor
 
-The CAD generation script and the SOFA scene are both based on Python3 (version 3.7 or later). You will
-need also a python editor. Simple editors like Notepad will work very well. 
+The CAD generation script and the SOFA scene are both based on Python3 (version 3.7 or later). Despite any
+text editor will work, we highly recommand the use of a dedicated IDE for python (pyCharm, Spyder, atom to cite few others).
 
 ### Gmsh
 The python script interacts with Gmsh (by C. Geuzaine and J.-F. Remacle, version 4.9.5 or later) to
@@ -74,8 +83,7 @@ servomotor meshes at the beginning
 
 ## Parametric CAD
 
-![](images/parameters.png)
-Figure 2. Design parameters of the soft finger
+![](images/parameters.png){ width=80% .center}
 
 The starting design of soft finger we propose is described on Figure 1. The finger (in blue) consists initially in
 a U-shape, composed of left, top and right walls. The base of the left wall is fixed to the servomotor arm
@@ -122,23 +130,30 @@ enough to give you some intuition about how the parameters influence the finger 
 other designs might work very well also. Don’t hesitate to discuss with the session supervisors about it!
 
 ## Servomotors assembly
-
-![](images/assembly.png)
-Figure 3. Screenshot of the servomotor and finger assembly with dimensions
+![](images/assembly.png){ width=80% }
 
 ## SOFA simulation
 The SOFA scene used to evaluate the elastic behavior of the finger and the contact force with the object
-to grasp is provided in the file `procedural-finger-CG.py`. In this scene, we make use of the gripper symmetry
+to grasp is provided in the file `procedural-finger.py`. In this scene, we make use of the gripper symmetry
 to reduce the overall computation time. As the three servomotors and fingers are at the same distance
 to the object and equally distributed around it, they will apply the same force on it. Because of this, the
 object is likely to stay approximately at the same location before and after grasping. Therefore, we
 idealize the grasping scene by considering that the object is fixed in space and by simulating the behavior
 of one finger only.
 
-![](images/simulation.png)
-Figure 4. Screenshot of the SOFA scene for the soft finger simulation
+![](images/simulation.png){ width=80% }
 
-A screenshot of the scene is presented on Figure 2. The scene contains:
+The scene contains:
+
+<pre>
+<a href="details/procedural-finger.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+</pre>
+<div id='step1code' class='hide'>
+```python
+..autofile::procedural-finger.py
+```
+</div>
 
 - The 3D mesh of the finger along with an elastic force field to simulate its deformation
 - A box with rigidified mesh nodes at the left wall base, which pose is updated according to the
@@ -153,7 +168,7 @@ Don’t hesitate to go through the commented code of the SOFA scene for further 
 finger behavior and determine the final contact force, you must:
 
 - Launch the scene, by typing the following command in the terminal (for windows users, this
-command works if runsofa.exe was previously included in the PATH environment variable) `runsofa tripod_gripper_CG.py`
+command works if runSofa.exe was previously included in the PATH environment variable) `runSofa procedural-finger.py`
 - Press the Animate button. The servomotor is controlled to reach the angular displacement in 5s.
 - Print the contact force in the terminal by pressing on the keys “Ctrl+P”. Make sure you activated
 the visualization window of SOFA by clinking on it when you want to interact with the simulation.
