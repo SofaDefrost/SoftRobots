@@ -15,8 +15,22 @@ from elasticbody import ElasticBody
 from blueprint import Blueprint
 
 def createScene(rootNode):
+
+    pluginList = ["Sofa.Component.Engine.Select",
+                  "Sofa.Component.IO.Mesh",
+                  "Sofa.Component.LinearSolver.Direct",
+                  "Sofa.Component.Mass",
+                  "Sofa.Component.ODESolver.Backward",
+                  "Sofa.Component.SolidMechanics.FEM.Elastic",
+                  "Sofa.Component.SolidMechanics.Spring",
+                  "Sofa.Component.StateContainer",
+                  "Sofa.Component.Topology.Container.Dynamic",
+                  "Sofa.Component.Visual",
+                  "Sofa.GL.Component.Rendering3D",
+                  "Sofa.GUI.Component"]
+
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0],
-                  plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine', 'SofaGraphComponent'],
+                  plugins=pluginList,
                   iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')

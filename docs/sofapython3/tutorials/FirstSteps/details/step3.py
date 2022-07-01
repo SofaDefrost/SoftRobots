@@ -3,8 +3,25 @@ from stlib3.physics.rigid import Floor
 
 
 def createScene(rootNode):
+
+    pluginList = ["Sofa.Component.AnimationLoop",
+                  "Sofa.Component.Collision.Detection.Algorithm",
+                  "Sofa.Component.Collision.Detection.Intersection",
+                  "Sofa.Component.Collision.Geometry",
+                  "Sofa.Component.Collision.Response.Contact",
+                  "Sofa.Component.Constraint.Lagrangian.Correction",
+                  "Sofa.Component.Constraint.Lagrangian.Solver",
+                  "Sofa.Component.IO.Mesh",
+                  "Sofa.Component.LinearSolver.Iterative",
+                  "Sofa.Component.Mass",
+                  "Sofa.Component.ODESolver.Backward",
+                  "Sofa.Component.StateContainer",
+                  "Sofa.Component.Topology.Container.Constant",
+                  "Sofa.Component.Visual",
+                  "Sofa.GL.Component.Rendering3D"]
+
     # A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
-    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0])
+    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=pluginList)
     rootNode.VisualStyle.displayFlags = 'showCollisionModels'
 
     # Collision built-in function (already used in Step 1)
@@ -34,7 +51,7 @@ def createScene(rootNode):
 
     visual = cube.addChild("CubeVisual")
     # Graphic model based on a mesh
-    visual.addObject('MeshObjLoader', name="loader", filename="mesh/smCube27.obj", triangulate=True)
+    visual.addObject('MeshOBJLoader', name="loader", filename="mesh/smCube27.obj", triangulate=True)
     visual.addObject('OglModel', name="Visual", src="@loader", color=[0.1, 0.0, 1.0], scale=20.0)
     # Building a correspondence between the mechanical and the graphical representation
     visual.addObject('RigidMapping')
@@ -42,7 +59,7 @@ def createScene(rootNode):
     # Collision Object for the Cube
 
     collision = cube.addChild("CubeCollisionModel")
-    collision.addObject('MeshObjLoader', name="loader", filename="mesh/smCube27.obj", triangulate=True, scale=20.0)
+    collision.addObject('MeshOBJLoader', name="loader", filename="mesh/smCube27.obj", triangulate=True, scale=20.0)
 
     collision.addObject('MeshTopology', src="@loader")
     collision.addObject('MechanicalObject')

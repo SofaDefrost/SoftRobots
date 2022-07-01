@@ -8,8 +8,18 @@ import Sofa
 from stlib3.scene import Scene
 
 def createScene(rootNode):
+
+    pluginList = ["Sofa.Component.IO.Mesh",
+                  "Sofa.Component.LinearSolver.Direct",
+                  "Sofa.Component.Mass",
+                  "Sofa.Component.ODESolver.Backward",
+                  "Sofa.Component.StateContainer",
+                  "Sofa.Component.Visual",
+                  "Sofa.GL.Component.Rendering3D",
+                  "Sofa.GUI.Component"]
+
     # Setting the gravity, assuming the length unit is in millimeters
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual'], iterative=False)
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=pluginList, iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
