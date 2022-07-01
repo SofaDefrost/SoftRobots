@@ -7,7 +7,6 @@ import json
 
 class Maze(Sofa.Prefab):
     prefabData = [
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'Maze'},
         {'name': 'index', 'type': 'int', 'help': 'index of rigid to attach to', 'default': 0},
         {'name': 'translation', 'type': 'Vec3d', 'help': '', 'default': [0, 5, 0]},
         {'name': 'rotation', 'type': 'Vec3d', 'help': '', 'default': [-90, 0, 0]}
@@ -17,7 +16,7 @@ class Maze(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
-        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze_12_coarse.stl",
+        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze.stl",
                        translation=self.translation.value, rotation=self.rotation.value)
         self.addObject("MeshTopology", src='@loader')
         self.addObject("MechanicalObject")
@@ -28,8 +27,7 @@ class Maze(Sofa.Prefab):
 
 class Sphere(Sofa.Prefab):
     prefabData = [
-        {'name': 'name', 'type': 'string', 'help': 'Node name', 'default': 'Sphere'},
-        {'name': 'position', 'type': 'Vec3d', 'help': '', 'default': [-22, 50, -27]},
+        {'name': 'position', 'type': 'Vec3d', 'help': '', 'default': [3, 50, -8]},
         {'name': 'withSolver', 'type': 'bool', 'help': '', 'default': False}
     ]
 

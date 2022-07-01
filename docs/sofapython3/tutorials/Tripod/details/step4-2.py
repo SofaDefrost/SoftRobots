@@ -73,11 +73,28 @@ def createScene(rootNode):
     from fixingbox import FixingBox
     import math
 
+    pluginList = ["ArticulatedSystemPlugin",
+                  "Sofa.Component.AnimationLoop",
+                  "Sofa.Component.Constraint.Lagrangian.Correction",
+                  "Sofa.Component.Constraint.Lagrangian.Solver",
+                  "Sofa.Component.Constraint.Projective",
+                  "Sofa.Component.Engine.Select",
+                  "Sofa.Component.IO.Mesh",
+                  "Sofa.Component.LinearSolver.Direct",
+                  "Sofa.Component.Mapping.MappedMatrix",
+                  "Sofa.Component.Mass",
+                  "Sofa.Component.ODESolver.Backward",
+                  "Sofa.Component.SolidMechanics.FEM.Elastic",
+                  "Sofa.Component.SolidMechanics.Spring",
+                  "Sofa.Component.StateContainer",
+                  "Sofa.Component.Topology.Container.Constant",
+                  "Sofa.Component.Topology.Container.Dynamic",
+                  "Sofa.Component.Visual",
+                  "Sofa.GL.Component.Rendering3D",
+                  "Sofa.GUI.Component"]
+
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False,
-                  plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine',
-                           'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent',
-                           'SofaBoundaryCondition',
-                           'SofaGeneralAnimationLoop', 'SofaConstraint'])
+                  plugins=pluginList)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')

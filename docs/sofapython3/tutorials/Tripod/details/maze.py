@@ -19,7 +19,7 @@ class Maze(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
-        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze_12_coarse.stl",
+        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze.stl",
                        translation=self.translation.value, rotation=self.rotation.value)
         self.addObject("MeshTopology", src='@loader')
         self.addObject("MechanicalObject")
@@ -30,7 +30,7 @@ class Maze(Sofa.Prefab):
 
 class Sphere(Sofa.Prefab):
     prefabParameters = [
-        {'name': 'position', 'type': 'Vec3d', 'help': '', 'default': [-22, 50, -27]},
+        {'name': 'position', 'type': 'Vec3d', 'help': '', 'default': [3, 50, -8]},
         {'name': 'withSolver', 'type': 'bool', 'help': '', 'default': False}
     ]
 
@@ -40,7 +40,7 @@ class Sphere(Sofa.Prefab):
     def init(self):
         if self.withSolver.value:
             self.addObject('EulerImplicitSolver')
-            self.addObject('SparseLDLSolver')
+            self.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixd")
             self.addObject('GenericConstraintCorrection')
         self.addObject("MechanicalObject", position=self.position.value)
         self.addObject("UniformMass", totalMass=1e-4)
@@ -51,19 +51,22 @@ def createScene(rootNode):
     rootNode.gravity = [0., -9810., 0.]
     rootNode.dt = 0.01
 
-    rootNode.addObject('RequiredPlugin', pluginName=["Sofa.Component.AnimationLoop",
-                                                     "Sofa.Component.Collision.Detection.Algorithm",
-                                                     "Sofa.Component.Collision.Detection.Intersection",
-                                                     "Sofa.Component.Collision.Geometry",
-                                                     "Sofa.Component.Collision.Response.Contact",
-                                                     "Sofa.Component.Constraint.Lagrangian.Correction",
-                                                     "Sofa.Component.Constraint.Lagrangian.Solver",
-                                                     "Sofa.Component.IO.Mesh", "Sofa.Component.LinearSolver.Direct",
-                                                     "Sofa.Component.LinearSolver.Iterative", "Sofa.Component.Mass",
-                                                     "Sofa.Component.ODESolver.Backward",
-                                                     "Sofa.Component.SolidMechanics.Spring",
-                                                     "Sofa.Component.Topology.Container.Constant",
-                                                     "Sofa.Component.Visual", ])
+    pluginList = ["Sofa.Component.AnimationLoop",
+                  "Sofa.Component.Collision.Detection.Algorithm",
+                  "Sofa.Component.Collision.Detection.Intersection",
+                  "Sofa.Component.Collision.Geometry",
+                  "Sofa.Component.Collision.Response.Contact",
+                  "Sofa.Component.Constraint.Lagrangian.Correction",
+                  "Sofa.Component.Constraint.Lagrangian.Solver",
+                  "Sofa.Component.IO.Mesh", "Sofa.Component.LinearSolver.Direct",
+                  "Sofa.Component.LinearSolver.Iterative", "Sofa.Component.Mass",
+                  "Sofa.Component.ODESolver.Backward",
+                  "Sofa.Component.SolidMechanics.Spring",
+                  "Sofa.Component.StateContainer",
+                  "Sofa.Component.Topology.Container.Constant",
+                  "Sofa.Component.Visual"]
+
+    rootNode.addObject('RequiredPlugin', pluginName=pluginList)
 
     ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0)
     rootNode.addObject('VisualStyle', displayFlags=['showCollisionModels', 'showBehavior'])

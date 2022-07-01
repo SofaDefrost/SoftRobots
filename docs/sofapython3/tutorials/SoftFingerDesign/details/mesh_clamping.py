@@ -1,5 +1,4 @@
 import gmsh
-import sys
 
 
 def define_parameters():
@@ -65,3 +64,4 @@ def generate_holes_clamping(w, e1):
 # gmsh.model.occ.extrude([(2,surf_clamping_2)],0,0,w);
 
 # gmsh.model.occ.synchronize();
+
