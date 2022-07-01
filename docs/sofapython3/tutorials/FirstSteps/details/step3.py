@@ -3,8 +3,25 @@ from stlib3.physics.rigid import Floor
 
 
 def createScene(rootNode):
+
+    pluginList = ["Sofa.Component.AnimationLoop",
+                  "Sofa.Component.Collision.Detection.Algorithm",
+                  "Sofa.Component.Collision.Detection.Intersection",
+                  "Sofa.Component.Collision.Geometry",
+                  "Sofa.Component.Collision.Response.Contact",
+                  "Sofa.Component.Constraint.Lagrangian.Correction",
+                  "Sofa.Component.Constraint.Lagrangian.Solver",
+                  "Sofa.Component.IO.Mesh",
+                  "Sofa.Component.LinearSolver.Iterative",
+                  "Sofa.Component.Mass",
+                  "Sofa.Component.ODESolver.Backward",
+                  "Sofa.Component.StateContainer",
+                  "Sofa.Component.Topology.Container.Constant",
+                  "Sofa.Component.Visual",
+                  "Sofa.GL.Component.Rendering3D"]
+
     # A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
-    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0])
+    MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=pluginList)
     rootNode.VisualStyle.displayFlags = 'showCollisionModels'
 
     # Collision built-in function (already used in Step 1)
