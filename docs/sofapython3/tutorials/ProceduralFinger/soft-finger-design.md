@@ -194,7 +194,7 @@ finger behavior and determine the final contact force, you must:
 
 - Launch the scene, by typing the following command in the terminal (for windows users, this
 command works if runsofa.exe was previously included in the PATH environment variable) `gripper_simulation.py`
-- Press the Animate button. The servomotor is controlled to reach the angular displacement in 5s.
+- Press the Animate button. The servomotor is controlled to reach the angular displacement in 3s.
 
 To restart the simulation, press “Ctrl-R” (reload the scene) and then “Animate”.
 Note that, in theory, only the final shape of the finger is important to us to evaluate the final contact

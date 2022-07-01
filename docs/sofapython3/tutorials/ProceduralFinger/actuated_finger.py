@@ -125,7 +125,7 @@ class FingerController(Sofa.Core.Controller):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
 
         self.node = kwargs["node"]
-        self.duration = 5.0
+        self.duration = 3.0
         self.time = 0.0
         self.objectDof = kwargs["objectDof"]
         self.actuator = kwargs["actuator"]

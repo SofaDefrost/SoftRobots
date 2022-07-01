@@ -3,9 +3,8 @@ from stlib3.scene import Scene
 from actuated_finger import ActuatedFinger
 from actuated_finger import FingerController
 from fixing_box import FixingBox
-from stlib3.physics.rigid import Sphere
 from stlib3.scene.contactheader import ContactHeader
-from object import Cylinder
+from cylinder import Cylinder
 
 
 def createScene(rootNode):
@@ -51,7 +50,7 @@ def createScene(rootNode):
     cylObst.mstate.name = 'dofs'
 
     # Fix the object in space
-    fixSphere = FixingBox(scene.Modelling.Obstacle, cylObst, translation=[30.0e-3, 0.0, 70.0e-3],
+    FixingBox(scene.Modelling.Obstacle, cylObst, translation=[30.0e-3, 0.0, 70.0e-3],
                           scale=[10e-3, 10e-3, 10e-3])
     scene.Modelling.Obstacle.FixingBox.BoxROI.drawBoxes = True
 
