@@ -34,7 +34,7 @@ def createScene(rootNode):
 
     visual = cube.addChild("CubeVisual")
     # Graphic model based on a mesh
-    visual.addObject('MeshObjLoader', name="loader", filename="mesh/smCube27.obj", triangulate=True)
+    visual.addObject('MeshOBJLoader', name="loader", filename="mesh/smCube27.obj", triangulate=True)
     visual.addObject('OglModel', name="Visual", src="@loader", color=[0.1, 0.0, 1.0], scale=20.0)
     # Building a correspondence between the mechanical and the graphical representation
     visual.addObject('RigidMapping')
@@ -42,7 +42,7 @@ def createScene(rootNode):
     # Collision Object for the Cube
 
     collision = cube.addChild("CubeCollisionModel")
-    collision.addObject('MeshObjLoader', name="loader", filename="mesh/smCube27.obj", triangulate=True, scale=20.0)
+    collision.addObject('MeshOBJLoader', name="loader", filename="mesh/smCube27.obj", triangulate=True, scale=20.0)
 
     collision.addObject('MeshTopology', src="@loader")
     collision.addObject('MechanicalObject')
