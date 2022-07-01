@@ -1,0 +1,114 @@
+solid Created by Gmsh
+facet normal 1 -0 0
+  outer loop
+    vertex 0.036 0.044 0.02
+    vertex 0.036 0.0495 0.01
+    vertex 0.036 0.055 0.02
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.055 0
+    vertex 0.036 0.0495 0.01
+    vertex 0.036 0.044 0
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.055 0.02
+    vertex 0.036 0.0495 0.01
+    vertex 0.036 0.055 0
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.044 0
+    vertex 0.036 0.0495 0.01
+    vertex 0.036 0.044 0.02
+  endloop
+endfacet
+facet normal 1 -0 0
+  outer loop
+    vertex 0.036 0.033 0.02
+    vertex 0.036 0.0385 0.01
+    vertex 0.036 0.044 0.02
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.044 0
+    vertex 0.036 0.0385 0.01
+    vertex 0.036 0.033 0
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.044 0.02
+    vertex 0.036 0.0385 0.01
+    vertex 0.036 0.044 0
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.033 0
+    vertex 0.036 0.0385 0.01
+    vertex 0.036 0.033 0.02
+  endloop
+endfacet
+facet normal 1 -0 0
+  outer loop
+    vertex 0.036 0.022 0.02
+    vertex 0.036 0.0275 0.01
+    vertex 0.036 0.033 0.02
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.033 0
+    vertex 0.036 0.0275 0.01
+    vertex 0.036 0.022 0
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.033 0.02
+    vertex 0.036 0.0275 0.01
+    vertex 0.036 0.033 0
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.022 0
+    vertex 0.036 0.0275 0.01
+    vertex 0.036 0.022 0.02
+  endloop
+endfacet
+facet normal 1 -0 0
+  outer loop
+    vertex 0.036 0.011 0.02
+    vertex 0.036 0.0165 0.01
+    vertex 0.036 0.022 0.02
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.022 0
+    vertex 0.036 0.0165 0.01
+    vertex 0.036 0.011 0
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.022 0.02
+    vertex 0.036 0.0165 0.01
+    vertex 0.036 0.022 0
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 0.036 0.011 0
+    vertex 0.036 0.0165 0.01
+    vertex 0.036 0.011 0.02
+  endloop
+endfacet
+endsolid Created by Gmsh
