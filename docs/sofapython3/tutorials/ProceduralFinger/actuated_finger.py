@@ -74,13 +74,15 @@ class ActuatedFinger(Sofa.Prefab):
         # Create an ElasticMaterialObject, which import a mesh, assign it dofs  and mechanical properties
         # All the properties are expressed in SI units. The dimensions in the generated mesh are in meter,
         # the young modulus in Pascal ...
+        # The manufacturer of the Filaflex 70A filament indicates a young modulus of 32MPa. The Poisson ratio is fixed
+        # at 0.45 like standard elastomers (silicone, rubber)
         # The rotation and translation are adjusted so that the mesh is correctly positioned wrt the servo motor
         e = body.addChild(ElasticMaterialObject(
             volumeMeshFileName="Data/finger.msh",
             topoMesh="tetrahedron",
             scale=[1, 1, 1],
-            totalMass=0.010,
-            youngModulus=12e6,
+            totalMass=0.015,
+            youngModulus=32e6,
             poissonRatio=0.45,
             rotation=[90.0, 0.0, 0.0],
             translation=[-30.0e-3, 9.0e-3, 18.0e-3]))
@@ -156,10 +158,12 @@ class FingerController(Sofa.Core.Controller):
 
         # print the number of nodes in contact and the norm of the largest contact force
         self.numContact = 0
-        for contact in contactForces:
+        self.forceContact = 0
+        for contact in contactForces[0:-1:3]:
             if contact > 0:
                 self.numContact += 1
-        self.forceContact = sum(contactForces)
+                self.forceContact += contact
+        self.forceContact = self.forceContact/self.node.dt.value
 
 
 def createScene(rootNode):
