@@ -144,46 +144,56 @@ The resulting simulation looks like this:
 <a class="sourceLine" id="cb1-8" title="8"><span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
 <a class="sourceLine" id="cb1-9" title="9"></a>
 <a class="sourceLine" id="cb1-10" title="10"><span class="kw">def</span> createScene(rootNode):</a>
-<a class="sourceLine" id="cb1-11" title="11">    <span class="co"># Setting the gravity, assuming the length unit is in millimeters</span></a>
-<a class="sourceLine" id="cb1-12" title="12">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>], plugins<span class="op">=</span>[<span class="st">&#39;SofaSparseSolver&#39;</span>, <span class="st">&#39;SofaOpenglVisual&#39;</span>], iterative<span class="op">=</span><span class="va">False</span>)</a>
-<a class="sourceLine" id="cb1-13" title="13">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb1-14" title="14">    scene.addObject(<span class="st">&#39;DefaultAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb1-15" title="15">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb1-16" title="16"></a>
-<a class="sourceLine" id="cb1-17" title="17">    <span class="co"># Setting the timestep in seconds</span></a>
-<a class="sourceLine" id="cb1-18" title="18">    rootNode.dt <span class="op">=</span> <span class="fl">0.01</span></a>
-<a class="sourceLine" id="cb1-19" title="19"></a>
-<a class="sourceLine" id="cb1-20" title="20">    <span class="co"># Graphic modelling of the legends associated to the servomotors</span></a>
-<a class="sourceLine" id="cb1-21" title="21">    blueprint <span class="op">=</span> Sofa.Core.Node(<span class="st">&quot;Blueprints&quot;</span>)</a>
-<a class="sourceLine" id="cb1-22" title="22">    blueprint.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/blueprint.stl&#39;</span>)</a>
-<a class="sourceLine" id="cb1-23" title="23">    blueprint.addObject(<span class="st">&#39;OglModel&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>)</a>
-<a class="sourceLine" id="cb1-24" title="24">    scene.Settings.addChild(blueprint)</a>
-<a class="sourceLine" id="cb1-25" title="25"></a>
-<a class="sourceLine" id="cb1-26" title="26">    <span class="co"># Tool to load the mesh file of the silicone piece. It will be used for both the mechanical and the visual models.</span></a>
-<a class="sourceLine" id="cb1-27" title="27">    scene.Modelling.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/tripod_mid.stl&#39;</span>)</a>
-<a class="sourceLine" id="cb1-28" title="28"></a>
-<a class="sourceLine" id="cb1-29" title="29">    <span class="co"># Basic mechanical modelling of the silicone piece</span></a>
-<a class="sourceLine" id="cb1-30" title="30">    elasticbody <span class="op">=</span> scene.Modelling.addChild(<span class="st">&#39;MechanicalModel&#39;</span>)</a>
-<a class="sourceLine" id="cb1-31" title="31">    elasticbody.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;dofs&#39;</span>,</a>
-<a class="sourceLine" id="cb1-32" title="32">                             position<span class="op">=</span>scene.Modelling.loader.position.getLinkPath(),</a>
-<a class="sourceLine" id="cb1-33" title="33">                             showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="fl">5.0</span>,</a>
-<a class="sourceLine" id="cb1-34" title="34">                             rotation<span class="op">=</span>[<span class="fl">90.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>])</a>
-<a class="sourceLine" id="cb1-35" title="35">    elasticbody.addObject(<span class="st">&#39;UniformMass&#39;</span>)</a>
-<a class="sourceLine" id="cb1-36" title="36"></a>
-<a class="sourceLine" id="cb1-37" title="37">    <span class="co"># Visual object</span></a>
-<a class="sourceLine" id="cb1-38" title="38">    visual <span class="op">=</span> scene.Modelling.addChild(<span class="st">&#39;VisualModel&#39;</span>)</a>
-<a class="sourceLine" id="cb1-39" title="39">    <span class="co"># The mesh used for the Visual object is the same as the one for the MechanicalObject, and has been introduced in the rootNode</span></a>
-<a class="sourceLine" id="cb1-40" title="40">    visual.addObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&#39;renderer&#39;</span>,</a>
-<a class="sourceLine" id="cb1-41" title="41">                        src<span class="op">=</span>scene.Modelling.loader.getLinkPath(),</a>
-<a class="sourceLine" id="cb1-42" title="42">                        color<span class="op">=</span>[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">0.5</span>])</a>
-<a class="sourceLine" id="cb1-43" title="43"></a>
-<a class="sourceLine" id="cb1-44" title="44">    <span class="co"># A mapping applies the deformations computed on the mechanical model (the input parameter)</span></a>
-<a class="sourceLine" id="cb1-45" title="45">    <span class="co"># to the visual model (the output parameter).</span></a>
-<a class="sourceLine" id="cb1-46" title="46">    visual.addObject(<span class="st">&#39;IdentityMapping&#39;</span>,</a>
-<a class="sourceLine" id="cb1-47" title="47">                             <span class="bu">input</span><span class="op">=</span>elasticbody.dofs.getLinkPath(),</a>
-<a class="sourceLine" id="cb1-48" title="48">                             output<span class="op">=</span>visual.renderer.getLinkPath())</a>
-<a class="sourceLine" id="cb1-49" title="49">                             </a>
-<a class="sourceLine" id="cb1-50" title="50">    scene.Simulation.addChild(scene.Modelling)                          </a></code></pre></div>
+<a class="sourceLine" id="cb1-11" title="11"></a>
+<a class="sourceLine" id="cb1-12" title="12">    pluginList <span class="op">=</span> [<span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb1-13" title="13">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb1-14" title="14">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb1-15" title="15">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb1-16" title="16">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb1-17" title="17">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb1-18" title="18">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb1-19" title="19">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>]</a>
+<a class="sourceLine" id="cb1-20" title="20"></a>
+<a class="sourceLine" id="cb1-21" title="21">    <span class="co"># Setting the gravity, assuming the length unit is in millimeters</span></a>
+<a class="sourceLine" id="cb1-22" title="22">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>], plugins<span class="op">=</span>pluginList, iterative<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb1-23" title="23">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb1-24" title="24">    scene.addObject(<span class="st">&#39;DefaultAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb1-25" title="25">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb1-26" title="26"></a>
+<a class="sourceLine" id="cb1-27" title="27">    <span class="co"># Setting the timestep in seconds</span></a>
+<a class="sourceLine" id="cb1-28" title="28">    rootNode.dt <span class="op">=</span> <span class="fl">0.01</span></a>
+<a class="sourceLine" id="cb1-29" title="29"></a>
+<a class="sourceLine" id="cb1-30" title="30">    <span class="co"># Graphic modelling of the legends associated to the servomotors</span></a>
+<a class="sourceLine" id="cb1-31" title="31">    blueprint <span class="op">=</span> Sofa.Core.Node(<span class="st">&quot;Blueprints&quot;</span>)</a>
+<a class="sourceLine" id="cb1-32" title="32">    blueprint.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/blueprint.stl&#39;</span>)</a>
+<a class="sourceLine" id="cb1-33" title="33">    blueprint.addObject(<span class="st">&#39;OglModel&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>)</a>
+<a class="sourceLine" id="cb1-34" title="34">    scene.Settings.addChild(blueprint)</a>
+<a class="sourceLine" id="cb1-35" title="35"></a>
+<a class="sourceLine" id="cb1-36" title="36">    <span class="co"># Tool to load the mesh file of the silicone piece. It will be used for both the mechanical and the visual models.</span></a>
+<a class="sourceLine" id="cb1-37" title="37">    scene.Modelling.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/tripod_mid.stl&#39;</span>)</a>
+<a class="sourceLine" id="cb1-38" title="38"></a>
+<a class="sourceLine" id="cb1-39" title="39">    <span class="co"># Basic mechanical modelling of the silicone piece</span></a>
+<a class="sourceLine" id="cb1-40" title="40">    elasticbody <span class="op">=</span> scene.Modelling.addChild(<span class="st">&#39;MechanicalModel&#39;</span>)</a>
+<a class="sourceLine" id="cb1-41" title="41">    elasticbody.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;dofs&#39;</span>,</a>
+<a class="sourceLine" id="cb1-42" title="42">                             position<span class="op">=</span>scene.Modelling.loader.position.getLinkPath(),</a>
+<a class="sourceLine" id="cb1-43" title="43">                             showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="fl">5.0</span>,</a>
+<a class="sourceLine" id="cb1-44" title="44">                             rotation<span class="op">=</span>[<span class="fl">90.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>])</a>
+<a class="sourceLine" id="cb1-45" title="45">    elasticbody.addObject(<span class="st">&#39;UniformMass&#39;</span>)</a>
+<a class="sourceLine" id="cb1-46" title="46"></a>
+<a class="sourceLine" id="cb1-47" title="47">    <span class="co"># Visual object</span></a>
+<a class="sourceLine" id="cb1-48" title="48">    visual <span class="op">=</span> scene.Modelling.addChild(<span class="st">&#39;VisualModel&#39;</span>)</a>
+<a class="sourceLine" id="cb1-49" title="49">    <span class="co"># The mesh used for the Visual object is the same as the one for the MechanicalObject, and has been introduced in the rootNode</span></a>
+<a class="sourceLine" id="cb1-50" title="50">    visual.addObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&#39;renderer&#39;</span>,</a>
+<a class="sourceLine" id="cb1-51" title="51">                        src<span class="op">=</span>scene.Modelling.loader.getLinkPath(),</a>
+<a class="sourceLine" id="cb1-52" title="52">                        color<span class="op">=</span>[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">0.5</span>])</a>
+<a class="sourceLine" id="cb1-53" title="53"></a>
+<a class="sourceLine" id="cb1-54" title="54">    <span class="co"># A mapping applies the deformations computed on the mechanical model (the input parameter)</span></a>
+<a class="sourceLine" id="cb1-55" title="55">    <span class="co"># to the visual model (the output parameter).</span></a>
+<a class="sourceLine" id="cb1-56" title="56">    visual.addObject(<span class="st">&#39;IdentityMapping&#39;</span>,</a>
+<a class="sourceLine" id="cb1-57" title="57">                             <span class="bu">input</span><span class="op">=</span>elasticbody.dofs.getLinkPath(),</a>
+<a class="sourceLine" id="cb1-58" title="58">                             output<span class="op">=</span>visual.renderer.getLinkPath())</a>
+<a class="sourceLine" id="cb1-59" title="59">                             </a>
+<a class="sourceLine" id="cb1-60" title="60">    scene.Simulation.addChild(scene.Modelling)                          </a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene"><i> Exploring the scene </i></h2>
@@ -241,74 +251,86 @@ In order to implement the deformation behaviour, the <code>MechanicalObject</cod
 <a class="sourceLine" id="cb4-6" title="6"><span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
 <a class="sourceLine" id="cb4-7" title="7"></a>
 <a class="sourceLine" id="cb4-8" title="8"><span class="kw">def</span> createScene(rootNode):</a>
-<a class="sourceLine" id="cb4-9" title="9">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>],</a>
-<a class="sourceLine" id="cb4-10" title="10">                  plugins<span class="op">=</span>[<span class="st">&#39;SofaSparseSolver&#39;</span>, <span class="st">&#39;SofaOpenglVisual&#39;</span>, <span class="st">&#39;SofaSimpleFem&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>], iterative<span class="op">=</span><span class="va">False</span>)</a>
-<a class="sourceLine" id="cb4-11" title="11">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb4-12" title="12">    scene.addObject(<span class="st">&#39;DefaultAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb4-13" title="13">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb4-14" title="14">    scene.dt <span class="op">=</span> <span class="fl">0.01</span></a>
-<a class="sourceLine" id="cb4-15" title="15">        </a>
-<a class="sourceLine" id="cb4-16" title="16">    <span class="co"># It is possible to visualize the &#39;forcefields&#39; by doing</span></a>
-<a class="sourceLine" id="cb4-17" title="17">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&#39;showForceFields&#39;</span></a>
-<a class="sourceLine" id="cb4-18" title="18">    </a>
-<a class="sourceLine" id="cb4-19" title="19">    <span class="co"># Change the stiffness of the spring while interacting with the simulation</span></a>
-<a class="sourceLine" id="cb4-20" title="20">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="fl">1.0</span></a>
-<a class="sourceLine" id="cb4-21" title="21">    </a>
-<a class="sourceLine" id="cb4-22" title="22">    <span class="co"># Graphic modelling of the legends associated to the servomotors</span></a>
-<a class="sourceLine" id="cb4-23" title="23">    blueprint <span class="op">=</span> Sofa.Core.Node(<span class="st">&quot;Blueprints&quot;</span>)</a>
-<a class="sourceLine" id="cb4-24" title="24">    blueprint.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/blueprint.stl&#39;</span>)</a>
-<a class="sourceLine" id="cb4-25" title="25">    blueprint.addObject(<span class="st">&#39;OglModel&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>)</a>
-<a class="sourceLine" id="cb4-26" title="26">    scene.Modelling.addChild(blueprint)</a>
-<a class="sourceLine" id="cb4-27" title="27"></a>
-<a class="sourceLine" id="cb4-28" title="28">    <span class="co"># To simulate an elastic object, we need:</span></a>
-<a class="sourceLine" id="cb4-29" title="29">    <span class="co"># - a deformation law (here linear elasticity)</span></a>
-<a class="sourceLine" id="cb4-30" title="30">    <span class="co"># - a solving method (here FEM)</span></a>
-<a class="sourceLine" id="cb4-31" title="31">    <span class="co"># - as we are using FEM we need a space discretization (here tetrahedron)</span></a>
-<a class="sourceLine" id="cb4-32" title="32">    elasticbody <span class="op">=</span> scene.Modelling.addChild(<span class="st">&#39;ElasticBody&#39;</span>)</a>
-<a class="sourceLine" id="cb4-33" title="33"></a>
-<a class="sourceLine" id="cb4-34" title="34">    <span class="co"># Specific loader for the mechanical model</span></a>
-<a class="sourceLine" id="cb4-35" title="35">    elasticbody.addObject(<span class="st">&#39;GIDMeshLoader&#39;</span>,</a>
-<a class="sourceLine" id="cb4-36" title="36">                          name<span class="op">=</span><span class="st">&#39;loader&#39;</span>,</a>
-<a class="sourceLine" id="cb4-37" title="37">                          filename<span class="op">=</span><span class="st">&#39;data/mesh/tripod_low.gidmsh&#39;</span>)</a>
-<a class="sourceLine" id="cb4-38" title="38">    elasticbody.addObject(<span class="st">&#39;TetrahedronSetTopologyContainer&#39;</span>,</a>
-<a class="sourceLine" id="cb4-39" title="39">                          src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>,</a>
-<a class="sourceLine" id="cb4-40" title="40">                          name<span class="op">=</span><span class="st">&#39;tetras&#39;</span>)</a>
-<a class="sourceLine" id="cb4-41" title="41">                          </a>
-<a class="sourceLine" id="cb4-42" title="42">    mechanicalmodel <span class="op">=</span> elasticbody.addChild(<span class="st">&quot;MechanicalModel&quot;</span>)                      </a>
-<a class="sourceLine" id="cb4-43" title="43">    mechanicalmodel.addObject(<span class="st">&#39;MechanicalObject&#39;</span>,</a>
-<a class="sourceLine" id="cb4-44" title="44">                          name<span class="op">=</span><span class="st">&#39;dofs&#39;</span>,</a>
-<a class="sourceLine" id="cb4-45" title="45">                          position<span class="op">=</span>elasticbody.loader.position.getLinkPath(),</a>
-<a class="sourceLine" id="cb4-46" title="46">                          rotation<span class="op">=</span>[<span class="fl">90.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</a>
-<a class="sourceLine" id="cb4-47" title="47">                          showObject<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb4-48" title="48">                          showObjectScale<span class="op">=</span><span class="fl">5.0</span>)</a>
-<a class="sourceLine" id="cb4-49" title="49">    mechanicalmodel.addObject(<span class="st">&#39;UniformMass&#39;</span>, </a>
-<a class="sourceLine" id="cb4-50" title="50">                          name<span class="op">=</span><span class="st">&quot;mass&quot;</span>, </a>
-<a class="sourceLine" id="cb4-51" title="51">                          totalMass<span class="op">=</span><span class="fl">0.032</span>)</a>
-<a class="sourceLine" id="cb4-52" title="52"></a>
-<a class="sourceLine" id="cb4-53" title="53">    <span class="co"># ForceField components</span></a>
-<a class="sourceLine" id="cb4-54" title="54">    mechanicalmodel.addObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>,</a>
-<a class="sourceLine" id="cb4-55" title="55">                          name<span class="op">=</span><span class="st">&quot;linearElasticBehavior&quot;</span>,</a>
-<a class="sourceLine" id="cb4-56" title="56">                          youngModulus<span class="op">=</span><span class="dv">250</span>,</a>
-<a class="sourceLine" id="cb4-57" title="57">                          poissonRatio<span class="op">=</span><span class="fl">0.45</span>)</a>
-<a class="sourceLine" id="cb4-58" title="58">    </a>
-<a class="sourceLine" id="cb4-59" title="59">    <span class="co"># Visual model</span></a>
-<a class="sourceLine" id="cb4-60" title="60">    visual <span class="op">=</span> Sofa.Core.Node(<span class="st">&quot;VisualModel&quot;</span>)</a>
-<a class="sourceLine" id="cb4-61" title="61">    <span class="co"># Specific loader for the visual model</span></a>
-<a class="sourceLine" id="cb4-62" title="62">    visual.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>,</a>
-<a class="sourceLine" id="cb4-63" title="63">                     name<span class="op">=</span><span class="st">&#39;loader&#39;</span>,</a>
-<a class="sourceLine" id="cb4-64" title="64">                     filename<span class="op">=</span><span class="st">&#39;data/mesh/tripod_mid.stl&#39;</span>,</a>
-<a class="sourceLine" id="cb4-65" title="65">                     rotation<span class="op">=</span>[<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>])</a>
-<a class="sourceLine" id="cb4-66" title="66">    visual.addObject(<span class="st">&#39;OglModel&#39;</span>,</a>
-<a class="sourceLine" id="cb4-67" title="67">                     src<span class="op">=</span>visual.loader.getLinkPath(),</a>
-<a class="sourceLine" id="cb4-68" title="68">                     name<span class="op">=</span><span class="st">&#39;renderer&#39;</span>,</a>
-<a class="sourceLine" id="cb4-69" title="69">                     color<span class="op">=</span>[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">0.5</span>])</a>
-<a class="sourceLine" id="cb4-70" title="70">    scene.Modelling.ElasticBody.addChild(visual)</a>
-<a class="sourceLine" id="cb4-71" title="71"></a>
-<a class="sourceLine" id="cb4-72" title="72">    visual.addObject(<span class="st">&#39;BarycentricMapping&#39;</span>,</a>
-<a class="sourceLine" id="cb4-73" title="73">                     <span class="bu">input</span><span class="op">=</span>mechanicalmodel.dofs.getLinkPath(),</a>
-<a class="sourceLine" id="cb4-74" title="74">                     output<span class="op">=</span>visual.renderer.getLinkPath())</a>
-<a class="sourceLine" id="cb4-75" title="75">   </a>
-<a class="sourceLine" id="cb4-76" title="76">    scene.Simulation.addChild(elasticbody)                 </a></code></pre></div>
+<a class="sourceLine" id="cb4-9" title="9"></a>
+<a class="sourceLine" id="cb4-10" title="10">    pluginList <span class="op">=</span> [<span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb4-11" title="11">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb4-12" title="12">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb4-13" title="13">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb4-14" title="14">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb4-15" title="15">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb4-16" title="16">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb4-17" title="17">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb4-18" title="18">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb4-19" title="19">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>]</a>
+<a class="sourceLine" id="cb4-20" title="20"></a>
+<a class="sourceLine" id="cb4-21" title="21">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb4-22" title="22">                  plugins<span class="op">=</span>pluginList, iterative<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb4-23" title="23">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb4-24" title="24">    scene.addObject(<span class="st">&#39;DefaultAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb4-25" title="25">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb4-26" title="26">    scene.dt <span class="op">=</span> <span class="fl">0.01</span></a>
+<a class="sourceLine" id="cb4-27" title="27">        </a>
+<a class="sourceLine" id="cb4-28" title="28">    <span class="co"># It is possible to visualize the &#39;forcefields&#39; by doing</span></a>
+<a class="sourceLine" id="cb4-29" title="29">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&#39;showForceFields&#39;</span></a>
+<a class="sourceLine" id="cb4-30" title="30">    </a>
+<a class="sourceLine" id="cb4-31" title="31">    <span class="co"># Change the stiffness of the spring while interacting with the simulation</span></a>
+<a class="sourceLine" id="cb4-32" title="32">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="fl">1.0</span></a>
+<a class="sourceLine" id="cb4-33" title="33">    </a>
+<a class="sourceLine" id="cb4-34" title="34">    <span class="co"># Graphic modelling of the legends associated to the servomotors</span></a>
+<a class="sourceLine" id="cb4-35" title="35">    blueprint <span class="op">=</span> Sofa.Core.Node(<span class="st">&quot;Blueprints&quot;</span>)</a>
+<a class="sourceLine" id="cb4-36" title="36">    blueprint.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/blueprint.stl&#39;</span>)</a>
+<a class="sourceLine" id="cb4-37" title="37">    blueprint.addObject(<span class="st">&#39;OglModel&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>)</a>
+<a class="sourceLine" id="cb4-38" title="38">    scene.Modelling.addChild(blueprint)</a>
+<a class="sourceLine" id="cb4-39" title="39"></a>
+<a class="sourceLine" id="cb4-40" title="40">    <span class="co"># To simulate an elastic object, we need:</span></a>
+<a class="sourceLine" id="cb4-41" title="41">    <span class="co"># - a deformation law (here linear elasticity)</span></a>
+<a class="sourceLine" id="cb4-42" title="42">    <span class="co"># - a solving method (here FEM)</span></a>
+<a class="sourceLine" id="cb4-43" title="43">    <span class="co"># - as we are using FEM we need a space discretization (here tetrahedron)</span></a>
+<a class="sourceLine" id="cb4-44" title="44">    elasticbody <span class="op">=</span> scene.Modelling.addChild(<span class="st">&#39;ElasticBody&#39;</span>)</a>
+<a class="sourceLine" id="cb4-45" title="45"></a>
+<a class="sourceLine" id="cb4-46" title="46">    <span class="co"># Specific loader for the mechanical model</span></a>
+<a class="sourceLine" id="cb4-47" title="47">    elasticbody.addObject(<span class="st">&#39;GIDMeshLoader&#39;</span>,</a>
+<a class="sourceLine" id="cb4-48" title="48">                          name<span class="op">=</span><span class="st">&#39;loader&#39;</span>,</a>
+<a class="sourceLine" id="cb4-49" title="49">                          filename<span class="op">=</span><span class="st">&#39;data/mesh/tripod_low.gidmsh&#39;</span>)</a>
+<a class="sourceLine" id="cb4-50" title="50">    elasticbody.addObject(<span class="st">&#39;TetrahedronSetTopologyContainer&#39;</span>,</a>
+<a class="sourceLine" id="cb4-51" title="51">                          src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>,</a>
+<a class="sourceLine" id="cb4-52" title="52">                          name<span class="op">=</span><span class="st">&#39;tetras&#39;</span>)</a>
+<a class="sourceLine" id="cb4-53" title="53">                          </a>
+<a class="sourceLine" id="cb4-54" title="54">    mechanicalmodel <span class="op">=</span> elasticbody.addChild(<span class="st">&quot;MechanicalModel&quot;</span>)                      </a>
+<a class="sourceLine" id="cb4-55" title="55">    mechanicalmodel.addObject(<span class="st">&#39;MechanicalObject&#39;</span>,</a>
+<a class="sourceLine" id="cb4-56" title="56">                          name<span class="op">=</span><span class="st">&#39;dofs&#39;</span>,</a>
+<a class="sourceLine" id="cb4-57" title="57">                          position<span class="op">=</span>elasticbody.loader.position.getLinkPath(),</a>
+<a class="sourceLine" id="cb4-58" title="58">                          rotation<span class="op">=</span>[<span class="fl">90.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb4-59" title="59">                          showObject<span class="op">=</span><span class="va">True</span>,</a>
+<a class="sourceLine" id="cb4-60" title="60">                          showObjectScale<span class="op">=</span><span class="fl">5.0</span>)</a>
+<a class="sourceLine" id="cb4-61" title="61">    mechanicalmodel.addObject(<span class="st">&#39;UniformMass&#39;</span>, </a>
+<a class="sourceLine" id="cb4-62" title="62">                          name<span class="op">=</span><span class="st">&quot;mass&quot;</span>, </a>
+<a class="sourceLine" id="cb4-63" title="63">                          totalMass<span class="op">=</span><span class="fl">0.032</span>)</a>
+<a class="sourceLine" id="cb4-64" title="64"></a>
+<a class="sourceLine" id="cb4-65" title="65">    <span class="co"># ForceField components</span></a>
+<a class="sourceLine" id="cb4-66" title="66">    mechanicalmodel.addObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>,</a>
+<a class="sourceLine" id="cb4-67" title="67">                          name<span class="op">=</span><span class="st">&quot;linearElasticBehavior&quot;</span>,</a>
+<a class="sourceLine" id="cb4-68" title="68">                          youngModulus<span class="op">=</span><span class="dv">250</span>,</a>
+<a class="sourceLine" id="cb4-69" title="69">                          poissonRatio<span class="op">=</span><span class="fl">0.45</span>)</a>
+<a class="sourceLine" id="cb4-70" title="70">    </a>
+<a class="sourceLine" id="cb4-71" title="71">    <span class="co"># Visual model</span></a>
+<a class="sourceLine" id="cb4-72" title="72">    visual <span class="op">=</span> Sofa.Core.Node(<span class="st">&quot;VisualModel&quot;</span>)</a>
+<a class="sourceLine" id="cb4-73" title="73">    <span class="co"># Specific loader for the visual model</span></a>
+<a class="sourceLine" id="cb4-74" title="74">    visual.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>,</a>
+<a class="sourceLine" id="cb4-75" title="75">                     name<span class="op">=</span><span class="st">&#39;loader&#39;</span>,</a>
+<a class="sourceLine" id="cb4-76" title="76">                     filename<span class="op">=</span><span class="st">&#39;data/mesh/tripod_mid.stl&#39;</span>,</a>
+<a class="sourceLine" id="cb4-77" title="77">                     rotation<span class="op">=</span>[<span class="dv">90</span>, <span class="dv">0</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb4-78" title="78">    visual.addObject(<span class="st">&#39;OglModel&#39;</span>,</a>
+<a class="sourceLine" id="cb4-79" title="79">                     src<span class="op">=</span>visual.loader.getLinkPath(),</a>
+<a class="sourceLine" id="cb4-80" title="80">                     name<span class="op">=</span><span class="st">&#39;renderer&#39;</span>,</a>
+<a class="sourceLine" id="cb4-81" title="81">                     color<span class="op">=</span>[<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">0.5</span>])</a>
+<a class="sourceLine" id="cb4-82" title="82">    scene.Modelling.ElasticBody.addChild(visual)</a>
+<a class="sourceLine" id="cb4-83" title="83"></a>
+<a class="sourceLine" id="cb4-84" title="84">    visual.addObject(<span class="st">&#39;BarycentricMapping&#39;</span>,</a>
+<a class="sourceLine" id="cb4-85" title="85">                     <span class="bu">input</span><span class="op">=</span>mechanicalmodel.dofs.getLinkPath(),</a>
+<a class="sourceLine" id="cb4-86" title="86">                     output<span class="op">=</span>visual.renderer.getLinkPath())</a>
+<a class="sourceLine" id="cb4-87" title="87">   </a>
+<a class="sourceLine" id="cb4-88" title="88">    scene.Simulation.addChild(elasticbody)                 </a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene-1"><i>Exploring the scene</i></h2>
@@ -359,32 +381,46 @@ Such a function is defined at the beginning of the scene, and can be called as o
 <a class="sourceLine" id="cb6-15" title="15"><span class="im">from</span> blueprint <span class="im">import</span> Blueprint</a>
 <a class="sourceLine" id="cb6-16" title="16"></a>
 <a class="sourceLine" id="cb6-17" title="17"><span class="kw">def</span> createScene(rootNode):</a>
-<a class="sourceLine" id="cb6-18" title="18">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>],</a>
-<a class="sourceLine" id="cb6-19" title="19">                  plugins<span class="op">=</span>[<span class="st">&#39;SofaSparseSolver&#39;</span>, <span class="st">&#39;SofaOpenglVisual&#39;</span>, <span class="st">&#39;SofaSimpleFem&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>],</a>
-<a class="sourceLine" id="cb6-20" title="20">                  iterative<span class="op">=</span><span class="va">False</span>)</a>
-<a class="sourceLine" id="cb6-21" title="21">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb6-22" title="22">    scene.addObject(<span class="st">&#39;DefaultAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb6-23" title="23">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb6-24" title="24">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
-<a class="sourceLine" id="cb6-25" title="25">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&#39;showBehavior&#39;</span></a>
-<a class="sourceLine" id="cb6-26" title="26">    scene.dt <span class="op">=</span> <span class="fl">0.01</span></a>
-<a class="sourceLine" id="cb6-27" title="27"></a>
-<a class="sourceLine" id="cb6-28" title="28">     <span class="co"># Add the blueprint prefab</span></a>
-<a class="sourceLine" id="cb6-29" title="29">    scene.Modelling.addChild(Blueprint())</a>
-<a class="sourceLine" id="cb6-30" title="30"></a>
-<a class="sourceLine" id="cb6-31" title="31">    <span class="co"># Add the elasticobject prefab        </span></a>
-<a class="sourceLine" id="cb6-32" title="32">    scene.Modelling.addChild(ElasticBody(rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>],color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>]))</a>
-<a class="sourceLine" id="cb6-33" title="33"></a>
-<a class="sourceLine" id="cb6-34" title="34">    <span class="co"># Instanciating the FixingBox prefab into the graph, constraining the mechanical object of the ElasticBody.</span></a>
-<a class="sourceLine" id="cb6-35" title="35">    box <span class="op">=</span> FixingBox(scene.Modelling,</a>
-<a class="sourceLine" id="cb6-36" title="36">                    scene.Modelling.ElasticBody.MechanicalModel,</a>
-<a class="sourceLine" id="cb6-37" title="37">                    translation<span class="op">=</span>[<span class="fl">10.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</a>
-<a class="sourceLine" id="cb6-38" title="38">                    scale<span class="op">=</span>[<span class="fl">30.</span>, <span class="fl">30.</span>, <span class="fl">30.</span>])</a>
-<a class="sourceLine" id="cb6-39" title="39">    <span class="co"># Changing the property of the Box ROI so that the constraint area appears on screen.</span></a>
-<a class="sourceLine" id="cb6-40" title="40">    box.BoxROI.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb6-18" title="18"></a>
+<a class="sourceLine" id="cb6-19" title="19">    pluginList <span class="op">=</span> [<span class="st">&quot;Sofa.Component.Engine.Select&quot;</span>,</a>
+<a class="sourceLine" id="cb6-20" title="20">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb6-21" title="21">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb6-22" title="22">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb6-23" title="23">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb6-24" title="24">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb6-25" title="25">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb6-26" title="26">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb6-27" title="27">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb6-28" title="28">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb6-29" title="29">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb6-30" title="30">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>]</a>
+<a class="sourceLine" id="cb6-31" title="31"></a>
+<a class="sourceLine" id="cb6-32" title="32">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb6-33" title="33">                  plugins<span class="op">=</span>pluginList,</a>
+<a class="sourceLine" id="cb6-34" title="34">                  iterative<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb6-35" title="35">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb6-36" title="36">    scene.addObject(<span class="st">&#39;DefaultAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb6-37" title="37">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb6-38" title="38">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
+<a class="sourceLine" id="cb6-39" title="39">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&#39;showBehavior&#39;</span></a>
+<a class="sourceLine" id="cb6-40" title="40">    scene.dt <span class="op">=</span> <span class="fl">0.01</span></a>
 <a class="sourceLine" id="cb6-41" title="41"></a>
-<a class="sourceLine" id="cb6-42" title="42">    scene.Simulation.addChild(scene.Modelling.ElasticBody)    </a>
-<a class="sourceLine" id="cb6-43" title="43">    scene.Simulation.addChild(scene.Modelling.FixingBox)</a></code></pre></div>
+<a class="sourceLine" id="cb6-42" title="42">     <span class="co"># Add the blueprint prefab</span></a>
+<a class="sourceLine" id="cb6-43" title="43">    scene.Modelling.addChild(Blueprint())</a>
+<a class="sourceLine" id="cb6-44" title="44"></a>
+<a class="sourceLine" id="cb6-45" title="45">    <span class="co"># Add the elasticobject prefab        </span></a>
+<a class="sourceLine" id="cb6-46" title="46">    scene.Modelling.addChild(ElasticBody(rotation<span class="op">=</span>[<span class="dv">90</span>,<span class="dv">0</span>,<span class="dv">0</span>],color<span class="op">=</span>[<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>,<span class="fl">0.5</span>]))</a>
+<a class="sourceLine" id="cb6-47" title="47"></a>
+<a class="sourceLine" id="cb6-48" title="48">    <span class="co"># Instanciating the FixingBox prefab into the graph, constraining the mechanical object of the ElasticBody.</span></a>
+<a class="sourceLine" id="cb6-49" title="49">    box <span class="op">=</span> FixingBox(scene.Modelling,</a>
+<a class="sourceLine" id="cb6-50" title="50">                    scene.Modelling.ElasticBody.MechanicalModel,</a>
+<a class="sourceLine" id="cb6-51" title="51">                    translation<span class="op">=</span>[<span class="fl">10.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb6-52" title="52">                    scale<span class="op">=</span>[<span class="fl">30.</span>, <span class="fl">30.</span>, <span class="fl">30.</span>])</a>
+<a class="sourceLine" id="cb6-53" title="53">    <span class="co"># Changing the property of the Box ROI so that the constraint area appears on screen.</span></a>
+<a class="sourceLine" id="cb6-54" title="54">    box.BoxROI.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb6-55" title="55"></a>
+<a class="sourceLine" id="cb6-56" title="56">    scene.Simulation.addChild(scene.Modelling.ElasticBody)    </a>
+<a class="sourceLine" id="cb6-57" title="57">    scene.Simulation.addChild(scene.Modelling.FixingBox)</a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene-2"><i>Exploring the scene</i></h2>
@@ -492,33 +528,51 @@ Just like for the <code>ElasticBody</code>, a function <code>Tripod()</code> is 
 <a class="sourceLine" id="cb11-45" title="45">    <span class="im">from</span> fixingbox <span class="im">import</span> FixingBox</a>
 <a class="sourceLine" id="cb11-46" title="46">    <span class="im">import</span> math</a>
 <a class="sourceLine" id="cb11-47" title="47"></a>
-<a class="sourceLine" id="cb11-48" title="48">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>], iterative<span class="op">=</span><span class="va">False</span>,</a>
-<a class="sourceLine" id="cb11-49" title="49">                  plugins<span class="op">=</span>[<span class="st">&#39;SofaSparseSolver&#39;</span>, <span class="st">&#39;SofaOpenglVisual&#39;</span>, <span class="st">&#39;SofaSimpleFem&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>,</a>
-<a class="sourceLine" id="cb11-50" title="50">                           <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>, <span class="st">&#39;SofaBoundaryCondition&#39;</span>, <span class="st">&#39;SofaConstraint&#39;</span>])</a>
-<a class="sourceLine" id="cb11-51" title="51">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb11-52" title="52">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb11-53" title="53">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb11-54" title="54">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
-<a class="sourceLine" id="cb11-55" title="55">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb11-56" title="56">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
-<a class="sourceLine" id="cb11-57" title="57">    rootNode.dt <span class="op">=</span> <span class="fl">0.01</span></a>
-<a class="sourceLine" id="cb11-58" title="58">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
-<a class="sourceLine" id="cb11-59" title="59"></a>
-<a class="sourceLine" id="cb11-60" title="60">    scene.Modelling.addChild(Blueprint())</a>
-<a class="sourceLine" id="cb11-61" title="61"></a>
-<a class="sourceLine" id="cb11-62" title="62">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
-<a class="sourceLine" id="cb11-63" title="63">        </a>
-<a class="sourceLine" id="cb11-64" title="64">    FixingBox(scene.Modelling, tripod.ElasticBody.MechanicalModel, scale<span class="op">=</span>[<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>], translation<span class="op">=</span>[<span class="fl">0.</span>, <span class="dv">25</span>, <span class="fl">0.</span>])</a>
-<a class="sourceLine" id="cb11-65" title="65">    scene.Modelling.FixingBox.BoxROI.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb11-48" title="48">    pluginList <span class="op">=</span> [<span class="st">&quot;ArticulatedSystemPlugin&quot;</span>,</a>
+<a class="sourceLine" id="cb11-49" title="49">                  <span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
+<a class="sourceLine" id="cb11-50" title="50">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
+<a class="sourceLine" id="cb11-51" title="51">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span>,</a>
+<a class="sourceLine" id="cb11-52" title="52">                  <span class="st">&quot;Sofa.Component.Constraint.Projective&quot;</span>,</a>
+<a class="sourceLine" id="cb11-53" title="53">                  <span class="st">&quot;Sofa.Component.Engine.Select&quot;</span>,</a>
+<a class="sourceLine" id="cb11-54" title="54">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb11-55" title="55">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb11-56" title="56">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb11-57" title="57">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb11-58" title="58">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb11-59" title="59">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb11-60" title="60">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb11-61" title="61">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
+<a class="sourceLine" id="cb11-62" title="62">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb11-63" title="63">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb11-64" title="64">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb11-65" title="65">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>]</a>
 <a class="sourceLine" id="cb11-66" title="66"></a>
-<a class="sourceLine" id="cb11-67" title="67">    scene.Simulation.addChild(scene.Modelling.Tripod)</a>
-<a class="sourceLine" id="cb11-68" title="68">    scene.Simulation.addChild(scene.Modelling.FixingBox)</a>
-<a class="sourceLine" id="cb11-69" title="69"></a>
-<a class="sourceLine" id="cb11-70" title="70">    <span class="co"># Add animations</span></a>
-<a class="sourceLine" id="cb11-71" title="71">    <span class="kw">def</span> myanimate(targets, factor):</a>
-<a class="sourceLine" id="cb11-72" title="72">        <span class="cf">for</span> arm <span class="kw">in</span> targets:</a>
-<a class="sourceLine" id="cb11-73" title="73">            arm.angleIn.value <span class="op">=</span> <span class="op">-</span>factor <span class="op">*</span> math.pi <span class="op">/</span> <span class="dv">4</span></a>
-<a class="sourceLine" id="cb11-74" title="74">    animate(myanimate, {<span class="st">&quot;targets&quot;</span>: [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration<span class="op">=</span><span class="dv">1</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb11-67" title="67">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>], iterative<span class="op">=</span><span class="va">False</span>,</a>
+<a class="sourceLine" id="cb11-68" title="68">                  plugins<span class="op">=</span>pluginList)</a>
+<a class="sourceLine" id="cb11-69" title="69">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb11-70" title="70">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb11-71" title="71">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb11-72" title="72">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb11-73" title="73">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb11-74" title="74">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
+<a class="sourceLine" id="cb11-75" title="75">    rootNode.dt <span class="op">=</span> <span class="fl">0.01</span></a>
+<a class="sourceLine" id="cb11-76" title="76">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
+<a class="sourceLine" id="cb11-77" title="77"></a>
+<a class="sourceLine" id="cb11-78" title="78">    scene.Modelling.addChild(Blueprint())</a>
+<a class="sourceLine" id="cb11-79" title="79"></a>
+<a class="sourceLine" id="cb11-80" title="80">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
+<a class="sourceLine" id="cb11-81" title="81">        </a>
+<a class="sourceLine" id="cb11-82" title="82">    FixingBox(scene.Modelling, tripod.ElasticBody.MechanicalModel, scale<span class="op">=</span>[<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>], translation<span class="op">=</span>[<span class="fl">0.</span>, <span class="dv">25</span>, <span class="fl">0.</span>])</a>
+<a class="sourceLine" id="cb11-83" title="83">    scene.Modelling.FixingBox.BoxROI.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb11-84" title="84"></a>
+<a class="sourceLine" id="cb11-85" title="85">    scene.Simulation.addChild(scene.Modelling.Tripod)</a>
+<a class="sourceLine" id="cb11-86" title="86">    scene.Simulation.addChild(scene.Modelling.FixingBox)</a>
+<a class="sourceLine" id="cb11-87" title="87"></a>
+<a class="sourceLine" id="cb11-88" title="88">    <span class="co"># Add animations</span></a>
+<a class="sourceLine" id="cb11-89" title="89">    <span class="kw">def</span> myanimate(targets, factor):</a>
+<a class="sourceLine" id="cb11-90" title="90">        <span class="cf">for</span> arm <span class="kw">in</span> targets:</a>
+<a class="sourceLine" id="cb11-91" title="91">            arm.angleIn.value <span class="op">=</span> <span class="op">-</span>factor <span class="op">*</span> math.pi <span class="op">/</span> <span class="dv">4</span></a>
+<a class="sourceLine" id="cb11-92" title="92">    animate(myanimate, {<span class="st">&quot;targets&quot;</span>: [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration<span class="op">=</span><span class="dv">1</span>)</a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene-3"><i>Exploring the scene</i></h2>
@@ -627,51 +681,68 @@ Figure 6: Deformable piece with the extremities rigidified.
 <a class="sourceLine" id="cb12-73" title="73">    <span class="im">from</span> fixingbox <span class="im">import</span> FixingBox</a>
 <a class="sourceLine" id="cb12-74" title="74">    <span class="im">import</span> math</a>
 <a class="sourceLine" id="cb12-75" title="75"></a>
-<a class="sourceLine" id="cb12-76" title="76">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>], iterative<span class="op">=</span><span class="va">False</span>,</a>
-<a class="sourceLine" id="cb12-77" title="77">                  plugins<span class="op">=</span>[<span class="st">&#39;SofaSparseSolver&#39;</span>, <span class="st">&#39;SofaOpenglVisual&#39;</span>, <span class="st">&#39;SofaSimpleFem&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>,</a>
-<a class="sourceLine" id="cb12-78" title="78">                           <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaMiscMapping&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>,</a>
-<a class="sourceLine" id="cb12-79" title="79">                           <span class="st">&#39;SofaBoundaryCondition&#39;</span>,</a>
-<a class="sourceLine" id="cb12-80" title="80">                           <span class="st">&#39;SofaGeneralAnimationLoop&#39;</span>, <span class="st">&#39;SofaConstraint&#39;</span>])</a>
-<a class="sourceLine" id="cb12-81" title="81">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb12-82" title="82">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb12-83" title="83">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb12-84" title="84">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
-<a class="sourceLine" id="cb12-85" title="85">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb12-86" title="86">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
-<a class="sourceLine" id="cb12-87" title="87">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
-<a class="sourceLine" id="cb12-88" title="88">    scene.dt <span class="op">=</span> <span class="fl">0.01</span></a>
-<a class="sourceLine" id="cb12-89" title="89"></a>
-<a class="sourceLine" id="cb12-90" title="90">    scene.Modelling.addChild(Blueprint())</a>
-<a class="sourceLine" id="cb12-91" title="91">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
-<a class="sourceLine" id="cb12-92" title="92">    tripod.BoxROI0.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
-<a class="sourceLine" id="cb12-93" title="93">    tripod.BoxROI1.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
-<a class="sourceLine" id="cb12-94" title="94">    tripod.BoxROI2.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb12-76" title="76">    pluginList <span class="op">=</span> [<span class="st">&quot;ArticulatedSystemPlugin&quot;</span>,</a>
+<a class="sourceLine" id="cb12-77" title="77">                  <span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
+<a class="sourceLine" id="cb12-78" title="78">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
+<a class="sourceLine" id="cb12-79" title="79">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span>,</a>
+<a class="sourceLine" id="cb12-80" title="80">                  <span class="st">&quot;Sofa.Component.Constraint.Projective&quot;</span>,</a>
+<a class="sourceLine" id="cb12-81" title="81">                  <span class="st">&quot;Sofa.Component.Engine.Select&quot;</span>,</a>
+<a class="sourceLine" id="cb12-82" title="82">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb12-83" title="83">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb12-84" title="84">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
+<a class="sourceLine" id="cb12-85" title="85">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb12-86" title="86">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb12-87" title="87">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb12-88" title="88">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb12-89" title="89">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb12-90" title="90">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
+<a class="sourceLine" id="cb12-91" title="91">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb12-92" title="92">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb12-93" title="93">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb12-94" title="94">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>]</a>
 <a class="sourceLine" id="cb12-95" title="95"></a>
-<a class="sourceLine" id="cb12-96" title="96">    <span class="co"># Use this to activate some rendering on the rigidified object ######################################</span></a>
-<a class="sourceLine" id="cb12-97" title="97">    setData(tripod.RigidifiedStructure.RigidParts.dofs, showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>, drawMode<span class="op">=</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb12-98" title="98">    setData(tripod.RigidifiedStructure.RigidParts.RigidifiedParticules.dofs, showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb12-99" title="99">            drawMode<span class="op">=</span><span class="dv">1</span>, showColor<span class="op">=</span>[<span class="fl">1.</span>, <span class="fl">1.</span>, <span class="fl">0.</span>, <span class="fl">1.</span>])</a>
-<a class="sourceLine" id="cb12-100" title="100">    setData(tripod.RigidifiedStructure.DeformableParts.dofs, showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">1</span>, drawMode<span class="op">=</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb12-101" title="101">    <span class="co">#####################################################################################################</span></a>
-<a class="sourceLine" id="cb12-102" title="102"></a>
-<a class="sourceLine" id="cb12-103" title="103">    scene.Simulation.addChild(tripod)</a>
-<a class="sourceLine" id="cb12-104" title="104"></a>
-<a class="sourceLine" id="cb12-105" title="105">    FixingBox(scene.Modelling, tripod.ElasticBody.MechanicalModel, scale<span class="op">=</span>[<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>], translation<span class="op">=</span>[<span class="fl">0.</span>, <span class="dv">25</span>, <span class="fl">0.</span>])</a>
+<a class="sourceLine" id="cb12-96" title="96">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>], iterative<span class="op">=</span><span class="va">False</span>,</a>
+<a class="sourceLine" id="cb12-97" title="97">                  plugins<span class="op">=</span>pluginList)</a>
+<a class="sourceLine" id="cb12-98" title="98">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb12-99" title="99">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb12-100" title="100">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb12-101" title="101">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb12-102" title="102">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb12-103" title="103">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
+<a class="sourceLine" id="cb12-104" title="104">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
+<a class="sourceLine" id="cb12-105" title="105">    scene.dt <span class="op">=</span> <span class="fl">0.01</span></a>
 <a class="sourceLine" id="cb12-106" title="106"></a>
-<a class="sourceLine" id="cb12-107" title="107">    <span class="kw">def</span> myanimate(targets, factor):</a>
-<a class="sourceLine" id="cb12-108" title="108">        <span class="cf">for</span> arm <span class="kw">in</span> targets:</a>
-<a class="sourceLine" id="cb12-109" title="109">            arm.ServoMotor.angleIn <span class="op">=</span> <span class="op">-</span>factor <span class="op">*</span> math.pi <span class="op">/</span> <span class="fl">4.</span></a>
-<a class="sourceLine" id="cb12-110" title="110"></a>
-<a class="sourceLine" id="cb12-111" title="111">    animate(myanimate, {<span class="st">&quot;targets&quot;</span>: [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration<span class="op">=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb12-107" title="107">    scene.Modelling.addChild(Blueprint())</a>
+<a class="sourceLine" id="cb12-108" title="108">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
+<a class="sourceLine" id="cb12-109" title="109">    tripod.BoxROI0.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb12-110" title="110">    tripod.BoxROI1.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb12-111" title="111">    tripod.BoxROI2.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
 <a class="sourceLine" id="cb12-112" title="112"></a>
-<a class="sourceLine" id="cb12-113" title="113">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb12-114" title="114">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
-<a class="sourceLine" id="cb12-115" title="115">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb12-116" title="116">                               template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
-<a class="sourceLine" id="cb12-117" title="117">                               name<span class="op">=</span><span class="st">&quot;RigidAndDeformableCoupling&quot;</span>,</a>
-<a class="sourceLine" id="cb12-118" title="118">                               object1<span class="op">=</span>tripod.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),</a>
-<a class="sourceLine" id="cb12-119" title="119">                               object2<span class="op">=</span>tripod.RigidifiedStructure.RigidParts.dofs.getLinkPath(),</a>
-<a class="sourceLine" id="cb12-120" title="120">                               nodeToParse<span class="op">=</span>tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())</a></code></pre></div>
+<a class="sourceLine" id="cb12-113" title="113">    <span class="co"># Use this to activate some rendering on the rigidified object ######################################</span></a>
+<a class="sourceLine" id="cb12-114" title="114">    setData(tripod.RigidifiedStructure.RigidParts.dofs, showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>, drawMode<span class="op">=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb12-115" title="115">    setData(tripod.RigidifiedStructure.RigidParts.RigidifiedParticules.dofs, showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb12-116" title="116">            drawMode<span class="op">=</span><span class="dv">1</span>, showColor<span class="op">=</span>[<span class="fl">1.</span>, <span class="fl">1.</span>, <span class="fl">0.</span>, <span class="fl">1.</span>])</a>
+<a class="sourceLine" id="cb12-117" title="117">    setData(tripod.RigidifiedStructure.DeformableParts.dofs, showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">1</span>, drawMode<span class="op">=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb12-118" title="118">    <span class="co">#####################################################################################################</span></a>
+<a class="sourceLine" id="cb12-119" title="119"></a>
+<a class="sourceLine" id="cb12-120" title="120">    scene.Simulation.addChild(tripod)</a>
+<a class="sourceLine" id="cb12-121" title="121"></a>
+<a class="sourceLine" id="cb12-122" title="122">    FixingBox(scene.Modelling, tripod.ElasticBody.MechanicalModel, scale<span class="op">=</span>[<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>], translation<span class="op">=</span>[<span class="fl">0.</span>, <span class="dv">25</span>, <span class="fl">0.</span>])</a>
+<a class="sourceLine" id="cb12-123" title="123"></a>
+<a class="sourceLine" id="cb12-124" title="124">    <span class="kw">def</span> myanimate(targets, factor):</a>
+<a class="sourceLine" id="cb12-125" title="125">        <span class="cf">for</span> arm <span class="kw">in</span> targets:</a>
+<a class="sourceLine" id="cb12-126" title="126">            arm.ServoMotor.angleIn <span class="op">=</span> <span class="op">-</span>factor <span class="op">*</span> math.pi <span class="op">/</span> <span class="fl">4.</span></a>
+<a class="sourceLine" id="cb12-127" title="127"></a>
+<a class="sourceLine" id="cb12-128" title="128">    animate(myanimate, {<span class="st">&quot;targets&quot;</span>: [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration<span class="op">=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb12-129" title="129"></a>
+<a class="sourceLine" id="cb12-130" title="130">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
+<a class="sourceLine" id="cb12-131" title="131">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb12-132" title="132">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb12-133" title="133">                               template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb12-134" title="134">                               name<span class="op">=</span><span class="st">&quot;RigidAndDeformableCoupling&quot;</span>,</a>
+<a class="sourceLine" id="cb12-135" title="135">                               object1<span class="op">=</span>tripod.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),</a>
+<a class="sourceLine" id="cb12-136" title="136">                               object2<span class="op">=</span>tripod.RigidifiedStructure.RigidParts.dofs.getLinkPath(),</a>
+<a class="sourceLine" id="cb12-137" title="137">                               nodeToParse<span class="op">=</span>tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())</a></code></pre></div>
 </div>
 </div>
 <h1 id="step-4-3-attach-the-acutators-to-the-deformable-piece">STEP 4-3: Attach the acutators to the deformable piece</h1>
@@ -778,47 +849,65 @@ Figure 7: Deformable piece with the extremities rigidified and attached to the s
 <a class="sourceLine" id="cb13-83" title="83">    <span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
 <a class="sourceLine" id="cb13-84" title="84">    <span class="im">import</span> math</a>
 <a class="sourceLine" id="cb13-85" title="85"></a>
-<a class="sourceLine" id="cb13-86" title="86">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>], iterative<span class="op">=</span><span class="va">False</span>,</a>
-<a class="sourceLine" id="cb13-87" title="87">                  plugins<span class="op">=</span>[<span class="st">&#39;SofaSparseSolver&#39;</span>, <span class="st">&#39;SofaOpenglVisual&#39;</span>, <span class="st">&#39;SofaSimpleFem&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>,</a>
-<a class="sourceLine" id="cb13-88" title="88">                           <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaMiscMapping&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>, <span class="st">&#39;SofaBoundaryCondition&#39;</span>,</a>
-<a class="sourceLine" id="cb13-89" title="89">                           <span class="st">&#39;SofaGeneralAnimationLoop&#39;</span>, <span class="st">&#39;SofaConstraint&#39;</span>])</a>
-<a class="sourceLine" id="cb13-90" title="90">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb13-91" title="91">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb13-92" title="92">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb13-93" title="93">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
-<a class="sourceLine" id="cb13-94" title="94">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb13-95" title="95">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
-<a class="sourceLine" id="cb13-96" title="96">    scene.Simulation.TimeIntegrationSchema.rayleighStiffness <span class="op">=</span> <span class="fl">0.05</span></a>
-<a class="sourceLine" id="cb13-97" title="97">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
-<a class="sourceLine" id="cb13-98" title="98">    scene.dt <span class="op">=</span> <span class="fl">0.01</span></a>
-<a class="sourceLine" id="cb13-99" title="99"></a>
-<a class="sourceLine" id="cb13-100" title="100">    <span class="co"># Add the blueprint</span></a>
-<a class="sourceLine" id="cb13-101" title="101">    scene.Modelling.addChild(Blueprint())</a>
-<a class="sourceLine" id="cb13-102" title="102"></a>
-<a class="sourceLine" id="cb13-103" title="103">    <span class="co"># Add the tripod</span></a>
-<a class="sourceLine" id="cb13-104" title="104">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
-<a class="sourceLine" id="cb13-105" title="105">    tripod.BoxROI0.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
-<a class="sourceLine" id="cb13-106" title="106">    tripod.BoxROI1.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
-<a class="sourceLine" id="cb13-107" title="107">    tripod.BoxROI2.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
-<a class="sourceLine" id="cb13-108" title="108"></a>
-<a class="sourceLine" id="cb13-109" title="109">    scene.Simulation.addChild(tripod)</a>
-<a class="sourceLine" id="cb13-110" title="110"></a>
-<a class="sourceLine" id="cb13-111" title="111">    <span class="kw">def</span> myanimate(targets, factor):</a>
-<a class="sourceLine" id="cb13-112" title="112">        <span class="cf">for</span> arm <span class="kw">in</span> targets:</a>
-<a class="sourceLine" id="cb13-113" title="113">            arm.angleIn <span class="op">=</span> <span class="op">-</span>factor <span class="op">*</span> math.pi <span class="op">/</span> <span class="fl">4.</span></a>
-<a class="sourceLine" id="cb13-114" title="114"></a>
-<a class="sourceLine" id="cb13-115" title="115">    animate(myanimate, {<span class="st">&quot;targets&quot;</span>: [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration<span class="op">=</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb13-116" title="116"></a>
-<a class="sourceLine" id="cb13-117" title="117">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb13-118" title="118">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
-<a class="sourceLine" id="cb13-119" title="119">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
-<a class="sourceLine" id="cb13-120" title="120">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb13-121" title="121">                                   name<span class="op">=</span><span class="st">&quot;ArmAndDeformableCoupling&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i),</a>
-<a class="sourceLine" id="cb13-122" title="122">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
-<a class="sourceLine" id="cb13-123" title="123">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb13-124" title="124">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb13-125" title="125">                                   skipJ2tKJ2<span class="op">=</span><span class="va">False</span> <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="va">True</span>,</a>
-<a class="sourceLine" id="cb13-126" title="126">                                   nodeToParse<span class="op">=</span>tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())</a></code></pre></div>
+<a class="sourceLine" id="cb13-86" title="86">    pluginList <span class="op">=</span> [<span class="st">&quot;ArticulatedSystemPlugin&quot;</span>,</a>
+<a class="sourceLine" id="cb13-87" title="87">                  <span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
+<a class="sourceLine" id="cb13-88" title="88">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
+<a class="sourceLine" id="cb13-89" title="89">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span>,</a>
+<a class="sourceLine" id="cb13-90" title="90">                  <span class="st">&quot;Sofa.Component.Constraint.Projective&quot;</span>,</a>
+<a class="sourceLine" id="cb13-91" title="91">                  <span class="st">&quot;Sofa.Component.Engine.Select&quot;</span>,</a>
+<a class="sourceLine" id="cb13-92" title="92">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb13-93" title="93">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb13-94" title="94">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
+<a class="sourceLine" id="cb13-95" title="95">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb13-96" title="96">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb13-97" title="97">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb13-98" title="98">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb13-99" title="99">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb13-100" title="100">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
+<a class="sourceLine" id="cb13-101" title="101">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb13-102" title="102">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb13-103" title="103">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb13-104" title="104">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>]</a>
+<a class="sourceLine" id="cb13-105" title="105"></a>
+<a class="sourceLine" id="cb13-106" title="106">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="dv">-9810</span>, <span class="fl">0.0</span>], iterative<span class="op">=</span><span class="va">False</span>,</a>
+<a class="sourceLine" id="cb13-107" title="107">                  plugins<span class="op">=</span>pluginList)</a>
+<a class="sourceLine" id="cb13-108" title="108">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb13-109" title="109">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb13-110" title="110">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb13-111" title="111">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb13-112" title="112">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb13-113" title="113">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
+<a class="sourceLine" id="cb13-114" title="114">    scene.Simulation.TimeIntegrationSchema.rayleighStiffness <span class="op">=</span> <span class="fl">0.05</span></a>
+<a class="sourceLine" id="cb13-115" title="115">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
+<a class="sourceLine" id="cb13-116" title="116">    scene.dt <span class="op">=</span> <span class="fl">0.01</span></a>
+<a class="sourceLine" id="cb13-117" title="117"></a>
+<a class="sourceLine" id="cb13-118" title="118">    <span class="co"># Add the blueprint</span></a>
+<a class="sourceLine" id="cb13-119" title="119">    scene.Modelling.addChild(Blueprint())</a>
+<a class="sourceLine" id="cb13-120" title="120"></a>
+<a class="sourceLine" id="cb13-121" title="121">    <span class="co"># Add the tripod</span></a>
+<a class="sourceLine" id="cb13-122" title="122">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
+<a class="sourceLine" id="cb13-123" title="123">    tripod.BoxROI0.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb13-124" title="124">    tripod.BoxROI1.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb13-125" title="125">    tripod.BoxROI2.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb13-126" title="126"></a>
+<a class="sourceLine" id="cb13-127" title="127">    scene.Simulation.addChild(tripod)</a>
+<a class="sourceLine" id="cb13-128" title="128"></a>
+<a class="sourceLine" id="cb13-129" title="129">    <span class="kw">def</span> myanimate(targets, factor):</a>
+<a class="sourceLine" id="cb13-130" title="130">        <span class="cf">for</span> arm <span class="kw">in</span> targets:</a>
+<a class="sourceLine" id="cb13-131" title="131">            arm.angleIn <span class="op">=</span> <span class="op">-</span>factor <span class="op">*</span> math.pi <span class="op">/</span> <span class="fl">4.</span></a>
+<a class="sourceLine" id="cb13-132" title="132"></a>
+<a class="sourceLine" id="cb13-133" title="133">    animate(myanimate, {<span class="st">&quot;targets&quot;</span>: [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration<span class="op">=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb13-134" title="134"></a>
+<a class="sourceLine" id="cb13-135" title="135">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
+<a class="sourceLine" id="cb13-136" title="136">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb13-137" title="137">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
+<a class="sourceLine" id="cb13-138" title="138">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb13-139" title="139">                                   name<span class="op">=</span><span class="st">&quot;ArmAndDeformableCoupling&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i),</a>
+<a class="sourceLine" id="cb13-140" title="140">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
+<a class="sourceLine" id="cb13-141" title="141">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb13-142" title="142">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb13-143" title="143">                                   skipJ2tKJ2<span class="op">=</span><span class="va">False</span> <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="va">True</span>,</a>
+<a class="sourceLine" id="cb13-144" title="144">                                   nodeToParse<span class="op">=</span>tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())</a></code></pre></div>
 </div>
 </div>
 <h1 id="step-5-adding-controllers">STEP 5: Adding controllers</h1>
@@ -911,38 +1000,58 @@ The controller is added as another node in the scene.</p>
 <a class="sourceLine" id="cb14-20" title="20"></a>
 <a class="sourceLine" id="cb14-21" title="21"><span class="kw">def</span> createScene(rootNode):</a>
 <a class="sourceLine" id="cb14-22" title="22"></a>
-<a class="sourceLine" id="cb14-23" title="23">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>, plugins<span class="op">=</span>[<span class="st">&quot;SofaSparseSolver&quot;</span>,<span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>, <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaMiscMapping&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>, <span class="st">&#39;SofaBoundaryCondition&#39;</span>, <span class="st">&#39;SofaGeneralAnimationLoop&#39;</span>, <span class="st">&#39;SofaGeneralEngine&#39;</span>])</a>
-<a class="sourceLine" id="cb14-24" title="24">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb14-25" title="25">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb14-26" title="26">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb14-27" title="27">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
-<a class="sourceLine" id="cb14-28" title="28">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb14-29" title="29">    scene.Simulation.TimeIntegrationSchema.rayleighStiffness <span class="op">=</span> <span class="fl">0.005</span></a>
-<a class="sourceLine" id="cb14-30" title="30">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
-<a class="sourceLine" id="cb14-31" title="31">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
-<a class="sourceLine" id="cb14-32" title="32"></a>
-<a class="sourceLine" id="cb14-33" title="33">    tripod <span class="op">=</span> Tripod()</a>
-<a class="sourceLine" id="cb14-34" title="34">    scene.Modelling.addChild(tripod)</a>
-<a class="sourceLine" id="cb14-35" title="35">    scene.Modelling.addObject(TripodController(name<span class="op">=</span><span class="st">&quot;TripodController&quot;</span>,actuators<span class="op">=</span>[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
-<a class="sourceLine" id="cb14-36" title="36">    scene.Simulation.addChild(tripod)</a>
-<a class="sourceLine" id="cb14-37" title="37"></a>
-<a class="sourceLine" id="cb14-38" title="38">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb14-39" title="39">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
-<a class="sourceLine" id="cb14-40" title="40">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb14-41" title="41">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
-<a class="sourceLine" id="cb14-42" title="42">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
-<a class="sourceLine" id="cb14-43" title="43">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb14-44" title="44">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb14-45" title="45">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
-<a class="sourceLine" id="cb14-46" title="46"></a>
-<a class="sourceLine" id="cb14-47" title="47">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
-<a class="sourceLine" id="cb14-48" title="48">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb14-49" title="49">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
-<a class="sourceLine" id="cb14-50" title="50">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
-<a class="sourceLine" id="cb14-51" title="51">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb14-52" title="52">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb14-53" title="53">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb14-54" title="54">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
+<a class="sourceLine" id="cb14-23" title="23">    pluginList <span class="op">=</span> [<span class="st">&quot;ArticulatedSystemPlugin&quot;</span>,</a>
+<a class="sourceLine" id="cb14-24" title="24">                  <span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
+<a class="sourceLine" id="cb14-25" title="25">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
+<a class="sourceLine" id="cb14-26" title="26">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span>,</a>
+<a class="sourceLine" id="cb14-27" title="27">                  <span class="st">&quot;Sofa.Component.Constraint.Projective&quot;</span>,</a>
+<a class="sourceLine" id="cb14-28" title="28">                  <span class="st">&quot;Sofa.Component.Engine.Select&quot;</span>,</a>
+<a class="sourceLine" id="cb14-29" title="29">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb14-30" title="30">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb14-31" title="31">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
+<a class="sourceLine" id="cb14-32" title="32">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb14-33" title="33">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb14-34" title="34">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb14-35" title="35">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb14-36" title="36">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb14-37" title="37">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
+<a class="sourceLine" id="cb14-38" title="38">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb14-39" title="39">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb14-40" title="40">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb14-41" title="41">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>]</a>
+<a class="sourceLine" id="cb14-42" title="42"></a>
+<a class="sourceLine" id="cb14-43" title="43">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>, plugins<span class="op">=</span>pluginList)</a>
+<a class="sourceLine" id="cb14-44" title="44">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb14-45" title="45">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb14-46" title="46">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb14-47" title="47">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb14-48" title="48">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb14-49" title="49">    scene.Simulation.TimeIntegrationSchema.rayleighStiffness <span class="op">=</span> <span class="fl">0.005</span></a>
+<a class="sourceLine" id="cb14-50" title="50">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
+<a class="sourceLine" id="cb14-51" title="51">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
+<a class="sourceLine" id="cb14-52" title="52"></a>
+<a class="sourceLine" id="cb14-53" title="53">    tripod <span class="op">=</span> Tripod()</a>
+<a class="sourceLine" id="cb14-54" title="54">    scene.Modelling.addChild(tripod)</a>
+<a class="sourceLine" id="cb14-55" title="55">    scene.Modelling.addObject(TripodController(name<span class="op">=</span><span class="st">&quot;TripodController&quot;</span>,actuators<span class="op">=</span>[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
+<a class="sourceLine" id="cb14-56" title="56">    scene.Simulation.addChild(tripod)</a>
+<a class="sourceLine" id="cb14-57" title="57"></a>
+<a class="sourceLine" id="cb14-58" title="58">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
+<a class="sourceLine" id="cb14-59" title="59">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb14-60" title="60">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb14-61" title="61">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
+<a class="sourceLine" id="cb14-62" title="62">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb14-63" title="63">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb14-64" title="64">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb14-65" title="65">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
+<a class="sourceLine" id="cb14-66" title="66"></a>
+<a class="sourceLine" id="cb14-67" title="67">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
+<a class="sourceLine" id="cb14-68" title="68">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb14-69" title="69">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
+<a class="sourceLine" id="cb14-70" title="70">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
+<a class="sourceLine" id="cb14-71" title="71">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb14-72" title="72">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb14-73" title="73">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
+<a class="sourceLine" id="cb14-74" title="74">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene-4"><i>Exploring the scene</i></h2>
@@ -1090,56 +1199,80 @@ Figure 11: Tripod simulation with collision between a sphere, the deformable par
 <a class="sourceLine" id="cb15-48" title="48"></a>
 <a class="sourceLine" id="cb15-49" title="49"><span class="kw">def</span> createScene(rootNode):</a>
 <a class="sourceLine" id="cb15-50" title="50"></a>
-<a class="sourceLine" id="cb15-51" title="51">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, plugins<span class="op">=</span>[<span class="st">&quot;SofaSparseSolver&quot;</span>, <span class="st">&#39;SofaBoundaryCondition&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>, <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaMiscMapping&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>, <span class="st">&#39;SofaGeneralAnimationLoop&#39;</span>, <span class="st">&#39;SofaGeneralEngine&#39;</span>], iterative<span class="op">=</span><span class="va">False</span>)</a>
-<a class="sourceLine" id="cb15-52" title="52"></a>
-<a class="sourceLine" id="cb15-53" title="53">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="fl">0.2</span>)</a>
-<a class="sourceLine" id="cb15-54" title="54"></a>
-<a class="sourceLine" id="cb15-55" title="55">    <span class="co"># Adding contact handling</span></a>
-<a class="sourceLine" id="cb15-56" title="56">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb15-57" title="57">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb15-58" title="58">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb15-59" title="59">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showCollisionModels&quot;</span></a>
-<a class="sourceLine" id="cb15-60" title="60">    scene.Simulation.TimeIntegrationSchema.rayleighStiffness <span class="op">=</span> <span class="fl">0.005</span></a>
-<a class="sourceLine" id="cb15-61" title="61">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
-<a class="sourceLine" id="cb15-62" title="62"></a>
-<a class="sourceLine" id="cb15-63" title="63">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
-<a class="sourceLine" id="cb15-64" title="64">    tripod.addCollision()</a>
-<a class="sourceLine" id="cb15-65" title="65"></a>
-<a class="sourceLine" id="cb15-66" title="66"></a>
-<a class="sourceLine" id="cb15-67" title="67">    <span class="co"># The regular controller that is being used for the last 2 steps</span></a>
-<a class="sourceLine" id="cb15-68" title="68">    controller <span class="op">=</span> scene.addObject(TripodController(name<span class="op">=</span><span class="st">&quot;TripodController&quot;</span>, actuators<span class="op">=</span>[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
-<a class="sourceLine" id="cb15-69" title="69">    <span class="co"># You can set the animation from the python script by adding this call</span></a>
-<a class="sourceLine" id="cb15-70" title="70">    controller.initTripod(<span class="st">&#39;A&#39;</span>)</a>
-<a class="sourceLine" id="cb15-71" title="71"></a>
-<a class="sourceLine" id="cb15-72" title="72">    <span class="co"># The additionnal controller that add two predefined positions for the three servomotors</span></a>
-<a class="sourceLine" id="cb15-73" title="73">    scene.addObject(JumpController(name<span class="op">=</span><span class="st">&quot;JumpController&quot;</span>, actuators<span class="op">=</span>[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
+<a class="sourceLine" id="cb15-51" title="51">    pluginList <span class="op">=</span> [<span class="st">&quot;ArticulatedSystemPlugin&quot;</span>,</a>
+<a class="sourceLine" id="cb15-52" title="52">                  <span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
+<a class="sourceLine" id="cb15-53" title="53">                  <span class="st">&quot;Sofa.Component.Collision.Detection.Algorithm&quot;</span>,</a>
+<a class="sourceLine" id="cb15-54" title="54">                  <span class="st">&quot;Sofa.Component.Collision.Detection.Intersection&quot;</span>,</a>
+<a class="sourceLine" id="cb15-55" title="55">                  <span class="st">&quot;Sofa.Component.Collision.Geometry&quot;</span>,</a>
+<a class="sourceLine" id="cb15-56" title="56">                  <span class="st">&quot;Sofa.Component.Collision.Response.Contact&quot;</span>,</a>
+<a class="sourceLine" id="cb15-57" title="57">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
+<a class="sourceLine" id="cb15-58" title="58">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span>,</a>
+<a class="sourceLine" id="cb15-59" title="59">                  <span class="st">&quot;Sofa.Component.Constraint.Projective&quot;</span>,</a>
+<a class="sourceLine" id="cb15-60" title="60">                  <span class="st">&quot;Sofa.Component.Engine.Select&quot;</span>,</a>
+<a class="sourceLine" id="cb15-61" title="61">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb15-62" title="62">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb15-63" title="63">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
+<a class="sourceLine" id="cb15-64" title="64">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb15-65" title="65">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb15-66" title="66">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb15-67" title="67">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb15-68" title="68">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb15-69" title="69">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
+<a class="sourceLine" id="cb15-70" title="70">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb15-71" title="71">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb15-72" title="72">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb15-73" title="73">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>]</a>
 <a class="sourceLine" id="cb15-74" title="74"></a>
-<a class="sourceLine" id="cb15-75" title="75">    sphere <span class="op">=</span> Sphere(scene.Modelling, translation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">50.0</span>, <span class="fl">0.0</span>],</a>
-<a class="sourceLine" id="cb15-76" title="76">                       uniformScale<span class="op">=</span><span class="fl">13.</span>,</a>
-<a class="sourceLine" id="cb15-77" title="77">                       totalMass<span class="op">=</span><span class="fl">0.032</span>,</a>
-<a class="sourceLine" id="cb15-78" title="78">                       isAStaticObject<span class="op">=</span><span class="va">True</span>)</a>
-<a class="sourceLine" id="cb15-79" title="79">    sphere.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb15-80" title="80"></a>
-<a class="sourceLine" id="cb15-81" title="81">    scene.Simulation.addChild(sphere)</a>
-<a class="sourceLine" id="cb15-82" title="82">    scene.Simulation.addChild(tripod)</a>
-<a class="sourceLine" id="cb15-83" title="83"></a>
-<a class="sourceLine" id="cb15-84" title="84">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb15-85" title="85">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
-<a class="sourceLine" id="cb15-86" title="86">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb15-87" title="87">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
-<a class="sourceLine" id="cb15-88" title="88">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
-<a class="sourceLine" id="cb15-89" title="89">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb15-90" title="90">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb15-91" title="91">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
-<a class="sourceLine" id="cb15-92" title="92"></a>
-<a class="sourceLine" id="cb15-93" title="93">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
-<a class="sourceLine" id="cb15-94" title="94">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb15-95" title="95">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
-<a class="sourceLine" id="cb15-96" title="96">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
-<a class="sourceLine" id="cb15-97" title="97">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb15-98" title="98">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb15-99" title="99">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb15-100" title="100">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
+<a class="sourceLine" id="cb15-75" title="75">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, plugins<span class="op">=</span>pluginList, iterative<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb15-76" title="76"></a>
+<a class="sourceLine" id="cb15-77" title="77">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="fl">0.2</span>)</a>
+<a class="sourceLine" id="cb15-78" title="78"></a>
+<a class="sourceLine" id="cb15-79" title="79">    <span class="co"># Adding contact handling</span></a>
+<a class="sourceLine" id="cb15-80" title="80">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb15-81" title="81">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb15-82" title="82">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb15-83" title="83">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showCollisionModels&quot;</span></a>
+<a class="sourceLine" id="cb15-84" title="84">    scene.Simulation.TimeIntegrationSchema.rayleighStiffness <span class="op">=</span> <span class="fl">0.005</span></a>
+<a class="sourceLine" id="cb15-85" title="85">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
+<a class="sourceLine" id="cb15-86" title="86"></a>
+<a class="sourceLine" id="cb15-87" title="87">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
+<a class="sourceLine" id="cb15-88" title="88">    tripod.addCollision()</a>
+<a class="sourceLine" id="cb15-89" title="89"></a>
+<a class="sourceLine" id="cb15-90" title="90"></a>
+<a class="sourceLine" id="cb15-91" title="91">    <span class="co"># The regular controller that is being used for the last 2 steps</span></a>
+<a class="sourceLine" id="cb15-92" title="92">    controller <span class="op">=</span> scene.addObject(TripodController(name<span class="op">=</span><span class="st">&quot;TripodController&quot;</span>, actuators<span class="op">=</span>[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
+<a class="sourceLine" id="cb15-93" title="93">    <span class="co"># You can set the animation from the python script by adding this call</span></a>
+<a class="sourceLine" id="cb15-94" title="94">    controller.initTripod(<span class="st">&#39;A&#39;</span>)</a>
+<a class="sourceLine" id="cb15-95" title="95"></a>
+<a class="sourceLine" id="cb15-96" title="96">    <span class="co"># The additionnal controller that add two predefined positions for the three servomotors</span></a>
+<a class="sourceLine" id="cb15-97" title="97">    scene.addObject(JumpController(name<span class="op">=</span><span class="st">&quot;JumpController&quot;</span>, actuators<span class="op">=</span>[tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
+<a class="sourceLine" id="cb15-98" title="98"></a>
+<a class="sourceLine" id="cb15-99" title="99">    sphere <span class="op">=</span> Sphere(scene.Modelling, translation<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">50.0</span>, <span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb15-100" title="100">                       uniformScale<span class="op">=</span><span class="fl">13.</span>,</a>
+<a class="sourceLine" id="cb15-101" title="101">                       totalMass<span class="op">=</span><span class="fl">0.032</span>,</a>
+<a class="sourceLine" id="cb15-102" title="102">                       isAStaticObject<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb15-103" title="103">    sphere.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb15-104" title="104"></a>
+<a class="sourceLine" id="cb15-105" title="105">    scene.Simulation.addChild(sphere)</a>
+<a class="sourceLine" id="cb15-106" title="106">    scene.Simulation.addChild(tripod)</a>
+<a class="sourceLine" id="cb15-107" title="107"></a>
+<a class="sourceLine" id="cb15-108" title="108">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
+<a class="sourceLine" id="cb15-109" title="109">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb15-110" title="110">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb15-111" title="111">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
+<a class="sourceLine" id="cb15-112" title="112">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb15-113" title="113">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb15-114" title="114">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb15-115" title="115">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
+<a class="sourceLine" id="cb15-116" title="116"></a>
+<a class="sourceLine" id="cb15-117" title="117">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
+<a class="sourceLine" id="cb15-118" title="118">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb15-119" title="119">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
+<a class="sourceLine" id="cb15-120" title="120">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
+<a class="sourceLine" id="cb15-121" title="121">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb15-122" title="122">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb15-123" title="123">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
+<a class="sourceLine" id="cb15-124" title="124">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene-5"><i>Exploring the scene</i></h2>
@@ -1295,53 +1428,73 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb16-84" title="84"></a>
 <a class="sourceLine" id="cb16-85" title="85"><span class="kw">def</span> createScene(rootNode):</a>
 <a class="sourceLine" id="cb16-86" title="86">    <span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
-<a class="sourceLine" id="cb16-87" title="87">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>,</a>
-<a class="sourceLine" id="cb16-88" title="88">                  plugins<span class="op">=</span>[<span class="st">&quot;SofaSparseSolver&quot;</span>, <span class="st">&quot;SofaOpenglVisual&quot;</span>, <span class="st">&quot;SofaSimpleFem&quot;</span>, <span class="st">&quot;SoftRobots&quot;</span>,</a>
-<a class="sourceLine" id="cb16-89" title="89">                           <span class="st">&#39;SofaBoundaryCondition&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>, <span class="st">&#39;SofaGeneralRigid&#39;</span>,</a>
-<a class="sourceLine" id="cb16-90" title="90">                           <span class="st">&#39;SofaMiscMapping&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>, <span class="st">&#39;SofaGeneralAnimationLoop&#39;</span>, <span class="st">&#39;SofaGeneralEngine&#39;</span>])</a>
-<a class="sourceLine" id="cb16-91" title="91"></a>
-<a class="sourceLine" id="cb16-92" title="92">    <span class="co"># Adding contact handling</span></a>
-<a class="sourceLine" id="cb16-93" title="93">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb16-94" title="94">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb16-95" title="95">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb16-96" title="96">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
-<a class="sourceLine" id="cb16-97" title="97">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb16-98" title="98">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
-<a class="sourceLine" id="cb16-99" title="99">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
-<a class="sourceLine" id="cb16-100" title="100"></a>
-<a class="sourceLine" id="cb16-101" title="101">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
-<a class="sourceLine" id="cb16-102" title="102"></a>
-<a class="sourceLine" id="cb16-103" title="103">    serial <span class="op">=</span> SerialPortBridgeGeneric(scene)</a>
-<a class="sourceLine" id="cb16-104" title="104"></a>
-<a class="sourceLine" id="cb16-105" title="105">    <span class="co"># The real robot receives data from the 3 actuators</span></a>
-<a class="sourceLine" id="cb16-106" title="106">    serialportctrl <span class="op">=</span> scene.addObject(</a>
-<a class="sourceLine" id="cb16-107" title="107">        SerialPortController(name<span class="op">=</span><span class="st">&quot;SerialPortController&quot;</span>, inputs<span class="op">=</span>tripod.actuatedarms, serialport<span class="op">=</span>serial))</a>
+<a class="sourceLine" id="cb16-87" title="87"></a>
+<a class="sourceLine" id="cb16-88" title="88">    pluginList <span class="op">=</span> [<span class="st">&quot;ArticulatedSystemPlugin&quot;</span>,</a>
+<a class="sourceLine" id="cb16-89" title="89">                  <span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
+<a class="sourceLine" id="cb16-90" title="90">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
+<a class="sourceLine" id="cb16-91" title="91">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span>,</a>
+<a class="sourceLine" id="cb16-92" title="92">                  <span class="st">&quot;Sofa.Component.Constraint.Projective&quot;</span>,</a>
+<a class="sourceLine" id="cb16-93" title="93">                  <span class="st">&quot;Sofa.Component.Engine.Select&quot;</span>,</a>
+<a class="sourceLine" id="cb16-94" title="94">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb16-95" title="95">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb16-96" title="96">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
+<a class="sourceLine" id="cb16-97" title="97">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb16-98" title="98">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb16-99" title="99">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb16-100" title="100">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb16-101" title="101">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb16-102" title="102">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
+<a class="sourceLine" id="cb16-103" title="103">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb16-104" title="104">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb16-105" title="105">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb16-106" title="106">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>,</a>
+<a class="sourceLine" id="cb16-107" title="107">                  <span class="st">&quot;SoftRobots&quot;</span>]</a>
 <a class="sourceLine" id="cb16-108" title="108"></a>
-<a class="sourceLine" id="cb16-109" title="109">    <span class="co"># The simulation&#39;s control with keystrokes is still available</span></a>
-<a class="sourceLine" id="cb16-110" title="110">    controller <span class="op">=</span> scene.addObject(</a>
-<a class="sourceLine" id="cb16-111" title="111">        TripodControllerWithCom(scene, actuators<span class="op">=</span>tripod.actuatedarms, serialportctrl<span class="op">=</span>serialportctrl))</a>
-<a class="sourceLine" id="cb16-112" title="112">    <span class="co"># You can set the animation from the python script by adding this call</span></a>
-<a class="sourceLine" id="cb16-113" title="113">    controller.initTripod(<span class="st">&#39;A&#39;</span>)</a>
-<a class="sourceLine" id="cb16-114" title="114"></a>
-<a class="sourceLine" id="cb16-115" title="115">    scene.Simulation.addChild(tripod)</a>
-<a class="sourceLine" id="cb16-116" title="116"></a>
-<a class="sourceLine" id="cb16-117" title="117">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb16-118" title="118">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
-<a class="sourceLine" id="cb16-119" title="119">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb16-120" title="120">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
-<a class="sourceLine" id="cb16-121" title="121">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
-<a class="sourceLine" id="cb16-122" title="122">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb16-123" title="123">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb16-124" title="124">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
-<a class="sourceLine" id="cb16-125" title="125"></a>
-<a class="sourceLine" id="cb16-126" title="126">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
-<a class="sourceLine" id="cb16-127" title="127">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb16-128" title="128">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
-<a class="sourceLine" id="cb16-129" title="129">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
-<a class="sourceLine" id="cb16-130" title="130">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb16-131" title="131">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb16-132" title="132">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb16-133" title="133">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
+<a class="sourceLine" id="cb16-109" title="109">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>,</a>
+<a class="sourceLine" id="cb16-110" title="110">                  plugins<span class="op">=</span>pluginList)</a>
+<a class="sourceLine" id="cb16-111" title="111"></a>
+<a class="sourceLine" id="cb16-112" title="112">    <span class="co"># Adding contact handling</span></a>
+<a class="sourceLine" id="cb16-113" title="113">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb16-114" title="114">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb16-115" title="115">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb16-116" title="116">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb16-117" title="117">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb16-118" title="118">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
+<a class="sourceLine" id="cb16-119" title="119">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
+<a class="sourceLine" id="cb16-120" title="120"></a>
+<a class="sourceLine" id="cb16-121" title="121">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
+<a class="sourceLine" id="cb16-122" title="122"></a>
+<a class="sourceLine" id="cb16-123" title="123">    serial <span class="op">=</span> SerialPortBridgeGeneric(scene)</a>
+<a class="sourceLine" id="cb16-124" title="124"></a>
+<a class="sourceLine" id="cb16-125" title="125">    <span class="co"># The real robot receives data from the 3 actuators</span></a>
+<a class="sourceLine" id="cb16-126" title="126">    serialportctrl <span class="op">=</span> scene.addObject(</a>
+<a class="sourceLine" id="cb16-127" title="127">        SerialPortController(name<span class="op">=</span><span class="st">&quot;SerialPortController&quot;</span>, inputs<span class="op">=</span>tripod.actuatedarms, serialport<span class="op">=</span>serial))</a>
+<a class="sourceLine" id="cb16-128" title="128"></a>
+<a class="sourceLine" id="cb16-129" title="129">    <span class="co"># The simulation&#39;s control with keystrokes is still available</span></a>
+<a class="sourceLine" id="cb16-130" title="130">    controller <span class="op">=</span> scene.addObject(</a>
+<a class="sourceLine" id="cb16-131" title="131">        TripodControllerWithCom(scene, actuators<span class="op">=</span>tripod.actuatedarms, serialportctrl<span class="op">=</span>serialportctrl))</a>
+<a class="sourceLine" id="cb16-132" title="132">    <span class="co"># You can set the animation from the python script by adding this call</span></a>
+<a class="sourceLine" id="cb16-133" title="133">    controller.initTripod(<span class="st">&#39;A&#39;</span>)</a>
+<a class="sourceLine" id="cb16-134" title="134"></a>
+<a class="sourceLine" id="cb16-135" title="135">    scene.Simulation.addChild(tripod)</a>
+<a class="sourceLine" id="cb16-136" title="136"></a>
+<a class="sourceLine" id="cb16-137" title="137">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
+<a class="sourceLine" id="cb16-138" title="138">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb16-139" title="139">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb16-140" title="140">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
+<a class="sourceLine" id="cb16-141" title="141">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb16-142" title="142">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb16-143" title="143">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb16-144" title="144">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
+<a class="sourceLine" id="cb16-145" title="145"></a>
+<a class="sourceLine" id="cb16-146" title="146">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
+<a class="sourceLine" id="cb16-147" title="147">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb16-148" title="148">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
+<a class="sourceLine" id="cb16-149" title="149">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
+<a class="sourceLine" id="cb16-150" title="150">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb16-151" title="151">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb16-152" title="152">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
+<a class="sourceLine" id="cb16-153" title="153">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
 </div>
 </div>
 <h2 id="exploring-the-scene-6"><i>Exploring the scene</i></h2>
@@ -1451,64 +1604,88 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb17-86" title="86"></a>
 <a class="sourceLine" id="cb17-87" title="87"><span class="kw">def</span> createScene(rootNode):</a>
 <a class="sourceLine" id="cb17-88" title="88">    <span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
-<a class="sourceLine" id="cb17-89" title="89">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>, plugins<span class="op">=</span>[<span class="st">&quot;SofaSparseSolver&quot;</span>, <span class="st">&quot;SofaOpenglVisual&quot;</span>, <span class="st">&quot;SofaSimpleFem&quot;</span>, <span class="st">&quot;SoftRobots&quot;</span>,<span class="st">&quot;SoftRobots.Inverse&quot;</span>, <span class="st">&#39;SofaBoundaryCondition&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>, <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaMiscMapping&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>, <span class="st">&#39;SofaGeneralAnimationLoop&#39;</span>, <span class="st">&#39;SofaGeneralEngine&#39;</span>])</a>
-<a class="sourceLine" id="cb17-90" title="90"></a>
-<a class="sourceLine" id="cb17-91" title="91">    <span class="co"># Adding contact handling</span></a>
-<a class="sourceLine" id="cb17-92" title="92">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb17-93" title="93">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb17-94" title="94"></a>
-<a class="sourceLine" id="cb17-95" title="95">    <span class="co"># Inverse Solver</span></a>
-<a class="sourceLine" id="cb17-96" title="96">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb17-97" title="97">    scene.addObject(<span class="st">&#39;QPInverseProblemSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;QP&#39;</span>, printLog<span class="op">=</span><span class="va">False</span>)</a>
-<a class="sourceLine" id="cb17-98" title="98">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb17-99" title="99">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
-<a class="sourceLine" id="cb17-100" title="100">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior showCollision&quot;</span></a>
-<a class="sourceLine" id="cb17-101" title="101"></a>
-<a class="sourceLine" id="cb17-102" title="102">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
-<a class="sourceLine" id="cb17-103" title="103"></a>
-<a class="sourceLine" id="cb17-104" title="104">    <span class="co"># Serial port bridge</span></a>
-<a class="sourceLine" id="cb17-105" title="105">    serial <span class="op">=</span> SerialPortBridgeGeneric(rootNode)</a>
-<a class="sourceLine" id="cb17-106" title="106"></a>
-<a class="sourceLine" id="cb17-107" title="107">    <span class="co"># Choose here to control position or orientation of end-effector</span></a>
-<a class="sourceLine" id="cb17-108" title="108">    orientation <span class="op">=</span> <span class="va">False</span></a>
-<a class="sourceLine" id="cb17-109" title="109">    <span class="cf">if</span> orientation:</a>
-<a class="sourceLine" id="cb17-110" title="110">        <span class="co"># inverse in orientation</span></a>
-<a class="sourceLine" id="cb17-111" title="111">        goalNode <span class="op">=</span> EffectorGoal([<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">50</span>])</a>
-<a class="sourceLine" id="cb17-112" title="112">    <span class="cf">else</span>:</a>
-<a class="sourceLine" id="cb17-113" title="113">        <span class="co"># inverse in position</span></a>
-<a class="sourceLine" id="cb17-114" title="114">        goalNode <span class="op">=</span> EffectorGoal([<span class="dv">0</span>, <span class="dv">40</span>, <span class="dv">0</span>])</a>
-<a class="sourceLine" id="cb17-115" title="115">    scene.Modelling.addChild(goalNode)</a>
-<a class="sourceLine" id="cb17-116" title="116"></a>
-<a class="sourceLine" id="cb17-117" title="117">    actuators <span class="op">=</span> addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)</a>
+<a class="sourceLine" id="cb17-89" title="89"></a>
+<a class="sourceLine" id="cb17-90" title="90">    pluginList <span class="op">=</span> [<span class="st">&quot;ArticulatedSystemPlugin&quot;</span>,</a>
+<a class="sourceLine" id="cb17-91" title="91">                  <span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
+<a class="sourceLine" id="cb17-92" title="92">                  <span class="st">&quot;Sofa.Component.Collision.Geometry&quot;</span>,</a>
+<a class="sourceLine" id="cb17-93" title="93">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
+<a class="sourceLine" id="cb17-94" title="94">                  <span class="st">&quot;Sofa.Component.Constraint.Projective&quot;</span>,</a>
+<a class="sourceLine" id="cb17-95" title="95">                  <span class="st">&quot;Sofa.Component.Engine.Select&quot;</span>,</a>
+<a class="sourceLine" id="cb17-96" title="96">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb17-97" title="97">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb17-98" title="98">                  <span class="st">&quot;Sofa.Component.LinearSolver.Iterative&quot;</span>,</a>
+<a class="sourceLine" id="cb17-99" title="99">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
+<a class="sourceLine" id="cb17-100" title="100">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb17-101" title="101">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb17-102" title="102">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb17-103" title="103">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb17-104" title="104">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb17-105" title="105">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
+<a class="sourceLine" id="cb17-106" title="106">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb17-107" title="107">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb17-108" title="108">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb17-109" title="109">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>,</a>
+<a class="sourceLine" id="cb17-110" title="110">                  <span class="st">&quot;SoftRobots&quot;</span>,</a>
+<a class="sourceLine" id="cb17-111" title="111">                  <span class="st">&quot;SoftRobots.Inverse&quot;</span>]</a>
+<a class="sourceLine" id="cb17-112" title="112"></a>
+<a class="sourceLine" id="cb17-113" title="113">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>, plugins<span class="op">=</span>pluginList)</a>
+<a class="sourceLine" id="cb17-114" title="114"></a>
+<a class="sourceLine" id="cb17-115" title="115">    <span class="co"># Adding contact handling</span></a>
+<a class="sourceLine" id="cb17-116" title="116">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb17-117" title="117">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
 <a class="sourceLine" id="cb17-118" title="118"></a>
-<a class="sourceLine" id="cb17-119" title="119">    <span class="co"># The real robot receives data from the 3 actuators</span></a>
-<a class="sourceLine" id="cb17-120" title="120">    <span class="co"># serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))</span></a>
-<a class="sourceLine" id="cb17-121" title="121">    invCtr <span class="op">=</span> scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,</a>
-<a class="sourceLine" id="cb17-122" title="122">                                                tripod, serial,</a>
-<a class="sourceLine" id="cb17-123" title="123">                                                [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
-<a class="sourceLine" id="cb17-124" title="124"></a>
-<a class="sourceLine" id="cb17-125" title="125">    <span class="co"># The regular controller that is being used for the last 2 steps but with small additions</span></a>
-<a class="sourceLine" id="cb17-126" title="126">    scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))</a>
+<a class="sourceLine" id="cb17-119" title="119">    <span class="co"># Inverse Solver</span></a>
+<a class="sourceLine" id="cb17-120" title="120">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb17-121" title="121">    scene.addObject(<span class="st">&#39;QPInverseProblemSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;QP&#39;</span>, printLog<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb17-122" title="122">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb17-123" title="123">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
+<a class="sourceLine" id="cb17-124" title="124">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior showCollision&quot;</span></a>
+<a class="sourceLine" id="cb17-125" title="125"></a>
+<a class="sourceLine" id="cb17-126" title="126">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
 <a class="sourceLine" id="cb17-127" title="127"></a>
-<a class="sourceLine" id="cb17-128" title="128">    scene.Simulation.addChild(tripod)</a>
-<a class="sourceLine" id="cb17-129" title="129"></a>
-<a class="sourceLine" id="cb17-130" title="130">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb17-131" title="131">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
-<a class="sourceLine" id="cb17-132" title="132">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb17-133" title="133">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
-<a class="sourceLine" id="cb17-134" title="134">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
-<a class="sourceLine" id="cb17-135" title="135">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb17-136" title="136">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb17-137" title="137">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
-<a class="sourceLine" id="cb17-138" title="138"></a>
-<a class="sourceLine" id="cb17-139" title="139">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
-<a class="sourceLine" id="cb17-140" title="140">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb17-141" title="141">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
-<a class="sourceLine" id="cb17-142" title="142">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
-<a class="sourceLine" id="cb17-143" title="143">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb17-144" title="144">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb17-145" title="145">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb17-146" title="146">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
+<a class="sourceLine" id="cb17-128" title="128">    <span class="co"># Serial port bridge</span></a>
+<a class="sourceLine" id="cb17-129" title="129">    serial <span class="op">=</span> SerialPortBridgeGeneric(rootNode)</a>
+<a class="sourceLine" id="cb17-130" title="130"></a>
+<a class="sourceLine" id="cb17-131" title="131">    <span class="co"># Choose here to control position or orientation of end-effector</span></a>
+<a class="sourceLine" id="cb17-132" title="132">    orientation <span class="op">=</span> <span class="va">False</span></a>
+<a class="sourceLine" id="cb17-133" title="133">    <span class="cf">if</span> orientation:</a>
+<a class="sourceLine" id="cb17-134" title="134">        <span class="co"># inverse in orientation</span></a>
+<a class="sourceLine" id="cb17-135" title="135">        goalNode <span class="op">=</span> EffectorGoal([<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">50</span>])</a>
+<a class="sourceLine" id="cb17-136" title="136">    <span class="cf">else</span>:</a>
+<a class="sourceLine" id="cb17-137" title="137">        <span class="co"># inverse in position</span></a>
+<a class="sourceLine" id="cb17-138" title="138">        goalNode <span class="op">=</span> EffectorGoal([<span class="dv">0</span>, <span class="dv">40</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb17-139" title="139">    scene.Modelling.addChild(goalNode)</a>
+<a class="sourceLine" id="cb17-140" title="140"></a>
+<a class="sourceLine" id="cb17-141" title="141">    actuators <span class="op">=</span> addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)</a>
+<a class="sourceLine" id="cb17-142" title="142"></a>
+<a class="sourceLine" id="cb17-143" title="143">    <span class="co"># The real robot receives data from the 3 actuators</span></a>
+<a class="sourceLine" id="cb17-144" title="144">    <span class="co"># serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))</span></a>
+<a class="sourceLine" id="cb17-145" title="145">    invCtr <span class="op">=</span> scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,</a>
+<a class="sourceLine" id="cb17-146" title="146">                                                tripod, serial,</a>
+<a class="sourceLine" id="cb17-147" title="147">                                                [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
+<a class="sourceLine" id="cb17-148" title="148"></a>
+<a class="sourceLine" id="cb17-149" title="149">    <span class="co"># The regular controller that is being used for the last 2 steps but with small additions</span></a>
+<a class="sourceLine" id="cb17-150" title="150">    scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))</a>
+<a class="sourceLine" id="cb17-151" title="151"></a>
+<a class="sourceLine" id="cb17-152" title="152">    scene.Simulation.addChild(tripod)</a>
+<a class="sourceLine" id="cb17-153" title="153"></a>
+<a class="sourceLine" id="cb17-154" title="154">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
+<a class="sourceLine" id="cb17-155" title="155">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb17-156" title="156">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb17-157" title="157">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
+<a class="sourceLine" id="cb17-158" title="158">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb17-159" title="159">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb17-160" title="160">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb17-161" title="161">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
+<a class="sourceLine" id="cb17-162" title="162"></a>
+<a class="sourceLine" id="cb17-163" title="163">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
+<a class="sourceLine" id="cb17-164" title="164">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb17-165" title="165">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
+<a class="sourceLine" id="cb17-166" title="166">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
+<a class="sourceLine" id="cb17-167" title="167">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb17-168" title="168">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb17-169" title="169">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
+<a class="sourceLine" id="cb17-170" title="170">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
 </div>
 </div>
 <h1 id="step-8.2-defining-a-motion-path-for-the-maze">STEP 8.2: Defining a motion path for the maze</h1>
@@ -1569,7 +1746,7 @@ Figure 12: Maze with a little ball.
 <a class="sourceLine" id="cb18-40" title="40">    <span class="kw">def</span> init(<span class="va">self</span>):</a>
 <a class="sourceLine" id="cb18-41" title="41">        <span class="cf">if</span> <span class="va">self</span>.withSolver.value:</a>
 <a class="sourceLine" id="cb18-42" title="42">            <span class="va">self</span>.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>)</a>
-<a class="sourceLine" id="cb18-43" title="43">            <span class="va">self</span>.addObject(<span class="st">&#39;SparseLDLSolver&#39;</span>)</a>
+<a class="sourceLine" id="cb18-43" title="43">            <span class="va">self</span>.addObject(<span class="st">&#39;SparseLDLSolver&#39;</span>, template<span class="op">=</span><span class="st">&quot;CompressedRowSparseMatrixd&quot;</span>)</a>
 <a class="sourceLine" id="cb18-44" title="44">            <span class="va">self</span>.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
 <a class="sourceLine" id="cb18-45" title="45">        <span class="va">self</span>.addObject(<span class="st">&quot;MechanicalObject&quot;</span>, position<span class="op">=</span><span class="va">self</span>.position.value)</a>
 <a class="sourceLine" id="cb18-46" title="46">        <span class="va">self</span>.addObject(<span class="st">&quot;UniformMass&quot;</span>, totalMass<span class="op">=</span><span class="fl">1e-4</span>)</a>
@@ -1580,42 +1757,45 @@ Figure 12: Maze with a little ball.
 <a class="sourceLine" id="cb18-51" title="51">    rootNode.gravity <span class="op">=</span> [<span class="fl">0.</span>, <span class="fl">-9810.</span>, <span class="fl">0.</span>]</a>
 <a class="sourceLine" id="cb18-52" title="52">    rootNode.dt <span class="op">=</span> <span class="fl">0.01</span></a>
 <a class="sourceLine" id="cb18-53" title="53"></a>
-<a class="sourceLine" id="cb18-54" title="54">    rootNode.addObject(<span class="st">&#39;RequiredPlugin&#39;</span>, pluginName<span class="op">=</span>[<span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
-<a class="sourceLine" id="cb18-55" title="55">                                                     <span class="st">&quot;Sofa.Component.Collision.Detection.Algorithm&quot;</span>,</a>
-<a class="sourceLine" id="cb18-56" title="56">                                                     <span class="st">&quot;Sofa.Component.Collision.Detection.Intersection&quot;</span>,</a>
-<a class="sourceLine" id="cb18-57" title="57">                                                     <span class="st">&quot;Sofa.Component.Collision.Geometry&quot;</span>,</a>
-<a class="sourceLine" id="cb18-58" title="58">                                                     <span class="st">&quot;Sofa.Component.Collision.Response.Contact&quot;</span>,</a>
-<a class="sourceLine" id="cb18-59" title="59">                                                     <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
-<a class="sourceLine" id="cb18-60" title="60">                                                     <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span>,</a>
-<a class="sourceLine" id="cb18-61" title="61">                                                     <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>, <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
-<a class="sourceLine" id="cb18-62" title="62">                                                     <span class="st">&quot;Sofa.Component.LinearSolver.Iterative&quot;</span>, <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb18-63" title="63">                                                     <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
-<a class="sourceLine" id="cb18-64" title="64">                                                     <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
-<a class="sourceLine" id="cb18-65" title="65">                                                     <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
-<a class="sourceLine" id="cb18-66" title="66">                                                     <span class="st">&quot;Sofa.Component.Visual&quot;</span>, ])</a>
-<a class="sourceLine" id="cb18-67" title="67"></a>
-<a class="sourceLine" id="cb18-68" title="68">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb18-69" title="69">    rootNode.addObject(<span class="st">&#39;VisualStyle&#39;</span>, displayFlags<span class="op">=</span>[<span class="st">&#39;showCollisionModels&#39;</span>, <span class="st">&#39;showBehavior&#39;</span>])</a>
-<a class="sourceLine" id="cb18-70" title="70">    rootNode.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb18-71" title="71"></a>
-<a class="sourceLine" id="cb18-72" title="72">    effector <span class="op">=</span> rootNode.addChild(<span class="st">&#39;Effector&#39;</span>)</a>
-<a class="sourceLine" id="cb18-73" title="73">    effector.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
-<a class="sourceLine" id="cb18-74" title="74">    effector.addObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="dv">100</span>, threshold<span class="op">=</span><span class="fl">1e-5</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
-<a class="sourceLine" id="cb18-75" title="75">    effector.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, name<span class="op">=</span><span class="st">&#39;goalMO&#39;</span>, position<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">40</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</a>
-<a class="sourceLine" id="cb18-76" title="76">                       showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb18-77" title="77">    effector.addObject(<span class="st">&#39;RestShapeSpringsForceField&#39;</span>, points<span class="op">=</span><span class="dv">0</span>, angularStiffness<span class="op">=</span><span class="fl">1e5</span>, stiffness<span class="op">=</span><span class="fl">1e5</span>)</a>
-<a class="sourceLine" id="cb18-78" title="78">    effector.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>, compliance<span class="op">=</span><span class="st">&#39;1e-10  1e-10  0 0 1e-10  0 1e-10 &#39;</span>)</a>
-<a class="sourceLine" id="cb18-79" title="79"></a>
-<a class="sourceLine" id="cb18-80" title="80">    <span class="co"># Open maze planning from JSON file</span></a>
-<a class="sourceLine" id="cb18-81" title="81">    data <span class="op">=</span> json.load(<span class="bu">open</span>(<span class="st">&#39;mazeplanning.json&#39;</span>))</a>
-<a class="sourceLine" id="cb18-82" title="82">    effector.addObject(MazeController(effector, data[<span class="st">&quot;anglePlanningTable&quot;</span>], <span class="va">True</span>))</a>
-<a class="sourceLine" id="cb18-83" title="83"></a>
-<a class="sourceLine" id="cb18-84" title="84">    maze <span class="op">=</span> effector.addChild(Maze())</a>
-<a class="sourceLine" id="cb18-85" title="85">    maze.addObject(<span class="st">&quot;RigidMapping&quot;</span>, index<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb18-54" title="54">    pluginList <span class="op">=</span> [<span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
+<a class="sourceLine" id="cb18-55" title="55">                  <span class="st">&quot;Sofa.Component.Collision.Detection.Algorithm&quot;</span>,</a>
+<a class="sourceLine" id="cb18-56" title="56">                  <span class="st">&quot;Sofa.Component.Collision.Detection.Intersection&quot;</span>,</a>
+<a class="sourceLine" id="cb18-57" title="57">                  <span class="st">&quot;Sofa.Component.Collision.Geometry&quot;</span>,</a>
+<a class="sourceLine" id="cb18-58" title="58">                  <span class="st">&quot;Sofa.Component.Collision.Response.Contact&quot;</span>,</a>
+<a class="sourceLine" id="cb18-59" title="59">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
+<a class="sourceLine" id="cb18-60" title="60">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span>,</a>
+<a class="sourceLine" id="cb18-61" title="61">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>, <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb18-62" title="62">                  <span class="st">&quot;Sofa.Component.LinearSolver.Iterative&quot;</span>, <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb18-63" title="63">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb18-64" title="64">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb18-65" title="65">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb18-66" title="66">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
+<a class="sourceLine" id="cb18-67" title="67">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>]</a>
+<a class="sourceLine" id="cb18-68" title="68"></a>
+<a class="sourceLine" id="cb18-69" title="69">    rootNode.addObject(<span class="st">&#39;RequiredPlugin&#39;</span>, pluginName<span class="op">=</span>pluginList)</a>
+<a class="sourceLine" id="cb18-70" title="70"></a>
+<a class="sourceLine" id="cb18-71" title="71">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb18-72" title="72">    rootNode.addObject(<span class="st">&#39;VisualStyle&#39;</span>, displayFlags<span class="op">=</span>[<span class="st">&#39;showCollisionModels&#39;</span>, <span class="st">&#39;showBehavior&#39;</span>])</a>
+<a class="sourceLine" id="cb18-73" title="73">    rootNode.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb18-74" title="74"></a>
+<a class="sourceLine" id="cb18-75" title="75">    effector <span class="op">=</span> rootNode.addChild(<span class="st">&#39;Effector&#39;</span>)</a>
+<a class="sourceLine" id="cb18-76" title="76">    effector.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb18-77" title="77">    effector.addObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="dv">100</span>, threshold<span class="op">=</span><span class="fl">1e-5</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb18-78" title="78">    effector.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, name<span class="op">=</span><span class="st">&#39;goalMO&#39;</span>, position<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">40</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb18-79" title="79">                       showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb18-80" title="80">    effector.addObject(<span class="st">&#39;RestShapeSpringsForceField&#39;</span>, points<span class="op">=</span><span class="dv">0</span>, angularStiffness<span class="op">=</span><span class="fl">1e5</span>, stiffness<span class="op">=</span><span class="fl">1e5</span>)</a>
+<a class="sourceLine" id="cb18-81" title="81">    effector.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>, compliance<span class="op">=</span><span class="st">&#39;1e-10  1e-10  0 0 1e-10  0 1e-10 &#39;</span>)</a>
+<a class="sourceLine" id="cb18-82" title="82"></a>
+<a class="sourceLine" id="cb18-83" title="83">    <span class="co"># Open maze planning from JSON file</span></a>
+<a class="sourceLine" id="cb18-84" title="84">    data <span class="op">=</span> json.load(<span class="bu">open</span>(<span class="st">&#39;mazeplanning.json&#39;</span>))</a>
+<a class="sourceLine" id="cb18-85" title="85">    effector.addObject(MazeController(effector, data[<span class="st">&quot;anglePlanningTable&quot;</span>], <span class="va">True</span>))</a>
 <a class="sourceLine" id="cb18-86" title="86"></a>
-<a class="sourceLine" id="cb18-87" title="87">    rootNode.addChild(Sphere(withSolver<span class="op">=</span><span class="va">True</span>))</a>
-<a class="sourceLine" id="cb18-88" title="88"></a>
-<a class="sourceLine" id="cb18-89" title="89">    <span class="cf">return</span></a></code></pre></div>
+<a class="sourceLine" id="cb18-87" title="87">    maze <span class="op">=</span> effector.addChild(Maze())</a>
+<a class="sourceLine" id="cb18-88" title="88">    maze.addObject(<span class="st">&quot;RigidMapping&quot;</span>, index<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb18-89" title="89"></a>
+<a class="sourceLine" id="cb18-90" title="90">    rootNode.addChild(Sphere(withSolver<span class="op">=</span><span class="va">True</span>))</a>
+<a class="sourceLine" id="cb18-91" title="91"></a>
+<a class="sourceLine" id="cb18-92" title="92">    <span class="cf">return</span></a></code></pre></div>
 </div>
 </div>
 <h1 id="step-8.3-inverse-control-to-follow-a-predefined-motion-path">STEP 8.3: Inverse control to follow a predefined motion path</h1>
@@ -1725,62 +1905,89 @@ Figure 13: Tripod with maze on top.
 <a class="sourceLine" id="cb19-89" title="89"><span class="kw">def</span> createScene(rootNode):</a>
 <a class="sourceLine" id="cb19-90" title="90">    <span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
 <a class="sourceLine" id="cb19-91" title="91">    <span class="im">import</span> json</a>
-<a class="sourceLine" id="cb19-92" title="92">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="dv">-9810</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>, plugins<span class="op">=</span>[<span class="st">&quot;SofaSparseSolver&quot;</span>, <span class="st">&quot;SofaOpenglVisual&quot;</span>, <span class="st">&quot;SofaSimpleFem&quot;</span>, <span class="st">&quot;SoftRobots&quot;</span>,<span class="st">&quot;SoftRobots.Inverse&quot;</span>, <span class="st">&#39;SofaBoundaryCondition&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>, <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaMiscMapping&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaGraphComponent&#39;</span>, <span class="st">&#39;SofaGeneralAnimationLoop&#39;</span>, <span class="st">&#39;SofaGeneralEngine&#39;</span>])</a>
-<a class="sourceLine" id="cb19-93" title="93">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb19-94" title="94">    scene.removeObject(scene.GenericConstraintSolver)</a>
-<a class="sourceLine" id="cb19-95" title="95"></a>
-<a class="sourceLine" id="cb19-96" title="96">    goalNode <span class="op">=</span> EffectorGoal(rootNode, [<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">0</span>])</a>
-<a class="sourceLine" id="cb19-97" title="97"></a>
-<a class="sourceLine" id="cb19-98" title="98">    <span class="co"># Open maze planning from JSON file</span></a>
-<a class="sourceLine" id="cb19-99" title="99">    data <span class="op">=</span> json.load(<span class="bu">open</span>(<span class="st">&#39;mazeplanning.json&#39;</span>))</a>
-<a class="sourceLine" id="cb19-100" title="100">    goalNode.addObject(MazeController(goalNode, data[<span class="st">&quot;anglePlanningTable&quot;</span>], <span class="va">False</span>))</a>
-<a class="sourceLine" id="cb19-101" title="101"></a>
-<a class="sourceLine" id="cb19-102" title="102">    <span class="co"># Adding contact handling</span></a>
-<a class="sourceLine" id="cb19-103" title="103">    scene.addMainHeader()</a>
-<a class="sourceLine" id="cb19-104" title="104">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb19-105" title="105"></a>
-<a class="sourceLine" id="cb19-106" title="106">    <span class="co"># Inverse Solver</span></a>
-<a class="sourceLine" id="cb19-107" title="107">    scene.addObject(<span class="st">&#39;QPInverseProblemSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;QP&#39;</span>, printLog<span class="op">=</span><span class="va">False</span>, epsilon<span class="op">=</span><span class="fl">0.01</span>)</a>
-<a class="sourceLine" id="cb19-108" title="108">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
-<a class="sourceLine" id="cb19-109" title="109">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior showCollisionModels&quot;</span></a>
-<a class="sourceLine" id="cb19-110" title="110"></a>
-<a class="sourceLine" id="cb19-111" title="111">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
-<a class="sourceLine" id="cb19-112" title="112">    actuators <span class="op">=</span> addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, <span class="va">True</span>)</a>
-<a class="sourceLine" id="cb19-113" title="113">    maze <span class="op">=</span> tripod.RigidifiedStructure.FreeCenter.addChild(Maze())</a>
-<a class="sourceLine" id="cb19-114" title="114">    maze.addObject(<span class="st">&quot;RigidMapping&quot;</span>, index<span class="op">=</span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb19-115" title="115">    scene.Simulation.addChild(Sphere())</a>
-<a class="sourceLine" id="cb19-116" title="116"></a>
-<a class="sourceLine" id="cb19-117" title="117">    <span class="co"># Serial port bridge</span></a>
-<a class="sourceLine" id="cb19-118" title="118">    serial <span class="op">=</span> SerialPortBridgeGeneric(rootNode)</a>
-<a class="sourceLine" id="cb19-119" title="119"></a>
-<a class="sourceLine" id="cb19-120" title="120">    <span class="co"># The real robot receives data from the 3 actuators</span></a>
-<a class="sourceLine" id="cb19-121" title="121">    <span class="co"># serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))</span></a>
-<a class="sourceLine" id="cb19-122" title="122">    invCtr <span class="op">=</span> scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,</a>
-<a class="sourceLine" id="cb19-123" title="123">                                                tripod, serial,</a>
-<a class="sourceLine" id="cb19-124" title="124">                                                [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
-<a class="sourceLine" id="cb19-125" title="125"></a>
-<a class="sourceLine" id="cb19-126" title="126">    <span class="co"># The regular controller that is being used for the last 2 steps but with small additions</span></a>
-<a class="sourceLine" id="cb19-127" title="127">    scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))</a>
+<a class="sourceLine" id="cb19-92" title="92"></a>
+<a class="sourceLine" id="cb19-93" title="93">    pluginList <span class="op">=</span> [<span class="st">&quot;ArticulatedSystemPlugin&quot;</span>,</a>
+<a class="sourceLine" id="cb19-94" title="94">                  <span class="st">&quot;Sofa.Component.AnimationLoop&quot;</span>,</a>
+<a class="sourceLine" id="cb19-95" title="95">                  <span class="st">&quot;Sofa.Component.Collision.Detection.Algorithm&quot;</span>,</a>
+<a class="sourceLine" id="cb19-96" title="96">                  <span class="st">&quot;Sofa.Component.Collision.Detection.Intersection&quot;</span>,</a>
+<a class="sourceLine" id="cb19-97" title="97">                  <span class="st">&quot;Sofa.Component.Collision.Geometry&quot;</span>,</a>
+<a class="sourceLine" id="cb19-98" title="98">                  <span class="st">&quot;Sofa.Component.Collision.Response.Contact&quot;</span>,</a>
+<a class="sourceLine" id="cb19-99" title="99">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span>,</a>
+<a class="sourceLine" id="cb19-100" title="100">                  <span class="st">&quot;Sofa.Component.Constraint.Projective&quot;</span>,</a>
+<a class="sourceLine" id="cb19-101" title="101">                  <span class="st">&quot;Sofa.Component.Engine.Select&quot;</span>,</a>
+<a class="sourceLine" id="cb19-102" title="102">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
+<a class="sourceLine" id="cb19-103" title="103">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
+<a class="sourceLine" id="cb19-104" title="104">                  <span class="st">&quot;Sofa.Component.LinearSolver.Iterative&quot;</span>,</a>
+<a class="sourceLine" id="cb19-105" title="105">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
+<a class="sourceLine" id="cb19-106" title="106">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
+<a class="sourceLine" id="cb19-107" title="107">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb19-108" title="108">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
+<a class="sourceLine" id="cb19-109" title="109">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
+<a class="sourceLine" id="cb19-110" title="110">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
+<a class="sourceLine" id="cb19-111" title="111">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
+<a class="sourceLine" id="cb19-112" title="112">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
+<a class="sourceLine" id="cb19-113" title="113">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
+<a class="sourceLine" id="cb19-114" title="114">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
+<a class="sourceLine" id="cb19-115" title="115">                  <span class="st">&quot;Sofa.GUI.Component&quot;</span>,</a>
+<a class="sourceLine" id="cb19-116" title="116">                  <span class="st">&quot;SoftRobots&quot;</span>,</a>
+<a class="sourceLine" id="cb19-117" title="117">                  <span class="st">&quot;SoftRobots.Inverse&quot;</span>]</a>
+<a class="sourceLine" id="cb19-118" title="118"></a>
+<a class="sourceLine" id="cb19-119" title="119">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="dv">-9810</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>, plugins<span class="op">=</span>pluginList)</a>
+<a class="sourceLine" id="cb19-120" title="120">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb19-121" title="121">    scene.removeObject(scene.GenericConstraintSolver)</a>
+<a class="sourceLine" id="cb19-122" title="122"></a>
+<a class="sourceLine" id="cb19-123" title="123">    goalNode <span class="op">=</span> EffectorGoal(rootNode, [<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb19-124" title="124"></a>
+<a class="sourceLine" id="cb19-125" title="125">    <span class="co"># Open maze planning from JSON file</span></a>
+<a class="sourceLine" id="cb19-126" title="126">    data <span class="op">=</span> json.load(<span class="bu">open</span>(<span class="st">&#39;mazeplanning.json&#39;</span>))</a>
+<a class="sourceLine" id="cb19-127" title="127">    goalNode.addObject(MazeController(goalNode, data[<span class="st">&quot;anglePlanningTable&quot;</span>], <span class="va">False</span>))</a>
 <a class="sourceLine" id="cb19-128" title="128"></a>
-<a class="sourceLine" id="cb19-129" title="129">    scene.Simulation.addChild(tripod)</a>
-<a class="sourceLine" id="cb19-130" title="130"></a>
-<a class="sourceLine" id="cb19-131" title="131">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb19-132" title="132">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
-<a class="sourceLine" id="cb19-133" title="133">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb19-134" title="134">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
-<a class="sourceLine" id="cb19-135" title="135">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
-<a class="sourceLine" id="cb19-136" title="136">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb19-137" title="137">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb19-138" title="138">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
-<a class="sourceLine" id="cb19-139" title="139"></a>
-<a class="sourceLine" id="cb19-140" title="140">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
-<a class="sourceLine" id="cb19-141" title="141">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
-<a class="sourceLine" id="cb19-142" title="142">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
-<a class="sourceLine" id="cb19-143" title="143">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
-<a class="sourceLine" id="cb19-144" title="144">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb19-145" title="145">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
-<a class="sourceLine" id="cb19-146" title="146">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
-<a class="sourceLine" id="cb19-147" title="147">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
+<a class="sourceLine" id="cb19-129" title="129">    <span class="co"># Adding contact handling</span></a>
+<a class="sourceLine" id="cb19-130" title="130">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb19-131" title="131">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb19-132" title="132"></a>
+<a class="sourceLine" id="cb19-133" title="133">    <span class="co"># Inverse Solver</span></a>
+<a class="sourceLine" id="cb19-134" title="134">    scene.addObject(<span class="st">&#39;QPInverseProblemSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;QP&#39;</span>, printLog<span class="op">=</span><span class="va">False</span>, epsilon<span class="op">=</span><span class="fl">0.01</span>)</a>
+<a class="sourceLine" id="cb19-135" title="135">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb19-136" title="136">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior showCollisionModels&quot;</span></a>
+<a class="sourceLine" id="cb19-137" title="137"></a>
+<a class="sourceLine" id="cb19-138" title="138">    tripod <span class="op">=</span> scene.Modelling.addChild(Tripod())</a>
+<a class="sourceLine" id="cb19-139" title="139">    actuators <span class="op">=</span> addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, <span class="va">True</span>)</a>
+<a class="sourceLine" id="cb19-140" title="140">    maze <span class="op">=</span> tripod.RigidifiedStructure.FreeCenter.addChild(Maze())</a>
+<a class="sourceLine" id="cb19-141" title="141">    maze.addObject(<span class="st">&quot;RigidMapping&quot;</span>, index<span class="op">=</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb19-142" title="142">    scene.Simulation.addChild(Sphere())</a>
+<a class="sourceLine" id="cb19-143" title="143"></a>
+<a class="sourceLine" id="cb19-144" title="144">    <span class="co"># Serial port bridge</span></a>
+<a class="sourceLine" id="cb19-145" title="145">    serial <span class="op">=</span> SerialPortBridgeGeneric(rootNode)</a>
+<a class="sourceLine" id="cb19-146" title="146"></a>
+<a class="sourceLine" id="cb19-147" title="147">    <span class="co"># The real robot receives data from the 3 actuators</span></a>
+<a class="sourceLine" id="cb19-148" title="148">    <span class="co"># serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))</span></a>
+<a class="sourceLine" id="cb19-149" title="149">    invCtr <span class="op">=</span> scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,</a>
+<a class="sourceLine" id="cb19-150" title="150">                                                tripod, serial,</a>
+<a class="sourceLine" id="cb19-151" title="151">                                                [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))</a>
+<a class="sourceLine" id="cb19-152" title="152"></a>
+<a class="sourceLine" id="cb19-153" title="153">    <span class="co"># The regular controller that is being used for the last 2 steps but with small additions</span></a>
+<a class="sourceLine" id="cb19-154" title="154">    scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))</a>
+<a class="sourceLine" id="cb19-155" title="155"></a>
+<a class="sourceLine" id="cb19-156" title="156">    scene.Simulation.addChild(tripod)</a>
+<a class="sourceLine" id="cb19-157" title="157"></a>
+<a class="sourceLine" id="cb19-158" title="158">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
+<a class="sourceLine" id="cb19-159" title="159">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb19-160" title="160">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb19-161" title="161">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
+<a class="sourceLine" id="cb19-162" title="162">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
+<a class="sourceLine" id="cb19-163" title="163">                                 object1<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb19-164" title="164">                                 object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.FreeCenter.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb19-165" title="165">                                 nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a>
+<a class="sourceLine" id="cb19-166" title="166"></a>
+<a class="sourceLine" id="cb19-167" title="167">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
+<a class="sourceLine" id="cb19-168" title="168">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb19-169" title="169">                                   name<span class="op">=</span><span class="st">&quot;deformableAndArm</span><span class="sc">{i}</span><span class="st">Coupling&quot;</span>.<span class="bu">format</span>(i<span class="op">=</span>i),</a>
+<a class="sourceLine" id="cb19-170" title="170">                                   template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
+<a class="sourceLine" id="cb19-171" title="171">                                   object1<span class="op">=</span>tripod[<span class="st">&quot;ActuatedArm&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="op">+</span> <span class="st">&quot;.ServoMotor.Articulation.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb19-172" title="172">                                   object2<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.dofs&quot;</span>].getLinkPath(),</a>
+<a class="sourceLine" id="cb19-173" title="173">                                   skipJ2tKJ2<span class="op">=</span><span class="va">True</span>,</a>
+<a class="sourceLine" id="cb19-174" title="174">                                   nodeToParse<span class="op">=</span>tripod[<span class="st">&quot;RigidifiedStructure.DeformableParts.MechanicalModel&quot;</span>].getLinkPath())</a></code></pre></div>
 </div>
 </div>
 <h1 id="conclusion">Conclusion</h1>

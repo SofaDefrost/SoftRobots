@@ -168,7 +168,7 @@ object is likely to stay approximately at the same location before and after gra
 idealize the grasping scene by considering that the object is fixed in space and by simulating the behavior
 of one finger only.
 
-<img src="images\simulation.png" width="400" title="Figure 4: Screenshot of the SOFA scene for the soft finger simulation" alt="Figure 4: Screenshot of the SOFA scene for the soft finger simulation"/>
+<img src="images/simulation.png" width="400" title="Figure 4: Screenshot of the SOFA scene for the soft finger simulation" alt="Figure 4: Screenshot of the SOFA scene for the soft finger simulation"/>
 
 The scene contains:
 - The 3D mesh of the finger along with an elastic force field to simulate its deformation
@@ -181,28 +181,14 @@ between the inner surfaces of the left and right walls
 
 <pre>
 <a href="details/gripper_simulation.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
-
-[//]: # (<a href="javascript:void&#40;0&#41;" onclick="toggle&#40;'step1code'&#41;;"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>)
-
-[//]: # ()
-[//]: # (<div id='step1code' class='hide'>)
-
-[//]: # (```python )
-
-[//]: # (..autofile::details/gripper_simulation.py)
-
-[//]: # (```)
-
-[//]: # (</div>)
-
-
-[comment]: <> (<div id='step1code' class='hide'>)
-[comment]: <> (```python)
-[comment]: <> (..autofile::gripper_simulation.py)
-[comment]: <> (```)
-[comment]: <> (</div>)
-
+<div id='step1code' class='hide'>
+```python
+..autofile::details/gripper_simulation.py
+```
+</div>
+</div>
 
 Don’t hesitate to go through the commented code of the SOFA scene for further details. To simulate the
 finger behavior and determine the final contact force, you must:
@@ -254,7 +240,7 @@ for the fabrication
 
 ## STEP 6: Preparation for 3D printing and verification
 
-<img src="images\printing_building_plate.PNG" width="600"/>
+<img src="images/printing_building_plate.PNG" width="600"/>
 
 When an optimal design is found, the last step is to check if the part can actually be fabricated, and if so to 
 create the fabrication program. Here we consider 3D printing to fabricate the finger. This process requires
