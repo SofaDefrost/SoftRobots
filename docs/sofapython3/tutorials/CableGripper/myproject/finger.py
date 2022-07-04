@@ -40,7 +40,7 @@ def Finger(parentNode=None, name="Finger",
 ####################################################################################################
 def createScene(rootNode):
     """You can load the finger only by typing runSofa finger.py"""
-    from stlib.scene import MainHeader, ContactHeader
+    from stlib3.scene import MainHeader, ContactHeader
     MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=["SoftRobots"])
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, frictionCoef=0.08)
 
