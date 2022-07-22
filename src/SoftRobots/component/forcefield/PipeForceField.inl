@@ -31,7 +31,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_INL
 
 #include "PipeForceField.h"
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/core/behavior/MechanicalState.h>
 using sofa::core::behavior::MechanicalState ;
 using sofa::core::objectmodel::BaseContext ;
@@ -63,7 +63,7 @@ namespace component
 namespace forcefield
 {
 
-using sofa::component::linearsolver::DefaultMultiMatrixAccessor ;
+using sofa::core::behavior::DefaultMultiMatrixAccessor ;
 using sofa::core::behavior::MultiMatrixAccessor ;
 using sofa::core::behavior::BaseMechanicalState ;
 

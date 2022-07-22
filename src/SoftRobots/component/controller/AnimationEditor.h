@@ -30,7 +30,7 @@
 #ifndef SOFA_CONTROLLER_ANIMATIONEDITOR_H
 #define SOFA_CONTROLLER_ANIMATIONEDITOR_H
 
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/component/controller/Controller.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
 #include <sofa/core/behavior/MechanicalState.h>

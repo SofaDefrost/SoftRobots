@@ -30,7 +30,7 @@
 #ifndef SOFAVRPNCLIENT_SERIALPORTBRIDGEGENERIC_H
 #define SOFAVRPNCLIENT_SERIALPORTBRIDGEGENERIC_H
 
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/component/controller/Controller.h>
 
 #include <SoftRobots/component/controller/modules/Serial.h>
 #include <SoftRobots/component/initSoftRobots.h>
