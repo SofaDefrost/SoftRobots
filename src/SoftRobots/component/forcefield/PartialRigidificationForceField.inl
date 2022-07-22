@@ -50,7 +50,7 @@ namespace interactionforcefield
 {
 
 
-using sofa::component::linearsolver::DefaultMultiMatrixAccessor ;
+using sofa::core::behavior::DefaultMultiMatrixAccessor ;
 using sofa::core::behavior::BaseMechanicalState ;
 
 

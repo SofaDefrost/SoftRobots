@@ -33,22 +33,22 @@ using std::string ;
 
 #include <sofa/testing/BaseTest.h>
 #include <sofa/helper/BackTrace.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 #include <sofa/linearalgebra/FullVector.h>
 using sofa::core::topology::BaseMeshTopology ;
 using sofa::core::objectmodel::Data ;
 
-#include <SofaBaseTopology/MeshTopology.h>
-using sofa::component::topology::MeshTopology ;
+#include <sofa/component/topology/container/constant/MeshTopology.h>
+using sofa::component::topology::container::constant::MeshTopology ;
 
 using sofa::helper::WriteAccessor ;
 using sofa::defaulttype::Vec3Types ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;

@@ -30,8 +30,8 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_PREQUIVALENTSTIFFNESSFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_PREQUIVALENTSTIFFNESSFORCEFIELD_INL
 
-#include "PREquivalentStiffnessForceField.h"
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <SoftRobots/component/forcefield/PREquivalentStiffnessForceField.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/core/behavior/MechanicalState.h>
 using sofa::core::behavior::MechanicalState ;
 using sofa::core::objectmodel::BaseContext ;

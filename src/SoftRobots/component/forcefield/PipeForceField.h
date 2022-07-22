@@ -30,16 +30,16 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_H
 
-#include <SofaDeformable/MeshSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/MechanicalParams.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
-#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
+#include <sofa/component/mapping/linear/BarycentricMapping.h>
 #include <sofa/core/behavior/ForceField.h>
 
 namespace sofa
@@ -56,9 +56,9 @@ using sofa::type::vector;
 using sofa::core::MechanicalParams;
 using sofa::linearalgebra::BaseMatrix;
 using sofa::core::behavior::ForceField ;
-using sofa::component::linearsolver::CompressedRowSparseMatrix ;
-using sofa::component::mapping::BarycentricMapping;
-using sofa::component::interactionforcefield::MeshSpringForceField ;
+using sofa::linearalgebra::CompressedRowSparseMatrix ;
+using sofa::component::mapping::linear::BarycentricMapping;
+using sofa::component::solidmechanics::spring::MeshSpringForceField ;
 using sofa::core::behavior::MultiMatrixAccessor ;
 
 
