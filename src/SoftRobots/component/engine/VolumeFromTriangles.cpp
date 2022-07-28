@@ -29,7 +29,6 @@
 ******************************************************************************/
 #include "VolumeFromTriangles.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <SofaEngine/config.h>
 
 namespace sofa
 {
