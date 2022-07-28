@@ -6,15 +6,19 @@ The **CommunicationController** component can be used to send data from a simula
 1.1- On Linux
 
 #Debian/Ubuntu
-sudo apt-get install libzmq3-dev
+
+`sudo apt-get install libzmq3-dev`
+
 #Fedora
-sudo dnf install zeromq-devel
+
+`sudo dnf install zeromq-devel`
 
 1.1- On MacOS (missing)
 
 1.1- On Windows, download the Windows source of libzmq and build using Visual Studio. Put a copy of zmq.hpp from the cppzmq project (github) in the include folder of libzmq.
 
 2- In the cmake gui, enable: SOFTROBOTS_COMMUNICATIONCONTROLLER = true
+
 3- Compile SOFA
 
 In this directory ("SoftRobots/docs/sofapython3/examples/component/controller/CommunicationController") you will find one example showing how to use the component:
