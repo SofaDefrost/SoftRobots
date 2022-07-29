@@ -29,7 +29,6 @@
 ******************************************************************************/
 
 #include <sofa/defaulttype/VecTypes.h>
-
 #include "CableModel.inl"
 
 namespace sofa
@@ -41,12 +40,161 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::defaulttype;
+
+using sofa::defaulttype::Vec2Types;
+using sofa::type::Vector2;
+
+template<>
+void CableModel<Vec2Types>::computePointsActionArea()
+{
+    return;
+
+    // TODO: proximity in 2D
+
+    /*
+    // Implementing continuous Dijkstra as a geodesic distance measure
+    ReadAccessor<Data<VecCoord>> cablePositions = m_state->readPositions();
+    unsigned int nbCenters = d_indices.getValue().size();
+    ReadAccessor<Data<vector<Real>>> maxDistance = d_radii;
+    vector<Real> m_totalRatio;
+    m_areaIndices.clear();
+    m_areaIndices.resize(cablePositions.size());
+    m_ratios.clear();
+    m_ratios.resize(cablePositions.size());
+    m_totalRatio.clear();
+    m_totalRatio.resize(cablePositions.size());
+
+    // Find closest indice on surface topology
+    SetIndexArray m_closestCenterIndices;
+    if (nbCenters != 0)
+    {
+        m_closestCenterIndices.resize(nbCenters);
+        for(unsigned int i=0; i<nbCenters; i++)
+        {
+            double closest_distance = (cablePositions[i] - Coord(m_topology->getPX(0), m_topology->getPY(0))).norm();
+            unsigned int closest_vertice = 0;
+            for(unsigned int j=1; j<m_topology->getNbPoints(); j++)
+            {
+                double distance = (cablePositions[i] - Coord(m_topology->getPX(j), m_topology->getPY(j))).norm();
+                if(distance < closest_distance) 
+                {
+                    closest_distance = distance;
+                    closest_vertice = j;
+                }
+            } 
+            m_closestCenterIndices[i] = closest_vertice;
+        }
+    }
+
+    // Iterate for each cable attachment
+    typedef pair<Real,BaseMeshTopology::PointID> DistanceToPoint;
+    for (unsigned int i=0; i<cablePositions.size(); i++)
+    {   
+        // Init
+        set<DistanceToPoint> queue; 
+        typename set<DistanceToPoint>::iterator qit;
+        vector<Real> distances(m_topology->getNbPoints(),maxDistance[i]);
+
+        //////////////////// If cable attachment does not match with a mesh vertice /////////////////
+        //////////// Project on closest triangle and distribute distance to its vertices ////////////
+        const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(m_closestCenterIndices[i]); // Triangles connected to closest vertice
+        static sofa::helper::DistancePointTri proximitySolver;
+        Vector2 projectionOnTriangle;
+        Real minDistanceToTriangle = std::numeric_limits<Real>::max(); unsigned int closestTriangleId = 0; Vector2 closestProjectionOnTriangle;
+        for(unsigned int j=0; j<trianglesAroundClosestVertex.size(); j++)
+        {
+            const Triangle triangle =  m_topology->getTriangle(trianglesAroundClosestVertex[j]);   
+            Coord p0 = Coord(m_topology->getPX(triangle[0]), m_topology->getPY(triangle[0]));
+            Coord p1 = Coord(m_topology->getPX(triangle[1]), m_topology->getPY(triangle[1]));
+            Coord p2 = Coord(m_topology->getPX(triangle[2]), m_topology->getPY(triangle[2]));           
+            proximitySolver.NewComputation(p0, p1, p2, cablePositions[i],projectionOnTriangle);
+            Real distanceToTriangle = (projectionOnTriangle - cablePositions[i]).norm();  
+            if(distanceToTriangle < minDistanceToTriangle)
+            {
+                minDistanceToTriangle = distanceToTriangle;
+                closestTriangleId = j;
+                closestProjectionOnTriangle = projectionOnTriangle;
+            }
+        }
+
+        const Triangle closestTriangle =  m_topology->getTriangle(trianglesAroundClosestVertex[closestTriangleId]);
+        for(unsigned int j=0; j<closestTriangle.size(); j++)
+        {
+            Coord p = Coord(m_topology->getPX(closestTriangle[j]), m_topology->getPY(closestTriangle[j]), m_topology->getPZ(closestTriangle[j]));
+            Real d = (closestProjectionOnTriangle - p).norm();
+            if (d_method.getValue() == "geodesic")
+                distances[closestTriangle[j]] = minDistanceToTriangle + d;
+            else if (d_method.getValue() == "sphere")
+                distances[closestTriangle[j]] = (p - cablePositions[i]).norm();
+            queue.insert(DistanceToPoint(d,m_closestCenterIndices[i]));
+        }
+        
+        // Dijkstra
+        while(!queue.empty() )
+        {
+        DistanceToPoint top = *queue.begin();
+        queue.erase(queue.begin());
+        BaseMeshTopology::PointID v = top.second; 
+        const vector<BaseMeshTopology::PointID> neighboors = m_topology->getVerticesAroundVertex(v);
+        for (unsigned int j=0 ; j<neighboors.size(); ++j)
+        {
+            sofa::core::topology::BaseMeshTopology::PointID vn = neighboors[j];
+
+            Coord pv = Coord(m_topology->getPX(v), m_topology->getPY(v));
+            Coord pvn = Coord(m_topology->getPX(vn), m_topology->getPY(vn));
+            Real d;
+            if (d_method.getValue() == "geodesic")
+                d = distances[v] + (pv - pvn).norm();
+            else if (d_method.getValue() == "sphere")
+                d = (pvn - cablePositions[i]).norm();
+            if((distances[vn]) > d)
+            {
+                qit=queue.find(DistanceToPoint(distances[vn],vn));
+                if(qit != queue.end()) queue.erase(qit);
+                distances[vn] = d;
+                queue.insert(DistanceToPoint(d,vn) );
+                }
+            }
+        }
+
+        // Distribute forces
+        m_totalRatio[i] = 0.0;
+        for(unsigned int p=0; p<distances.size(); p++)
+        {
+            if(distances[p] < maxDistance[i])
+            {
+                double ratio = rabs(distances[p] - maxDistance[i]);
+
+                //double f = 1.0 -  (distances[p]/(maxDistance[i] * maxDistance[i]));
+                //double ratio = f * f * f * f; // Locally supported kernel function
+
+                m_totalRatio[i] += ratio;
+                m_ratios[i].push_back(ratio);
+                m_areaIndices[i].push_back(p);
+            } 
+        }
+
+        // Normalize force ratios
+        for(unsigned int j=0; j<m_ratios[i].size(); j++)
+            m_ratios[i][j] = m_ratios[i][j] / m_totalRatio[i];
+    }
+    */
+}
+
+
+template<>
+unsigned int CableModel<Vec2Types>::computeClosestIndice(Coord position)
+{
+    return 0;
+}
+
+
 
 // Force template specialization for the most common sofa type.
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
+using namespace sofa::defaulttype;
 template class CableModel<Vec3Types>;
 //template class CableModel<Rigid3Types>;
 template class CableModel<Vec2Types>;

@@ -32,8 +32,10 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
 
 #include <sofa/defaulttype/VecTypes.h>
-
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <sofa/helper/proximity.h>
 
 namespace sofa
 {
@@ -54,6 +56,9 @@ using sofa::core::ConstraintParams ;
 using sofa::helper::ReadAccessor ;
 using sofa::core::VecCoordId ;
 
+using sofa::core::topology::BaseMeshTopology;
+
+using sofa::linearalgebra::BaseVector;
 
 /**
  * This class contains common implementation of cable constraints
@@ -78,6 +83,12 @@ public:
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
     typedef type::vector<unsigned int> SetIndexArray;
+
+    typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef typename sofa::component::topology::TriangleSetTopologyContainer TriangleSetTopologyContainer;
+    typedef typename TriangleSetTopologyContainer::TrianglesAroundVertex TrianglesAroundVertex;
+
+    typedef typename sofa::core::topology::BaseMeshTopology BaseMeshTopology;
 
 public:
     CableModel(MechanicalState* object = nullptr);
@@ -118,6 +129,14 @@ protected:
     Data<Real>                  d_cableInitialLength;
     Data<Real>                  d_cableLength;
 
+    Data<std::string>           d_method;
+    Data<VecCoord>              d_centers;
+    Data<type::vector<Real>>    d_radii;
+    SingleLink<CableModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_surfaceTopology;
+    sofa::core::topology::BaseMeshTopology*  m_topology;
+    type::vector<SetIndexArray> m_areaIndices;
+    type::vector<type::vector<Real>> m_ratios;
+
     Data<double>                d_force;
     Data<double>                d_displacement;
 
@@ -131,8 +150,9 @@ protected:
 
     Data<bool>                  d_drawPullPoint;
     Data<bool>                  d_drawPoints;
+    Data<bool>                  d_drawPulledAreas;
 
-    Data<type::RGBAColor>    d_color;
+    Data<type::RGBAColor>       d_color;
 
     bool                        m_hasSlidingPoint;
 
@@ -158,10 +178,14 @@ private:
 
     void checkIndicesRegardingState();
     void initActuatedPoints();
+    void initCableActionAreas();
+    void computePointsActionArea();
+    unsigned int computeClosestIndice(Coord position);
 
     void drawPullPoint(const VisualParams* vparams);
     void drawPoints(const VisualParams* vparams);
     void drawLinesBetweenPoints(const VisualParams* vparams);
+    void drawPulledAreas(const VisualParams* vparams);
 };
 
 // Declares template as extern to avoid the code generation of the template for
