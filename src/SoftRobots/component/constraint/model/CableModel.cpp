@@ -45,24 +45,38 @@ using sofa::defaulttype::Vec2Types;
 using sofa::type::Vector2;
 
 template<>
+unsigned int CableModel<Vec2Types>::computeClosestIndice(Coord position)
+{
+    double closest_distance = (position - Coord(m_topology->getPX(0), m_topology->getPY(0))).norm();
+    unsigned int closest_vertice = 0;
+    for(unsigned int j=1; j<m_topology->getNbPoints(); j++)
+    {
+        double distance = (position - Coord(m_topology->getPX(j), m_topology->getPY(j))).norm();
+        if(distance < closest_distance) 
+        {
+            closest_distance = distance;
+            closest_vertice = j;
+        }
+    } 
+   return closest_vertice;
+}
+
+
+template<>
 void CableModel<Vec2Types>::computePointsActionArea()
 {
-    return;
-
-    // TODO: proximity in 2D
-
-    /*
     // Implementing continuous Dijkstra as a geodesic distance measure
     ReadAccessor<Data<VecCoord>> cablePositions = m_state->readPositions();
     unsigned int nbCenters = d_indices.getValue().size();
+    const SetIndexArray &indices = d_indices.getValue();
     ReadAccessor<Data<vector<Real>>> maxDistance = d_radii;
     vector<Real> m_totalRatio;
     m_areaIndices.clear();
-    m_areaIndices.resize(cablePositions.size());
+    m_areaIndices.resize(nbCenters);
     m_ratios.clear();
-    m_ratios.resize(cablePositions.size());
+    m_ratios.resize(nbCenters);
     m_totalRatio.clear();
-    m_totalRatio.resize(cablePositions.size());
+    m_totalRatio.resize(nbCenters);
 
     // Find closest indice on surface topology
     SetIndexArray m_closestCenterIndices;
@@ -70,25 +84,12 @@ void CableModel<Vec2Types>::computePointsActionArea()
     {
         m_closestCenterIndices.resize(nbCenters);
         for(unsigned int i=0; i<nbCenters; i++)
-        {
-            double closest_distance = (cablePositions[i] - Coord(m_topology->getPX(0), m_topology->getPY(0))).norm();
-            unsigned int closest_vertice = 0;
-            for(unsigned int j=1; j<m_topology->getNbPoints(); j++)
-            {
-                double distance = (cablePositions[i] - Coord(m_topology->getPX(j), m_topology->getPY(j))).norm();
-                if(distance < closest_distance) 
-                {
-                    closest_distance = distance;
-                    closest_vertice = j;
-                }
-            } 
-            m_closestCenterIndices[i] = closest_vertice;
-        }
+            m_closestCenterIndices[i] = computeClosestIndice(cablePositions[indices[i]]);
     }
 
     // Iterate for each cable attachment
     typedef pair<Real,BaseMeshTopology::PointID> DistanceToPoint;
-    for (unsigned int i=0; i<cablePositions.size(); i++)
+    for (unsigned int i=0; i<nbCenters; i++)
     {   
         // Init
         set<DistanceToPoint> queue; 
@@ -99,16 +100,16 @@ void CableModel<Vec2Types>::computePointsActionArea()
         //////////// Project on closest triangle and distribute distance to its vertices ////////////
         const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(m_closestCenterIndices[i]); // Triangles connected to closest vertice
         static sofa::helper::DistancePointTri proximitySolver;
-        Vector2 projectionOnTriangle;
+        Vector3 projectionOnTriangle;
         Real minDistanceToTriangle = std::numeric_limits<Real>::max(); unsigned int closestTriangleId = 0; Vector2 closestProjectionOnTriangle;
         for(unsigned int j=0; j<trianglesAroundClosestVertex.size(); j++)
         {
             const Triangle triangle =  m_topology->getTriangle(trianglesAroundClosestVertex[j]);   
-            Coord p0 = Coord(m_topology->getPX(triangle[0]), m_topology->getPY(triangle[0]));
-            Coord p1 = Coord(m_topology->getPX(triangle[1]), m_topology->getPY(triangle[1]));
-            Coord p2 = Coord(m_topology->getPX(triangle[2]), m_topology->getPY(triangle[2]));           
-            proximitySolver.NewComputation(p0, p1, p2, cablePositions[i],projectionOnTriangle);
-            Real distanceToTriangle = (projectionOnTriangle - cablePositions[i]).norm();  
+            Vector3 p0 = Vector3(m_topology->getPX(triangle[0]), m_topology->getPY(triangle[0]), 0.0);
+            Vector3 p1 = Vector3(m_topology->getPX(triangle[1]), m_topology->getPY(triangle[1]), 0.0);
+            Vector3 p2 = Vector3(m_topology->getPX(triangle[2]), m_topology->getPY(triangle[2]), 0.0);           
+            proximitySolver.NewComputation(p0, p1, p2, Vector3(cablePositions[indices[i]][0], cablePositions[indices[i]][1], 0.0),projectionOnTriangle);
+            Real distanceToTriangle = (Vector2(projectionOnTriangle[0], projectionOnTriangle[1]) - cablePositions[indices[i]]).norm();  
             if(distanceToTriangle < minDistanceToTriangle)
             {
                 minDistanceToTriangle = distanceToTriangle;
@@ -118,17 +119,20 @@ void CableModel<Vec2Types>::computePointsActionArea()
         }
 
         const Triangle closestTriangle =  m_topology->getTriangle(trianglesAroundClosestVertex[closestTriangleId]);
+
+        
         for(unsigned int j=0; j<closestTriangle.size(); j++)
         {
-            Coord p = Coord(m_topology->getPX(closestTriangle[j]), m_topology->getPY(closestTriangle[j]), m_topology->getPZ(closestTriangle[j]));
-            Real d = (closestProjectionOnTriangle - p).norm();
-            if (d_method.getValue() == "geodesic")
-                distances[closestTriangle[j]] = minDistanceToTriangle + d;
-            else if (d_method.getValue() == "sphere")
-                distances[closestTriangle[j]] = (p - cablePositions[i]).norm();
-            queue.insert(DistanceToPoint(d,m_closestCenterIndices[i]));
+        Coord p = Coord(m_topology->getPX(closestTriangle[j]), m_topology->getPY(closestTriangle[j]));
+        Real d = (closestProjectionOnTriangle - p).norm();
+        if (d_method.getValue() == "geodesic")
+            distances[closestTriangle[j]] = minDistanceToTriangle + d;
+        else if (d_method.getValue() == "sphere")
+            distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
+        queue.insert(DistanceToPoint(d,m_closestCenterIndices[i]));
         }
-        
+
+
         // Dijkstra
         while(!queue.empty() )
         {
@@ -142,11 +146,12 @@ void CableModel<Vec2Types>::computePointsActionArea()
 
             Coord pv = Coord(m_topology->getPX(v), m_topology->getPY(v));
             Coord pvn = Coord(m_topology->getPX(vn), m_topology->getPY(vn));
-            Real d;
+            Real d = 0.0;
             if (d_method.getValue() == "geodesic")
                 d = distances[v] + (pv - pvn).norm();
             else if (d_method.getValue() == "sphere")
-                d = (pvn - cablePositions[i]).norm();
+                d = (pvn - cablePositions[indices[i]]).norm();
+
             if((distances[vn]) > d)
             {
                 qit=queue.find(DistanceToPoint(distances[vn],vn));
@@ -178,14 +183,6 @@ void CableModel<Vec2Types>::computePointsActionArea()
         for(unsigned int j=0; j<m_ratios[i].size(); j++)
             m_ratios[i][j] = m_ratios[i][j] / m_totalRatio[i];
     }
-    */
-}
-
-
-template<>
-unsigned int CableModel<Vec2Types>::computeClosestIndice(Coord position)
-{
-    return 0;
 }
 
 
