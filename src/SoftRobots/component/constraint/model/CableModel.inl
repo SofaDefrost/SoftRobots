@@ -267,7 +267,7 @@ void CableModel<DataTypes>::initActuatedPoints()
     if (nbCenters != 0)
     {
         if (nbIndices != 0)
-            msg_warning() <<"Both centers and indices are provided. Centers are used by default.";
+            msg_warning() <<"Both centers and indices are provided. Centers are used by default";
 
         SetIndexArray &list = (*d_indices.beginEdit());
         list.clear();
@@ -790,12 +790,6 @@ template<class DataTypes>
 void CableModel<DataTypes>::drawPulledAreas(const VisualParams* vparams)
 {
     ReadAccessor<Data<vector<Coord>>> positions = m_state->readPositions();
-    unsigned int totalSize = 0;
-    for(unsigned int i=0; i<m_areaIndices.size(); i++)
-        totalSize += m_areaIndices[i].size();
-    vector<Vector3> positionsInArea;
-    positionsInArea.resize(totalSize);
-
 
     for(unsigned int i=0; i<m_areaIndices.size(); i++)
         for(unsigned int j=0; j<m_areaIndices[i].size(); j++)
@@ -804,22 +798,6 @@ void CableModel<DataTypes>::drawPulledAreas(const VisualParams* vparams)
             point[0] = positions[m_areaIndices[i][j]];
             vparams->drawTool()->drawPoints(point, 40.0 * m_ratios[i][j], RGBAColor(1.f,1.f,0.f,1.f));
         }
-            
-            
-
-    /*
-    int counter = 0;
-    for(unsigned int i=0; i<m_areaIndices.size(); i++)
-        for(unsigned int j=0; j<m_areaIndices[i].size(); j++)
-            {
-                positionsInArea[counter] = positions[m_areaIndices[i][j]];
-                counter += 1;
-            }
-            
-    for(unsigned int i=0; i<m_areaIndices.size(); i++)
-        for(unsigned int j=0; j<m_areaIndices[i].size(); j++)
-            vparams->drawTool()->drawPoints(positionsInArea, 20 * m_ratios[i][j], RGBAColor(1.f,0.f,0.f,1.f))
-    */
 }
 
 
