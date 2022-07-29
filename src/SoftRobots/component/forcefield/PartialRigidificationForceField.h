@@ -36,33 +36,26 @@
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/MechanicalParams.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
-#include <SofaRigid/RigidMapping.h>
-#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
+#include <sofa/component/mapping/nonlinear/RigidMapping.h>
+#include <sofa/component/mapping/linear/SubsetMultiMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes1, class DataTypes2>
 class PartialRigidificationForceFieldInternalData
 {
-public:
 };
 
-using sofa::component::linearsolver::CompressedRowSparseMatrix ;
+using sofa::linearalgebra::CompressedRowSparseMatrix ;
 using sofa::core::behavior::MixedInteractionForceField ;
 using sofa::core::behavior::BaseForceField ;
-using sofa::component::mapping::SubsetMultiMapping ;
+using sofa::component::mapping::linear::SubsetMultiMapping ;
 using sofa::core::behavior::MultiMatrixAccessor ;
-using sofa::component::mapping::RigidMapping ;
+using sofa::component::mapping::nonlinear::RigidMapping ;
 using sofa::linearalgebra::BaseMatrix ;
 using sofa::core::MechanicalParams ;
 using sofa::type::Mat ;
@@ -194,12 +187,7 @@ protected:
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::getContext ;
     ////////////////////////////////////////////////////////////////////////////
 };
-
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::interactionforcefield
 
 
 #endif
