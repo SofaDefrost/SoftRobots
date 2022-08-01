@@ -83,7 +83,7 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
 
     , d_cableLength(initData(&d_cableLength, Real(0.0), "cableLength","Computation done at the end of the time step"))
 
-    , d_method(initData(&d_method,std::string("point"),"method", "\"point\", \"sphere\", \"geodesic\" "))
+    , d_method(initData(&d_method, sofa::helper::OptionsGroup(3,"point","sphere","geodesic"), "method", "Default is point method."))
 
     , d_centers(initData(&d_centers, "centers",
                        "List of positions describing attachment of cables"))
@@ -180,7 +180,8 @@ void CableModel<DataTypes>::init()
         return;
     }
 
-    if (d_method.getValue() == "geodesic" || d_method.getValue() == "sphere")
+    const unsigned int id_method = d_method.getValue().getSelectedId();
+    if (id_method == 1 || id_method == 2)
     {
         if (l_surfaceTopology.empty())
         {
@@ -250,7 +251,8 @@ void CableModel<DataTypes>::internalInit()
     initActuatedPoints();
     checkIndicesRegardingState();
 
-    if (d_method.getValue() == "geodesic" || d_method.getValue() == "sphere")
+    const unsigned int id_method = d_method.getValue().getSelectedId();
+    if (id_method == 1 || id_method == 2)
         initCableActionAreas();
 }
 
@@ -269,12 +271,11 @@ void CableModel<DataTypes>::initActuatedPoints()
         if (nbIndices != 0)
             msg_warning() <<"Both centers and indices are provided. Centers are used by default";
 
-        SetIndexArray &list = (*d_indices.beginEdit());
+        auto list = sofa::helper::getWriteOnlyAccessor(d_indices);
         list.clear();
         list.resize(nbCenters);
         for (unsigned int i=0; i<nbCenters; i++)
-            list[i] = computeClosestIndice(centers[i]);            
-        d_indices.endEdit();
+            list[i] = computeClosestIndice(centers[i]);    
         nbIndices = d_indices.getValue().size();
     }
 
@@ -290,10 +291,9 @@ void CableModel<DataTypes>::initActuatedPoints()
 
     if (nbIndices == 0)
     {
-        SetIndexArray &list = (*d_indices.beginEdit());
+        auto list = sofa::helper::getWriteOnlyAccessor(d_indices);
         msg_warning() <<"No index of actuation given, set default 0";
         list.push_back(0);
-        d_indices.endEdit();
 
         m_hasSlidingPoint=false;
     }
@@ -349,6 +349,7 @@ template<class DataTypes>
 void CableModel<DataTypes>::computePointsActionArea()
 {
     // Implementing continuous Dijkstra as a geodesic distance measure
+    const unsigned int id_method = d_method.getValue().getSelectedId();
     ReadAccessor<Data<VecCoord>> cablePositions = m_state->readPositions();
     unsigned int nbCenters = d_indices.getValue().size();
     const SetIndexArray &indices = d_indices.getValue();
@@ -388,9 +389,9 @@ void CableModel<DataTypes>::computePointsActionArea()
         for(unsigned int j=0; j<trianglesAroundClosestVertex.size(); j++)
         {
             const Triangle triangle =  m_topology->getTriangle(trianglesAroundClosestVertex[j]);   
-            Coord p0 = Coord(m_topology->getPX(triangle[0]), m_topology->getPY(triangle[0]), m_topology->getPZ(triangle[0]));
-            Coord p1 = Coord(m_topology->getPX(triangle[1]), m_topology->getPY(triangle[1]), m_topology->getPZ(triangle[1]));
-            Coord p2 = Coord(m_topology->getPX(triangle[2]), m_topology->getPY(triangle[2]), m_topology->getPZ(triangle[2]));           
+            const Coord p0 = Coord(m_topology->getPX(triangle[0]), m_topology->getPY(triangle[0]), m_topology->getPZ(triangle[0]));
+            const Coord p1 = Coord(m_topology->getPX(triangle[1]), m_topology->getPY(triangle[1]), m_topology->getPZ(triangle[1]));
+            const Coord p2 = Coord(m_topology->getPX(triangle[2]), m_topology->getPY(triangle[2]), m_topology->getPZ(triangle[2]));           
             proximitySolver.NewComputation(p0, p1, p2, cablePositions[indices[i]],projectionOnTriangle);
             Real distanceToTriangle = (projectionOnTriangle - cablePositions[indices[i]]).norm();  
             if(distanceToTriangle < minDistanceToTriangle)
@@ -408,9 +409,9 @@ void CableModel<DataTypes>::computePointsActionArea()
         {
         Coord p = Coord(m_topology->getPX(closestTriangle[j]), m_topology->getPY(closestTriangle[j]), m_topology->getPZ(closestTriangle[j]));
         Real d = (closestProjectionOnTriangle - p).norm();
-        if (d_method.getValue() == "geodesic")
+        if (id_method == 2)
             distances[closestTriangle[j]] = minDistanceToTriangle + d;
-        else if (d_method.getValue() == "sphere")
+        else if (id_method == 1)
             distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
         queue.insert(DistanceToPoint(d,m_closestCenterIndices[i]));
         }
@@ -430,9 +431,9 @@ void CableModel<DataTypes>::computePointsActionArea()
             Coord pv = Coord(m_topology->getPX(v), m_topology->getPY(v), m_topology->getPZ(v));
             Coord pvn = Coord(m_topology->getPX(vn), m_topology->getPY(vn), m_topology->getPZ(vn));
             Real d = 0.0;
-            if (d_method.getValue() == "geodesic")
+            if (id_method == 2)
                 d = distances[v] + (pv - pvn).norm();
-            else if (d_method.getValue() == "sphere")
+            else if (id_method == 1)
                 d = (pvn - cablePositions[indices[i]]).norm();
 
             if((distances[vn]) > d)
@@ -451,10 +452,7 @@ void CableModel<DataTypes>::computePointsActionArea()
         {
             if(distances[p] < maxDistance[i])
             {
-                double ratio = rabs(distances[p] - maxDistance[i]);
-
-                //double f = 1.0 -  (distances[p]/(maxDistance[i] * maxDistance[i]));
-                //double ratio = f * f * f * f; // Locally supported kernel function
+                auto ratio = rabs(distances[p] - maxDistance[i]);
 
                 m_totalRatio[i] += ratio;
                 m_ratios[i].push_back(ratio);
@@ -472,11 +470,11 @@ void CableModel<DataTypes>::computePointsActionArea()
 template<class DataTypes>
 unsigned int CableModel<DataTypes>::computeClosestIndice(Coord position)
 {
-    double closest_distance = (position - Coord(m_topology->getPX(0), m_topology->getPY(0), m_topology->getPZ(0))).norm();
+    auto closest_distance = (position - Coord(m_topology->getPX(0), m_topology->getPY(0), m_topology->getPZ(0))).norm();
     unsigned int closest_vertice = 0;
     for(unsigned int j=1; j<m_topology->getNbPoints(); j++)
     {
-        double distance = (position - Coord(m_topology->getPX(j), m_topology->getPY(j), m_topology->getPZ(j))).norm();
+        const auto distance = (position - Coord(m_topology->getPX(j), m_topology->getPY(j), m_topology->getPZ(j))).norm();
         if(distance < closest_distance) 
         {
             closest_distance = distance;
@@ -525,6 +523,8 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
     VecCoord positions = x.getValue();
 
+    const unsigned int id_method = d_method.getValue().getSelectedId();
+
     if(!m_hasSlidingPoint)
     {
 
@@ -532,7 +532,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
         {
             Deriv direction = DataTypes::coordDifference(d_pullPoint.getValue(),positions[d_indices.getValue()[0]]);
             direction.normalize();
-            if (d_method.getValue() == "point")
+            if (id_method == 0)
                 rowIterator.setCol(d_indices.getValue()[0],  direction);
             else 
             {
@@ -544,7 +544,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
         {
             Deriv direction = DataTypes::coordDifference(positions[d_indices.getValue()[1]],positions[d_indices.getValue()[0]]);
             direction.normalize();
-            if (d_method.getValue() == "point")
+            if (id_method == 0)
             {
                 rowIterator.setCol(d_indices.getValue()[1],  -direction);
                 rowIterator.setCol(d_indices.getValue()[0],  direction);
@@ -588,7 +588,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 Deriv slidingDirection = directionBeyond - directionAhead;
                 if (d_hasPullPoint.getValue())
                 {
-                    if (d_method.getValue() == "point")
+                    if (id_method == 0)
                     {
                         rowIterator.setCol(currentIndex, slidingDirection);
                     }
@@ -600,7 +600,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 }                 
                 else
                 {
-                    if (d_method.getValue() == "point")
+                    if (id_method == 0)
                     {
                         rowIterator.setCol(currentIndex, -directionAhead);
                     }
@@ -629,7 +629,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
                 Deriv slidingDirection = directionBeyond - directionAhead;
 
-                if (d_method.getValue() == "point")
+                if (id_method == 0)
                     rowIterator.setCol(currentIndex, slidingDirection);
                 else 
                 {
@@ -650,7 +650,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 Deriv directionOfActuation = previousPosition - currentPosition;
                 directionOfActuation.normalize();
 
-                if (d_method.getValue() == "point")
+                if (id_method == 0)
                     rowIterator.setCol(currentIndex, directionOfActuation);
                 else 
                 {
@@ -719,7 +719,8 @@ void CableModel<DataTypes>::draw(const VisualParams* vparams)
     if(d_drawPullPoint.getValue())
         drawPullPoint(vparams);
 
-    if (d_method.getValue() == "geodesic" || d_method.getValue() == "sphere")
+    const unsigned int id_method = d_method.getValue().getSelectedId();
+    if (id_method == 1 || id_method == 2)
         if(d_drawPulledAreas.getValue())
             drawPulledAreas(vparams);
 }
@@ -796,7 +797,7 @@ void CableModel<DataTypes>::drawPulledAreas(const VisualParams* vparams)
         {
             vector<Vector3> point(1);
             point[0] = positions[m_areaIndices[i][j]];
-            vparams->drawTool()->drawPoints(point, 40.0 * m_ratios[i][j], RGBAColor(1.f,1.f,0.f,1.f));
+            vparams->drawTool()->drawPoints(point, 40.0 * m_ratios[i][j], RGBAColor::yellow());
         }
 }
 

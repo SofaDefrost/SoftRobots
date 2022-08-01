@@ -36,6 +36,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/helper/proximity.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
@@ -55,6 +56,7 @@ using sofa::linearalgebra::BaseVector ;
 using sofa::core::ConstraintParams ;
 using sofa::helper::ReadAccessor ;
 using sofa::core::VecCoordId ;
+
 
 using sofa::core::topology::BaseMeshTopology;
 
@@ -129,7 +131,7 @@ protected:
     Data<Real>                  d_cableInitialLength;
     Data<Real>                  d_cableLength;
 
-    Data<std::string>           d_method;
+    Data<sofa::helper::OptionsGroup>        d_method;
     Data<VecCoord>              d_centers;
     Data<type::vector<Real>>    d_radii;
     SingleLink<CableModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_surfaceTopology;
