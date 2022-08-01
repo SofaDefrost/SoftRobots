@@ -42,11 +42,6 @@ def createScene(rootNode):
     bunny.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
     
     
-#    constraints = bunny.addChild('Constraints')
-#    constraints.addObject('MechanicalObject', name = "PulledPointSphericalMO", position = [-4.5, -2.54, 0.0])
-#    constraints.addObject('CableConstraint', template='Vec3', name='CableSphericalSurface', pullPoint= [-4.4, -10, 3.1], value = 1.5, 
-#                         indices='0', drawPoints = True)
-#    constraints.addObject("BarycentricMapping")
 
 	################################################################################################################
     ################################################ Constraints ###################################################
