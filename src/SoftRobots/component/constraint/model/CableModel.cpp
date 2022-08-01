@@ -170,8 +170,6 @@ void CableModel<Vec2Types>::computePointsActionArea()
             {
                 double ratio = rabs(distances[p] - maxDistance[i]);
 
-                //double f = 1.0 -  (distances[p]/(maxDistance[i] * maxDistance[i]));
-                //double ratio = f * f * f * f; // Locally supported kernel function
 
                 m_totalRatio[i] += ratio;
                 m_ratios[i].push_back(ratio);
