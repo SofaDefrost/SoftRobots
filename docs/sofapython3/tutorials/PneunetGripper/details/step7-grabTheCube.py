@@ -28,7 +28,7 @@ def createScene(rootNode):
     rootNode.addObject('DefaultPipeline')
     rootNode.addObject('BruteForceBroadPhase')
     rootNode.addObject('BVHNarrowPhase')
-    rootNode.addObject('DefaultContactManager', response='FrictionContact', responseParams='mu=0.6')
+    rootNode.addObject('DefaultContactManager', response='FrictionContactConstraint', responseParams='mu=0.6')
     rootNode.addObject('LocalMinDistance', name='Proximity', alarmDistance=5, contactDistance=1, angleCone=0.0)
 
     rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1.])

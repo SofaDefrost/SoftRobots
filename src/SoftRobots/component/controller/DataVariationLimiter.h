@@ -31,7 +31,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_H
 #define SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_H
 
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/component/controller/Controller.h>
 #include <SoftRobots/component/initSoftRobots.h>
 
 namespace sofa

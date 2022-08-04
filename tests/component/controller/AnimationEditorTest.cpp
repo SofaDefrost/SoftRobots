@@ -33,7 +33,7 @@ using std::string ;
 
 #include <sofa/testing/BaseTest.h>
 #include <sofa/helper/BackTrace.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/DefaultAnimationLoop.h>
 using sofa::simulation::DefaultAnimationLoop;
 
@@ -41,7 +41,7 @@ using sofa::simulation::DefaultAnimationLoop;
 using sofa::core::topology::BaseMeshTopology ;
 using sofa::core::objectmodel::Data ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -50,7 +50,7 @@ using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::component::statecontainer::MechanicalObject ;
 
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <SoftRobots/component/controller/AnimationEditor.h>

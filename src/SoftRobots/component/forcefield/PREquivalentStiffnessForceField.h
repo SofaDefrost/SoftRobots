@@ -34,29 +34,23 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <string>
 
-namespace sofa
+namespace sofa::component::forcefield
 {
 
-namespace component
-{
-
-namespace forcefield
-{
 using sofa::type::Vec ;
 using sofa::type::Mat ;
 using sofa::type::vector;
 using sofa::core::MechanicalParams;
 using sofa::linearalgebra::BaseMatrix;
 using sofa::core::behavior::ForceField ;
-using sofa::component::linearsolver::CompressedRowSparseMatrix ;
+using sofa::linearalgebra::CompressedRowSparseMatrix ;
 
 template<typename DataTypes>
 class PREquivalentStiffnessForceField : public ForceField<DataTypes>
@@ -146,12 +140,6 @@ private :
     using ForceField<DataTypes>::d_componentState;
     ////////////////////////////////////////////////////////////////////////////
 };
-
-
-} // forcefield
-
-} // component
-
-} // sofa
+} // namespace sofa::component::forcefield
 
 #endif // PREQUIVALENTSTIFFNESSFORCEFIELD_H
