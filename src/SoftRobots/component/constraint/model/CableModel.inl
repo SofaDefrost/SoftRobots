@@ -263,9 +263,9 @@ void CableModel<DataTypes>::internalInit()
 template<class DataTypes>
 void CableModel<DataTypes>::initActuatedPoints()
 {   
-    int nbIndices = d_indices.getValue().size();
+    auto indices = sofa::helper::getWriteOnlyAccessor(d_indices);
+    int nbIndices = indices.size();
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
-    const SetIndexArray &indices = d_indices.getValue();
     
     ReadAccessor<Data<VecCoord>> centers = d_centers;
     unsigned int nbCenters = centers.size();
@@ -274,12 +274,11 @@ void CableModel<DataTypes>::initActuatedPoints()
         if (nbIndices != 0)
             msg_warning() <<"Both centers and indices are provided. Centers are used by default";
 
-        auto list = sofa::helper::getWriteOnlyAccessor(d_indices);
-        list.clear();
-        list.resize(nbCenters);
+        indices.clear();
+        indices.resize(nbCenters);
         for (unsigned int i=0; i<nbCenters; i++)
-            list[i] = computeClosestIndice(centers[i]);    
-        nbIndices = d_indices.getValue().size();
+            indices[i] = computeClosestIndice(centers[i]);    
+        nbIndices = indices.size();
     }
 
     if ( !d_hasPullPoint.getValue()){
@@ -294,9 +293,8 @@ void CableModel<DataTypes>::initActuatedPoints()
 
     if (nbIndices == 0)
     {
-        auto list = sofa::helper::getWriteOnlyAccessor(d_indices);
         msg_warning() <<"No index of actuation given, set default 0";
-        list.push_back(0);
+        indices.push_back(0);
 
         m_hasSlidingPoint=false;
     }
