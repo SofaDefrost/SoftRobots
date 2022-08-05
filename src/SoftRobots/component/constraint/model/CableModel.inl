@@ -196,7 +196,7 @@ void CableModel<DataTypes>::init()
         if (m_topology == nullptr)
             msg_error(this) << "There is no topology state associated with this node. "
                                 "To remove this error message, fix your scene possibly by "
-                                "adding a topology in the parent node";
+                                "adding a topology in this node";
     }
     
     internalInit();
