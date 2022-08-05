@@ -385,8 +385,7 @@ void CableModel<DataTypes>::computePointsActionArea()
         typename set<DistanceToPoint>::iterator qit;
         vector<Real> distances(m_topology->getNbPoints(),maxDistance[i]);
 
-        //////////////////// If cable attachment does not match with a mesh vertice /////////////////
-        //////////// Project on closest triangle and distribute distance to its vertices ////////////
+        // Project on closest triangle and distribute distance to its vertices 
         const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(m_closestCenterIndices[i]); // Triangles connected to closest vertice
         static sofa::helper::DistancePointTri proximitySolver;
         Coord projectionOnTriangle;
@@ -409,45 +408,45 @@ void CableModel<DataTypes>::computePointsActionArea()
         
         for(unsigned int j=0; j<closestTriangle.size(); j++)
         {
-        Coord p;
-        getPositionFromTopology(p, closestTriangle[j]);
+            Coord p;
+            getPositionFromTopology(p, closestTriangle[j]);
 
-        Real d = (closestProjectionOnTriangle - p).norm();
-        if (id_method == 2)
-            distances[closestTriangle[j]] = minDistanceToTriangle + d;
-        else if (id_method == 1)
-            distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
-        queue.insert(DistanceToPoint(d,m_closestCenterIndices[i]));
+            Real d = (closestProjectionOnTriangle - p).norm();
+            if (id_method == 2)
+                distances[closestTriangle[j]] = minDistanceToTriangle + d;
+            else if (id_method == 1)
+                distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
+            queue.insert(DistanceToPoint(d,m_closestCenterIndices[i]));
         }
 
 
         // Dijkstra
         while(!queue.empty() )
         {
-        DistanceToPoint top = *queue.begin();
-        queue.erase(queue.begin());
-        BaseMeshTopology::PointID v = top.second; 
-        const vector<BaseMeshTopology::PointID> neighboors = m_topology->getVerticesAroundVertex(v);
-        for (unsigned int j=0 ; j<neighboors.size(); ++j)
-        {
-            sofa::core::topology::BaseMeshTopology::PointID vn = neighboors[j];
-
-            Coord pv; 
-            getPositionFromTopology(pv, v);
-            Coord pvn;
-            getPositionFromTopology(pvn, vn);
-            Real d = 0.0;
-            if (id_method == 2)
-                d = distances[v] + (pv - pvn).norm();
-            else if (id_method == 1)
-                d = (pvn - cablePositions[indices[i]]).norm();
-
-            if((distances[vn]) > d)
+            DistanceToPoint top = *queue.begin();
+            queue.erase(queue.begin());
+            BaseMeshTopology::PointID v = top.second; 
+            const vector<BaseMeshTopology::PointID> neighboors = m_topology->getVerticesAroundVertex(v);
+            for (unsigned int j=0 ; j<neighboors.size(); ++j)
             {
-                qit=queue.find(DistanceToPoint(distances[vn],vn));
-                if(qit != queue.end()) queue.erase(qit);
-                distances[vn] = d;
-                queue.insert(DistanceToPoint(d,vn) );
+                sofa::core::topology::BaseMeshTopology::PointID vn = neighboors[j];
+
+                Coord pv; 
+                getPositionFromTopology(pv, v);
+                Coord pvn;
+                getPositionFromTopology(pvn, vn);
+                Real d = 0.0;
+                if (id_method == 2)
+                    d = distances[v] + (pv - pvn).norm();
+                else if (id_method == 1)
+                    d = (pvn - cablePositions[indices[i]]).norm();
+
+                if((distances[vn]) > d)
+                {
+                    qit=queue.find(DistanceToPoint(distances[vn],vn));
+                    if(qit != queue.end()) queue.erase(qit);
+                    distances[vn] = d;
+                    queue.insert(DistanceToPoint(d,vn) );
                 }
             }
         }
