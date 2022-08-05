@@ -39,7 +39,7 @@ jobs:
           SofaPython3_ROOT="$GITHUB_WORKSPACE/SofaPython3"
           mkdir -p "${{ runner.temp }}/sp3_tmp/zip" "${{ runner.temp }}/sp3_tmp/binaries" "$SofaPython3_ROOT"
           url="https://github.com/sofa-framework/SofaPython3/releases/download"
-          url="${url}/release-${RUN_BRANCH}/SofaPython3_${RUN_BRANCH}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}.zip"
+          url="${url}/release-${{ steps.sofa.outputs.run_branch }}/SofaPython3_${{ steps.sofa.outputs.run_branch }}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}.zip"
           echo "Getting SofaPython3 from $url"
           curl --output "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -L $url
           unzip -qq "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -d "${{ runner.temp }}/sp3_tmp/binaries"
