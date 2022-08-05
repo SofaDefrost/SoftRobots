@@ -86,14 +86,18 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
                                     "In point method, cable force is applied on a single point. \n"
                                     "Both methods sphere and geodesic are compatible with passing point on a surface only. \n "
                                     "In sphere method, cable force is dispatched in the intersection between a 3D sphere and a surface. \n"
-                                    "In geodesic method, cable force is dispatched in a circle mapped on a surface. \n"))
+                                    "In geodesic method, cable force is dispatched in a circle projected on a surface. \n"))
 
     , d_centers(initData(&d_centers, "centers",
-                       "List of positions describing attachment of cables"))
+                       "List of positions describing attachment of cables on the surface, used only with sphere and geodesic methods. \n"
+                       "Points are centers of cable pulling application areas. \n"
+                       "If not defined, centers are computed from provided indices instead."))
 
-    , d_radii(initData(&d_radii, "radii", "List of radii describing the ROI spheres"))
+    , d_radii(initData(&d_radii, "radii", "List of radius used to computepulling applicatio nareas from centers. \n"
+                                            "Used only with sphere and geodesic methods."))
 
-    , l_surfaceTopology(initLink("surfaceTopology", "Link to the topology container of the surface on which the cable is attached."))
+    , l_surfaceTopology(initLink("surfaceTopology", "Link to the topology container of the surface on which the cable is attached. \n"
+                                                    "Used only with sphere and geodesic methods."))
 
     , d_force(initData(&d_force,double(0.0), "force",
                                          "Output force. Warning: to get the actual force you should divide this value by dt."))
