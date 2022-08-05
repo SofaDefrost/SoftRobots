@@ -54,7 +54,6 @@ using std::set;
 
 using sofa::linearalgebra::BaseVector;
 using sofa::type::vector;
-using sofa::type::Vector3;
 
 using sofa::core::visual::VisualParams;
 using sofa::type::RGBAColor;
@@ -83,7 +82,11 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
 
     , d_cableLength(initData(&d_cableLength, Real(0.0), "cableLength","Computation done at the end of the time step"))
 
-    , d_method(initData(&d_method, sofa::helper::OptionsGroup(3,"point","sphere","geodesic"), "method", "Default is point method."))
+    , d_method(initData(&d_method, sofa::helper::OptionsGroup(3,"point","sphere","geodesic"), "method", "Default is point method. \n"
+                                    "In point method, cable force is applied on a single point. \n"
+                                    "Both methods sphere and geodesic are compatible with passing point on a surface only. \n "
+                                    "In sphere method, cable force is dispatched in the intersection between a 3D sphere and a surface. \n"
+                                    "In geodesic method, cable force is dispatched in a circle mapped on a surface. \n"))
 
     , d_centers(initData(&d_centers, "centers",
                        "List of positions describing attachment of cables"))
@@ -384,16 +387,13 @@ void CableModel<DataTypes>::computePointsActionArea()
         //////////// Project on closest triangle and distribute distance to its vertices ////////////
         const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(m_closestCenterIndices[i]); // Triangles connected to closest vertice
         static sofa::helper::DistancePointTri proximitySolver;
-        Vector3 projectionOnTriangle;
-        Real minDistanceToTriangle = std::numeric_limits<Real>::max(); unsigned int closestTriangleId = 0; Vector3 closestProjectionOnTriangle;
+        Coord projectionOnTriangle;
+        Real minDistanceToTriangle = std::numeric_limits<Real>::max(); unsigned int closestTriangleId = 0; Coord closestProjectionOnTriangle;
         for(unsigned int j=0; j<trianglesAroundClosestVertex.size(); j++)
         {
-            const Triangle triangle =  m_topology->getTriangle(trianglesAroundClosestVertex[j]);   
-            const Coord p0 = Coord(m_topology->getPX(triangle[0]), m_topology->getPY(triangle[0]), m_topology->getPZ(triangle[0]));
-            const Coord p1 = Coord(m_topology->getPX(triangle[1]), m_topology->getPY(triangle[1]), m_topology->getPZ(triangle[1]));
-            const Coord p2 = Coord(m_topology->getPX(triangle[2]), m_topology->getPY(triangle[2]), m_topology->getPZ(triangle[2]));           
-            proximitySolver.NewComputation(p0, p1, p2, cablePositions[indices[i]],projectionOnTriangle);
-            Real distanceToTriangle = (projectionOnTriangle - cablePositions[indices[i]]).norm();  
+            const Triangle triangle =  m_topology->getTriangle(trianglesAroundClosestVertex[j]);
+            Real distanceToTriangle = getDistanceToTriangle(cablePositions[indices[i]], triangle, proximitySolver, projectionOnTriangle);
+
             if(distanceToTriangle < minDistanceToTriangle)
             {
                 minDistanceToTriangle = distanceToTriangle;
@@ -407,7 +407,9 @@ void CableModel<DataTypes>::computePointsActionArea()
         
         for(unsigned int j=0; j<closestTriangle.size(); j++)
         {
-        Coord p = Coord(m_topology->getPX(closestTriangle[j]), m_topology->getPY(closestTriangle[j]), m_topology->getPZ(closestTriangle[j]));
+        Coord p;
+        getPositionFromTopology(p, closestTriangle[j]);
+
         Real d = (closestProjectionOnTriangle - p).norm();
         if (id_method == 2)
             distances[closestTriangle[j]] = minDistanceToTriangle + d;
@@ -428,8 +430,10 @@ void CableModel<DataTypes>::computePointsActionArea()
         {
             sofa::core::topology::BaseMeshTopology::PointID vn = neighboors[j];
 
-            Coord pv = Coord(m_topology->getPX(v), m_topology->getPY(v), m_topology->getPZ(v));
-            Coord pvn = Coord(m_topology->getPX(vn), m_topology->getPY(vn), m_topology->getPZ(vn));
+            Coord pv; 
+            getPositionFromTopology(pv, v);
+            Coord pvn;
+            getPositionFromTopology(pvn, vn);
             Real d = 0.0;
             if (id_method == 2)
                 d = distances[v] + (pv - pvn).norm();
@@ -470,11 +474,15 @@ void CableModel<DataTypes>::computePointsActionArea()
 template<class DataTypes>
 unsigned int CableModel<DataTypes>::computeClosestIndice(Coord position)
 {
-    auto closest_distance = (position - Coord(m_topology->getPX(0), m_topology->getPY(0), m_topology->getPZ(0))).norm();
+    Coord p0;
+    getPositionFromTopology(p0, 0);
+    auto closest_distance = (position - p0).norm();
     unsigned int closest_vertice = 0;
     for(unsigned int j=1; j<m_topology->getNbPoints(); j++)
     {
-        const auto distance = (position - Coord(m_topology->getPX(j), m_topology->getPY(j), m_topology->getPZ(j))).norm();
+        Coord pj;
+        getPositionFromTopology(pj, j);
+        const auto distance = (position - pj).norm();
         if(distance < closest_distance) 
         {
             closest_distance = distance;
@@ -483,6 +491,28 @@ unsigned int CableModel<DataTypes>::computeClosestIndice(Coord position)
     } 
    return closest_vertice;
 }
+
+
+template<class DataTypes>
+void CableModel<DataTypes>::getPositionFromTopology(Coord& position, const int& index)
+{
+    position.x() = m_topology->getPX(index);
+    position.y() = m_topology->getPY(index);
+    position.z() = m_topology->getPZ(index);
+}
+
+template<class DataTypes>
+SReal CableModel<DataTypes>::getDistanceToTriangle(Coord position, const Triangle& triangle, sofa::helper::DistancePointTri& proximitySolver, Coord& projectionOnTriangle)
+{
+    Coord p0; Coord p1; Coord p2;
+    getPositionFromTopology(p0, triangle[0]);
+    getPositionFromTopology(p1, triangle[1]);
+    getPositionFromTopology(p2, triangle[2]);  
+    proximitySolver.NewComputation(p0, p1, p2, position, projectionOnTriangle);
+    Real distanceToTriangle = (projectionOnTriangle - position).norm();  
+    return distanceToTriangle;
+}
+
 
 template<class DataTypes>
 SReal CableModel<DataTypes>::getCableLength(const VecCoord &positions)

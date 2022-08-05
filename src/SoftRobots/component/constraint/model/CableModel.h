@@ -56,6 +56,7 @@ using sofa::linearalgebra::BaseVector ;
 using sofa::core::ConstraintParams ;
 using sofa::helper::ReadAccessor ;
 using sofa::core::VecCoordId ;
+using sofa::type::Vector3;
 
 
 using sofa::core::topology::BaseMeshTopology;
@@ -183,6 +184,8 @@ private:
     void initCableActionAreas();
     void computePointsActionArea();
     unsigned int computeClosestIndice(Coord position);
+    void getPositionFromTopology(Coord& position, const int& index);
+    SReal getDistanceToTriangle(Coord position, const Triangle& triangle, sofa::helper::DistancePointTri& proximitySolver, Coord& projectionOnTriangle);
 
     void drawPullPoint(const VisualParams* vparams);
     void drawPoints(const VisualParams* vparams);
