@@ -1,11 +1,30 @@
 # -*- coding: utf-8 -*-
 """
 
-The **CommunicationController** component can be used to send data from a simulation to another using ZMQ library. To use this component you need to enable **SOFTROBOTS_COMMUNICATIONCONTROLLER** option in cmake, and install the ZMQ library (“SoftRobots/component/controller/README.txt”).
-In this directory you will find one example showing how to use the component:
+The **CommunicationController** component can be used to send data from a simulation to another using ZMQ library. To use this component you need to compile SOFA with the option **SOFTROBOTS_COMMUNICATIONCONTROLLER** enabled in cmake, and install the ZMQ library:
 
-- **SimulationDirect_Receiver.pyscn** : Soft actuated accordion
-- **SimulationDirect_Sender.pyscn** : Soft actuated accordion
+1.1- On Linux
+
+#Debian/Ubuntu
+
+`sudo apt-get install libzmq3-dev`
+
+#Fedora
+
+`sudo dnf install zeromq-devel`
+
+1.1- On MacOS (missing)
+
+1.1- On Windows, download the Windows source of libzmq and build using Visual Studio. Put a copy of zmq.hpp from the cppzmq project (github) in the include folder of libzmq.
+
+2- In the cmake gui, enable: SOFTROBOTS_COMMUNICATIONCONTROLLER = true
+
+3- Compile SOFA
+
+In this directory ("SoftRobots/docs/sofapython3/examples/component/controller/CommunicationController") you will find one example showing how to use the component:
+
+- **SimulationDirect_Receiver.py** : Soft actuated accordion, direct problem
+- **SimulationInverse_Sender.py** : Soft actuated accordion, inverse problem
 
 Below is a video of the simulations running simultaneously and with a communication between them.
 
@@ -17,22 +36,22 @@ Below is a video of the simulations running simultaneously and with a communicat
 Example
 *******
 
-SimulationDirect_Receiver.pyscn:
+SimulationDirect_Receiver.py:
 
 .. sourcecode:: python
 
         #For local communication
-        accordion.createObject('CommunicationController', name="sub", listening='1',
+        accordion.addObject('CommunicationController', name="sub", listening='1',
 							 job="receiver", port="5558", nbDataField="4", pattern="0")
         #Between two different computers, specify the ip adress of the sender
-        #accordion.createObject('CommunicationController', name="sub", listening='1',
+        #accordion.addObject('CommunicationController', name="sub", listening='1',
 							 job="receiver", port="5558", nbDataField="4", ip="...")
 
-SimulationDirect_Sender.pyscn:
+SimulationInverse_Sender.py:
 
 .. sourcecode:: python
 
-    	accordion.createObject('CommunicationController', listening='1', job="sender", port="5558", 					nbDataField="4", pattern="0",
+    	accordion.addObject('CommunicationController', listening='1', job="sender", port="5558", 					nbDataField="4", pattern="0",
 				data1="@cavity/pressure.volumeGrowth",
 				data2="@cables/cable1.displacement",
 				data3="@cables/cable2.displacement",
