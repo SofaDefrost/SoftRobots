@@ -270,7 +270,6 @@ void CableModel<DataTypes>::initActuatedPoints()
     auto indices = sofa::helper::getWriteOnlyAccessor(d_indices);
     int nbIndices = indices.size();
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
-    
     ReadAccessor<Data<VecCoord>> centers = d_centers;
     unsigned int nbCenters = centers.size();
     if (nbCenters != 0)
@@ -356,7 +355,7 @@ void CableModel<DataTypes>::computePointsActionArea()
     // Implementing continuous Dijkstra as a geodesic distance measure
     const unsigned int id_method = d_method.getValue().getSelectedId();
     ReadAccessor<Data<VecCoord>> cablePositions = m_state->readPositions();
-    unsigned int nbCenters = d_indices.getValue().size();
+    unsigned int nbCenters = d_indices.getValue().size();      
     const SetIndexArray &indices = d_indices.getValue();
     ReadAccessor<Data<vector<Real>>> maxDistance = d_radii;
     vector<Real> m_totalRatio;
@@ -366,15 +365,7 @@ void CableModel<DataTypes>::computePointsActionArea()
     m_ratios.resize(nbCenters);
     m_totalRatio.clear();
     m_totalRatio.resize(nbCenters);
-
-    // Find closest indice on surface topology
-    SetIndexArray m_closestCenterIndices;
-    if (nbCenters != 0)
-    {
-        m_closestCenterIndices.resize(nbCenters);
-        for(unsigned int i=0; i<nbCenters; i++)
-            m_closestCenterIndices[i] = computeClosestIndice(cablePositions[indices[i]]);
-    }
+    
 
     // Iterate for each cable attachment
     typedef pair<Real,BaseMeshTopology::PointID> DistanceToPoint;
@@ -385,8 +376,10 @@ void CableModel<DataTypes>::computePointsActionArea()
         typename set<DistanceToPoint>::iterator qit;
         vector<Real> distances(m_topology->getNbPoints(),maxDistance[i]);
 
+        // If cable attachment does not match with a mesh vertice
         // Project on closest triangle and distribute distance to its vertices 
-        const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(m_closestCenterIndices[i]); // Triangles connected to closest vertice
+        // TODO: centre au lieu de cablePosition 
+        const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(indices[i]); // Triangles connected to closest vertice
         static sofa::helper::DistancePointTri proximitySolver;
         Coord projectionOnTriangle;
         Real minDistanceToTriangle = std::numeric_limits<Real>::max(); unsigned int closestTriangleId = 0; Coord closestProjectionOnTriangle;
@@ -416,7 +409,7 @@ void CableModel<DataTypes>::computePointsActionArea()
                 distances[closestTriangle[j]] = minDistanceToTriangle + d;
             else if (id_method == 1)
                 distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
-            queue.insert(DistanceToPoint(d,m_closestCenterIndices[i]));
+            queue.insert(DistanceToPoint(d,indices[i]));
         }
 
 
