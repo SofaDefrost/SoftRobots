@@ -354,9 +354,15 @@ void CableModel<DataTypes>::computePointsActionArea()
 {
     // Implementing continuous Dijkstra as a geodesic distance measure
     const unsigned int id_method = d_method.getValue().getSelectedId();
-    ReadAccessor<Data<VecCoord>> cablePositions = m_state->readPositions();
     unsigned int nbCenters = d_indices.getValue().size();      
     const SetIndexArray &indices = d_indices.getValue();
+
+    ReadAccessor<Data<VecCoord>> cablePositions = m_state->readPositions();
+    ReadAccessor<Data<VecCoord>> centers = d_centers;
+    bool hasCenter = true;
+    if (centers.size() == 0)
+        hasCenter = false;       
+
     ReadAccessor<Data<vector<Real>>> maxDistance = d_radii;
     vector<Real> m_totalRatio;
     m_areaIndices.clear();
@@ -378,40 +384,45 @@ void CableModel<DataTypes>::computePointsActionArea()
 
         // If cable attachment does not match with a mesh vertice
         // Project on closest triangle and distribute distance to its vertices 
-        // TODO: centre au lieu de cablePosition 
-        const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(indices[i]); // Triangles connected to closest vertice
-        static sofa::helper::DistancePointTri proximitySolver;
-        Coord projectionOnTriangle;
-        Real minDistanceToTriangle = std::numeric_limits<Real>::max(); unsigned int closestTriangleId = 0; Coord closestProjectionOnTriangle;
-        for(unsigned int j=0; j<trianglesAroundClosestVertex.size(); j++)
+        if (hasCenter)
         {
-            const Triangle triangle =  m_topology->getTriangle(trianglesAroundClosestVertex[j]);
-            Real distanceToTriangle = getDistanceToTriangle(cablePositions[indices[i]], triangle, proximitySolver, projectionOnTriangle);
-
-            if(distanceToTriangle < minDistanceToTriangle)
+            const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(indices[i]); // Triangles connected to closest vertice
+            static sofa::helper::DistancePointTri proximitySolver;
+            Coord projectionOnTriangle;
+            Real minDistanceToTriangle = std::numeric_limits<Real>::max(); unsigned int closestTriangleId = 0; Coord closestProjectionOnTriangle;
+            for(unsigned int j=0; j<trianglesAroundClosestVertex.size(); j++)
             {
-                minDistanceToTriangle = distanceToTriangle;
-                closestTriangleId = j;
-                closestProjectionOnTriangle = projectionOnTriangle;
+                const Triangle triangle =  m_topology->getTriangle(trianglesAroundClosestVertex[j]);
+                Real distanceToTriangle = getDistanceToTriangle(centers[i], triangle, proximitySolver, projectionOnTriangle);
+
+                if(distanceToTriangle < minDistanceToTriangle)
+                {
+                    minDistanceToTriangle = distanceToTriangle;
+                    closestTriangleId = j;
+                    closestProjectionOnTriangle = projectionOnTriangle;
+                }
             }
+
+            const Triangle closestTriangle =  m_topology->getTriangle(trianglesAroundClosestVertex[closestTriangleId]);
+
+            
+            for(unsigned int j=0; j<closestTriangle.size(); j++)
+            {
+                Coord p;
+                getPositionFromTopology(p, closestTriangle[j]);
+
+                Real d = (closestProjectionOnTriangle - p).norm();
+                if (id_method == 2)
+                    distances[closestTriangle[j]] = minDistanceToTriangle + d;
+                else if (id_method == 1)
+                    distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
+                queue.insert(DistanceToPoint(d,indices[i]));
+            }
+
+        } else {
+            distances[indices[i]] = 0.0;
+            queue.insert(DistanceToPoint(0.0,indices[i]));
         }
-
-        const Triangle closestTriangle =  m_topology->getTriangle(trianglesAroundClosestVertex[closestTriangleId]);
-
-        
-        for(unsigned int j=0; j<closestTriangle.size(); j++)
-        {
-            Coord p;
-            getPositionFromTopology(p, closestTriangle[j]);
-
-            Real d = (closestProjectionOnTriangle - p).norm();
-            if (id_method == 2)
-                distances[closestTriangle[j]] = minDistanceToTriangle + d;
-            else if (id_method == 1)
-                distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
-            queue.insert(DistanceToPoint(d,indices[i]));
-        }
-
 
         // Dijkstra
         while(!queue.empty() )
