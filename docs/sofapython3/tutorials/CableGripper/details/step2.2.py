@@ -5,8 +5,8 @@ from stlib3.physics.constraints import FixedBox
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
-           fixingBox=[0.0, 0.0, 0.0], pullPointLocation=[0.0, 0.0, 0.0]):
-    finger = parentNode.addChild("Finger")
+           fixingBox=[-10, -10, -10, 10, 10, 10]):
+    finger = parentNode.addChild(name)
     eobject = ElasticMaterialObject(finger,
                                     volumeMeshFileName="data/mesh/finger.vtk",
                                     poissonRatio=0.3,
@@ -20,7 +20,7 @@ def Finger(parentNode=None, name="Finger",
 
     FixedBox(eobject,
              doVisualization=True,
-             atPositions=[-10, -10, -10, 10, 10, 10])
+             atPositions=fixingBox)
 
 
 def createScene(rootNode):

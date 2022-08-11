@@ -2,11 +2,8 @@
 from stlib3.physics.deformable import ElasticMaterialObject
 
 
-def Finger(parentNode=None, Name="Finger",
-           rotation=[0.0, 0.0, 0.0],
-           translation=[0.0, 0.0, 0.0],
-           fixingBox=[0.0, 0.0, 0.0], pullPointLocation=[0.0, 0.0, 0.0]):
-    finger = parentNode.addChild("Finger")
+def Finger(parentNode=None, name="Finger"):
+    finger = parentNode.addChild(name)
     mobject = ElasticMaterialObject(finger, volumeMeshFileName="data/mesh/finger.vtk")
     finger.addChild(mobject)
 
