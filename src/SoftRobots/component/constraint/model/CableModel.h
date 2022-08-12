@@ -134,11 +134,16 @@ protected:
 
     Data<sofa::helper::OptionsGroup>        d_method;
     Data<VecCoord>              d_centers;
+    bool                        m_hasCenters;
     Data<type::vector<Real>>    d_radii;
     SingleLink<CableModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_surfaceTopology;
     sofa::core::topology::BaseMeshTopology*  m_topology;
     type::vector<SetIndexArray> m_areaIndices;
     type::vector<type::vector<Real>> m_ratios;
+
+    type::vector<Real> m_alpha;
+    type::vector<Real> m_beta;
+    type::vector<Triangle> m_closestTriangle;
 
     Data<double>                d_force;
     Data<double>                d_displacement;
@@ -186,6 +191,7 @@ private:
     unsigned int computeClosestIndice(Coord position);
     void getPositionFromTopology(Coord& position, const int& index);
     SReal getDistanceToTriangle(Coord position, const Triangle& triangle, sofa::helper::DistancePointTri& proximitySolver, Coord& projectionOnTriangle);
+    void computeBarycentric(const Triangle& triangle, Coord& p, double& alpha, double& beta);
 
     void drawPullPoint(const VisualParams* vparams);
     void drawPoints(const VisualParams* vparams);

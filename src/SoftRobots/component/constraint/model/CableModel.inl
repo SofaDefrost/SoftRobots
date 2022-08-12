@@ -359,9 +359,18 @@ void CableModel<DataTypes>::computePointsActionArea()
 
     ReadAccessor<Data<VecCoord>> cablePositions = m_state->readPositions();
     ReadAccessor<Data<VecCoord>> centers = d_centers;
-    bool hasCenter = true;
+    m_hasCenters = true;
     if (centers.size() == 0)
-        hasCenter = false;       
+        m_hasCenters = false;      
+    else 
+    {
+        m_alpha.clear();
+        m_alpha.resize(nbCenters);
+        m_beta.clear();
+        m_beta.resize(nbCenters);
+        m_closestTriangle.clear();
+        m_closestTriangle.resize(nbCenters);
+    } 
 
     ReadAccessor<Data<vector<Real>>> maxDistance = d_radii;
     vector<Real> m_totalRatio;
@@ -384,7 +393,7 @@ void CableModel<DataTypes>::computePointsActionArea()
 
         // If cable attachment does not match with a mesh vertice
         // Project on closest triangle and distribute distance to its vertices 
-        if (hasCenter)
+        if (m_hasCenters)
         {
             const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(indices[i]); // Triangles connected to closest vertice
             static sofa::helper::DistancePointTri proximitySolver;
@@ -418,6 +427,14 @@ void CableModel<DataTypes>::computePointsActionArea()
                     distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
                 queue.insert(DistanceToPoint(d,indices[i]));
             }
+            
+            // Compute barycentric coordinates for visualization purposes
+            Real alpha; Real beta;
+            computeBarycentric(closestTriangle, closestProjectionOnTriangle, alpha, beta);
+            m_alpha[i] = alpha;
+            m_beta[i] = beta;
+            m_closestTriangle[i] = closestTriangle;
+
 
         } else {
             distances[indices[i]] = 0.0;
@@ -516,6 +533,31 @@ SReal CableModel<DataTypes>::getDistanceToTriangle(Coord position, const Triangl
     proximitySolver.NewComputation(p0, p1, p2, position, projectionOnTriangle);
     Real distanceToTriangle = (projectionOnTriangle - position).norm();  
     return distanceToTriangle;
+}
+
+
+
+template<class DataTypes>
+void CableModel<DataTypes>::computeBarycentric(const Triangle& triangle, Coord& p, double& alpha, double& beta)
+{
+    Coord v0; Coord v1; Coord v2;
+    getPositionFromTopology(v0, triangle[0]);
+    getPositionFromTopology(v1, triangle[1]);
+    getPositionFromTopology(v2, triangle[2]); 
+
+   // Solving with Cramer's rule
+    Coord e0 = v1 - v0; 
+    Coord e1 = v2 - v0;
+    Coord e2 = p - v0;
+    double d00 = dot(e0, e0);
+    double d01 = dot(e0, e1);
+    double d11 = dot(e1, e1);
+    double d20 = dot(e2, e0);
+    double d21 = dot(e2, e1);
+    double denom = d00 * d11 - d01 * d01;
+    alpha = (d11 * d20 - d01 * d21) / denom;
+    beta = (d00 * d21 - d01 * d20) / denom;
+
 }
 
 
@@ -786,9 +828,17 @@ void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
 
     vector<Vector3> points(indices.size());
     for (unsigned int i=0; i<indices.size(); i++)
-        points[i] = positions[indices[i]];
+    {
+        if (!m_hasCenters)
+            points[i] = positions[indices[i]];
+        else 
+            points[i] = positions[m_closestTriangle[i][0]] 
+            + m_alpha[i] * (positions[m_closestTriangle[i][1]] - positions[m_closestTriangle[i][0]])
+            + m_beta[i] * (positions[m_closestTriangle[i][2]] - positions[m_closestTriangle[i][0]]);
+    }
+        
 
-    vparams->drawTool()->drawPoints(points, 5, RGBAColor(1.f,0.f,0.f,1.f));
+    vparams->drawTool()->drawPoints(points, 15, RGBAColor(1.f,0.f,0.f,1.f));
 }
 
 
@@ -806,17 +856,29 @@ void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
 
     if(!d_hasPullPoint.getValue() && indices.size()>=1)
     {
-        previousPosition = positions[indices[0]];
+        if (!m_hasCenters)
+            previousPosition = positions[indices[0]];
+        else 
+            previousPosition = positions[m_closestTriangle[0][0]] 
+            + m_alpha[0] * (positions[m_closestTriangle[0][1]] - positions[m_closestTriangle[0][0]])
+            + m_beta[0] * (positions[m_closestTriangle[0][2]] - positions[m_closestTriangle[0][0]]);
         first = 1;
     }
-
+    
     for (unsigned int i=first; i<indices.size(); i++)
     {
-        Coord currentPosition = positions[indices[i]];
+        Coord currentPosition;
+        if (!m_hasCenters)
+            currentPosition = positions[indices[i]];
+        else 
+            currentPosition = positions[m_closestTriangle[i][0]] 
+            + m_alpha[i] * (positions[m_closestTriangle[i][1]] - positions[m_closestTriangle[i][0]])
+            + m_beta[i] * (positions[m_closestTriangle[i][2]] - positions[m_closestTriangle[i][0]]);
+
         points[i*2] = currentPosition;
         points[i*2+1] = previousPosition;
         previousPosition = currentPosition;
-    }
+    }    
 
     vparams->drawTool()->drawLines(points, 1.5, color);
 }
