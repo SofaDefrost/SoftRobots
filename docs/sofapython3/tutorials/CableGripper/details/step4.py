@@ -29,16 +29,22 @@ class FingerController(Sofa.Core.Controller):
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
-           fixingBox=[0.0, 0.0, 0.0], pullPointLocation=[0.0, 0.0, 0.0]):
+           fixingBox=[-10, -10, -10, 10, 10, 10]):
     finger = parentNode.addChild(name)
     eobject = ElasticMaterialObject(finger,
                                     volumeMeshFileName="data/mesh/finger.vtk",
+                                    poissonRatio=0.3,
+                                    youngModulus=18000,
+                                    totalMass=0.5,
+                                    surfaceColor=[0.0, 0.8, 0.7, 1.0],
                                     surfaceMeshFileName="data/mesh/finger.stl",
-                                    surfaceColor=[0.0, 0.7, 0.8]
-                                    )
+                                    rotation=rotation,
+                                    translation=translation)
     finger.addChild(eobject)
 
-    FixedBox(eobject, doVisualization=True, atPositions=[-10, -10, -10, 10, 10, 10])
+    FixedBox(eobject,
+             doVisualization=True,
+             atPositions=fixingBox)
     cable = PullingCable(eobject,
                          cableGeometry=loadPointListFromFile("data/mesh/cable.json"))
 
