@@ -202,7 +202,6 @@ void CableModel<DataTypes>::init()
                                 "To remove this error message, fix your scene possibly by "
                                 "adding a topology in this node";
     }
-    
     internalInit();
     d_componentState.setValue(ComponentState::Valid);
 }
@@ -272,8 +271,10 @@ void CableModel<DataTypes>::initActuatedPoints()
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
     ReadAccessor<Data<VecCoord>> centers = d_centers;
     unsigned int nbCenters = centers.size();
+    m_hasCenters = false;
     if (nbCenters != 0)
     {
+        m_hasCenters = true;
         if (nbIndices != 0)
             msg_warning() <<"Both centers and indices are provided. Centers are used by default";
 
@@ -344,7 +345,7 @@ void CableModel<DataTypes>::initCableActionAreas()
             radii[i] = radius;
         msg_warning(this) << "Size of centers and radii list not the same. Will apply first radius to all the effect areas.";
     }
-
+    
     computePointsActionArea();
 }
 
@@ -358,11 +359,8 @@ void CableModel<DataTypes>::computePointsActionArea()
     const SetIndexArray &indices = d_indices.getValue();
 
     ReadAccessor<Data<VecCoord>> cablePositions = m_state->readPositions();
-    ReadAccessor<Data<VecCoord>> centers = d_centers;
-    m_hasCenters = true;
-    if (centers.size() == 0)
-        m_hasCenters = false;      
-    else 
+    ReadAccessor<Data<VecCoord>> centers = d_centers;    
+    if (m_hasCenters)
     {
         m_alpha.clear();
         m_alpha.resize(nbCenters);
@@ -371,7 +369,6 @@ void CableModel<DataTypes>::computePointsActionArea()
         m_closestTriangle.clear();
         m_closestTriangle.resize(nbCenters);
     } 
-
     ReadAccessor<Data<vector<Real>>> maxDistance = d_radii;
     vector<Real> m_totalRatio;
     m_areaIndices.clear();
@@ -789,10 +786,10 @@ void CableModel<DataTypes>::draw(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
     drawLinesBetweenPoints(vparams);
-
+    
     if(d_drawPoints.getValue())
         drawPoints(vparams);
-
+    
     if(d_drawPullPoint.getValue())
         drawPullPoint(vparams);
 
@@ -846,7 +843,7 @@ template<class DataTypes>
 void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
 {
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
-
+    
     const SetIndexArray &indices = d_indices.getValue();
 
     RGBAColor color = d_color.getValue();
@@ -857,7 +854,7 @@ void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
     if(!d_hasPullPoint.getValue() && indices.size()>=1)
     {
         if (!m_hasCenters)
-            previousPosition = positions[indices[0]];
+            previousPosition = positions[indices[0]];            
         else 
             previousPosition = positions[m_closestTriangle[0][0]] 
             + m_alpha[0] * (positions[m_closestTriangle[0][1]] - positions[m_closestTriangle[0][0]])
