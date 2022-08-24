@@ -137,7 +137,6 @@ protected:
     bool                        m_hasCenters;
     Data<type::vector<Real>>    d_radii;
     SingleLink<CableModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_surfaceTopology;
-    sofa::core::topology::BaseMeshTopology*  m_topology;
     type::vector<SetIndexArray> m_areaIndices;
     type::vector<type::vector<Real>> m_ratios;
 
@@ -188,10 +187,10 @@ private:
     void initActuatedPoints();
     void initCableActionAreas();
     void computePointsActionArea();
-    unsigned int computeClosestIndice(Coord position);
+    unsigned int computeClosestIndice(const Coord& position);
     void getPositionFromTopology(Coord& position, const int& index);
-    SReal getDistanceToTriangle(Coord position, const Triangle& triangle, sofa::helper::DistancePointTri& proximitySolver, Coord& projectionOnTriangle);
-    void computeBarycentric(const Triangle& triangle, Coord& p, double& alpha, double& beta);
+    SReal getDistanceToTriangle(const Coord& position, const Triangle& triangle, Coord& projectionOnTriangle);
+    void computeBarycentric(const Triangle& triangle, const Coord& p, Real& alpha, Real& beta);
 
     void drawPullPoint(const VisualParams* vparams);
     void drawPoints(const VisualParams* vparams);
@@ -201,7 +200,7 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class CableModel<defaulttype::Vec3Types>;
+//extern template class CableModel<defaulttype::Vec3Types>;
 
 
 } // namespace constraintset

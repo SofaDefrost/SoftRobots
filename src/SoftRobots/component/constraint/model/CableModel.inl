@@ -93,7 +93,7 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
                        "Points are centers of cable pulling application areas. \n"
                        "If not defined, centers are computed from provided indices instead."))
 
-    , d_radii(initData(&d_radii, "radii", "List of radius used to computepulling applicatio nareas from centers. \n"
+    , d_radii(initData(&d_radii, "radii", "List of radius used to compute pulling application areas from centers. \n"
                                             "Used only with sphere and geodesic methods."))
 
     , l_surfaceTopology(initLink("surfaceTopology", "Link to the topology container of the surface on which the cable is attached. \n"
@@ -192,12 +192,11 @@ void CableModel<DataTypes>::init()
     {
         if (l_surfaceTopology.empty())
         {
-            msg_info() << "link to topology container of the surface should be set to ensure right behavior. First topology found in current context will be used.";
+            msg_info() << "Link to topology container of the surface should be set to ensure right behavior. First topology found in current context will be used.";
             l_surfaceTopology.set(this->getContext()->getMeshTopologyLink());
         }
-        m_topology = l_surfaceTopology.get();
 
-        if (m_topology == nullptr)
+        if (l_surfaceTopology.get() == nullptr)
             msg_error(this) << "There is no topology state associated with this node. "
                                 "To remove this error message, fix your scene possibly by "
                                 "adding a topology in this node";
@@ -325,7 +324,7 @@ void CableModel<DataTypes>::checkIndicesRegardingState()
 template<class DataTypes>
 void CableModel<DataTypes>::initCableActionAreas()
 {    
-    int nbCenters = d_indices.getValue().size();
+    const int nbCenters = d_indices.getValue().size();
     WriteAccessor<Data<vector<Real>>> radii = d_radii;
     int nbRadii = radii.size();
     if(nbRadii == 0)
@@ -334,12 +333,12 @@ void CableModel<DataTypes>::initCableActionAreas()
         for(int i=0; i<nbCenters; i++)
             radii[i] = 1;
         nbRadii = nbCenters;
-        msg_warning(this) << "No radius given. Set default radius = 1.";
+        msg_warning() << "No radius given. Set default radius = 1.";
     }
 
     if(nbCenters != nbRadii)
     {
-        Real radius = radii[0];
+        const Real radius = radii[0];
         radii.resize(nbCenters);
         for(int i=0; i<nbCenters; i++)
             radii[i] = radius;
@@ -386,20 +385,19 @@ void CableModel<DataTypes>::computePointsActionArea()
         // Init
         set<DistanceToPoint> queue; 
         typename set<DistanceToPoint>::iterator qit;
-        vector<Real> distances(m_topology->getNbPoints(),maxDistance[i]);
+        vector<Real> distances(l_surfaceTopology.get()->getNbPoints(),maxDistance[i]);
 
         // If cable attachment does not match with a mesh vertice
         // Project on closest triangle and distribute distance to its vertices 
         if (m_hasCenters)
         {
-            const TrianglesAroundVertex& trianglesAroundClosestVertex = m_topology->getTrianglesAroundVertex(indices[i]); // Triangles connected to closest vertice
-            static sofa::helper::DistancePointTri proximitySolver;
+            const TrianglesAroundVertex& trianglesAroundClosestVertex = l_surfaceTopology.get()->getTrianglesAroundVertex(indices[i]); // Triangles connected to closest vertice
             Coord projectionOnTriangle;
             Real minDistanceToTriangle = std::numeric_limits<Real>::max(); unsigned int closestTriangleId = 0; Coord closestProjectionOnTriangle;
             for(unsigned int j=0; j<trianglesAroundClosestVertex.size(); j++)
             {
-                const Triangle triangle =  m_topology->getTriangle(trianglesAroundClosestVertex[j]);
-                Real distanceToTriangle = getDistanceToTriangle(centers[i], triangle, proximitySolver, projectionOnTriangle);
+                const Triangle triangle =  l_surfaceTopology.get()->getTriangle(trianglesAroundClosestVertex[j]);
+                const Real distanceToTriangle = getDistanceToTriangle(centers[i], triangle, projectionOnTriangle);
 
                 if(distanceToTriangle < minDistanceToTriangle)
                 {
@@ -409,7 +407,7 @@ void CableModel<DataTypes>::computePointsActionArea()
                 }
             }
 
-            const Triangle closestTriangle =  m_topology->getTriangle(trianglesAroundClosestVertex[closestTriangleId]);
+            const Triangle closestTriangle =  l_surfaceTopology.get()->getTriangle(trianglesAroundClosestVertex[closestTriangleId]);
 
             
             for(unsigned int j=0; j<closestTriangle.size(); j++)
@@ -417,7 +415,7 @@ void CableModel<DataTypes>::computePointsActionArea()
                 Coord p;
                 getPositionFromTopology(p, closestTriangle[j]);
 
-                Real d = (closestProjectionOnTriangle - p).norm();
+                const Real d = (closestProjectionOnTriangle - p).norm();
                 if (id_method == 2)
                     distances[closestTriangle[j]] = minDistanceToTriangle + d;
                 else if (id_method == 1)
@@ -426,10 +424,7 @@ void CableModel<DataTypes>::computePointsActionArea()
             }
             
             // Compute barycentric coordinates for visualization purposes
-            Real alpha; Real beta;
-            computeBarycentric(closestTriangle, closestProjectionOnTriangle, alpha, beta);
-            m_alpha[i] = alpha;
-            m_beta[i] = beta;
+            computeBarycentric(closestTriangle, closestProjectionOnTriangle, m_alpha[i], m_beta[i]);
             m_closestTriangle[i] = closestTriangle;
 
 
@@ -444,7 +439,7 @@ void CableModel<DataTypes>::computePointsActionArea()
             DistanceToPoint top = *queue.begin();
             queue.erase(queue.begin());
             BaseMeshTopology::PointID v = top.second; 
-            const vector<BaseMeshTopology::PointID> neighboors = m_topology->getVerticesAroundVertex(v);
+            const vector<BaseMeshTopology::PointID> neighboors = l_surfaceTopology.get()->getVerticesAroundVertex(v);
             for (unsigned int j=0 ; j<neighboors.size(); ++j)
             {
                 sofa::core::topology::BaseMeshTopology::PointID vn = neighboors[j];
@@ -475,7 +470,7 @@ void CableModel<DataTypes>::computePointsActionArea()
         {
             if(distances[p] < maxDistance[i])
             {
-                auto ratio = rabs(distances[p] - maxDistance[i]);
+                const auto ratio = rabs(distances[p] - maxDistance[i]);
 
                 m_totalRatio[i] += ratio;
                 m_ratios[i].push_back(ratio);
@@ -485,19 +480,25 @@ void CableModel<DataTypes>::computePointsActionArea()
 
         // Normalize force ratios
         for(unsigned int j=0; j<m_ratios[i].size(); j++)
-            m_ratios[i][j] = m_ratios[i][j] / m_totalRatio[i];
+        {
+            if (m_totalRatio[i] == 0.0)
+                m_ratios[i][j] = 0.0;
+            else 
+                m_ratios[i][j] = m_ratios[i][j] / m_totalRatio[i];
+        }
+            
     }
 }
 
 
 template<class DataTypes>
-unsigned int CableModel<DataTypes>::computeClosestIndice(Coord position)
+unsigned int CableModel<DataTypes>::computeClosestIndice(const Coord& position)
 {
     Coord p0;
     getPositionFromTopology(p0, 0);
     auto closest_distance = (position - p0).norm();
     unsigned int closest_vertice = 0;
-    for(unsigned int j=1; j<m_topology->getNbPoints(); j++)
+    for(unsigned int j=1; j<l_surfaceTopology.get()->getNbPoints(); j++)
     {
         Coord pj;
         getPositionFromTopology(pj, j);
@@ -511,33 +512,23 @@ unsigned int CableModel<DataTypes>::computeClosestIndice(Coord position)
    return closest_vertice;
 }
 
-
 template<class DataTypes>
 void CableModel<DataTypes>::getPositionFromTopology(Coord& position, const int& index)
 {
-    position.x() = m_topology->getPX(index);
-    position.y() = m_topology->getPY(index);
-    position.z() = m_topology->getPZ(index);
 }
 
 template<class DataTypes>
-SReal CableModel<DataTypes>::getDistanceToTriangle(Coord position, const Triangle& triangle, sofa::helper::DistancePointTri& proximitySolver, Coord& projectionOnTriangle)
+SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const Triangle& triangle, Coord& projectionOnTriangle)
 {
-    Coord p0; Coord p1; Coord p2;
-    getPositionFromTopology(p0, triangle[0]);
-    getPositionFromTopology(p1, triangle[1]);
-    getPositionFromTopology(p2, triangle[2]);  
-    proximitySolver.NewComputation(p0, p1, p2, position, projectionOnTriangle);
-    Real distanceToTriangle = (projectionOnTriangle - position).norm();  
-    return distanceToTriangle;
 }
 
 
-
 template<class DataTypes>
-void CableModel<DataTypes>::computeBarycentric(const Triangle& triangle, Coord& p, double& alpha, double& beta)
+void CableModel<DataTypes>::computeBarycentric(const Triangle& triangle, const Coord& p, Real& alpha, Real& beta)
 {
-    Coord v0; Coord v1; Coord v2;
+    Coord v0 { type::NOINIT };  
+    Coord v1 { type::NOINIT };  
+    Coord v2 { type::NOINIT }; 
     getPositionFromTopology(v0, triangle[0]);
     getPositionFromTopology(v1, triangle[1]);
     getPositionFromTopology(v2, triangle[2]); 
@@ -546,15 +537,22 @@ void CableModel<DataTypes>::computeBarycentric(const Triangle& triangle, Coord& 
     Coord e0 = v1 - v0; 
     Coord e1 = v2 - v0;
     Coord e2 = p - v0;
-    double d00 = dot(e0, e0);
-    double d01 = dot(e0, e1);
-    double d11 = dot(e1, e1);
-    double d20 = dot(e2, e0);
-    double d21 = dot(e2, e1);
-    double denom = d00 * d11 - d01 * d01;
-    alpha = (d11 * d20 - d01 * d21) / denom;
-    beta = (d00 * d21 - d01 * d20) / denom;
-
+    Real d00 = dot(e0, e0);
+    Real d01 = dot(e0, e1);
+    Real d11 = dot(e1, e1);
+    Real d20 = dot(e2, e0);
+    Real d21 = dot(e2, e1);
+    Real denom = d00 * d11 - d01 * d01;
+    if (denom == 0.0)
+    {
+        alpha = 0.0;
+        beta = 0.0;
+    } 
+    else
+    {
+        alpha = (d11 * d20 - d01 * d21) / denom;
+        beta = (d00 * d21 - d01 * d20) / denom;
+    } 
 }
 
 
