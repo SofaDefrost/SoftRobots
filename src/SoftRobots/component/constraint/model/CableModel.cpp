@@ -27,7 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
+#define SOFTROBOTS_COMPONENT_BEHAVIOR_CONSTRAINT_MODEL_CABLEMODEL_CPP
 #include <sofa/defaulttype/VecTypes.h>
 #include "CableModel.inl"
 
@@ -46,7 +46,7 @@ using sofa::defaulttype::Vec3Types;
 using sofa::type::Vector2;
 
 template<>
-void CableModel<Vec2Types>::getPositionFromTopology(Coord& position, const int& index)
+void CableModel<Vec2Types>::getPositionFromTopology(Coord& position, sofa::Index index)
 {
     position.x() = l_surfaceTopology.get()->getPX(index);
     position.y() = l_surfaceTopology.get()->getPY(index);
@@ -72,7 +72,7 @@ SReal CableModel<Vec2Types>::getDistanceToTriangle(const Coord& position, const 
 
 
 template<>
-void CableModel<Vec3Types>::getPositionFromTopology(Coord& position, const int& index)
+void CableModel<Vec3Types>::getPositionFromTopology(Coord& position, sofa::Index index)
 {
     position.x() = l_surfaceTopology.get()->getPX(index);
     position.y() = l_surfaceTopology.get()->getPY(index);

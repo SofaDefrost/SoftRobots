@@ -125,39 +125,39 @@ public:
 
 protected:
 
-    Data<SetIndexArray>         d_indices;
-    Data<Coord>                 d_pullPoint;
-    Data<bool>                  d_hasPullPoint;
+    Data<SetIndexArray>         d_indices; ///< indices of points connected by the cable from extremity to actuated point
+    Data<Coord>                 d_pullPoint; ///< coordinate of pulling point
+    Data<bool>                  d_hasPullPoint; ///< if false, the pull point is not considered and the cable is entirely mapped
 
-    Data<Real>                  d_cableInitialLength;
-    Data<Real>                  d_cableLength;
+    Data<Real>                  d_cableInitialLength; ///< length of the cable at the start of the simulation
+    Data<Real>                  d_cableLength; ///< length of the cable at the end of the time step
 
-    Data<sofa::helper::OptionsGroup>        d_method;
-    Data<VecCoord>              d_centers;
+    Data<sofa::helper::OptionsGroup>        d_method; ///< method used for computing cable area effect
+    Data<VecCoord>              d_centers; ///< list of positions describing attachment of cables on the surface
     bool                        m_hasCenters;
-    Data<type::vector<Real>>    d_radii;
-    SingleLink<CableModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_surfaceTopology;
+    Data<type::vector<Real>>    d_radii;  ///< list of radius used to compute pulling application areas from centers
+    SingleLink<CableModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_surfaceTopology;  ///< link to the topology container of the surface on which the cable is attached
     type::vector<SetIndexArray> m_areaIndices;
     type::vector<type::vector<Real>> m_ratios;
 
-    type::vector<Real> m_alpha;
-    type::vector<Real> m_beta;
+    type::vector<Real> m_alphaBarycentric; 
+    type::vector<Real> m_betaBarycentric; 
     type::vector<Triangle> m_closestTriangle;
 
-    Data<double>                d_force;
-    Data<double>                d_displacement;
+    Data<double>                d_force; ///< pulling force applied on the cable
+    Data<double>                d_displacement; ///< displacement of the cable
 
-    Data<Real>                  d_maxForce;
-    Data<Real>                  d_minForce;
-    Data<Real>                  d_eqForce;
-    Data<Real>                  d_maxPositiveDisplacement;
-    Data<Real>                  d_maxNegativeDisplacement;
-    Data<Real>                  d_eqDisplacement;
-    Data<Real>                  d_maxDispVariation;
+    Data<Real>                  d_maxForce; ///< maximum pulling force applied on the cable
+    Data<Real>                  d_minForce; ///< minimum pulling force applied on the cable
+    Data<Real>                  d_eqForce; ///< equality force of the cable
+    Data<Real>                  d_maxPositiveDisplacement; ///< maximum displacement of the cable in the positive direction
+    Data<Real>                  d_maxNegativeDisplacement; ///< maximum displacement of the cable in the negative direction
+    Data<Real>                  d_eqDisplacement; ///< equality dispalcement of the cable
+    Data<Real>                  d_maxDispVariation; ///< maximum dispalcement of the cable allowed
 
-    Data<bool>                  d_drawPullPoint;
-    Data<bool>                  d_drawPoints;
-    Data<bool>                  d_drawPulledAreas;
+    Data<bool>                  d_drawPullPoint; ///< to draw pull point
+    Data<bool>                  d_drawPoints; ///< to draw center points of cable
+    Data<bool>                  d_drawPulledAreas; ///< to draw points in cable area effect
 
     Data<type::RGBAColor>       d_color;
 
@@ -188,7 +188,7 @@ private:
     void initCableActionAreas();
     void computePointsActionArea();
     unsigned int computeClosestIndice(const Coord& position);
-    void getPositionFromTopology(Coord& position, const int& index);
+    void getPositionFromTopology(Coord& position, sofa::Index index);
     SReal getDistanceToTriangle(const Coord& position, const Triangle& triangle, Coord& projectionOnTriangle);
     void computeBarycentric(const Triangle& triangle, const Coord& p, Real& alpha, Real& beta);
 
@@ -200,7 +200,10 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-//extern template class CableModel<defaulttype::Vec3Types>;
+#if !defined(SOFTROBOTS_COMPONENT_BEHAVIOR_CONSTRAINT_MODEL_CABLEMODEL_CPP)
+extern template class SOFA_SOFTROBOTS_API CableModel<defaulttype::Vec3Types>;
+extern template class SOFA_SOFTROBOTS_API CableModel<defaulttype::Vec2Types>;
+#endif
 
 
 } // namespace constraintset

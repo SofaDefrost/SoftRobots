@@ -197,9 +197,13 @@ void CableModel<DataTypes>::init()
         }
 
         if (l_surfaceTopology.get() == nullptr)
+        {
             msg_error(this) << "There is no topology state associated with this node. "
                                 "To remove this error message, fix your scene possibly by "
                                 "adding a topology in this node";
+            d_componentState.setValue(ComponentState::Invalid);
+        }
+            
     }
     internalInit();
     d_componentState.setValue(ComponentState::Valid);
@@ -210,7 +214,10 @@ template<class DataTypes>
 void CableModel<DataTypes>::bwdInit()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
-            return ;
+    {
+        return;
+    }
+            
 
     // The initial length of the cable is set or computed in bwdInit so the mapping (if there is any)
     // will be considered
@@ -220,7 +227,8 @@ void CableModel<DataTypes>::bwdInit()
 
     Real cableLength = getCableLength(positions.ref());
 
-    if (!d_cableInitialLength.isSet()){
+    if (!d_cableInitialLength.isSet())
+    {
         Real initialCableLength = getCableLength(restPositions.ref());
         d_cableInitialLength.setValue(initialCableLength);
     }
@@ -233,8 +241,9 @@ template<class DataTypes>
 void CableModel<DataTypes>::reinit()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
+    {
             return ;
-
+    }
     internalInit();
 }
 
@@ -243,8 +252,9 @@ template<class DataTypes>
 void CableModel<DataTypes>::reset()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
+    {
         return ;
-
+    }
     d_cableLength.setValue(d_cableInitialLength.getValue());
 }
 
@@ -258,7 +268,9 @@ void CableModel<DataTypes>::internalInit()
 
     const unsigned int id_method = d_method.getValue().getSelectedId();
     if (id_method == 1 || id_method == 2)
+    {
         initCableActionAreas();
+    }
 }
 
 
@@ -275,8 +287,9 @@ void CableModel<DataTypes>::initActuatedPoints()
     {
         m_hasCenters = true;
         if (nbIndices != 0)
+        {
             msg_warning() <<"Both centers and indices are provided. Centers are used by default";
-
+        }
         indices.clear();
         indices.resize(nbCenters);
         for (unsigned int i=0; i<nbCenters; i++)
@@ -284,9 +297,12 @@ void CableModel<DataTypes>::initActuatedPoints()
         nbIndices = indices.size();
     }
 
-    if ( !d_hasPullPoint.getValue()){
+    if ( !d_hasPullPoint.getValue())
+    {
         if (nbIndices<=1)
+        {
             msg_error() <<"If no pull point, at least two indices of actuation should be given";
+        }
         else
         {
             nbIndices-=1;  // the first point of the list considered as the pull point
@@ -302,9 +318,13 @@ void CableModel<DataTypes>::initActuatedPoints()
         m_hasSlidingPoint=false;
     }
     else if (nbIndices == 1)
+    {
         m_hasSlidingPoint=false;
+    }
     else
+    {   
         m_hasSlidingPoint=true;
+    }    
 }
 
 
@@ -316,7 +336,9 @@ void CableModel<DataTypes>::checkIndicesRegardingState()
     for(unsigned int i=0; i<d_indices.getValue().size(); i++)
     {
         if (positions.size() <= d_indices.getValue()[i])
+        {
             msg_error() << "Indices at index " << i << " is too large regarding mechanicalState [position] size" ;
+        }
     }
 }
 
@@ -361,10 +383,10 @@ void CableModel<DataTypes>::computePointsActionArea()
     ReadAccessor<Data<VecCoord>> centers = d_centers;    
     if (m_hasCenters)
     {
-        m_alpha.clear();
-        m_alpha.resize(nbCenters);
-        m_beta.clear();
-        m_beta.resize(nbCenters);
+        m_alphaBarycentric.clear();
+        m_alphaBarycentric.resize(nbCenters);
+        m_betaBarycentric.clear();
+        m_betaBarycentric.resize(nbCenters);
         m_closestTriangle.clear();
         m_closestTriangle.resize(nbCenters);
     } 
@@ -417,14 +439,18 @@ void CableModel<DataTypes>::computePointsActionArea()
 
                 const Real d = (closestProjectionOnTriangle - p).norm();
                 if (id_method == 2)
+                {
                     distances[closestTriangle[j]] = minDistanceToTriangle + d;
+                } 
                 else if (id_method == 1)
+                {
                     distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
+                }
                 queue.insert(DistanceToPoint(d,indices[i]));
             }
             
             // Compute barycentric coordinates for visualization purposes
-            computeBarycentric(closestTriangle, closestProjectionOnTriangle, m_alpha[i], m_beta[i]);
+            computeBarycentric(closestTriangle, closestProjectionOnTriangle, m_alphaBarycentric[i], m_betaBarycentric[i]);
             m_closestTriangle[i] = closestTriangle;
 
 
@@ -450,14 +476,17 @@ void CableModel<DataTypes>::computePointsActionArea()
                 getPositionFromTopology(pvn, vn);
                 Real d = 0.0;
                 if (id_method == 2)
+                {
                     d = distances[v] + (pv - pvn).norm();
+                }
                 else if (id_method == 1)
+                {
                     d = (pvn - cablePositions[indices[i]]).norm();
-
+                }
                 if((distances[vn]) > d)
                 {
                     qit=queue.find(DistanceToPoint(distances[vn],vn));
-                    if(qit != queue.end()) queue.erase(qit);
+                    if(qit != queue.end()) {queue.erase(qit);}
                     distances[vn] = d;
                     queue.insert(DistanceToPoint(d,vn) );
                 }
@@ -482,9 +511,13 @@ void CableModel<DataTypes>::computePointsActionArea()
         for(unsigned int j=0; j<m_ratios[i].size(); j++)
         {
             if (m_totalRatio[i] == 0.0)
+            {
                 m_ratios[i][j] = 0.0;
+            }
             else 
+            {
                 m_ratios[i][j] = m_ratios[i][j] / m_totalRatio[i];
+            }
         }
             
     }
@@ -513,7 +546,7 @@ unsigned int CableModel<DataTypes>::computeClosestIndice(const Coord& position)
 }
 
 template<class DataTypes>
-void CableModel<DataTypes>::getPositionFromTopology(Coord& position, const int& index)
+void CableModel<DataTypes>::getPositionFromTopology(Coord& position, sofa::Index index)
 {
 }
 
@@ -564,8 +597,9 @@ SReal CableModel<DataTypes>::getCableLength(const VecCoord &positions)
 
     // if no fixed pull point, we take the first point of the list
     if (!d_hasPullPoint.getValue())
+    {
         previousPosition = positions[ indices[0] ];
-
+    }
     Real cableLength = 0.0;
     for (unsigned int i=0; i<indices.size(); i++)
     {
@@ -583,7 +617,9 @@ template<class DataTypes>
 void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &cMatrix, unsigned int &cIndex, const DataVecCoord &x)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
+    {
             return ;
+    }
 
     SOFA_UNUSED(cParams);
 
@@ -605,7 +641,9 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
             Deriv direction = DataTypes::coordDifference(d_pullPoint.getValue(),positions[d_indices.getValue()[0]]);
             direction.normalize();
             if (id_method == 0)
+            {
                 rowIterator.setCol(d_indices.getValue()[0],  direction);
+            }
             else 
             {
                 for(unsigned int j=0; j<m_areaIndices[0].size(); j++)
@@ -744,7 +782,9 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
                                                    const BaseVector *Jdx)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
+    {
             return ;
+    }
 
     SOFA_UNUSED(cParams);
 
@@ -763,7 +803,9 @@ void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
     SOFA_UNUSED(cParams);
 
     if(d_componentState.getValue() != ComponentState::Valid)
+    {
             return ;
+    }
 
     d_force.setValue(lambda->element(m_constraintId));
 
@@ -779,22 +821,35 @@ template<class DataTypes>
 void CableModel<DataTypes>::draw(const VisualParams* vparams)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
+    {
             return ;
+    }
 
-    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
+    if (!vparams->displayFlags().getShowInteractionForceFields()) 
+    {
+        return;
+    }
 
     drawLinesBetweenPoints(vparams);
     
     if(d_drawPoints.getValue())
+    {
         drawPoints(vparams);
-    
+    }
+
     if(d_drawPullPoint.getValue())
+    {
         drawPullPoint(vparams);
+    }
 
     const unsigned int id_method = d_method.getValue().getSelectedId();
     if (id_method == 1 || id_method == 2)
+        {
         if(d_drawPulledAreas.getValue())
+        {
             drawPulledAreas(vparams);
+        }
+    }
 }
 
 
@@ -825,11 +880,15 @@ void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
     for (unsigned int i=0; i<indices.size(); i++)
     {
         if (!m_hasCenters)
+        {
             points[i] = positions[indices[i]];
-        else 
+        }
+        else
+        { 
             points[i] = positions[m_closestTriangle[i][0]] 
-            + m_alpha[i] * (positions[m_closestTriangle[i][1]] - positions[m_closestTriangle[i][0]])
-            + m_beta[i] * (positions[m_closestTriangle[i][2]] - positions[m_closestTriangle[i][0]]);
+            + m_alphaBarycentric[i] * (positions[m_closestTriangle[i][1]] - positions[m_closestTriangle[i][0]])
+            + m_betaBarycentric[i] * (positions[m_closestTriangle[i][2]] - positions[m_closestTriangle[i][0]]);
+        }
     }
         
 
@@ -852,11 +911,15 @@ void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
     if(!d_hasPullPoint.getValue() && indices.size()>=1)
     {
         if (!m_hasCenters)
+        {
             previousPosition = positions[indices[0]];            
+        }
         else 
+        {
             previousPosition = positions[m_closestTriangle[0][0]] 
-            + m_alpha[0] * (positions[m_closestTriangle[0][1]] - positions[m_closestTriangle[0][0]])
-            + m_beta[0] * (positions[m_closestTriangle[0][2]] - positions[m_closestTriangle[0][0]]);
+            + m_alphaBarycentric[0] * (positions[m_closestTriangle[0][1]] - positions[m_closestTriangle[0][0]])
+            + m_betaBarycentric[0] * (positions[m_closestTriangle[0][2]] - positions[m_closestTriangle[0][0]]);
+        }
         first = 1;
     }
     
@@ -864,12 +927,15 @@ void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
     {
         Coord currentPosition;
         if (!m_hasCenters)
+        {
             currentPosition = positions[indices[i]];
-        else 
+        }
+        else
+        { 
             currentPosition = positions[m_closestTriangle[i][0]] 
-            + m_alpha[i] * (positions[m_closestTriangle[i][1]] - positions[m_closestTriangle[i][0]])
-            + m_beta[i] * (positions[m_closestTriangle[i][2]] - positions[m_closestTriangle[i][0]]);
-
+            + m_alphaBarycentric[i] * (positions[m_closestTriangle[i][1]] - positions[m_closestTriangle[i][0]])
+            + m_betaBarycentric[i] * (positions[m_closestTriangle[i][2]] - positions[m_closestTriangle[i][0]]);
+        }
         points[i*2] = currentPosition;
         points[i*2+1] = previousPosition;
         previousPosition = currentPosition;
