@@ -12,7 +12,6 @@ def createScene(rootNode):
     pluginList = ["Sofa.Component.IO.Mesh",
                   "Sofa.Component.LinearSolver.Direct",
                   "Sofa.Component.Mass",
-                  "Sofa.Component.ODESolver.Backward",
                   "Sofa.Component.StateContainer",
                   "Sofa.Component.Visual",
                   "Sofa.GL.Component.Rendering3D",

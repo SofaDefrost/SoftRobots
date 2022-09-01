@@ -9,7 +9,6 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SofaPython3')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
     rootNode.addObject('VisualStyle', displayFlags='showBehaviorModels showForceFields')
 
     rootNode.dt = 0.001
@@ -28,7 +27,7 @@ def createScene(rootNode):
     robot.addObject('MeshVTKLoader', name='loader', filename=path + 'branch.vtu')
     # Here you set the tetrahedra topology
     robot.addObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra',
-                    name='container', createTriangleArray=1, checkConnexity=1)
+                    name='container', createTriangleArray=1)
     robot.addObject('TetrahedronSetTopologyModifier')
 
     robot.addObject('MechanicalObject', name='tetras')

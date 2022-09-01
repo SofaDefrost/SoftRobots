@@ -8,8 +8,6 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SoftRobots')
     rootNode.addObject('RequiredPlugin', name='SofaPython3')
-    rootNode.addObject('RequiredPlugin', name='SofaOpenglVisual')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
     rootNode.addObject('VisualStyle',
                        displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
@@ -32,11 +30,11 @@ def createScene(rootNode):
     bunny.addObject('BoxROI', name='boxROI', box=[-5, -15, -5, 5, -4.5, 5], drawBoxes=True,
                     position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
     bunny.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12)
-    bunny.addObject('LinearSolverConstraintCorrection', solverName='LDLsolver')
+    bunny.addObject('LinearSolverConstraintCorrection')
 
     # bunny/cavity
     cavity = bunny.addChild('cavity')
-    cavity.addObject('MeshObjLoader', name='loader', filename=path + 'Hollow_Bunny_Body_Cavity.obj')
+    cavity.addObject('MeshOBJLoader', name='loader', filename=path + 'Hollow_Bunny_Body_Cavity.obj')
     cavity.addObject('MeshTopology', src='@loader', name='topo')
     cavity.addObject('MechanicalObject', name='cavity')
     cavity.addObject('SurfacePressureConstraint', name="surfaceConstraint", triangles='@topo.triangles',

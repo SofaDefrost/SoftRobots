@@ -8,8 +8,6 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 # Units: cm and kg
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SofaPython3')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
-    rootNode.addObject('RequiredPlugin', name='SofaBoundaryCondition')
     rootNode.addObject('VisualStyle', displayFlags='showBehaviorModels showForceFields')
 
     rootNode.dt = 0.001

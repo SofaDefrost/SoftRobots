@@ -10,8 +10,6 @@ from ControllerPressure import ControllerPressure
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SoftRobots')
     rootNode.addObject('RequiredPlugin', name='SofaPython3')
-    rootNode.addObject('RequiredPlugin', name='SofaOpenglVisual')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
     rootNode.addObject('VisualStyle',
                        displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
@@ -34,7 +32,7 @@ def createScene(rootNode):
     bunny.addObject('BoxROI', name='boxROI', box=[-5, -15, -5, 5, -4.5, 5], drawBoxes=True,
                     position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
     bunny.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12)
-    bunny.addObject('LinearSolverConstraintCorrection', solverName='LDLsolver')
+    bunny.addObject('LinearSolverConstraintCorrection')
 
     # bunny/cavity
     cavity = bunny.addChild('cavity')

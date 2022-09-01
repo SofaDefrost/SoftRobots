@@ -7,7 +7,6 @@ from math import sin, cos
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='BeamAdapter')
     rootNode.addObject('RequiredPlugin', name='SofaPython3')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
 
     rootNode.addObject('VisualStyle',
                        displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields hideWireframe')

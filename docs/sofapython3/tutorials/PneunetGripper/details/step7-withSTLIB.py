@@ -18,7 +18,7 @@ from param import *
 
 def createScene(rootNode):
     MainHeader(rootNode,
-               plugins=['SofaPython3', 'SoftRobots', 'SofaOpenglVisual'],
+               plugins=['SofaPython3', 'SoftRobots'],
                gravity=[0.0, -9810, 0.0])
 
     ContactHeader(rootNode,

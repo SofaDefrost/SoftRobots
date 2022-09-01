@@ -41,9 +41,7 @@ def createScene(rootNode):
     robot = rootNode.addChild('Robot')
     # The solvers
     robot.addObject('EulerImplicitSolver')
-    robot.addObject('ShewchukPCGLinearSolver', iterations=1, name="linearsolver", tolerance=1e-5,
-                    preconditioners="preconditioner", use_precond=True)
-    robot.addObject('SparseLDLSolver', name="preconditioner", template="CompressedRowSparseMatrixMat3x3d")
+    robot.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixMat3x3d")
     # Load the volume mesh
     robot.addObject('MeshVTKLoader', name="loader", filename=meshRobot)
     robot.addObject('MeshTopology', src="@loader")
@@ -55,7 +53,7 @@ def createScene(rootNode):
     # Fix a part of the model
     robot.addObject('BoxROI', name="boxROI", box=[-15, -15, -40, 15, 15, 10], drawBoxes=True)
     robot.addObject('FixedConstraint', indices="@boxROI.indices")
-    robot.addObject('LinearSolverConstraintCorrection', solverName="preconditioner")
+    robot.addObject('LinearSolverConstraintCorrection')
 
     # Actuators
     actuators = robot.addChild('Actuators')

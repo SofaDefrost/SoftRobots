@@ -104,7 +104,6 @@ def createScene(rootNode):
                   "Sofa.Component.LinearSolver.Iterative",
                   "Sofa.Component.Mapping.MappedMatrix",
                   "Sofa.Component.Mass",
-                  "Sofa.Component.ODESolver.Backward",
                   "Sofa.Component.SolidMechanics.FEM.Elastic",
                   "Sofa.Component.SolidMechanics.Spring",
                   "Sofa.Component.StateContainer",

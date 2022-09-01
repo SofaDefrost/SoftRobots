@@ -9,21 +9,20 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin',
-                       pluginName=["SoftRobots", "SoftRobots.Inverse", "SofaSparseSolver", "SofaOpenglVisual",
-                                   "SofaPreconditioner", "SofaBoundaryCondition"]);
+                       pluginName=["SoftRobots", "SoftRobots.Inverse"])
     rootNode.addObject('VisualStyle',
-                       displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields ');
+                       displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields ')
 
-    rootNode.dt = 0.03;
-    rootNode.gravity = [0., 0., -9810];
+    rootNode.dt = 0.03
+    rootNode.gravity = [0., 0., -9810]
 
-    rootNode.addObject('FreeMotionAnimationLoop');
-    rootNode.addObject('QPInverseProblemSolver', epsilon=1e-3, printLog=0);
+    rootNode.addObject('FreeMotionAnimationLoop')
+    rootNode.addObject('QPInverseProblemSolver', epsilon=1e-3, printLog=0)
 
-    rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1]);
-    rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight");
+    rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
+    rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
-    # rootNode.addObject(Controller(rootNode));
+    # rootNode.addObject(Controller(rootNode))
     # rootNode.addObject('SerialPortBridgeGeneric', name="serial", port="/dev/ttyACM0", baudRate=115200, size=3, listening=True)
 
     ##########################################
@@ -45,8 +44,7 @@ def createScene(rootNode):
 
     robot = rootNode.addChild('robot')
     robot.addObject('EulerImplicitSolver', name='odesolver', firstOrder=False)
-    robot.addObject('ShewchukPCGLinearSolver', name='CG', preconditioners='preconditioner', tolerance=1e-15)
-    robot.addObject('SparseLDLSolver', name='preconditioner')
+    robot.addObject('SparseLDLSolver')
     robot.addObject('MeshVTKLoader', name='loader', filename=path + 'branch.vtu')
     robot.addObject('MeshTopology', src='@loader')
 
@@ -62,7 +60,7 @@ def createScene(rootNode):
     robot.addObject('BoxROI', name='boxROI3', box=[130, -100, 70, 60, -20, 130], drawBoxes=True)
     robot.addObject('PartialFixedConstraint', name="pfc3", fixedDirections=[1, 1, 0], indices="@boxROI3.indices")
 
-    robot.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+    robot.addObject('LinearSolverConstraintCorrection')
 
     ###############################
     # EFFECTOR

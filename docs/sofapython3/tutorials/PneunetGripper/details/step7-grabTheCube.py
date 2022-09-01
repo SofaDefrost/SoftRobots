@@ -18,11 +18,11 @@ angles = [0, angle1, angle2]
 
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin',
-                       pluginName='SoftRobots SofaPython3 SofaLoader SofaSimpleFem SofaEngine SofaDeformable SofaImplicitOdeSolver SofaConstraint SofaSparseSolver SofaMeshCollision SofaRigid SofaOpenglVisual')
+                       pluginName='SoftRobots SofaPython3')
 
     rootNode.addObject('VisualStyle',
                        displayFlags='showVisualModels hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
-    rootNode.gravity.value = [-9810, 0, 0];
+    rootNode.gravity.value = [-9810, 0, 0]
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('GenericConstraintSolver', tolerance=1e-12, maxIterations=10000)
     rootNode.addObject('DefaultPipeline')
@@ -35,7 +35,7 @@ def createScene(rootNode):
     rootNode.addObject('OglSceneFrame', style='Arrows', alignment='TopRight')
 
     planeNode = rootNode.addChild('Plane')
-    planeNode.addObject('MeshObjLoader', name='loader', filename='data/mesh/floorFlat.obj', triangulate=True,
+    planeNode.addObject('MeshOBJLoader', name='loader', filename='data/mesh/floorFlat.obj', triangulate=True,
                         rotation=[0, 0, 270], scale=10, translation=[-122, 0, 0])
     planeNode.addObject('MeshTopology', src='@loader')
     planeNode.addObject('MechanicalObject', src='@loader')
@@ -53,7 +53,7 @@ def createScene(rootNode):
 
     # collision
     cubeCollis = cube.addChild('cubeCollis')
-    cubeCollis.addObject('MeshObjLoader', name='loader', filename='data/mesh/smCube27.obj', triangulate=True,
+    cubeCollis.addObject('MeshOBJLoader', name='loader', filename='data/mesh/smCube27.obj', triangulate=True,
                          scale=6)
     cubeCollis.addObject('MeshTopology', src='@loader')
     cubeCollis.addObject('MechanicalObject')
@@ -64,7 +64,7 @@ def createScene(rootNode):
 
     # visualization
     cubeVisu = cube.addChild('cubeVisu')
-    cubeVisu.addObject('MeshObjLoader', name='loader', filename='data/mesh/smCube27.obj')
+    cubeVisu.addObject('MeshOBJLoader', name='loader', filename='data/mesh/smCube27.obj')
     cubeVisu.addObject('OglModel', name='Visual', src='@loader', color=[0.0, 0.1, 0.5], scale=6.2)
     cubeVisu.addObject('RigidMapping')
 
@@ -94,7 +94,7 @@ def createScene(rootNode):
             finger.addObject('RestShapeSpringsForceField', points='@../finger1/boxROI.indices', stiffness=1e12,
                              angularStiffness=1e12)
 
-        finger.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+        finger.addObject('LinearSolverConstraintCorrection')
 
         ##########################################
         # Sub topology						   #

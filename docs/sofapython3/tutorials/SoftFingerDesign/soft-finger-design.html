@@ -216,7 +216,7 @@ function toggle(target) {
 <a class="sourceLine" id="cb2-27" title="27">    scene.VisualStyle.displayFlags <span class="op">=</span> [<span class="st">&quot;hideInteractionForceFields&quot;</span>, <span class="st">&quot;showForceFields&quot;</span>,</a>
 <a class="sourceLine" id="cb2-28" title="28">                                      <span class="st">&quot;showCollisionModels&quot;</span>]</a>
 <a class="sourceLine" id="cb2-29" title="29">    <span class="co"># Add a grid on the scene with squares 10mm/10mm</span></a>
-<a class="sourceLine" id="cb2-30" title="30">    rootNode.addObject(<span class="st">&quot;OglGrid&quot;</span>, nbSubdiv<span class="op">=</span><span class="dv">100</span>, size<span class="op">=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb2-30" title="30">    rootNode.addObject(<span class="st">&quot;VisualGrid&quot;</span>, nbSubdiv<span class="op">=</span><span class="dv">100</span>, size<span class="op">=</span><span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb2-31" title="31"></a>
 <a class="sourceLine" id="cb2-32" title="32">    <span class="co"># Set up the pipeline for the collision computation</span></a>
 <a class="sourceLine" id="cb2-33" title="33">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
