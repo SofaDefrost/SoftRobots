@@ -3,8 +3,8 @@ import Sofa
 
 def createScene(rootNode):
     rootNode.addObject('VisualStyle', displayFlags='showForceFields')
-    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaPython3 SofaLoader SofaSimpleFem')
-    rootNode.findData('gravity').value = [-9810, 0, 0];
+    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaPython3')
+    rootNode.findData('gravity').value = [-9810, 0, 0]
 
     finger = rootNode.addChild('finger')
     finger.addObject('MeshVTKLoader', name='loader', filename='data/mesh/pneunetCutCoarse.vtk')

@@ -3,7 +3,7 @@ import Sofa
 
 def createScene(rootNode):
     rootNode.addObject('VisualStyle', displayFlags='showForceFields')
-    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaPython3 SofaLoader SofaSimpleFem SofaEngine')
+    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots SofaPython3')
     rootNode.findData('gravity').value = [-9810, 0, 0];
 
     finger = rootNode.addChild('finger')

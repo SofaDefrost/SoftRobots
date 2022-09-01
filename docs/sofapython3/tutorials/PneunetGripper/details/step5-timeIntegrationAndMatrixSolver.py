@@ -4,9 +4,9 @@ import Sofa
 def createScene(rootNode):
     rootNode.addObject('VisualStyle', displayFlags='showForceFields')
     rootNode.addObject('RequiredPlugin',
-                       pluginName='SoftRobots SofaPython3 SofaLoader SofaSimpleFem SofaEngine SofaDeformable SofaImplicitOdeSolver')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
-    rootNode.findData('gravity').value = [-9810, 0, 0];
+                       pluginName='SoftRobots SofaPython3')
+    rootNode.findData('gravity').value = [-9810, 0, 0]
+    rootNode.addObject('AttachBodyButtonSetting', stiffness=10)
 
     finger = rootNode.addChild('finger')
     finger.addObject('EulerImplicitSolver', name='odesolver')

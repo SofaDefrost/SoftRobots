@@ -57,7 +57,7 @@ class CircularRobot:
         if withSolver:
             self.node.addObject('EulerImplicitSolver', rayleighMass=0.015, rayleighStiffness=0.015)
             self.node.addObject('SparseLDLSolver')
-            self.node.addObject("GenericConstraintCorrection", solverName="SparseLDLSolver")
+            self.node.addObject("GenericConstraintCorrection")
 
         self.node.addObject('MeshVTKLoader', name="loader", filename=path + "wheel.vtk")
         self.node.addObject('TetrahedronSetTopologyContainer', position='@loader.position',

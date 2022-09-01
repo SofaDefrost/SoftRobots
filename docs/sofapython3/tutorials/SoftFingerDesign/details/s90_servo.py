@@ -102,7 +102,7 @@ def createScene(rootNode):
     def animation(target, factor):
         target.angleIn.value = math.sin(factor * 2 * math.pi)
 
-    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaOpenglVisual', 'SofaRigid'],
+    scene = Scene(rootNode,
                   iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')

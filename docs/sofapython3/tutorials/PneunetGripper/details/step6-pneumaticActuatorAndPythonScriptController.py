@@ -5,8 +5,9 @@ from fingerController import FingerController
 def createScene(rootNode):
     rootNode.addObject('VisualStyle', displayFlags='showForceFields showBehaviorModels')
     rootNode.addObject('RequiredPlugin',
-                       pluginName='SoftRobots SofaPython3 SofaLoader SofaSimpleFem SofaEngine SofaDeformable SofaImplicitOdeSolver SofaConstraint SofaSparseSolver')
+                       pluginName='SoftRobots SofaPython3')
     rootNode.gravity.value = [-9810, 0, 0]
+    rootNode.addObject('AttachBodyButtonSetting', stiffness=10)
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('GenericConstraintSolver', tolerance=1e-12, maxIterations=10000)
 
@@ -22,7 +23,7 @@ def createScene(rootNode):
     finger.addObject('BoxROI', name='boxROISubTopo', box=[-100, 22.5, -8, -19, 28, 8], strict=False)
     finger.addObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20], drawBoxes=True)
     finger.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
-    finger.addObject('LinearSolverConstraintCorrection', solverName='directSolver')
+    finger.addObject('LinearSolverConstraintCorrection')
 
     modelSubTopo = finger.addChild('modelSubTopo')
     modelSubTopo.addObject('MeshTopology', position='@loader.position', tetrahedra='@boxROISubTopo.tetrahedraInROI',

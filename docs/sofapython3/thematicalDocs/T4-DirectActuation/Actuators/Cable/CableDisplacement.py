@@ -10,8 +10,6 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SoftRobots')
     rootNode.addObject('RequiredPlugin', name='SofaPython3')
-    rootNode.addObject('RequiredPlugin', name='SofaOpenglVisual')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
     rootNode.addObject('VisualStyle',
                        displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 

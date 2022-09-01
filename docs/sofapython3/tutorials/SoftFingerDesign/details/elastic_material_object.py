@@ -25,12 +25,8 @@ class ElasticMaterialObject(Sofa.Prefab):
 
     def init(self):
 
-        plugins = []
-
         if self.solverName.value == '':
-            plugins.append('SofaImplicitOdeSolver')
             self.integration = self.addObject('EulerImplicitSolver', name='integration')
-            plugins.append('SofaSparseSolver')
             self.solver = self.addObject('SparseLDLSolver', name="solver")
 
         if self.volumeMeshFileName.value == '':
@@ -69,7 +65,6 @@ class ElasticMaterialObject(Sofa.Prefab):
         # to a loading (i.e. which deformations are created from forces applied onto it).
         # Here, because the elasticobject is made of silicone, its mechanical behavior is assumed elastic.
         # This behavior is available via the TetrahedronFEMForceField component.
-        plugins.append('SofaSimpleFem')
         if self.topoMesh.value == "tetrahedron":
             self.forcefield = self.addObject('TetrahedronFEMForceField', template='Vec3',
                                              method='large', name='forcefield',
@@ -80,7 +75,6 @@ class ElasticMaterialObject(Sofa.Prefab):
                                              poissonRatio=self.poissonRatio.value, youngModulus=self.youngModulus.value)
 
         if self.withConstrain.value:
-            plugins.append('SofaConstraint')
             self.correction = self.addObject('LinearSolverConstraintCorrection', name='correction')
 
         if self.collisionMesh:
@@ -90,8 +84,6 @@ class ElasticMaterialObject(Sofa.Prefab):
         if self.surfaceMeshFileName:
             self.addVisualModel(self.surfaceMeshFileName.value, list(self.surfaceColor.value),
                                 list(self.rotation.value), list(self.translation.value), list(self.scale.value))
-
-        self.addObject('RequiredPlugin', pluginName=plugins)
 
     def addCollisionModel(self, collisionMesh, rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
                           scale=[1., 1., 1.]):

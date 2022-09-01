@@ -58,7 +58,7 @@ def ElasticBody(name="ElasticBody", rotation=[0, 0, 0], translation=[0, 0, 0], c
 
 def createScene(rootNode):
     from stlib3.scene import Scene
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual'],
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0],
                   iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')
