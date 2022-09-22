@@ -20,9 +20,8 @@
 import os
 import sys
 # sys.path.insert(0, os.path.abspath('.'))
-path = os.getcwd()+"/../../../"
+path = os.getcwd()+"/../sofapython3/examples/"
 sys.path.append(path)
-
 
 # -- General configuration ------------------------------------------------
 
@@ -65,7 +64,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'SoftRobots Components'
+project = u'SoftRobots'
 copyright = u'2019, DEFROST Team'
 author = u'DEFROST Team'
 
