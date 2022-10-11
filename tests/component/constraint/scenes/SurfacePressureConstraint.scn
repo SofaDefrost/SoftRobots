@@ -3,7 +3,7 @@
 
         <VisualStyle displayFlags='showCollision showVisualModels showForceFields showInteractionForceFields hideCollisionModels hideBoundingCollisionModels hideWireframe'/>
 
-        <RequiredPlugin pluginName='SofaSparseSolver'/>
+        <RequiredPlugin pluginName='Sofa.Component.LinearSolver.Direct'/>
 
         <FreeMotionMasterSolver/>
         <CollisionPipeline verbose='0'/>
