@@ -131,7 +131,7 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, AnimationEditor<Dat
                 "   <MechanicalObject position='0 0 0'/>              "
                 "   <AnimationEditor listening='true'/>         "
                 "</Node>                             " ;
-        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "simpleSceneTest", scene.c_str(), scene.size())) ;
+        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "simpleSceneTest", scene.c_str())) ;
         return ;
     }
 

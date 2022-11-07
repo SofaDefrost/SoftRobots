@@ -92,7 +92,7 @@ void CableConstraint<DataTypes>::internalInit()
     if(d_value.getValue().size()==0)
     {
         WriteAccessor<Data<vector<Real>>> value = d_value;
-        value.resize(1,0.);
+        value.resize(1);
     }
 
     // check for errors in the initialization

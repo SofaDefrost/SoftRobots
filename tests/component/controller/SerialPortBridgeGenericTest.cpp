@@ -118,7 +118,7 @@ struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortB
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <SerialPortBridgeGeneric listening='true' input='@MO.position'/>         "
                 "</Node>                             " ;
-        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "simpleSceneTest", scene.c_str(), scene.size())) ;
+        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "simpleSceneTest", scene.c_str())) ;
         return ;
     }
 

@@ -31,7 +31,7 @@
 #ifndef SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_H
 #define SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_H
 
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/component/controller/Controller.h>
 
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/objectmodel/vectorData.h>
