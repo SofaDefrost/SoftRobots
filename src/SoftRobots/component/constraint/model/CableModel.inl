@@ -50,7 +50,7 @@ using sofa::core::visual::VisualParams;
 using sofa::linearalgebra::BaseVector;
 using sofa::helper::ReadAccessor;
 using sofa::type::RGBAColor;
-using sofa::type::Vector3;
+using sofa::type::Vec3;
 using sofa::type::vector;
 
 template<class DataTypes>
@@ -448,7 +448,7 @@ void CableModel<DataTypes>::drawPullPoint(const VisualParams* vparams)
 {
     const SetIndexArray &indices = d_indices.getValue();
 
-    vector<Vector3> points(1);
+    vector<Vec3> points(1);
     points[0] = d_pullPoint.getValue();
     if(!d_hasPullPoint.getValue() && indices.size()>=1)
     {
@@ -466,7 +466,7 @@ void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
     const SetIndexArray &indices = d_indices.getValue();
 
-    vector<Vector3> points(indices.size());
+    vector<Vec3> points(indices.size());
     for (unsigned int i=0; i<indices.size(); i++)
         points[i] = positions[indices[i]];
 
@@ -482,7 +482,7 @@ void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
     const SetIndexArray &indices = d_indices.getValue();
 
     RGBAColor color = d_color.getValue();
-    vector<Vector3> points(indices.size()*2);
+    vector<Vec3> points(indices.size()*2);
     Coord previousPosition = d_pullPoint.getValue();
     unsigned int first = 0;
 

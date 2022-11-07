@@ -199,6 +199,31 @@ void DataVariationLimiter<DataTypes>::interpolate(const int index)
     }
 }
 
+template <class DataTypes>
+std::string DataVariationLimiter<DataTypes>::GetCustomTemplateName()
+{
+    Value v;
+    int size = v.size();
+
+    switch(size)
+    {
+    case 1:
+    {
+        return defaulttype::DataTypeInfo<type::Vec<1,ValueType>>::name();
+    }
+    case 2:
+    {
+        return defaulttype::DataTypeInfo<type::Vec<2,ValueType>>::name();
+    }
+    case 3:
+    {
+        return defaulttype::DataTypeInfo<type::Vec<3,ValueType>>::name();
+    }
+    default: break;
+    }
+
+    return "";
+}
 
 } // namespace engine
 

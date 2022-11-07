@@ -82,16 +82,6 @@ public:
     AnimationEditor();
     ~AnimationEditor() override;
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const AnimationEditor<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     ////////////////////////// Inherited from BaseObject ////////////////////
     void init() override;
     void bwdInit() override;

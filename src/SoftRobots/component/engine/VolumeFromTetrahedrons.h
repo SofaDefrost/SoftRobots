@@ -73,16 +73,6 @@ public:
 
 public:
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const VolumeFromTetrahedrons<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     VolumeFromTetrahedrons();
     ~VolumeFromTetrahedrons() override;
 

@@ -150,19 +150,6 @@ void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParam
 }
 
 
-template<class DataTypes>
-std::string SoftRobotsConstraint<DataTypes>::getTemplateName() const
-{
-    return templateName(this);
-}
-
-template<class DataTypes>
-std::string SoftRobotsConstraint<DataTypes>::templateName(const SoftRobotsConstraint<DataTypes>*)
-{
-    return DataTypes::Name();
-}
-
-
 } // namespace behavior
 
 } // namespace core

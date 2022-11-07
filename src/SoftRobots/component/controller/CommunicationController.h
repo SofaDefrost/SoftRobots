@@ -74,12 +74,6 @@ public:
     CommunicationController();
     ~CommunicationController() override;
 
-    //////////////////////////////// Inherited from Base /////////////////////////////////
-    std::string getTemplateName() const override {return templateName(this);}
-    static std::string templateName(const CommunicationController<DataTypes>* = NULL);
-    /////////////////////////////////////////////////////////////////////////////////
-
-
     ////////////////////////// Inherited from BaseObject ////////////////////
     void init() override;
     void reinit() override;
@@ -94,6 +88,10 @@ public:
     void onBeginAnimationStep(const double dt) override;
     void onEndAnimationStep(const double dt) override;
     /////////////////////////////////////////////////////////////////////////
+
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName();
 
     Data<helper::OptionsGroup>              d_job;
     Data<helper::OptionsGroup>              d_pattern;

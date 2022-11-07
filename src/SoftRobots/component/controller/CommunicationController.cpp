@@ -140,85 +140,43 @@ void CommunicationController<unsigned int>::convertStringStreamToData(stringstre
     }
 }
 
-
 //////////////////////////////// Template name definition
 
 template<>
-std::string CommunicationController<double>::templateName(const CommunicationController<double>* object){
-    SOFA_UNUSED(object);
-    return "double";
-}
+std::string CommunicationController<double>::GetCustomTemplateName(){return "double";}
 
 template<>
-std::string CommunicationController<float>::templateName(const CommunicationController<float>* object){
-    SOFA_UNUSED(object);
-    return "float";
-}
+std::string CommunicationController<float>::GetCustomTemplateName(){return "float";}
 
 template<>
-std::string CommunicationController<int>::templateName(const CommunicationController<int>* object){
-    SOFA_UNUSED(object);
-    return "int";
-}
+std::string CommunicationController<int>::GetCustomTemplateName(){return "int";}
 
 template<>
-std::string CommunicationController<unsigned int>::templateName(const CommunicationController<unsigned int>* object){
-    SOFA_UNUSED(object);
-    return "unsigned int";
-}
+std::string CommunicationController<unsigned int>::GetCustomTemplateName(){return "unsigned int";}
 
 template<>
-std::string CommunicationController<vector<Vec3d>>::templateName(const CommunicationController<vector<Vec3d>>* object){
-    SOFA_UNUSED(object);
-    return "Vec3d";
-}
-
+std::string CommunicationController<vector<Vec3d>>::GetCustomTemplateName(){return "Vec3d";}
 
 template<>
-std::string CommunicationController<vector<Vec3f>>::templateName(const CommunicationController<vector<Vec3f>>* object){
-    SOFA_UNUSED(object);
-    return "Vec3f";
-}
+std::string CommunicationController<vector<Vec3f>>::GetCustomTemplateName(){return "Vec3f";}
 
 template<>
-std::string CommunicationController<vector<Vec1d>>::templateName(const CommunicationController<vector<Vec1d>>* object){
-    SOFA_UNUSED(object);
-    return "Vec1d";
-}
-
+std::string CommunicationController<vector<Vec1d>>::GetCustomTemplateName(){return "Vec1d";}
 
 template<>
-std::string CommunicationController<vector<Vec1f>>::templateName(const CommunicationController<vector<Vec1f>>* object){
-    SOFA_UNUSED(object);
-    return "Vec1f";
-}
+std::string CommunicationController<vector<Vec1f>>::GetCustomTemplateName(){return "Vec1f";}
 
 template<>
-std::string CommunicationController<vector<Vec<2,int>>>::templateName(const CommunicationController<vector<Vec<2,int>>>* object){
-    SOFA_UNUSED(object);
-    return "Vec2i";
-}
-
+std::string CommunicationController<vector<Vec<2,int>>>::GetCustomTemplateName(){return "Vec2i";}
 
 template<>
-std::string CommunicationController<vector<Vec<2,unsigned int>>>::templateName(const CommunicationController<vector<Vec<2,unsigned int>>>* object){
-    SOFA_UNUSED(object);
-    return "Vec2ui";
-}
+std::string CommunicationController<vector<Vec<2,unsigned int>>>::GetCustomTemplateName(){return "Vec2ui";}
 
 template<>
-std::string CommunicationController<vector<Rigid3dTypes::Coord>>::templateName(const CommunicationController<vector<Rigid3dTypes::Coord>>* object){
-    SOFA_UNUSED(object);
-    return "Rigid3d";
-}
-
+std::string CommunicationController<vector<Rigid3dTypes::Coord>>::GetCustomTemplateName(){return "Rigid3d";}
 
 template<>
-std::string CommunicationController<vector<Rigid3fTypes::Coord>>::templateName(const CommunicationController<vector<Rigid3fTypes::Coord>>* object){
-    SOFA_UNUSED(object);
-    return "Rigid3f";
-}
-
+std::string CommunicationController<vector<Rigid3fTypes::Coord>>::GetCustomTemplateName(){return "Rigid3f";}
 
 
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////

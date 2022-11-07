@@ -67,16 +67,6 @@ public:
 
 public:
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const CenterOfMass<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
-
     CenterOfMass();
     ~CenterOfMass() override;
 
