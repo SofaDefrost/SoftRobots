@@ -30,7 +30,7 @@
 #ifndef SOFAVRPNCLIENT_SERIALPORTBRIDGEGENERIC_CPP
 #define SOFAVRPNCLIENT_SERIALPORTBRIDGEGENERIC_CPP
 
-#include "SerialPortBridgeGeneric.h"
+#include <SoftRobots/component/controller/SerialPortBridgeGeneric.h>
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
@@ -40,13 +40,7 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 using type::Vec;
@@ -277,10 +271,7 @@ void SerialPortBridgeGeneric::checkData()
     }
 }
 
-
-}//namespace controller
-}//namespace component
-}//namespace sofa
+}//namespace
 
 #endif //SOFAVRPNCLIENT_SERIALPORTBRIDGEGENERIC_CPP
 

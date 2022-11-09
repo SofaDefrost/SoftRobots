@@ -27,9 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_H
-#define SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_H
+#pragma once
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -177,4 +175,3 @@ extern template class SurfacePressureModel<defaulttype::Vec3Types>;
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_H

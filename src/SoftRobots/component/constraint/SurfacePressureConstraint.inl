@@ -27,13 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSURECONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSURECONSTRAINT_INL
-
-#include "SurfacePressureConstraint.h"
-
-#include <sofa/helper/logging/Messaging.h>
+#include <SoftRobots/component/constraint/SurfacePressureConstraint.h>
 
 namespace sofa
 {
@@ -214,4 +210,3 @@ void SurfacePressureConstraint<DataTypes>::setUpPressureLimits(double& imposedVa
 
 } // namespace sofa
 
-#endif

@@ -27,11 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_H
-#define SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_H
+#pragma once
 
 #include <sofa/component/controller/Controller.h>
+
 #include <SoftRobots/component/initSoftRobots.h>
 
 namespace sofa
@@ -123,4 +122,3 @@ extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec3i
 
 } // namespace sofa
 
-#endif

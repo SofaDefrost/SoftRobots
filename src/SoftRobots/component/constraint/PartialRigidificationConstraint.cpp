@@ -28,16 +28,10 @@
 *                                                                             *
 ******************************************************************************/
 
-#include "PartialRigidificationConstraint.inl"
+#include <SoftRobots/component/constraint/PartialRigidificationConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -75,8 +69,4 @@ int PartialRigidificationConstraintClass = core::RegisterObject("PartialRigidifi
 template class PartialRigidificationConstraint<Rigid3Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace

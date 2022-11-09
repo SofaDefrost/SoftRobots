@@ -27,10 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_CONTROLLER_ANIMATIONEDITOR_INL
-#define SOFA_CONTROLLER_ANIMATIONEDITOR_INL
+#pragma once
 
-#include "AnimationEditor.h"
+#include <SoftRobots/component/controller/AnimationEditor.h>
 #ifdef SOFA_WITH_DACCORD
 #include "../../applications/sofa/gui/SofaGuiCommon/editor/editor.h"
 using daccord::current::Editor ;
@@ -871,4 +870,3 @@ void AnimationEditor<DataTypes>::drawTrajectory(const VisualParams* vparams)
 }//namespace component
 }//namespace sofa
 
-#endif // SOFA_CONTROLLER_ANIMATIONEDITOR_INL

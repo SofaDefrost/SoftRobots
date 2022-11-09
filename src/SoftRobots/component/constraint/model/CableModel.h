@@ -27,9 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
-#define SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H
+#pragma once
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -132,7 +130,7 @@ protected:
     Data<bool>                  d_drawPullPoint;
     Data<bool>                  d_drawPoints;
 
-    Data<type::RGBAColor>    d_color;
+    Data<type::RGBAColor>       d_color;
 
     bool                        m_hasSlidingPoint;
 
@@ -175,4 +173,3 @@ extern template class CableModel<defaulttype::Vec3Types>;
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_H

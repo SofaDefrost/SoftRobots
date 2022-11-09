@@ -27,18 +27,12 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "PartialRigidificationForceField.inl"
+#include <SoftRobots/component/forcefield/PartialRigidificationForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using namespace sofa::defaulttype;
@@ -63,8 +57,4 @@ int PartialRigidificationForceFieldClass = core::RegisterObject("Partially rigid
 template class PartialRigidificationForceField<Vec3Types, Rigid3Types>;
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+}

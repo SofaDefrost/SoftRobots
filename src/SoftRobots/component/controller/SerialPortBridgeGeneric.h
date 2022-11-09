@@ -27,8 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFAVRPNCLIENT_SERIALPORTBRIDGEGENERIC_H
-#define SOFAVRPNCLIENT_SERIALPORTBRIDGEGENERIC_H
+#pragma once
 
 #include <sofa/component/controller/Controller.h>
 
@@ -115,4 +114,3 @@ protected:
 
 }   //namespace sofa
 
-#endif

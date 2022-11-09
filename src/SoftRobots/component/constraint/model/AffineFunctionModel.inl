@@ -27,12 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_INL
-
-
-#include "AffineFunctionModel.h"
+#include <SoftRobots/component/constraint/model/AffineFunctionModel.h>
 
 namespace sofa
 {
@@ -263,4 +260,3 @@ void AffineFunctionModel<DataTypes>::storeLambda(const ConstraintParams* cParams
 
 } // namespace sofa
 
-#endif

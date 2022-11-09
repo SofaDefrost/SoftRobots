@@ -27,15 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "SoftRobotsConstraint.inl"
+#include <SoftRobots/component/behavior/SoftRobotsConstraint.inl>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -51,8 +45,4 @@ template class SoftRobotsConstraint<Vec1Types>;
 template class SoftRobotsConstraint<Rigid3Types>;
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace

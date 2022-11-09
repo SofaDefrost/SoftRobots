@@ -33,15 +33,9 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/Quat.h>
 
-#include "AnimationEditor.inl"
+#include <SoftRobots/component/controller/AnimationEditor.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 using Quat = sofa::type::Quat<double>;
@@ -152,8 +146,5 @@ template class AnimationEditor<Vec3Types>;
 template class AnimationEditor<Rigid3Types>;
 
 
-
 }//namespace _animationeditor_
-}//namespace controller
-}//namespace component
-}//namespace sofa
+}//namespace

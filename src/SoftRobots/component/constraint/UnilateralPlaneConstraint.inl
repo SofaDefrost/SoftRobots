@@ -27,15 +27,12 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_UNILATERALPLANECONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALPLANECONSTRAINT_INL
-
-#include "UnilateralPlaneConstraint.h"
+#pragma once
 
 #include <sofa/core/visual/VisualParams.h>
-
 #include <sofa/helper/logging/Messaging.h>
+
+#include <SoftRobots/component/constraint/UnilateralPlaneConstraint.h>
 
 namespace sofa
 {
@@ -256,4 +253,3 @@ void UnilateralPlaneConstraint<DataTypes>::drawArrows(const VisualParams* vparam
 
 } // namespace sofa
 
-#endif

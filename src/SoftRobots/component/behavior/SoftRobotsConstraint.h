@@ -27,21 +27,14 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_SOFTROBOTSCONSTRAINT_H
-#define SOFA_CORE_BEHAVIOR_SOFTROBOTSCONSTRAINT_H
+#pragma once
 
 #include <sofa/core/behavior/MechanicalState.h>
-#include "SoftRobotsBaseConstraint.h"
 
+#include <SoftRobots/component/behavior/SoftRobotsBaseConstraint.h>
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using sofa::core::objectmodel::BaseContext ;
@@ -154,12 +147,5 @@ extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Vec2
 extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Vec1Types>;
 extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Rigid3Types>;
 
+} // namespace sofa::core::behavior
 
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif

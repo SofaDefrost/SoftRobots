@@ -30,15 +30,9 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include "CableModel.inl"
+#include <SoftRobots/component/constraint/model/CableModel.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -52,9 +46,5 @@ template class CableModel<Vec3Types>;
 template class CableModel<Vec2Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

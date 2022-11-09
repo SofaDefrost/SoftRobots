@@ -27,19 +27,16 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_UNILATERALPLANECONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALPLANECONSTRAINT_H
-
+#pragma once
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/type/Vec.h>
 
-#include <SoftRobots/component/initSoftRobots.h>
-#include <sofa/core/behavior/ConstraintResolution.h>
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
+#include <SoftRobots/component/initSoftRobots.h>
 
 namespace sofa
 {
@@ -159,4 +156,3 @@ extern template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaul
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINTSET_UNILATERALPLANECONSTRAINT_H

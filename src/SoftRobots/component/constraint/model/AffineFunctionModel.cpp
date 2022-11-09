@@ -31,15 +31,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include "AffineFunctionModel.inl"
+#include <SoftRobots/component/constraint/model/AffineFunctionModel.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -51,9 +45,5 @@ using namespace sofa::defaulttype;
 template class AffineFunctionModel<Vec3Types>;
 template class AffineFunctionModel<Rigid3Types>;
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

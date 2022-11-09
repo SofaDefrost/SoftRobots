@@ -27,9 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_H
-#define SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_H
+#pragma once
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -57,10 +55,6 @@ using sofa::helper::ReadAccessor ;
 using sofa::core::VecCoordId ;
 
 
-
-/**
- * This class contains common implementation of cable constraints
-*/
 template< class DataTypes >
 class SOFA_SOFTROBOTS_API AffineFunctionModel : virtual public SoftRobotsConstraint<DataTypes>
 {
@@ -155,4 +149,3 @@ extern template class AffineFunctionModel<defaulttype::Rigid3Types>;
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINTSET_AFFINEFUNCTIONMODEL_H

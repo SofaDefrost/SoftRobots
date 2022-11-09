@@ -27,20 +27,13 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
 #define SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_CPP
 
-#include "DataVariationLimiter.inl"
+#include <SoftRobots/component/controller/DataVariationLimiter.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 using namespace sofa::defaulttype;
@@ -66,9 +59,4 @@ template class DataVariationLimiter<type::Vec1i>;
 template class DataVariationLimiter<type::Vec2i>;
 template class DataVariationLimiter<type::Vec3i>;
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace

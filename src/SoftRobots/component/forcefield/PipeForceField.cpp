@@ -27,16 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "PipeForceField.inl"
+#include <SoftRobots/component/forcefield/PipeForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
@@ -60,8 +54,4 @@ int PipeForceFieldClass = core::RegisterObject("This component is used to pull u
 template class PipeForceField<Vec3Types>;
 
 
-} // forcefield
-
-} // component
-
-} // sofa
+}
