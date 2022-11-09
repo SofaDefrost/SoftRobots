@@ -27,11 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_CENTEROFMASS_H
-#define SOFA_COMPONENT_ENGINE_CENTEROFMASS_H
+#pragma once
 
 #include <sofa/core/DataEngine.h>
-
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/Mass.h>
 
@@ -109,4 +107,3 @@ extern template class SOFA_SOFTROBOTS_API CenterOfMass<sofa::defaulttype::Vec3Ty
 
 } // namespace sofa
 
-#endif

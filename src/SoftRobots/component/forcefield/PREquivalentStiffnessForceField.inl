@@ -27,10 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_PREQUIVALENTSTIFFNESSFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_PREQUIVALENTSTIFFNESSFORCEFIELD_INL
+#pragma once
 
 #include <SoftRobots/component/forcefield/PREquivalentStiffnessForceField.h>
+
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/core/behavior/MechanicalState.h>
 using sofa::core::behavior::MechanicalState ;
@@ -46,10 +46,6 @@ using std::string ;
 
 #include <fstream>
 using std::filebuf ;
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
 
 #include <algorithm>
 #include <ctime>
@@ -486,4 +482,3 @@ void PREquivalentStiffnessForceField<DataTypes>::computeForce(const VecCoord& po
 
 } // sofa
 
-#endif // PREQUIVALENTSTIFFNESSFORCEFIELD_INL

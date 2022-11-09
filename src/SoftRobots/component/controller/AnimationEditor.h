@@ -27,8 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_CONTROLLER_ANIMATIONEDITOR_H
-#define SOFA_CONTROLLER_ANIMATIONEDITOR_H
+#pragma once
 
 #include <sofa/component/controller/Controller.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -167,4 +166,3 @@ using _animationeditor_::AnimationEditor;
 }   //namespace component
 }   //namespace sofa
 
-#endif // SOFA_CONTROLLER_ANIMATIONEDITOR_H

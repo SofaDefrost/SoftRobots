@@ -27,8 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_PREQUIVALENTSTIFFNESSFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_PREQUIVALENTSTIFFNESSFORCEFIELD_H
+#pragma once
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/type/Vec.h>
@@ -142,4 +141,3 @@ private :
 };
 } // namespace sofa::component::forcefield
 
-#endif // PREQUIVALENTSTIFFNESSFORCEFIELD_H

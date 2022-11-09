@@ -27,11 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef PARTIALRIGIDIFICATIONCONSTRAINT_INL
-#define PARTIALRIGIDIFICATIONCONSTRAINT_INL
-
-#include "PartialRigidificationConstraint.h"
+#include <SoftRobots/component/constraint/PartialRigidificationConstraint.h>
 
 namespace sofa
 {
@@ -126,4 +124,3 @@ void PartialRigidificationConstraint<DataTypes>::getConstraintResolution(std::ve
 
 } // namespace sofa
 
-#endif // PARTIALRIGIDIFICATIONCONSTRAINT_INL

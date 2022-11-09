@@ -27,20 +27,13 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_SOFTROBOTSBASECONSTRAINT_H
-#define SOFA_CORE_BEHAVIOR_SOFTROBOTSBASECONSTRAINT_H
+#pragma once
 
 #include <sofa/core/behavior/BaseConstraint.h>
 
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using type::vector;
@@ -165,11 +158,5 @@ protected:
 
 };
 
+} // namespace sofa::core::behavior
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif

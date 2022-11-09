@@ -120,7 +120,7 @@ struct VolumeFromTetrahedronsTest : public sofa::testing::BaseTest,
                 "   <MechanicalObject/>              "
                 "   <VolumeFromTetrahedrons/>         "
                 "</Node>                             " ;
-        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "test1", scene.c_str(), scene.size())) ;
+        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "test1", scene.c_str())) ;
     }
 
     double volumeComputationTest()

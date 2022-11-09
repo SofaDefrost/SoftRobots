@@ -27,14 +27,12 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_INL
+#pragma once
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
 
-#include "CableModel.h"
+#include <SoftRobots/component/constraint/model/CableModel.h>
 
 namespace sofa
 {
@@ -510,4 +508,3 @@ void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
 
 } // namespace sofa
 
-#endif

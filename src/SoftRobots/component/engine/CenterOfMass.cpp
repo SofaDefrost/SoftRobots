@@ -27,16 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "CenterOfMass.inl"
+#include <SoftRobots/component/engine/CenterOfMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -51,9 +45,5 @@ int CenterOfMassClass = RegisterObject("This class computes the center of mass o
 template class CenterOfMass<Vec3Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

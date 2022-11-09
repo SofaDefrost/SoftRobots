@@ -28,17 +28,11 @@
 *                                                                             *
 ******************************************************************************/
 
-#include "SurfacePressureConstraint.inl"
+#include <SoftRobots/component/constraint/SurfacePressureConstraint.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 namespace _surfacepressureconstraint_
@@ -148,10 +142,6 @@ template class SurfacePressureConstraint<Vec3Types>;
 
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 
 

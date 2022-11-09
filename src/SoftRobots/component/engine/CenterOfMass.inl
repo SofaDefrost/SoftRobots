@@ -27,13 +27,12 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_CENTEROFMASS_INL
-#define SOFA_COMPONENT_ENGINE_CENTEROFMASS_INL
+#pragma once
 
-#include "CenterOfMass.h"
 #include <sofa/config.h>
-
 #include <sofa/core/visual/VisualParams.h>
+
+#include <SoftRobots/component/engine/CenterOfMass.h>
 
 namespace sofa
 {
@@ -156,4 +155,3 @@ void CenterOfMass<DataTypes>::draw(const VisualParams *vparams)
 
 } // namespace sofa
 
-#endif

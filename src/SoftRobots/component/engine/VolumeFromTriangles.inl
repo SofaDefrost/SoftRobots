@@ -27,11 +27,11 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_VOLUMEFROMTRIANGLES_INL
-#define SOFA_COMPONENT_ENGINE_VOLUMEFROMTRIANGLES_INL
+#pragma once
 
-#include "VolumeFromTriangles.h"
 #include <sofa/config.h>
+
+#include <SoftRobots/component/engine/VolumeFromTriangles.h>
 
 namespace sofa
 {
@@ -219,4 +219,3 @@ void VolumeFromTriangles<DataTypes>::updateVolume()
 
 } // namespace sofa
 
-#endif

@@ -27,15 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "SoftRobotsBaseConstraint.h"
+#include <SoftRobots/component/behavior/SoftRobotsBaseConstraint.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using type::vector;
@@ -156,8 +150,4 @@ void SoftRobotsBaseConstraint::storeResults(vector<double> &delta)
     SOFA_UNUSED(delta);
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespaces

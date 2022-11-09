@@ -27,20 +27,14 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_SoftRobotsConstraint_INL
-#define SOFA_CORE_BEHAVIOR_SoftRobotsConstraint_INL
+#pragma once
 
-#include "SoftRobotsConstraint.h"
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/core/ConstraintParams.h>
 
-namespace sofa
-{
+#include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using sofa::linearalgebra::FullVector;
@@ -149,11 +143,5 @@ void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParam
     j.multTransposeBaseVector(res, lambda ); // lambda is a vector of scalar value so block size is one.
 }
 
+} // namespace sofa::core::behavior
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_SoftRobotsConstraint_INL

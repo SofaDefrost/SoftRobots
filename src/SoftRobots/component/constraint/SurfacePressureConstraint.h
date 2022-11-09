@@ -27,16 +27,13 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSURECONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSURECONSTRAINT_H
+#pragma once
 
 #include <sofa/helper/OptionsGroup.h>
-
-#include <SoftRobots/component/initSoftRobots.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 
 #include <SoftRobots/component/constraint/model/SurfacePressureModel.h>
+#include <SoftRobots/component/initSoftRobots.h>
 
 namespace sofa
 {
@@ -180,4 +177,3 @@ using _surfacepressureconstraint_::VolumeGrowthConstraintResolution;
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSURECONSTRAINT_H

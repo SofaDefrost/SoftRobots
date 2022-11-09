@@ -27,8 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_H
+#pragma once
 
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
 #include <sofa/type/Vec.h>
@@ -184,4 +183,3 @@ private :
 } // component
 } // sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_H

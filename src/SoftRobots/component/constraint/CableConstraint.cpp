@@ -29,17 +29,11 @@
 ******************************************************************************/
 
 
-#include "CableConstraint.inl"
+#include <SoftRobots/component/constraint/CableConstraint.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 //////////////////////////////////////CableConstraintConstraintResolution1Dof/////////////////////////////////////////////
@@ -125,7 +119,7 @@ void CableForceConstraintResolution::resolution(int line, double** w, double* d,
 // 1-RegisterObject("description") + .add<> : Register the component
 // 2-.add<>(true) : Set default template
 
-int CableConstraintClass = RegisterObject("Simulate cable actuation.")
+int CableConstraintClass = RegisterObject("Simulate a cable.")
 .add< CableConstraint<Vec3Types> >(true)
 .add< CableConstraint<Vec2Types> >()
 //.add< CableConstraint<Rigid3Types> >()
@@ -142,9 +136,5 @@ template class CableConstraint<Vec2Types>;
 //template class CableConstraint<Rigid3Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

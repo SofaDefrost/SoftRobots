@@ -27,10 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_INL
+#pragma once
 
-#include "PipeForceField.h"
+#include <SoftRobots/component/forcefield/PipeForceField.h>
+
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/core/behavior/MechanicalState.h>
 using sofa::core::behavior::MechanicalState ;
@@ -298,4 +298,3 @@ void PipeForceField<DataTypes>::multMatricesT(const CompressedRowSparseMatrix<Ma
 } // component
 } // sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_PIPEFORCEFIELD_INL

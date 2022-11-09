@@ -27,11 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_H
-#define SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_H
+#pragma once
 
 #include <sofa/core/DataEngine.h>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
@@ -124,4 +122,3 @@ extern template class VolumeFromTetrahedrons<sofa::defaulttype::Vec3Types>;
 
 } // namespace sofa
 
-#endif

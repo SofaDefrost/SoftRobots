@@ -27,11 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_INL
-#define SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_INL
-
-#include "CommunicationController.h"
+#include <SoftRobots/component/controller/CommunicationController.h>
 
 #include <iostream>
 #include <sstream>
@@ -392,5 +390,3 @@ void CommunicationController<DataTypes>::receiveRequest()
 }   //namespace component
 }   //namespace sofa
 
-
-#endif // SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_INL

@@ -27,16 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "VolumeFromTriangles.inl"
+#include <SoftRobots/component/engine/VolumeFromTriangles.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -51,9 +45,5 @@ int VolumeFromTrianglesClass = RegisterObject("This class computes the volume of
 template class VolumeFromTriangles<Vec3Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+}
 

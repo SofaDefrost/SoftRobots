@@ -27,12 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_H
-#define SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_H
+#pragma once
 
 #include <sofa/component/controller/Controller.h>
-
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/objectmodel/vectorData.h>
 
@@ -127,4 +124,3 @@ protected:
 }   //namespace component
 }   //namespace sofa
 
-#endif // SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_H

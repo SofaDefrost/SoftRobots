@@ -27,15 +27,13 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_INL
+#pragma once
 
 #include <iomanip>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
 
-#include "SurfacePressureModel.h"
+#include <SoftRobots/component/constraint/model/SurfacePressureModel.h>
 
 namespace sofa
 {
@@ -565,4 +563,3 @@ void SurfacePressureModel<DataTypes>::computeEdges()
 
 } // namespace sofa
 
-#endif

@@ -27,16 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "PREquivalentStiffnessForceField.inl"
+#include <SoftRobots/component/forcefield/PREquivalentStiffnessForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
@@ -59,8 +53,4 @@ int PREquivalentStiffnessForceFieldClass = core::RegisterObject("Partial Rigidif
 template class PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types>;
 
 
-} // forcefield
-
-} // component
-
-} // sofa
+}

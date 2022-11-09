@@ -31,18 +31,12 @@
 #ifndef SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_CPP
 #define SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_CPP
 
-#include "CommunicationController.inl"
+#include <SoftRobots/component/controller/CommunicationController.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 using sofa::type::Vec3d;
@@ -219,9 +213,7 @@ template class CommunicationController<vector<Vec<2,int>> >;
 template class CommunicationController<vector<Vec<2,unsigned>> >;
 
 
-}   //namespace controller
-}   //namespace component
-}   //namespace sofa
+}   //namespace
 
 
 #endif // SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_CPP

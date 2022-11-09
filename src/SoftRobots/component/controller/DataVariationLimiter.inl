@@ -27,12 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_INL
-#define SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_INL
-
-#include "DataVariationLimiter.h"
-#include <sofa/helper/logging/Messaging.h>
+#include <SoftRobots/component/controller/DataVariationLimiter.h>
 
 namespace sofa
 {
@@ -231,4 +228,3 @@ std::string DataVariationLimiter<DataTypes>::GetCustomTemplateName()
 
 } // namespace sofa
 
-#endif

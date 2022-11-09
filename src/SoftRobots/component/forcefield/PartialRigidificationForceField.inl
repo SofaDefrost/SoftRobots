@@ -27,11 +27,8 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_PARTIALRIGIDIFICATIONFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_PARTIALRIGIDIFICATIONFORCEFIELD_INL
+#pragma once
 
-
-#include "PartialRigidificationForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/config.h>
 #include <sofa/helper/rmath.h>
@@ -39,6 +36,7 @@
 #include <iostream>
 #include <fstream>
 
+#include <SoftRobots/component/forcefield/PartialRigidificationForceField.h>
 
 namespace sofa
 {
@@ -436,4 +434,3 @@ double PartialRigidificationForceField<DataTypes1, DataTypes2>::getPotentialEner
 
 } // namespace sofa
 
-#endif
