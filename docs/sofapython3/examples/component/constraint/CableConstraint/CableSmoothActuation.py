@@ -13,7 +13,7 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
 
-    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots Sofa.Component.SolidMechanics.Spring Sofa.Component.Engine.Select Sofa.Component.ODESolver.Backward Sofa.Component.IO.Mesh Sofa.GL.Component.Rendering2D Sofa.GL.Component.Rendering3D Sofa.GL.Component.Shader Sofa.Component.LinearSolver.Preconditioner Sofa.Component.LinearSolver.Iterative Sofa.Component.Diffusion Sofa.Component.SolidMechanics.FEM.Elastic Sofa.Component.LinearSolver.Direct Sofa.Component.Topology.Mapping Sofa.Component.AnimationLoop Sofa.Component.Constraint.Lagrangian.Correction Sofa.Component.Constraint.Lagrangian.Solver Sofa.Component.Mass Sofa.Component.StateContainer Sofa.Component.Topology.Container.Constant Sofa.Component.Topology.Container.Dynamic Sofa.Component.Visual')
+    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots Sofa.Component.SolidMechanics.Spring Sofa.Component.Engine.Select Sofa.Component.ODESolver.Backward Sofa.Component.IO.Mesh Sofa.GL.Component.Rendering2D Sofa.GL.Component.Rendering3D Sofa.GL.Component.Shader Sofa.Component.LinearSolver.Preconditioner Sofa.Component.LinearSolver.Iterative Sofa.Component.Diffusion Sofa.Component.SolidMechanics.FEM.Elastic Sofa.Component.LinearSolver.Direct Sofa.Component.Topology.Mapping Sofa.Component.AnimationLoop Sofa.Component.Constraint.Lagrangian.Correction Sofa.Component.Constraint.Lagrangian.Solver Sofa.Component.Mass Sofa.Component.StateContainer Sofa.Component.Topology.Container.Constant Sofa.Component.Topology.Container.Dynamic Sofa.Component.Visual Sofa.Component.Mapping.Linear')
     rootNode.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
     rootNode.addObject('FreeMotionAnimationLoop')
@@ -24,7 +24,7 @@ def createScene(rootNode):
     ################################################################################################################
     bunny = rootNode.addChild('bunny')
     bunny.addObject('EulerImplicitSolver', name='odesolver')
-    bunny.addObject('ShewchukPCGLinearSolver', iterations='15', name='linearsolver', tolerance='1e-5', preconditioners='preconditioner', use_precond=True, update_step='1')
+    bunny.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d')
 
     bunny.addObject('MeshVTKLoader', name='loader', filename=path+'Hollow_Stanford_Bunny.vtu')
     bunny.addObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
@@ -32,14 +32,12 @@ def createScene(rootNode):
 
     bunny.addObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale='4e-5', rx='0', dz='0')
     bunny.addObject('UniformMass', totalMass='0.5')
-    bunny.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.3',  youngModulus='10000')
-    
+    bunny.addObject('FastTetrahedralCorotationalForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.3',  youngModulus='10000')
 
     bunny.addObject('BoxROI', name='boxROI', box=[-5, -5.0, -5,  5, -4.5, 5], drawBoxes=True)
     bunny.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
-
-    bunny.addObject('SparseLDLSolver', name='preconditioner')
-    bunny.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+    
+    bunny.addObject('GenericConstraintCorrection')
     
     
 
