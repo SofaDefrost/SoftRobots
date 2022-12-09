@@ -278,10 +278,10 @@ template<class DataTypes>
 void CableModel<DataTypes>::initActuatedPoints()
 {   
     auto indices = sofa::helper::getWriteOnlyAccessor(d_indices);
-    int nbIndices = indices.size();
+    std::size_t nbIndices = indices.size();
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
     ReadAccessor<Data<VecCoord>> centers = d_centers;
-    unsigned int nbCenters = centers.size();
+    std::size_t nbCenters = centers.size();
     m_hasCenters = false;
     if (nbCenters != 0)
     {
@@ -346,7 +346,7 @@ void CableModel<DataTypes>::checkIndicesRegardingState()
 template<class DataTypes>
 void CableModel<DataTypes>::initCableActionAreas()
 {    
-    const int nbCenters = d_indices.getValue().size();
+    std::size_t nbCenters = d_indices.getValue().size();
     WriteAccessor<Data<vector<Real>>> radii = d_radii;
     int nbRadii = radii.size();
     if(nbRadii == 0)
@@ -376,7 +376,7 @@ void CableModel<DataTypes>::computePointsActionArea()
 {
     // Implementing continuous Dijkstra as a geodesic distance measure
     const unsigned int id_method = d_method.getValue().getSelectedId();
-    unsigned int nbCenters = d_indices.getValue().size();      
+    std::size_t nbCenters = d_indices.getValue().size();      
     const SetIndexArray &indices = d_indices.getValue();
 
     ReadAccessor<Data<VecCoord>> cablePositions = m_state->readPositions();
