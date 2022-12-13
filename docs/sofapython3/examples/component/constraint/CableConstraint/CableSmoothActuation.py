@@ -1,10 +1,5 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jan 31 11:35:15 2022
-
-@author: tanguy
-"""
+__authors__ = "tnavez"
 
 import Sofa
 
@@ -13,7 +8,30 @@ path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
 def createScene(rootNode):
 
-    rootNode.addObject('RequiredPlugin', pluginName='SoftRobots Sofa.Component.SolidMechanics.Spring Sofa.Component.Engine.Select Sofa.Component.ODESolver.Backward Sofa.Component.IO.Mesh Sofa.GL.Component.Rendering2D Sofa.GL.Component.Rendering3D Sofa.GL.Component.Shader Sofa.Component.LinearSolver.Preconditioner Sofa.Component.LinearSolver.Iterative Sofa.Component.Diffusion Sofa.Component.SolidMechanics.FEM.Elastic Sofa.Component.LinearSolver.Direct Sofa.Component.Topology.Mapping Sofa.Component.AnimationLoop Sofa.Component.Constraint.Lagrangian.Correction Sofa.Component.Constraint.Lagrangian.Solver Sofa.Component.Mass Sofa.Component.StateContainer Sofa.Component.Topology.Container.Constant Sofa.Component.Topology.Container.Dynamic Sofa.Component.Visual Sofa.Component.Mapping.Linear')
+    rootNode.addObject('RequiredPlugin', pluginName= ['SoftRobots', 
+        'Sofa.Component.SolidMechanics.Spring', 
+        'Sofa.Component.Engine.Select', 
+        'Sofa.Component.ODESolver.Backward',
+        'Sofa.Component.IO.Mesh',
+        'Sofa.GL.Component.Rendering2D',
+        'Sofa.GL.Component.Rendering3D',
+        'Sofa.GL.Component.Shader',
+        'Sofa.Component.LinearSolver.Preconditioner',
+        'Sofa.Component.LinearSolver.Iterative',
+        'Sofa.Component.Diffusion',
+        'Sofa.Component.SolidMechanics.FEM.Elastic',
+        'Sofa.Component.LinearSolver.Direct',
+        'Sofa.Component.Topology.Mapping',
+        'Sofa.Component.AnimationLoop',
+        'Sofa.Component.Constraint.Lagrangian.Correction',
+        'Sofa.Component.Constraint.Lagrangian.Solver',
+        'Sofa.Component.Mass',
+        'Sofa.Component.StateContainer',
+        'Sofa.Component.Topology.Container.Constant',
+        'Sofa.Component.Topology.Container.Dynamic',
+        'Sofa.Component.Visual',
+        'Sofa.Component.Mapping.Linear'])
+
     rootNode.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
     rootNode.addObject('FreeMotionAnimationLoop')
