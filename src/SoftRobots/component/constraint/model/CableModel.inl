@@ -286,10 +286,7 @@ void CableModel<DataTypes>::initActuatedPoints()
     if (nbCenters != 0)
     {
         m_hasCenters = true;
-        if (nbIndices != 0)
-        {
-            msg_warning() <<"Both centers and indices are provided. Centers are used by default";
-        }
+        msg_warning_when(nbIndices != 0) <<"Both centers and indices are provided. Centers are used by default";
         indices.clear();
         indices.resize(nbCenters);
         for (unsigned int i=0; i<nbCenters; i++)
