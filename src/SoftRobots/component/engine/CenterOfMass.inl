@@ -27,13 +27,12 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_CENTEROFMASS_INL
-#define SOFA_COMPONENT_ENGINE_CENTEROFMASS_INL
+#pragma once
 
-#include "CenterOfMass.h"
 #include <sofa/config.h>
-
 #include <sofa/core/visual/VisualParams.h>
+
+#include <SoftRobots/component/engine/CenterOfMass.h>
 
 namespace sofa
 {
@@ -47,12 +46,12 @@ namespace engine
 using core::objectmodel::ComponentState;
 using helper::ReadAccessor;
 using helper::WriteAccessor;
-using type::vector;
 using core::ConstVecCoordId;
 using core::objectmodel::BaseData ;
 using core::visual::VisualParams ;
-using type::RGBAColor ;
-using type::Vector3 ;
+using sofa::type::RGBAColor ;
+using sofa::type::Vec3 ;
+using sofa::type::vector;
 
 template <class DataTypes>
 CenterOfMass<DataTypes>::CenterOfMass()
@@ -143,7 +142,7 @@ void CenterOfMass<DataTypes>::draw(const VisualParams *vparams)
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
-    vector<Vector3> points;
+    vector<Vec3> points;
     points.push_back(d_centerOfMass.getValue());
     if(d_visualization.getValue())
         vparams->drawTool()->drawPoints(points, d_visuSize.getValue(), d_visuColor.getValue());
@@ -156,4 +155,3 @@ void CenterOfMass<DataTypes>::draw(const VisualParams *vparams)
 
 } // namespace sofa
 
-#endif

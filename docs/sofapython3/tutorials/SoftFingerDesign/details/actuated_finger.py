@@ -168,8 +168,6 @@ def createScene(rootNode):
     # Define the main architecture of the scene, with a node Modelling, Setting and Simulation
     # Define also the integration method as Euler implicit and the solver as Conjugate Gradient)
     scene = Scene(rootNode, gravity=[0.0, 0.0, -9.81],
-                  plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine',
-                           'SofaGeneralRigid', 'SofaRigid', 'SofaBoundaryCondition', 'SofaMeshCollision'],
                   iterative=False)
     scene.addMainHeader()
 
@@ -181,7 +179,7 @@ def createScene(rootNode):
     scene.VisualStyle.displayFlags = ["showInteractionForceFields", "showForceFields",
                                       "showCollisionModels"]
     # Add a grid on the scene with squares 10mm/10mm
-    rootNode.addObject("OglGrid", nbSubdiv=100, size=1)
+    rootNode.addObject("VisualGrid", nbSubdiv=100, size=1)
 
     # Set up the pipeline for the collision computation
     scene.addObject('FreeMotionAnimationLoop')

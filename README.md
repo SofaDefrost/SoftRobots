@@ -1,6 +1,6 @@
 # SoftRobots plugin for SOFA
 [![Information](https://img.shields.io/badge/info-on_website-purple.svg)](https://project.inria.fr/softrobot/)
-[![Documentation](https://img.shields.io/badge/doc-on_website-blue.svg)](https://softrobotscomponents.readthedocs.io/en/latest/index.html)
+[![Documentation](https://img.shields.io/badge/doc-on_website-blue.svg)](https://softrobots.readthedocs.io/en/latest/index.html)
 [![Contact](https://img.shields.io/badge/contact-form-green.svg)](https://project.inria.fr/softrobot/contact/) 
 [![SOFA](https://img.shields.io/badge/SOFA-on_github-orange.svg)](https://github.com/SofaDefrost/sofa) 
 [![Nightly-build](https://github.com/SofaDefrost/SoftRobots/actions/workflows/nighly-build.yml/badge.svg?branch=master)](https://github.com/SofaDefrost/SoftRobots/actions/workflows/nighly-build.yml)

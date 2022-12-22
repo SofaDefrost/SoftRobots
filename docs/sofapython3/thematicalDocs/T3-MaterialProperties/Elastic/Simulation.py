@@ -9,8 +9,6 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SofaPython3')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
-    rootNode.addObject('RequiredPlugin', name='SofaBoundaryCondition')
     rootNode.addObject('VisualStyle', displayFlags='showBehaviorModels showForceFields')
 
     rootNode.dt = 0.001
@@ -28,7 +26,7 @@ def createScene(rootNode):
     robot.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d')
     robot.addObject('MeshVTKLoader', name='loader', filename=path + 'branch.vtu')
     robot.addObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra',
-                    name='container', createTriangleArray=True, checkConnexity=True)
+                    name='container', createTriangleArray=True)
     robot.addObject('TetrahedronSetTopologyModifier')
 
     robot.addObject('MechanicalObject', name='tetras')

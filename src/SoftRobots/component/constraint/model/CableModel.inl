@@ -27,13 +27,11 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_CABLEMODEL_INL
+#pragma once
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
-#include "CableModel.h"
+#include <SoftRobots/component/constraint/model/CableModel.h>
 
 namespace sofa
 {
@@ -45,20 +43,19 @@ namespace constraintset
 {
 
 using sofa::core::objectmodel::ComponentState;
+using sofa::core::visual::VisualParams;
 
 using sofa::helper::ReadAccessor;
 using sofa::helper::WriteAccessor;
 
-using std::pair;
-using std::set;
-
 using sofa::linearalgebra::BaseVector;
+
+using sofa::type::RGBAColor;
+using sofa::type::Vec3;
 using sofa::type::vector;
 
-using sofa::core::visual::VisualParams;
-using sofa::type::RGBAColor;
-
-
+using std::pair;
+using std::set;
 
 template<class DataTypes>
 CableModel<DataTypes>::CableModel(MechanicalState* object)
@@ -855,7 +852,7 @@ void CableModel<DataTypes>::drawPullPoint(const VisualParams* vparams)
 {
     const SetIndexArray &indices = d_indices.getValue();
 
-    vector<Vector3> points(1);
+    vector<Vec3> points(1);
     points[0] = d_pullPoint.getValue();
     if(!d_hasPullPoint.getValue() && indices.size()>=1)
     {
@@ -873,7 +870,7 @@ void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
     const SetIndexArray &indices = d_indices.getValue();
 
-    vector<Vector3> points(indices.size());
+    vector<Vec3> points(indices.size());
     for (unsigned int i=0; i<indices.size(); i++)
     {
         if (!m_hasCenters)
@@ -901,7 +898,7 @@ void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
     const SetIndexArray &indices = d_indices.getValue();
 
     RGBAColor color = d_color.getValue();
-    vector<Vector3> points(indices.size()*2);
+    vector<Vec3> points(indices.size()*2);
     Coord previousPosition = d_pullPoint.getValue();
     unsigned int first = 0;
 
@@ -964,4 +961,3 @@ void CableModel<DataTypes>::drawPulledAreas(const VisualParams* vparams)
 
 } // namespace sofa
 
-#endif

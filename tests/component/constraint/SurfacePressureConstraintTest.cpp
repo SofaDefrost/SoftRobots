@@ -134,7 +134,7 @@ namespace sofa {
     using ::testing::Types;
     typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
-    TYPED_TEST_CASE(SurfacePressureConstraintTest, DataTypes);
+    TYPED_TEST_SUITE(SurfacePressureConstraintTest, DataTypes);
 
     TYPED_TEST(SurfacePressureConstraintTest, behaviorTests) {
         EXPECT_NO_THROW( this->behaviorTests() );

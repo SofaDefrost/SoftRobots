@@ -27,11 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_CENTEROFMASS_H
-#define SOFA_COMPONENT_ENGINE_CENTEROFMASS_H
+#pragma once
 
 #include <sofa/core/DataEngine.h>
-
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/Mass.h>
 
@@ -66,16 +64,6 @@ public:
     typedef typename core::behavior::Mass<DataTypes>            Mass;
 
 public:
-
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const CenterOfMass<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
 
     CenterOfMass();
     ~CenterOfMass() override;
@@ -119,4 +107,3 @@ extern template class SOFA_SOFTROBOTS_API CenterOfMass<sofa::defaulttype::Vec3Ty
 
 } // namespace sofa
 
-#endif

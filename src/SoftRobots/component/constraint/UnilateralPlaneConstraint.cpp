@@ -28,17 +28,12 @@
 *                                                                             *
 ******************************************************************************/
 
-#include "UnilateralPlaneConstraint.inl"
+#include <SoftRobots/component/constraint/UnilateralPlaneConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
-{
-
-namespace constraintset
-{
 
 using namespace sofa::defaulttype;
 using core::ConstraintParams;
@@ -93,8 +88,4 @@ int UnilateralPlaneConstraintClass = core::RegisterObject("This component is a s
 template class UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace

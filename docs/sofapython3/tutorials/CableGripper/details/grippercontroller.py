@@ -4,29 +4,29 @@ import Sofa.constants.Key as Key
 
 
 def getTranslated(points, vec):
-    r=[]
+    r = []
     for v in points:
-        r.append( [v[0]+vec[0], v[1]+vec[1], v[2]+vec[2]] )
+        r.append([v[0] + vec[0], v[1] + vec[1], v[2] + vec[2]])
     return r
 
 
 class GripperController(Sofa.Core.Controller):
 
     def __init__(self, *args, **kwargs):
-        Sofa.Core.Controller.__init__(self,args,kwargs)
+        Sofa.Core.Controller.__init__(self, args, kwargs)
         self.fingers = args[0]
         self.name = "GripperController"
 
-    def onKeypressedEvent(self,e):
+    def onKeypressedEvent(self, e):
         direction = None
 
-        if e["key"]==Key.uparrow:
+        if e["key"] == Key.uparrow:
             direction = [0.0, 1.0, 0.0]
-        elif e["key"]==Key.downarrow:
+        elif e["key"] == Key.downarrow:
             direction = [0.0, -1.0, 0.0]
-        elif e["key"]==Key.leftarrow:
+        elif e["key"] == Key.leftarrow:
             direction = [1.0, 0.0, 0.0]
-        elif e["key"]==Key.rightarrow:
+        elif e["key"] == Key.rightarrow:
             direction = [-1.0, 0.0, 0.0]
 
         if direction is not None and self.fingers is not None:
@@ -41,7 +41,6 @@ class GripperController(Sofa.Core.Controller):
 
 
 def createScene(rootNode):
-
     rootNode.addObject(GripperController(None))
 
     return

@@ -158,6 +158,7 @@ def addGripper(node, middleCable):
 def createScene(rootnode):
     from header import addHeader
     addHeader(rootnode)
+    rootnode.addObject('AttachBodyButtonSetting', stiffness=100)
 
     arm = addArm(rootnode)
     # gripper = addGripper(rootnode, arm.MiddleCable)

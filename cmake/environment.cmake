@@ -9,8 +9,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-## Force default install prefix
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+## Force default install prefix if building out-of-tree
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND NOT "${PROJECT_NAME}" STREQUAL "Sofa")
     set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install/${PROJECT_NAME}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif()
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")

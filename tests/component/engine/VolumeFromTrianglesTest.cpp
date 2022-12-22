@@ -123,7 +123,7 @@ struct VolumeFromTrianglesTest : public sofa::testing::BaseTest,
                 "   <MechanicalObject/>              "
                 "   <VolumeFromTriangles/>         "
                 "</Node>                             " ;
-        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "test1", scene.c_str(), scene.size())) ;
+        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "test1", scene.c_str())) ;
     }
 
     double volumeComputationTest()

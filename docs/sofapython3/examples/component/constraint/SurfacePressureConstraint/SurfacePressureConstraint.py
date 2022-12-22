@@ -37,9 +37,7 @@ def createScene(rootNode):
     # bunny
     bunny = rootNode.addChild('bunny')
     bunny.addObject('EulerImplicitSolver', name='odesolver')
-    bunny.addObject('ShewchukPCGLinearSolver', iterations=15, name='linearsolver', tolerance=1e-5,
-                    preconditioners='preconditioner', use_precond=True, update_step=1)
-
+    bunny.addObject('SparseLDLSolver')
     bunny.addObject('MeshVTKLoader', name='loader', filename=path + 'Hollow_Stanford_Bunny.vtu')
     bunny.addObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
     bunny.addObject('TetrahedronSetTopologyModifier')
@@ -52,9 +50,7 @@ def createScene(rootNode):
     bunny.addObject('BoxROI', name='boxROI', box=[-5, -15, -5, 5, -4.5, 5], drawBoxes=True,
                     position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
     bunny.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12)
-
-    bunny.addObject('SparseLDLSolver', name='preconditioner')
-    bunny.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+    bunny.addObject('LinearSolverConstraintCorrection')
 
     # bunny/cavity
     cavity = bunny.addChild('cavity')

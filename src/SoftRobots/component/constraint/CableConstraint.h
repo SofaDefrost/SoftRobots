@@ -27,9 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLECONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINTSET_CABLECONSTRAINT_H
+#pragma once
 
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
@@ -175,4 +173,3 @@ extern template class CableConstraint<sofa::defaulttype::Vec3Types>;
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINTSET_CABLEConstraint_H

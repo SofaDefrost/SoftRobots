@@ -29,15 +29,9 @@
 ******************************************************************************/
 #define SOFTROBOTS_COMPONENT_BEHAVIOR_CONSTRAINT_MODEL_CABLEMODEL_CPP
 #include <sofa/defaulttype/VecTypes.h>
-#include "CableModel.inl"
+#include <SoftRobots/component/constraint/model/CableModel.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 
@@ -105,9 +99,5 @@ template class CableModel<Vec3Types>;
 template class CableModel<Vec2Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

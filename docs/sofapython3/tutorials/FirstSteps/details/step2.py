@@ -14,7 +14,8 @@ def createScene(rootNode):
                   "Sofa.Component.Visual",
                   "Sofa.GL.Component.Rendering3D"]
 
-    # A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.
+    # A default gravity force is implemented on Sofa. Here we reset it,
+    # choosing millimeters as the length unit for the scene.
     MainHeader(rootNode, gravity=[0.0, -981.0, 0.0], plugins=pluginList)
     rootNode.VisualStyle.displayFlags = 'showCollisionModels'
 
@@ -30,13 +31,14 @@ def createScene(rootNode):
                    translation=[0.0, 0.0, 0.0], rotation=[0.0, 0.0, 0.0])
     cube.addObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
 
-    # The following line defines the material behaviour when submitted to constraints; it is not necessary here, as no interaction between objects has been defined
+    # The following line defines the material behaviour when submitted to constraints;
+    # it is not necessary here, as no interaction between objects has been defined
     # cube.addObject('UncoupledConstraintCorrection')
 
     # Time integration and solver
 
     cube.addObject('EulerImplicitSolver', name='odesolver')
-    cube.addObject('CGLinearSolver', name='Solver')
+    cube.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-5, threshold=1e-5)
 
     # Visual Object of the Cube
 

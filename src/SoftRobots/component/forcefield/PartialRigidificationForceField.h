@@ -27,8 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_PARTIALRIGIDIFICATIONFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_PARTIALRIGIDIFICATIONFORCEFIELD_H
+#pragma once
 
 #include <sofa/core/behavior/MixedInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -189,5 +188,3 @@ protected:
 };
 } // namespace sofa::component::interactionforcefield
 
-
-#endif

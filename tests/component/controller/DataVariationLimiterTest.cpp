@@ -107,7 +107,7 @@ struct DataVariationLimiterTest : public sofa::testing::BaseTest, DataVariationL
                 "   <MechanicalObject name='MO' position='0 0 0'/>              "
                 "   <DataVariationLimiter listening='true' input='@MO.position'/>         "
                 "</Node>                             " ;
-        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "simpleSceneTest", scene.c_str(), scene.size())) ;
+        EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "simpleSceneTest", scene.c_str())) ;
         return ;
     }
 

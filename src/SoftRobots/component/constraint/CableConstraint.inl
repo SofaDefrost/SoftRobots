@@ -27,11 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_CABLECONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_CABLECONSTRAINT_INL
-
-#include "CableConstraint.h"
+#include <SoftRobots/component/constraint/CableConstraint.h>
 
 using sofa::helper::OptionsGroup;
 
@@ -92,7 +90,7 @@ void CableConstraint<DataTypes>::internalInit()
     if(d_value.getValue().size()==0)
     {
         WriteAccessor<Data<vector<Real>>> value = d_value;
-        value.resize(1,0.);
+        value.resize(1);
     }
 
     // check for errors in the initialization
@@ -182,4 +180,3 @@ void CableConstraint<DataTypes>::setUpForceLimits(double& imposedValue, double& 
 
 } // namespace sofa
 
-#endif

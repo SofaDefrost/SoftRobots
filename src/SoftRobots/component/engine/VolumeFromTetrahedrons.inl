@@ -27,11 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_INL
-#define SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_INL
+#pragma once
 
-#include "VolumeFromTetrahedrons.h"
 #include <sofa/config.h>
+#include <SoftRobots/component/engine/VolumeFromTetrahedrons.h>
 
 namespace sofa
 {
@@ -254,5 +253,3 @@ SReal VolumeFromTetrahedrons<DataTypes>::getElementVolume(const Hexa& hexa)
 } // namespace component
 
 } // namespace sofa
-
-#endif

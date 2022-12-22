@@ -27,11 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_H
-#define SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_H
+#pragma once
 
 #include <sofa/core/DataEngine.h>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
@@ -72,16 +70,6 @@ public:
     typedef core::topology::BaseMeshTopology::SeqHexahedra      VecHexas;
 
 public:
-
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const VolumeFromTetrahedrons<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
 
     VolumeFromTetrahedrons();
     ~VolumeFromTetrahedrons() override;
@@ -134,4 +122,3 @@ extern template class VolumeFromTetrahedrons<sofa::defaulttype::Vec3Types>;
 
 } // namespace sofa
 
-#endif

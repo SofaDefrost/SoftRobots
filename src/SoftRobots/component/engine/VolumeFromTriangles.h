@@ -27,11 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_VOLUMEFROMTRIANGLES_H
-#define SOFA_COMPONENT_ENGINE_VOLUMEFROMTRIANGLES_H
+#pragma once
 
 #include <sofa/core/DataEngine.h>
-
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
@@ -72,16 +70,6 @@ public:
     typedef core::topology::BaseMeshTopology::SeqQuads          VecQuads;
 
 public:
-
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const VolumeFromTriangles<DataTypes>* = nullptr)
-    {
-        return DataTypes::Name();
-    }
 
     VolumeFromTriangles();
     ~VolumeFromTriangles() override;
@@ -130,4 +118,3 @@ extern template class SOFA_SOFTROBOTS_API VolumeFromTriangles<sofa::defaulttype:
 
 } // namespace sofa
 
-#endif

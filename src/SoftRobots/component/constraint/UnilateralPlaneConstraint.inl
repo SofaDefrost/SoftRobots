@@ -27,15 +27,12 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_UNILATERALPLANECONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_UNILATERALPLANECONSTRAINT_INL
-
-#include "UnilateralPlaneConstraint.h"
+#pragma once
 
 #include <sofa/core/visual/VisualParams.h>
-
 #include <sofa/helper/logging/Messaging.h>
+
+#include <SoftRobots/component/constraint/UnilateralPlaneConstraint.h>
 
 namespace sofa
 {
@@ -51,10 +48,9 @@ using sofa::core::VecCoordId;
 using sofa::core::ConstVecCoordId ;
 using sofa::helper::WriteAccessor ;
 using sofa::helper::ReadAccessor ;
-using sofa::type::vector ;
-using type::Vec;
-using type::RGBAColor;
-using type::Vector3;
+using sofa::type::vector;
+using sofa::type::Vec3;
+using sofa::type::RGBAColor;
 
 template<class DataTypes>
 UnilateralPlaneConstraint<DataTypes>::UnilateralPlaneConstraint(MechanicalState* object)
@@ -214,7 +210,7 @@ void UnilateralPlaneConstraint<DataTypes>::drawPoints(const VisualParams* vparam
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
     unsigned int nbPoints = 4;
-    vector<Vector3> points(nbPoints);
+    vector<Vec3> points(nbPoints);
     for (unsigned int i=0; i<nbPoints; i++)
         points[i] = positions[d_indices.getValue()[i]];
 
@@ -226,7 +222,7 @@ void UnilateralPlaneConstraint<DataTypes>::drawTriangles(const VisualParams* vpa
 {
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
-    vector<Vector3> points(3);
+    vector<Vec3> points(3);
     for (unsigned int i=0; i<3; i++)
         points[i] = positions[d_indices.getValue()[i+1]];
 
@@ -257,4 +253,3 @@ void UnilateralPlaneConstraint<DataTypes>::drawArrows(const VisualParams* vparam
 
 } // namespace sofa
 
-#endif

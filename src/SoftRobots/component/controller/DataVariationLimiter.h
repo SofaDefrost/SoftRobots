@@ -27,11 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_H
-#define SOFA_COMPONENT_ENGINE_DATAVARIATIONLIMITER_H
+#pragma once
 
 #include <sofa/component/controller/Controller.h>
+
 #include <SoftRobots/component/initSoftRobots.h>
 
 namespace sofa
@@ -60,36 +59,6 @@ public:
 
 public:
 
-    std::string getTemplateName() const override
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const DataVariationLimiter<T>* = nullptr)
-    {
-        Value v;
-        int size = v.size();
-
-        switch(size)
-        {
-        case 1:
-        {
-            return defaulttype::DataTypeInfo<type::Vec<1,ValueType>>::name();
-        }
-        case 2:
-        {
-            return defaulttype::DataTypeInfo<type::Vec<2,ValueType>>::name();
-        }
-        case 3:
-        {
-            return defaulttype::DataTypeInfo<type::Vec<3,ValueType>>::name();
-        }
-        default: break;
-        }
-
-        return "";
-    }
-
     DataVariationLimiter();
     ~DataVariationLimiter() override;
 
@@ -105,6 +74,11 @@ public:
     /////////////////////////////////////////////////////////////////////////
 
     void interpolate(const int index);
+
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName();
+
 
 protected:
 
@@ -148,4 +122,3 @@ extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec3i
 
 } // namespace sofa
 
-#endif

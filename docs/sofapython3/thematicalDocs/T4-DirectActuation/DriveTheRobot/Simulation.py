@@ -9,9 +9,6 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SoftRobots')
     rootNode.addObject('RequiredPlugin', name='SofaPython3')
-    rootNode.addObject('RequiredPlugin', name='SofaOpenglVisual')
-    rootNode.addObject('RequiredPlugin', name='SofaSparseSolver')
-    rootNode.addObject('RequiredPlugin', name='SofaPreconditioner')
     rootNode.addObject('VisualStyle',
                        displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields ');
 
@@ -32,11 +29,10 @@ def createScene(rootNode):
 
     robot = rootNode.addChild('robot')
     robot.addObject('EulerImplicitSolver', name='odesolver', firstOrder=False)
-    robot.addObject('ShewchukPCGLinearSolver', name='CG', preconditioners='preconditioner', tolerance=1e-15)
-    robot.addObject('SparseLDLSolver', name='preconditioner')
+    robot.addObject('SparseLDLSolver')
     robot.addObject('MeshVTKLoader', name='loader', filename=path + 'branch.vtu')
     robot.addObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra',
-                    name='container', createTriangleArray=True, checkConnexity=True)
+                    name='container', createTriangleArray=True)
     robot.addObject('TetrahedronSetTopologyModifier')
 
     robot.addObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale=4e-5,
@@ -52,7 +48,7 @@ def createScene(rootNode):
     robot.addObject('BoxROI', name='boxROI3', box=[30, -100, 70, 100, -20, 130], drawBoxes=True)
     robot.addObject('PartialFixedConstraint', name="pfc3", fixedDirections=[1, 1, 0], indices="@boxROI3.indices")
 
-    robot.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
+    robot.addObject('LinearSolverConstraintCorrection')
 
     leg0 = rootNode.addChild('RestPositionLeg0')
     leg0.addObject('MechanicalObject', name='meca0', template='Vec3', showObject=True, showObjectScale=15,

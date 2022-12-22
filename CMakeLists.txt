@@ -3,14 +3,12 @@ project(SoftRobots VERSION 1.0)
 
 include(cmake/environment.cmake)
 
-find_package(SofaFramework REQUIRED)
-find_package(SofaUserInteraction REQUIRED)
-find_package(SofaBaseMechanics REQUIRED)
-find_package(SofaConstraint REQUIRED)
-find_package(SofaRigid REQUIRED)
-find_package(Sofa.Component.Mapping REQUIRED)
-find_package(Sofa.Component.Engine.Select REQUIRED)
-find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
+find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Component.Controller REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
+sofa_find_package(Sofa.Component.Mapping REQUIRED)
+sofa_find_package(Sofa.Component.StateContainer REQUIRED)
 sofa_find_package(Sofa.GL QUIET)
 
 option(SOFTROBOTS_COMMUNICATIONCONTROLLER "Enables Communication component. It requires ZeroMQ library (see controller/README for more info)" OFF)
@@ -23,7 +21,7 @@ sofa_find_package(STLIB QUIET)
 if(STLIB_FOUND)
     message("-- Found dependency : 'STLIB' plugin .")
 else()
-    message("-- The higly recommanded 'STLIB' plugin is missing. You can compile SoftRobots but most of the provided examples will not work. ")
+    message("-- The highly recommended 'STLIB' plugin is missing. You can compile SoftRobots but most of the provided examples will not work. ")
 endif()
 
 set(SOFTROBOTS_SOURCE_DIR src/SoftRobots)
@@ -254,7 +252,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFTROBOTS")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaConstraint SofaBaseMechanics SofaUserInteraction SofaRigid Sofa.Component.Mapping Sofa.Component.LinearSolver.Direct Sofa.Component.Engine.Select)
+target_link_libraries(${PROJECT_NAME}
+    Sofa.Core
+    Sofa.Component.Controller
+    Sofa.Component.SolidMechanics.Spring
+    Sofa.Component.Mapping
+    Sofa.Component.StateContainer)
 if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()

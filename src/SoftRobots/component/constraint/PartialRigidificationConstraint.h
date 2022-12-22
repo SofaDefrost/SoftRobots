@@ -28,8 +28,7 @@
 *                                                                             *
 ******************************************************************************/
 
-#ifndef PARTIALRIGIDIFICATIONCONSTRAINT_H
-#define PARTIALRIGIDIFICATIONCONSTRAINT_H
+#pragma once
 
 #include <sofa/core/behavior/Constraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
@@ -124,4 +123,3 @@ extern template class PartialRigidificationConstraint<sofa::defaulttype::Rigid3T
 
 } // namespace sofa
 
-#endif // PARTIALRIGIDIFICATIONCONSTRAINT_H

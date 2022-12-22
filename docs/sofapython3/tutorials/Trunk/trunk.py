@@ -180,9 +180,8 @@ def createScene(rootNode):
     simulation = rootNode.addChild('Simulation')
 
     simulation.addObject('EulerImplicitSolver', name='odesolver', firstOrder=False, rayleighMass=0.1, rayleighStiffness=0.1)
-    simulation.addObject('ShewchukPCGLinearSolver', name='linearSolver', iterations=500, tolerance=1.0e-18, preconditioners='precond')
     simulation.addObject('SparseLDLSolver', name='precond')
-    simulation.addObject('GenericConstraintCorrection', solverName='precond')
+    simulation.addObject('GenericConstraintCorrection')
 
     trunk = Trunk(simulation, inverseMode=inverseMode)
     trunk.addVisualModel(color=[1., 1., 1., 0.8])

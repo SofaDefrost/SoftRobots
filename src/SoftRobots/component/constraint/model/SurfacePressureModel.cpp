@@ -30,15 +30,9 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include "SurfacePressureModel.inl"
+#include <SoftRobots/component/constraint/model/SurfacePressureModel.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using namespace sofa::defaulttype;
@@ -50,9 +44,5 @@ using namespace sofa::defaulttype;
 template class SurfacePressureModel<Vec3Types>;
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

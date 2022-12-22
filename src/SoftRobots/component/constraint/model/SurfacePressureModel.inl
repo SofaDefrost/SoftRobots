@@ -27,15 +27,13 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_INL
-#define SOFA_COMPONENT_CONSTRAINTSET_SURFACEPRESSUREMODEL_INL
+#pragma once
 
 #include <iomanip>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
 
-#include "SurfacePressureModel.h"
+#include <SoftRobots/component/constraint/model/SurfacePressureModel.h>
 
 namespace sofa
 {
@@ -48,14 +46,13 @@ namespace constraintset
 
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
-using sofa::type::vector;
 using core::ConstVecCoordId;
 using sofa::type::Mat;
-using sofa::type::Vec3d;
+using sofa::type::Vec3;
 using sofa::type::RGBAColor;
+using sofa::type::vector;
 using std::string;
 using std::ostringstream;
-using sofa::type::Vector3;
 
 template<class DataTypes>
 SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
@@ -459,7 +456,7 @@ void SurfacePressureModel<DataTypes>::drawQuads(const VisualParams* vparams, flo
     ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
     ReadAccessor<Data<vector<Quad>>>   quadList = d_quads;
 
-    vector<Vector3> points(quadList.size()*4);
+    vector<Vec3> points(quadList.size()*4);
     for (unsigned int i =0; i<quadList.size(); i++)
     {
         Quad quad = quadList[i];
@@ -478,7 +475,7 @@ void SurfacePressureModel<DataTypes>::drawTriangles(const VisualParams* vparams,
     ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
     ReadAccessor<Data<vector<Triangle>>> triList  = d_triangles;
 
-    vector<Vector3> points(triList.size()*3);
+    vector<Vec3> points(triList.size()*3);
     for (unsigned int i =0; i<triList.size(); i++)
     {
         Triangle tri = triList[i];
@@ -566,4 +563,3 @@ void SurfacePressureModel<DataTypes>::computeEdges()
 
 } // namespace sofa
 
-#endif

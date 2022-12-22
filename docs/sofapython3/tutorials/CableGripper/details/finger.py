@@ -10,7 +10,7 @@ from splib3.loaders import loadPointListFromFile
 
 class FingerController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
-        Sofa.Core.Controller.__init__(self,args,kwargs)
+        Sofa.Core.Controller.__init__(self, args, kwargs)
         self.cable = args[0]
         self.name = "FingerController"
 
@@ -28,23 +28,22 @@ class FingerController(Sofa.Core.Controller):
 
 def Finger(parentNode=None, name="Finger",
            rotation=[0.0, 0.0, 0.0], translation=[0.0, 0.0, 0.0],
-           fixingBox=[-5.0,0.0,0.0,10.0,15.0,20.0], pullPointLocation=[0.0,0.0,0.0]):
-
+           fixingBox=[-5.0, 0.0, 0.0, 10.0, 15.0, 20.0], pullPointLocation=[0.0, 0.0, 0.0]):
     finger = parentNode.addChild(name)
     eobject = ElasticMaterialObject(finger,
-                                       volumeMeshFileName="data/mesh/finger.vtk",
-                                       poissonRatio=0.3,
-                                       youngModulus=18000,
-                                       totalMass=0.5,
-                                       surfaceColor=[0.0, 0.8, 0.7, 1.0],
-                                       surfaceMeshFileName="data/mesh/finger.stl",
-                                       rotation=rotation,
-                                       translation=translation)
+                                    volumeMeshFileName="data/mesh/finger.vtk",
+                                    poissonRatio=0.3,
+                                    youngModulus=18000,
+                                    totalMass=0.5,
+                                    surfaceColor=[0.0, 0.8, 0.7, 1.0],
+                                    surfaceMeshFileName="data/mesh/finger.stl",
+                                    rotation=rotation,
+                                    translation=translation)
     finger.addChild(eobject)
 
     FixedBox(eobject, atPositions=fixingBox, doVisualization=True)
 
-    cable=PullingCable(eobject,
+    cable = PullingCable(eobject,
                          "PullingCable",
                          pullPointLocation=pullPointLocation,
                          rotation=rotation,
@@ -78,5 +77,5 @@ def createScene(rootNode):
     ContactHeader(rootNode, alarmDistance=4, contactDistance=3, frictionCoef=0.08)
     rootNode.VisualStyle.displayFlags = "showBehavior showCollisionModels"
 
-    Finger(rootNode, translation=[1.0,0.0,0.0])
+    Finger(rootNode, translation=[1.0, 0.0, 0.0])
     return rootNode

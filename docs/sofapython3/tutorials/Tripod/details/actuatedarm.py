@@ -100,12 +100,11 @@ def createScene(rootNode):
     from stlib3.scene import Scene
     import math
 
-    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaRigid', "ArticulatedSystemPlugin",
+    scene = Scene(rootNode, plugins=["ArticulatedSystemPlugin",
                                      "Sofa.Component.AnimationLoop", "Sofa.Component.Constraint.Lagrangian.Correction",
                                      "Sofa.Component.Constraint.Lagrangian.Solver",
                                      "Sofa.Component.Constraint.Projective", "Sofa.Component.IO.Mesh",
-                                     "Sofa.Component.LinearSolver.Direct", "Sofa.Component.Mass",
-                                     "Sofa.Component.ODESolver.Backward", "Sofa.Component.SolidMechanics.Spring",
+                                     "Sofa.Component.LinearSolver.Direct", "Sofa.Component.Mass", "Sofa.Component.SolidMechanics.Spring",
                                      "Sofa.Component.Topology.Container.Constant", "Sofa.Component.Visual",
                                      "Sofa.GL.Component.Rendering3D", "Sofa.GUI.Component", ], iterative=False)
     scene.addMainHeader()

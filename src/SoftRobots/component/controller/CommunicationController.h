@@ -27,12 +27,9 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#pragma once
 
-#ifndef SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_H
-#define SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_H
-
-#include <SofaUserInteraction/Controller.h>
-
+#include <sofa/component/controller/Controller.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/objectmodel/vectorData.h>
 
@@ -74,12 +71,6 @@ public:
     CommunicationController();
     ~CommunicationController() override;
 
-    //////////////////////////////// Inherited from Base /////////////////////////////////
-    std::string getTemplateName() const override {return templateName(this);}
-    static std::string templateName(const CommunicationController<DataTypes>* = NULL);
-    /////////////////////////////////////////////////////////////////////////////////
-
-
     ////////////////////////// Inherited from BaseObject ////////////////////
     void init() override;
     void reinit() override;
@@ -94,6 +85,10 @@ public:
     void onBeginAnimationStep(const double dt) override;
     void onEndAnimationStep(const double dt) override;
     /////////////////////////////////////////////////////////////////////////
+
+    /// Implementing the GetCustomTemplateName is mandatory to have a custom template name paremters
+    /// instead of the default one generated automatically by the SOFA_CLASS() macro.
+    static std::string GetCustomTemplateName();
 
     Data<helper::OptionsGroup>              d_job;
     Data<helper::OptionsGroup>              d_pattern;
@@ -129,4 +124,3 @@ protected:
 }   //namespace component
 }   //namespace sofa
 
-#endif // SOFA_CONTROLLER_COMMUNICATIONCONTROLLER_H
