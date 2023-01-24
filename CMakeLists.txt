@@ -10,6 +10,7 @@ sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 sofa_find_package(Sofa.Component.Mapping REQUIRED)
 sofa_find_package(Sofa.Component.StateContainer REQUIRED)
 sofa_find_package(Sofa.GL QUIET)
+sofa_find_package(SofaCUDA QUIET)
 
 option(SOFTROBOTS_COMMUNICATIONCONTROLLER "Enables Communication component. It requires ZeroMQ library (see controller/README for more info)" OFF)
 option(SOFTROBOTS_GAMETRAKCONTROLLER "Enables GameTrak component. It requires HIDAPI library (see controller/README for more info)" OFF)
@@ -187,6 +188,13 @@ if (SOFTROBOTS_INTERACTIVECONTROL)
         )
 endif(SOFTROBOTS_INTERACTIVECONTROL)
 
+if(SofaCUDA_FOUND)
+    list (APPEND SOURCE_FILES
+        ${SOFTROBOTS_SOURCE_DIR}/gpu/cuda/CudaInstantiations.cpp
+    )
+    message(STATUS "${PROJECT_NAME}: SofaCUDA has been enabled, instantiations for CudaTypes will be enabled.")
+endif()
+
 file(GLOB_RECURSE RESOURCE_FILES  "*.md" "*.psl" "*.py" "*.pyscn" "*.scn" "*.ah")
 
 IF(WIN32)
@@ -244,6 +252,10 @@ endif(SOFTROBOTS_WITH_CAMERA)
 if (SOFTROBOTS_INTERACTIVECONTROL)
     target_link_libraries(${PROJECT_NAME} Qt5::Network)
 endif(SOFTROBOTS_INTERACTIVECONTROL)
+
+if(SofaCUDA_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaCUDA)
+endif()
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
