@@ -39,7 +39,7 @@ def EffectorGoal(attachedTo=None,
     #  This add a new node in the scene. This node should be appended to the root node.
     goal = attachedTo.addChild(name)
 
-    # This add a MechanicalObject, a componant holding the degree of freedom of our
+    # This add a MechanicalObject, a component holding the degree of freedom of our
     # mechanical modelling. In the case of a effector it is a set of positions specifying
     # ghe location of the effector
     goal.addObject('EulerImplicitSolver', firstOrder=True)
