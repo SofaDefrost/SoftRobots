@@ -63,7 +63,7 @@ def PneumaticCavity(surfaceMeshFileName=None,
                                         attachedTo=attachedTo,
                                         name=name)
 
-    # This add a MeshSTLLoader, a componant loading the topology of the cavity.
+    # This add a MeshSTLLoader, a component loading the topology of the cavity.
     if surfaceMeshFileName.endswith(".stl"):
         pneumatic.addObject('MeshSTLLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation,
                             translation=translation, scale=uniformScale)

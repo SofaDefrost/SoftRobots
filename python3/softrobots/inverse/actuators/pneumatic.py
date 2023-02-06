@@ -52,7 +52,7 @@ def PneumaticCavity(surfaceMeshFileName=None,
         Sofa.msg_error("No surfaceMeshFileName specified, please specify one")
         return None
 
-    # This add a componant loading the topology of the cavity.
+    # This add a component loading the topology of the cavity.
     if surfaceMeshFileName.endswith(".stl"):
         pneumatic.addObject('MeshSTLLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
     elif surfaceMeshFileName.endswith(".obj"):
@@ -61,11 +61,11 @@ def PneumaticCavity(surfaceMeshFileName=None,
         Sofa.msg_error("Your surfaceMeshFileName extension is not the right one, you have to give a surfacic mesh with .stl or .obj extension")
         return None
 
-    # This add a MeshTopology, a componant holding the topology of the cavity.
+    # This add a MeshTopology, a component holding the topology of the cavity.
     # pneumatic.addObject('MeshTopology', name="topology", filename=surfaceMeshFileName)
     pneumatic.addObject('MeshTopology', name='topology', src='@MeshLoader')
 
-    # This add a MechanicalObject, a componant holding the degree of freedom of our
+    # This add a MechanicalObject, a component holding the degree of freedom of our
     # mechanical modelling. In the case of a cavity actuated with pneumatic, it is a set of positions specifying
     # the points where the pressure is applied.
     pneumatic.addObject('MechanicalObject', src="@topology")

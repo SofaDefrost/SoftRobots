@@ -19,7 +19,7 @@ Example
         #  This create a new node in the scene. This node is appended to the accordion's node.
 	cavity = accordion.createChild('cavity')
 
-	# This create a MechanicalObject, a componant holding the degree of freedom of our
+	# This create a MechanicalObject, a component holding the degree of freedom of our
 	# mechanical modelling. In the case of a pneumatic actuation it is a set of positions describing the cavity wall.
 	cavity.createObject('MeshSTLLoader', name='loader', filename=path+'Springy_Cavity.stl')
 	cavity.createObject('MeshTopology', src='@loader', name='topo')
