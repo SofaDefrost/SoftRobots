@@ -27,7 +27,7 @@ def StringSensor(parentNode=None,
 
 
         def createScene(rootNode):
-            from stlib.scene import MainHeader
+            from stlib3.scene import MainHeader
             MainHeader(rootNode)
 
             f = Node(rootNode, "Finger")
@@ -36,7 +36,7 @@ def StringSensor(parentNode=None,
     """
     cable = Node(parentNode, "StringSensor")
 
-    # This add a MechanicalObject, a componant holding the degree of freedom of our
+    # This add a MechanicalObject, a component holding the degree of freedom of our
     # mechanical modelling. In the case of a cable it is a set of positions specifying
     # the points where the cable is passing by.
     cable.addObject('MechanicalObject',

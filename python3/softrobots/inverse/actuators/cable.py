@@ -54,7 +54,7 @@ def PullingCable(attachedTo=None,
     #  This add a new node in the scene. This node is appended to the model's node.
     cable = attachedTo.addChild(name)
 
-    # This add a MechanicalObject, a componant holding the degree of freedom of our
+    # This add a MechanicalObject, a component holding the degree of freedom of our
     # mechanical modelling. In the case of a cable it is a set of positions specifying
     # the points where the cable is passing by.
     cable.addObject('MechanicalObject', position=cableGeometry,
