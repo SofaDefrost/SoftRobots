@@ -543,6 +543,38 @@ unsigned int CableModel<DataTypes>::computeClosestIndice(const Coord& position)
 }
 
 template<class DataTypes>
+void CableModel<DataTypes>::getPositionFromTopology(Coord& position, sofa::Index index)
+{
+    position.x() = l_surfaceTopology.get()->getPX(index);
+    if constexpr (Coord::spatial_dimensions > 1)
+    {
+        position.y() = l_surfaceTopology.get()->getPY(index);
+        if constexpr (Coord::spatial_dimensions > 2)
+        {
+            position.z() = l_surfaceTopology.get()->getPZ(index);
+        }
+    }
+}
+
+template<class DataTypes>
+SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const Triangle& triangle, Coord& projectionOnTriangle)
+{
+    static sofa::helper::DistancePointTri proximitySolver;
+    Coord p0 { type::NOINIT };
+    Coord p1 { type::NOINIT };
+    Coord p2 { type::NOINIT };
+    getPositionFromTopology(p0, triangle[0]);
+    getPositionFromTopology(p1, triangle[1]);
+    getPositionFromTopology(p2, triangle[2]);
+    Vec3 projection { type::NOINIT };
+    proximitySolver.NewComputation(Vec3(p0), Vec3(p1), Vec3(p2), Vec3(position), projection);
+    projectionOnTriangle = projection;
+    const Real distanceToTriangle = (projectionOnTriangle - position).norm();
+    return distanceToTriangle;
+}
+
+
+template<class DataTypes>
 void CableModel<DataTypes>::computeBarycentric(const Triangle& triangle, const Coord& p, Real& alpha, Real& beta)
 {
     Coord v0 { type::NOINIT };  

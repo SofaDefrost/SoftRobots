@@ -162,8 +162,6 @@ protected:
     bool                        m_hasSlidingPoint;
 
 
-protected:
-
     SReal getCableLength(const VecCoord &positions);
 
     ////////////////////////// Inherited attributes ////////////////////////////
