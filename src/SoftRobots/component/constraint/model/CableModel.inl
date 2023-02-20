@@ -141,7 +141,7 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
 
     , d_drawPulledAreas(initData(&d_drawPulledAreas, false, "drawPulledAreas","Whether to draw pulled area points or not."))
 
-    , d_color(initData(&d_color,RGBAColor(0.4,0.4,0.4,1), "color",
+    , d_color(initData(&d_color,RGBAColor(0.4f,0.4f,0.4f,1.f), "color",
                           "Color of the string."))
 
 {
@@ -278,16 +278,16 @@ void CableModel<DataTypes>::initActuatedPoints()
     std::size_t nbIndices = indices.size();
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
     ReadAccessor<Data<VecCoord>> centers = d_centers;
-    std::size_t nbCenters = centers.size();
+    const std::size_t nbCenters = centers.size();
     m_hasCenters = false;
     if (nbCenters != 0)
     {
         m_hasCenters = true;
         msg_warning_when(nbIndices != 0) <<"Both centers and indices are provided. Centers are used by default";
         indices.clear();
-        indices.resize(nbCenters);
-        for (unsigned int i=0; i<nbCenters; i++)
-            indices[i] = computeClosestIndice(centers[i]);    
+        indices.reserve(nbCenters);
+        std::transform(centers.begin(), centers.end(), std::back_inserter(indices),
+            [this](const Coord& center){ return computeClosestIndice(center);});
         nbIndices = indices.size();
     }
 
@@ -327,9 +327,11 @@ void CableModel<DataTypes>::checkIndicesRegardingState()
 {
     ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
 
-    for(unsigned int i=0; i<d_indices.getValue().size(); i++)
+    const auto& indices = d_indices.getValue();
+
+    for(unsigned int i=0; i<indices.size(); i++)
     {
-        if (positions.size() <= d_indices.getValue()[i])
+        if (positions.size() <= indices[i])
         {
             msg_error() << "Indices at index " << i << " is too large regarding mechanicalState [position] size" ;
         }
@@ -407,12 +409,14 @@ void CableModel<DataTypes>::computePointsActionArea()
         // Project on closest triangle and distribute distance to its vertices 
         if (m_hasCenters)
         {
-            const TrianglesAroundVertex& trianglesAroundClosestVertex = l_surfaceTopology.get()->getTrianglesAroundVertex(indices[i]); // Triangles connected to closest vertice
+            const TrianglesAroundVertex& trianglesAroundClosestVertex =l_surfaceTopology->getTrianglesAroundVertex(indices[i]); // Triangles connected to closest vertice
             Coord projectionOnTriangle;
-            Real minDistanceToTriangle = std::numeric_limits<Real>::max(); unsigned int closestTriangleId = 0; Coord closestProjectionOnTriangle;
+            Real minDistanceToTriangle = std::numeric_limits<Real>::max();
+            unsigned int closestTriangleId = 0;
+            Coord closestProjectionOnTriangle;
             for(unsigned int j=0; j<trianglesAroundClosestVertex.size(); j++)
             {
-                const Triangle triangle =  l_surfaceTopology.get()->getTriangle(trianglesAroundClosestVertex[j]);
+                const Triangle triangle = l_surfaceTopology->getTriangle(trianglesAroundClosestVertex[j]);
                 const Real distanceToTriangle = getDistanceToTriangle(centers[i], triangle, projectionOnTriangle);
 
                 if(distanceToTriangle < minDistanceToTriangle)
@@ -423,22 +427,21 @@ void CableModel<DataTypes>::computePointsActionArea()
                 }
             }
 
-            const Triangle closestTriangle =  l_surfaceTopology.get()->getTriangle(trianglesAroundClosestVertex[closestTriangleId]);
+            const Triangle closestTriangle =l_surfaceTopology->getTriangle(trianglesAroundClosestVertex[closestTriangleId]);
 
-            
-            for(unsigned int j=0; j<closestTriangle.size(); j++)
+            for (const auto& t : closestTriangle)
             {
                 Coord p;
-                getPositionFromTopology(p, closestTriangle[j]);
+                getPositionFromTopology(p, t);
 
                 const Real d = (closestProjectionOnTriangle - p).norm();
                 if (id_method == 2)
                 {
-                    distances[closestTriangle[j]] = minDistanceToTriangle + d;
+                    distances[t] = minDistanceToTriangle + d;
                 } 
                 else if (id_method == 1)
                 {
-                    distances[closestTriangle[j]] = (p - cablePositions[indices[i]]).norm();
+                    distances[t] = (p - cablePositions[indices[i]]).norm();
                 }
                 queue.insert(DistanceToPoint(d,indices[i]));
             }
@@ -448,7 +451,9 @@ void CableModel<DataTypes>::computePointsActionArea()
             m_closestTriangle[i] = closestTriangle;
 
 
-        } else {
+        }
+        else
+        {
             distances[indices[i]] = 0.0;
             queue.insert(DistanceToPoint(0.0,indices[i]));
         }
@@ -459,11 +464,9 @@ void CableModel<DataTypes>::computePointsActionArea()
             DistanceToPoint top = *queue.begin();
             queue.erase(queue.begin());
             BaseMeshTopology::PointID v = top.second; 
-            const vector<BaseMeshTopology::PointID> neighboors = l_surfaceTopology.get()->getVerticesAroundVertex(v);
-            for (unsigned int j=0 ; j<neighboors.size(); ++j)
+            const vector<BaseMeshTopology::PointID> neighboors =l_surfaceTopology->getVerticesAroundVertex(v);
+            for (const auto& vn : neighboors)
             {
-                sofa::core::topology::BaseMeshTopology::PointID vn = neighboors[j];
-
                 Coord pv; 
                 getPositionFromTopology(pv, v);
                 Coord pvn;
@@ -477,7 +480,7 @@ void CableModel<DataTypes>::computePointsActionArea()
                 {
                     d = (pvn - cablePositions[indices[i]]).norm();
                 }
-                if((distances[vn]) > d)
+                if(distances[vn] > d)
                 {
                     qit=queue.find(DistanceToPoint(distances[vn],vn));
                     if(qit != queue.end()) {queue.erase(qit);}
@@ -525,7 +528,7 @@ unsigned int CableModel<DataTypes>::computeClosestIndice(const Coord& position)
     getPositionFromTopology(p0, 0);
     auto closest_distance = (position - p0).norm();
     unsigned int closest_vertice = 0;
-    for(unsigned int j=1; j<l_surfaceTopology.get()->getNbPoints(); j++)
+    for(unsigned int j=1; j<l_surfaceTopology->getNbPoints(); j++)
     {
         Coord pj;
         getPositionFromTopology(pj, j);
@@ -538,6 +541,38 @@ unsigned int CableModel<DataTypes>::computeClosestIndice(const Coord& position)
     } 
    return closest_vertice;
 }
+
+template<class DataTypes>
+void CableModel<DataTypes>::getPositionFromTopology(Coord& position, sofa::Index index)
+{
+    position.x() = l_surfaceTopology.get()->getPX(index);
+    if constexpr (Coord::spatial_dimensions > 1)
+    {
+        position.y() = l_surfaceTopology.get()->getPY(index);
+        if constexpr (Coord::spatial_dimensions > 2)
+        {
+            position.z() = l_surfaceTopology.get()->getPZ(index);
+        }
+    }
+}
+
+template<class DataTypes>
+SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const Triangle& triangle, Coord& projectionOnTriangle)
+{
+    static sofa::helper::DistancePointTri proximitySolver;
+    Coord p0 { type::NOINIT };
+    Coord p1 { type::NOINIT };
+    Coord p2 { type::NOINIT };
+    getPositionFromTopology(p0, triangle[0]);
+    getPositionFromTopology(p1, triangle[1]);
+    getPositionFromTopology(p2, triangle[2]);
+    Vec3 projection { type::NOINIT };
+    proximitySolver.NewComputation(Vec3(p0), Vec3(p1), Vec3(p2), Vec3(position), projection);
+    projectionOnTriangle = projection;
+    const Real distanceToTriangle = (projectionOnTriangle - position).norm();
+    return distanceToTriangle;
+}
+
 
 template<class DataTypes>
 void CableModel<DataTypes>::computeBarycentric(const Triangle& triangle, const Coord& p, Real& alpha, Real& beta)
@@ -849,7 +884,7 @@ void CableModel<DataTypes>::drawPullPoint(const VisualParams* vparams)
         points[0] = positions[indices[0]];
     }
 
-    vparams->drawTool()->drawPoints(points, 15, RGBAColor(1.f,1.f,0.f,1.f));
+    vparams->drawTool()->drawPoints(points, 15, RGBAColor::yellow());
 }
 
 
@@ -936,9 +971,9 @@ void CableModel<DataTypes>::drawPulledAreas(const VisualParams* vparams)
     for(unsigned int i=0; i<m_areaIndices.size(); i++)
         for(unsigned int j=0; j<m_areaIndices[i].size(); j++)
         {
-            vector<Vector3> point(1);
+            vector<Vec3> point(1);
             point[0] = positions[m_areaIndices[i][j]];
-            vparams->drawTool()->drawPoints(point, 40.0 * m_ratios[i][j], RGBAColor::yellow());
+            vparams->drawTool()->drawPoints(point, 40.f * m_ratios[i][j], RGBAColor::yellow());
         }
 }
 
