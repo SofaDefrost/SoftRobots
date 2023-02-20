@@ -342,11 +342,11 @@ void CableModel<DataTypes>::initCableActionAreas()
 {    
     std::size_t nbCenters = d_indices.getValue().size();
     WriteAccessor<Data<vector<Real>>> radii = d_radii;
-    int nbRadii = radii.size();
+    std::size_t nbRadii = radii.size();
     if(nbRadii == 0)
     {
         radii.resize(nbCenters);
-        for(int i=0; i<nbCenters; i++)
+        for(std::size_t i=0; i<nbCenters; i++)
             radii[i] = 1;
         nbRadii = nbCenters;
         msg_warning() << "No radius given. Set default radius = 1.";
@@ -356,7 +356,7 @@ void CableModel<DataTypes>::initCableActionAreas()
     {
         const Real radius = radii[0];
         radii.resize(nbCenters);
-        for(int i=0; i<nbCenters; i++)
+        for(std::size_t i=0; i<nbCenters; i++)
             radii[i] = radius;
         msg_warning(this) << "Size of centers and radii list not the same. Will apply first radius to all the effect areas.";
     }
@@ -538,17 +538,6 @@ unsigned int CableModel<DataTypes>::computeClosestIndice(const Coord& position)
     } 
    return closest_vertice;
 }
-
-template<class DataTypes>
-void CableModel<DataTypes>::getPositionFromTopology(Coord& position, sofa::Index index)
-{
-}
-
-template<class DataTypes>
-SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const Triangle& triangle, Coord& projectionOnTriangle)
-{
-}
-
 
 template<class DataTypes>
 void CableModel<DataTypes>::computeBarycentric(const Triangle& triangle, const Coord& p, Real& alpha, Real& beta)
@@ -860,7 +849,7 @@ void CableModel<DataTypes>::drawPullPoint(const VisualParams* vparams)
         points[0] = positions[indices[0]];
     }
 
-    vparams->drawTool()->drawPoints(points, 5, RGBAColor(1.f,1.f,0.f,1.f));
+    vparams->drawTool()->drawPoints(points, 15, RGBAColor(1.f,1.f,0.f,1.f));
 }
 
 
@@ -886,7 +875,7 @@ void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
     }
         
 
-    vparams->drawTool()->drawPoints(points, 15, RGBAColor(1.f,0.f,0.f,1.f));
+    vparams->drawTool()->drawPoints(points, 15, RGBAColor::red());
 }
 
 

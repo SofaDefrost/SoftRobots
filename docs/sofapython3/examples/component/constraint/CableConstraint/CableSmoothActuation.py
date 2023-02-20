@@ -42,7 +42,7 @@ def createScene(rootNode):
     ################################################################################################################
     bunny = rootNode.addChild('bunny')
     bunny.addObject('EulerImplicitSolver', name='odesolver')
-    bunny.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d')
+    bunny.addObject('EigenSimplicialLDLT')
 
     bunny.addObject('MeshVTKLoader', name='loader', filename=path+'Hollow_Stanford_Bunny.vtu')
     bunny.addObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
@@ -87,3 +87,5 @@ def createScene(rootNode):
     bunnyVisu.addObject('IdentityMapping')
 
     return rootNode
+
+

@@ -57,8 +57,8 @@ SReal CableModel<Vec2Types>::getDistanceToTriangle(const Coord& position, const 
     getPositionFromTopology(p1, triangle[1]);
     getPositionFromTopology(p2, triangle[2]);  
     Vector3 projectionOnTriangle3D;
-    proximitySolver.NewComputation(Vector3(p0[0], p0[1], 0.0), Vector3(p1[0], p1[1], 0.0), Vector3(p2[0], p2[1], 0.0), 
-                                                        Vector3(position[0], position[1], 0.0), projectionOnTriangle3D);
+    proximitySolver.NewComputation(Vec3(p0[0], p0[1], 0.0), Vec3(p1[0], p1[1], 0.0), Vec3(p2[0], p2[1], 0.0), 
+                                                        Vec3(position[0], position[1], 0.0), projectionOnTriangle3D);
     projectionOnTriangle = Coord(projectionOnTriangle[0], projectionOnTriangle[1]);
     const Real distanceToTriangle = (projectionOnTriangle - position).norm();  
     return distanceToTriangle;
