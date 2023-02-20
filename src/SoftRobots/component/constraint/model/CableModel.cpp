@@ -27,20 +27,22 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
+#define SOFTROBOTS_COMPONENT_BEHAVIOR_CONSTRAINT_MODEL_CABLEMODEL_CPP
 #include <sofa/defaulttype/VecTypes.h>
-
 #include <SoftRobots/component/constraint/model/CableModel.inl>
 
 namespace sofa::component::constraintset
 {
 
-using namespace sofa::defaulttype;
+using sofa::defaulttype::Vec2Types;
+using sofa::defaulttype::Vec3Types;
+using sofa::type::Vector2;
 
 // Force template specialization for the most common sofa type.
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
+using namespace sofa::defaulttype;
 template class CableModel<Vec3Types>;
 //template class CableModel<Rigid3Types>;
 template class CableModel<Vec2Types>;
