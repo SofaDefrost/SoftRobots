@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/helper/OptionsGroup.h>
 
@@ -86,7 +86,7 @@ public:
     typedef type::vector<unsigned int> SetIndexArray;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef typename sofa::component::topology::TriangleSetTopologyContainer TriangleSetTopologyContainer;
+    typedef typename sofa::component::topology::container::dynamic::TriangleSetTopologyContainer TriangleSetTopologyContainer;
     typedef typename TriangleSetTopologyContainer::TrianglesAroundVertex TrianglesAroundVertex;
 
     typedef typename sofa::core::topology::BaseMeshTopology BaseMeshTopology;

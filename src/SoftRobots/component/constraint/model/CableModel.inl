@@ -141,7 +141,7 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
 
     , d_drawPulledAreas(initData(&d_drawPulledAreas, false, "drawPulledAreas","Whether to draw pulled area points or not."))
 
-    , d_color(initData(&d_color,RGBAColor(0.4,0.4,0.4,1), "color",
+    , d_color(initData(&d_color,RGBAColor(0.4f,0.4f,0.4f,1.f), "color",
                           "Color of the string."))
 
 {
@@ -936,9 +936,9 @@ void CableModel<DataTypes>::drawPulledAreas(const VisualParams* vparams)
     for(unsigned int i=0; i<m_areaIndices.size(); i++)
         for(unsigned int j=0; j<m_areaIndices[i].size(); j++)
         {
-            vector<Vector3> point(1);
+            vector<Vec3> point(1);
             point[0] = positions[m_areaIndices[i][j]];
-            vparams->drawTool()->drawPoints(point, 40.0 * m_ratios[i][j], RGBAColor::yellow());
+            vparams->drawTool()->drawPoints(point, 40.f * m_ratios[i][j], RGBAColor::yellow());
         }
 }
 
