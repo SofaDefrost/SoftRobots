@@ -18,11 +18,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        os: [ubuntu-20.04, macos-11, windows-2019]
         sofa_branch: [master]
         python_version: ['3.8']
 
     steps:
+      - name: (Mac) Workaround for homebrew
+        shell: bash
+        if: runner.os == 'macOS'
+        run: |
+            rm -f /usr/local/bin/2to3
+            rm -f /usr/local/bin/idle3
+            rm -f /usr/local/bin/pydoc3
+            rm -f /usr/local/bin/python3
+            rm -f /usr/local/bin/python3-config
+            rm -f /usr/local/bin/2to3-3.11
+            rm -f /usr/local/bin/idle3.11
+            rm -f /usr/local/bin/pydoc3.11
+            rm -f /usr/local/bin/python3.11
+            rm -f /usr/local/bin/python3.11-config
+            
       - name: Setup SOFA and environment
         id: sofa
         uses: sofa-framework/sofa-setup-action@v4
