@@ -33,6 +33,7 @@
 #include <SoftRobots/component/controller/SerialPortBridgeGeneric.h>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include <stdio.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -53,7 +54,8 @@ int SerialPortBridgeGenericClass = core::RegisterObject("Send data (ex: force, d
         ;
 
 SerialPortBridgeGeneric::SerialPortBridgeGeneric()
-    : d_port(initData(&d_port, "port", "Serial port name"))
+    : d_port(initData(&d_port, "port", "Serial port names found."))
+    , d_customPort(initData(&d_customPort, "customPort", "Serial port name. If set and valid, override portList."))
     , d_baudRate(initData(&d_baudRate, "baudRate", "Transmission speed"))
     , d_packetOut(initData(&d_packetOut, "packetOut", "Data to send: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255.\n"
                            "The value of 'header' will be sent at the beginning of the sent data,\n"
@@ -69,6 +71,8 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     , d_redundancy(initData(&d_redundancy,(unsigned int)1,"redundancy","Each packet will be send that number of times (1=default)"))
     , d_doReceive(initData(&d_doReceive,false,"receive","If true, will read from serial port (timeOut = 10ms)"))
 {
+    sofa::helper::OptionsGroup options(getPortList());
+    d_port.setValue(options);
 }
 
 
@@ -89,7 +93,6 @@ void SerialPortBridgeGeneric::init()
         d_splitPacket.setValue(false);
     }
 
-
     if(d_splitPacket.getValue())
     {
         if(d_header.getValue().size()<2)
@@ -105,9 +108,8 @@ void SerialPortBridgeGeneric::init()
         d_header.setValue(type::vector<unsigned char>{255,254});
     }
 
-
     // Initial value sent to the robot
-    //[header[0], 0 .. 0]
+    // [header[0], 0 .. 0]
     if(d_precise.getValue())
     {
         if(d_splitPacket.getValue())
@@ -140,17 +142,60 @@ void SerialPortBridgeGeneric::dataDeprecationManagement()
         msg_info() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
 }
 
+std::set<std::string> SerialPortBridgeGeneric::getPortList() {
+    std::set<std::string> portList;
+
+    #ifdef WIN32
+        // Test the first 10 ports...
+        for (int i=0; i<10; i++){
+            std::string port = "COM"+std::to_string(i);
+            status = m_serial.Open(port.c_str(), d_baudRate.getValue());
+            if (status==1) {
+                portList.insert(port);
+                m_serial.Close();
+            }
+        }
+    #elif __linux__
+        for (const auto & entry : std::filesystem::directory_iterator("/dev")){
+            std::string path = entry.path();
+            if (path.find("ttyUSB") != std::string::npos || path.find("ttyACM") != std::string::npos) {
+                portList.insert(path);
+            }
+        }
+    #elif __apple__
+        for (const auto & entry : std::filesystem::directory_iterator("/dev")){
+            std::string path = entry.path();
+            if (path.find("cu.usbserial-") != std::string::npos)
+                portList.insert(path);
+            }
+        }
+    #endif
+
+    if (portList.empty()) {
+        portList.insert("No port found");
+    }
+
+    return portList;
+}
+
 void SerialPortBridgeGeneric::checkConnection()
 {
-    char status = m_serial.Open(d_port.getValue().c_str(), d_baudRate.getValue());
-
-    if (status!=1)
-    {
-        msg_warning() <<"No serial port found";
-        d_componentState.setValue(ComponentState::Invalid);
+    if (d_customPort.isSet()) {
+        char status = m_serial.Open(d_customPort.getValue().c_str(), d_baudRate.getValue());
+        if (status==1) {
+            msg_info() << "Serial port found: " << d_customPort.getValue();
+            return;
+        }
+    } else {
+        char status = m_serial.Open(d_port.getValueString().c_str(), d_baudRate.getValue());
+        if (status==1) {
+            msg_info() << "Serial port found: " << d_port.getValueString();
+            return;
+        }
     }
-    else
-        msg_info() <<"Serial port found";
+
+    msg_warning() << "No serial port found";
+    d_componentState.setValue(ComponentState::Invalid);
 }
 
 

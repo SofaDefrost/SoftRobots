@@ -29,18 +29,11 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/helper/OptionsGroup.h>
 #include <sofa/component/controller/Controller.h>
 
 #include <SoftRobots/component/controller/modules/Serial.h>
 #include <SoftRobots/component/initSoftRobots.h>
-
-#if defined (_WIN32) || defined( _WIN64)
-#define         DEVICE_PORT             "COM1"
-#endif
-
-#ifdef __linux__
-#define         DEVICE_PORT             "/dev/ttyACM0"                         
-#endif
 
 namespace sofa
 {
@@ -79,7 +72,8 @@ public:
     /////////////////////////////////////////////////////////////
 
     //Config
-    Data<string>                 d_port;
+    Data<helper::OptionsGroup>   d_port;
+    Data<std::string>            d_customPort;
     Data<unsigned int>           d_baudRate;
     Data<type::vector<unsigned char>> d_packetOut;
     Data<type::vector<unsigned char>> d_packetIn;
@@ -96,6 +90,7 @@ protected:
     Serial m_serial;
     type::vector<unsigned char> m_packetOut; //member variable to enable tests
 
+    std::set<std::string> getPortList();
     void checkConnection();
     void checkData();
 
