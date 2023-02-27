@@ -736,7 +736,7 @@ Figure 6: Deformable piece with the extremities rigidified.
 <a class="sourceLine" id="cb12-128" title="128">    animate(myanimate, {<span class="st">&quot;targets&quot;</span>: [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration<span class="op">=</span><span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb12-129" title="129"></a>
 <a class="sourceLine" id="cb12-130" title="130">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb12-131" title="131">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb12-131" title="131">    <span class="co"># Will no longer be required in SOFA v23.12</span></a>
 <a class="sourceLine" id="cb12-132" title="132">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
 <a class="sourceLine" id="cb12-133" title="133">                               template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
 <a class="sourceLine" id="cb12-134" title="134">                               name<span class="op">=</span><span class="st">&quot;RigidAndDeformableCoupling&quot;</span>,</a>
@@ -899,7 +899,7 @@ Figure 7: Deformable piece with the extremities rigidified and attached to the s
 <a class="sourceLine" id="cb13-133" title="133">    animate(myanimate, {<span class="st">&quot;targets&quot;</span>: [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration<span class="op">=</span><span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb13-134" title="134"></a>
 <a class="sourceLine" id="cb13-135" title="135">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb13-136" title="136">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb13-136" title="136">    <span class="co"># Will no longer be required in SOFA v23.12</span></a>
 <a class="sourceLine" id="cb13-137" title="137">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
 <a class="sourceLine" id="cb13-138" title="138">        scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
 <a class="sourceLine" id="cb13-139" title="139">                                   name<span class="op">=</span><span class="st">&quot;ArmAndDeformableCoupling&quot;</span> <span class="op">+</span> <span class="bu">str</span>(i),</a>
@@ -1036,7 +1036,7 @@ The controller is added as another node in the scene.</p>
 <a class="sourceLine" id="cb14-56" title="56">    scene.Simulation.addChild(tripod)</a>
 <a class="sourceLine" id="cb14-57" title="57"></a>
 <a class="sourceLine" id="cb14-58" title="58">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb14-59" title="59">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb14-59" title="59">    <span class="co"># Will no longer be required in SOFA v23.12</span></a>
 <a class="sourceLine" id="cb14-60" title="60">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
 <a class="sourceLine" id="cb14-61" title="61">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
 <a class="sourceLine" id="cb14-62" title="62">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
@@ -1257,7 +1257,7 @@ Figure 11: Tripod simulation with collision between a sphere, the deformable par
 <a class="sourceLine" id="cb15-106" title="106">    scene.Simulation.addChild(tripod)</a>
 <a class="sourceLine" id="cb15-107" title="107"></a>
 <a class="sourceLine" id="cb15-108" title="108">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb15-109" title="109">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb15-109" title="109">    <span class="co"># Will no longer be required in SOFA v23.12</span></a>
 <a class="sourceLine" id="cb15-110" title="110">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
 <a class="sourceLine" id="cb15-111" title="111">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
 <a class="sourceLine" id="cb15-112" title="112">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
@@ -1479,7 +1479,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb16-135" title="135">    scene.Simulation.addChild(tripod)</a>
 <a class="sourceLine" id="cb16-136" title="136"></a>
 <a class="sourceLine" id="cb16-137" title="137">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb16-138" title="138">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb16-138" title="138">    <span class="co"># Will no longer be required in SOFA v23.12</span></a>
 <a class="sourceLine" id="cb16-139" title="139">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
 <a class="sourceLine" id="cb16-140" title="140">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
 <a class="sourceLine" id="cb16-141" title="141">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
@@ -1670,7 +1670,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb17-152" title="152">    scene.Simulation.addChild(tripod)</a>
 <a class="sourceLine" id="cb17-153" title="153"></a>
 <a class="sourceLine" id="cb17-154" title="154">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb17-155" title="155">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb17-155" title="155">    <span class="co"># Will no longer be required in SOFA v23.12</span></a>
 <a class="sourceLine" id="cb17-156" title="156">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
 <a class="sourceLine" id="cb17-157" title="157">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
 <a class="sourceLine" id="cb17-158" title="158">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
@@ -1972,7 +1972,7 @@ Figure 13: Tripod with maze on top.
 <a class="sourceLine" id="cb19-156" title="156">    scene.Simulation.addChild(tripod)</a>
 <a class="sourceLine" id="cb19-157" title="157"></a>
 <a class="sourceLine" id="cb19-158" title="158">    <span class="co"># Temporary additions to have the system correctly built in SOFA</span></a>
-<a class="sourceLine" id="cb19-159" title="159">    <span class="co"># Will no longer be required in SOFA v22.06</span></a>
+<a class="sourceLine" id="cb19-159" title="159">    <span class="co"># Will no longer be required in SOFA v23.12</span></a>
 <a class="sourceLine" id="cb19-160" title="160">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
 <a class="sourceLine" id="cb19-161" title="161">                                 name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
 <a class="sourceLine" id="cb19-162" title="162">                                 template<span class="op">=</span><span class="st">&#39;Vec3,Rigid3&#39;</span>,</a>
