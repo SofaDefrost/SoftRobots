@@ -149,7 +149,7 @@ public:
 
 protected:
     //Input data
-    Data<type::vector< Real > >       d_value;
+    Data<type::vector< Real > >         d_value;
     Data<unsigned int>                  d_valueIndex;
     Data<helper::OptionsGroup>          d_valueType;
                                         // displacement = the constraint will impose the displacement provided in data d_inputValue[d_iputIndex]

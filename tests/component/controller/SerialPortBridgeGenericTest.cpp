@@ -73,6 +73,7 @@ struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortB
     using SerialPortBridgeGeneric::d_precise ;
     using SerialPortBridgeGeneric::d_packetOut ;
     using SerialPortBridgeGeneric::d_port ;
+    using SerialPortBridgeGeneric::d_customPort ;
     using SerialPortBridgeGeneric::d_header ;
     using SerialPortBridgeGeneric::d_splitPacket ;
     using SerialPortBridgeGeneric::m_packetOut ;

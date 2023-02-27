@@ -111,9 +111,9 @@ class TripodControllerWithCom(TripodController):
 # def SerialPortBridgeGeneric(rootNode, serialport='/dev/cu.usbserial-1420'):
 # def SerialPortBridgeGeneric(rootNode, serialport='COM3'):
 # def SerialPortBridgeGeneric(rootNode, serialport='/dev/ttyACM0'):
-def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
-    return rootNode.addObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True,
-                              header=255)
+# def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
+def SerialPortBridgeGeneric(rootNode, serialport=""):
+    return rootNode.addObject("SerialPortBridgeGeneric", customPort=serialport, baudRate=115200, size=3, listening=True, header=255)
 
 
 # Data sending controller

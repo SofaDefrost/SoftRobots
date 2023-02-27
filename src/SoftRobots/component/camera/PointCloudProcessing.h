@@ -31,7 +31,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <Eigen/Dense>
 
 
