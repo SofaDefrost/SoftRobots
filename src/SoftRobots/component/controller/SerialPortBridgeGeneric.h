@@ -98,8 +98,6 @@ protected:
     void sendPacket();
     void sendPacketPrecise();
 
-    void dataDeprecationManagement();
-
 };  //class SerialPortBridgeGeneric
 
 
