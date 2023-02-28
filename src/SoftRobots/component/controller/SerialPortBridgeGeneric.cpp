@@ -73,6 +73,17 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
 {
     sofa::helper::OptionsGroup options(getPortList());
     d_port.setValue(options);
+
+    this->addUpdateCallback("updatePort", {&d_port}, [this](const core::DataTracker&)
+    {
+        char status = m_serial.Open(d_port.getValueString().c_str(), d_baudRate.getValue());
+        if (status==1) {
+            msg_info() << "Connected to: " << d_port.getValueString();
+            return sofa::core::objectmodel::ComponentState::Valid;
+        }
+        msg_warning() << "Connection with serial port " << d_port.getValueString() << " failed.";
+        return sofa::core::objectmodel::ComponentState::Invalid;
+    }, {});
 }
 
 
