@@ -133,7 +133,7 @@ def createScene(rootNode):
     animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)
 
     # Temporary additions to have the system correctly built in SOFA
-    # Will no longer be required in SOFA v22.06
+    # Will no longer be required in SOFA v23.12
     for i in range(3):
         scene.Simulation.addObject('MechanicalMatrixMapper',
                                    name="ArmAndDeformableCoupling" + str(i),
