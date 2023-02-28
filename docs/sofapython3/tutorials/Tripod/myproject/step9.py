@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 """
-Step 8: Here we are showing how to setup the inverse control
+Step 9: Here we are showing how to setup the inverse control
 """
 import Sofa
 from tutorial import *
 from tripod import Tripod
-from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
+from tripodcontroller import DirectController, SerialPortBridgeGeneric
+from closedLoopController import EffectorController, InverseController, CloseLoopController
 
 
 def EffectorGoal(position):
     self = Sofa.Core.Node('Goal')
     self.addObject('EulerImplicitSolver', firstOrder=True)
     self.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
-    self.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
+    self.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position + [0., 0., 0., 1.],
+                   showObject=True, showObjectScale=10)
     self.addObject('UncoupledConstraintCorrection')
 
     spheres = self.addChild('Spheres')
-    spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0],  [10, 0, 0],   [0, 10, 0],   [0, 0, 10]])
+    spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0], [10, 0, 0], [0, 10, 0], [0, 0, 10]])
     spheres.addObject('SphereCollisionModel', radius=5, group=1)
     spheres.addObject('RigidMapping')
     return self
@@ -42,7 +44,7 @@ class GoalController(Sofa.Core.Controller):
 
     def onAnimateBeginEvent(self, e):
         if self.activated:
-            self.time = self.time+self.dt
+            self.time = self.time + self.dt
 
         if self.time >= 1:
             self.time = 0;
@@ -54,33 +56,33 @@ class GoalController(Sofa.Core.Controller):
 
 
 def addInverseComponents(arms, freecenter, goalNode, use_orientation):
-    actuators=[]
+    actuators = []
     for arm in arms:
         actuator = arm.ServoMotor.Articulation.addChild('actuator')
         actuators.append(actuator)
         actuator.activated = False
         actuator.addObject('JointActuator', name='JointActuator', template='Vec1',
-                                                index=0, applyForce=True,
-                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.1)
+                           index=0, applyForce=True,
+                           minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.1)
 
     effector = freecenter.addChild("Effector")
-    freecenter.dofs.showObject=True
+    freecenter.dofs.showObject = True
     effector.activated = False
     actuators.append(effector)
     if goalNode is None:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[1, 1, 1, 0, 0, 0],
-                               indices=0, effectorGoal=[10, 40, 0], limitShiftToTarget=True,
-                               maxShiftToTarget=5)
+                           useDirections=[1, 1, 1, 0, 0, 0],
+                           indices=0, effectorGoal=[10, 40, 0], limitShiftToTarget=True,
+                           maxShiftToTarget=5)
     elif use_orientation:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[0, 1, 0, 1, 0, 1],
-                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath())
+                           useDirections=[0, 1, 0, 1, 0, 1],
+                           indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath())
     else:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[1, 1, 1, 0, 0, 0],
-                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath(),
-                               limitShiftToTarget=True, maxShiftToTarget=5)
+                           useDirections=[1, 1, 1, 0, 0, 0],
+                           indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath(),
+                           limitShiftToTarget=True, maxShiftToTarget=5)
     return actuators
 
 
@@ -124,26 +126,24 @@ def createScene(rootNode):
 
     tripod = scene.Modelling.addChild(Tripod())
 
-    # Serial port bridge
-    serial = SerialPortBridgeGeneric(rootNode)
-
     # Choose here to control position or orientation of end-effector
-    orientation = False
+    orientation = True
     if orientation:
         # inverse in orientation
         goalNode = EffectorGoal([0, 50, 50])
+        referenceNode = EffectorGoal([0, 50, 50])
     else:
         # inverse in position
         goalNode = EffectorGoal([0, 40, 0])
+        referenceNode = EffectorGoal([0, 40, 0])
+
     scene.Modelling.addChild(goalNode)
+    scene.Modelling.addChild(referenceNode)
 
     actuators = addInverseComponents(tripod.actuatedarms, tripod.RigidifiedStructure.FreeCenter, goalNode, orientation)
 
-    # The real robot receives data from the 3 actuators
-    # serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))
-    invCtr = scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,
-                                                tripod, serial,
-                                                [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
+    # The real robot sends and receives data from the 3 actuators
+    invCtr = rootNode.addObject(InverseController(scene, tripod, actuators))
 
     # The regular controller that is being used for the last 2 steps but with small additions
     scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))
@@ -153,17 +153,22 @@ def createScene(rootNode):
     # Temporary additions to have the system correctly built in SOFA
     # Will no longer be required in SOFA v23.12
     scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="deformableAndFreeCenterCoupling",
-                                 template='Vec3,Rigid3',
-                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
-                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
-                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
+                               name="deformableAndFreeCenterCoupling",
+                               template='Vec3,Rigid3',
+                               object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
+                               object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
+                               nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
 
     for i in range(3):
         scene.Simulation.addObject('MechanicalMatrixMapper',
                                    name="deformableAndArm{i}Coupling".format(i=i),
                                    template='Vec1,Vec3',
-                                   object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
+                                   object1=tripod[
+                                       "ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
                                    object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
                                    skipJ2tKJ2=True,
-                                   nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
+                                   nodeToParse=tripod[
+                                       "RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
+
+    rootNode.addObject(EffectorController(scene, referenceNode))
+    rootNode.addObject(CloseLoopController(scene, goalNode, referenceNode, invCtr))

@@ -55,7 +55,7 @@ def createScene(rootNode):
     scene.Simulation.addChild(tripod)
 
     # Temporary additions to have the system correctly built in SOFA
-    # Will no longer be required in SOFA v22.06
+    # Will no longer be required in SOFA v23.12
     scene.Simulation.addObject('MechanicalMatrixMapper',
                                  name="deformableAndFreeCenterCoupling",
                                  template='Vec3,Rigid3',
