@@ -55,7 +55,7 @@ int SerialPortBridgeGenericClass = core::RegisterObject("Send data (ex: force, d
 
 SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     : d_port(initData(&d_port, "port", "Serial port names found."))
-    , d_customPort(initData(&d_customPort, "customPort", "Serial port name. If set and valid, override portList."))
+    , d_customPort(initData(&d_customPort, "customPort", "Serial port name. If set and valid, override port."))
     , d_baudRate(initData(&d_baudRate, "baudRate", "Transmission speed"))
     , d_packetOut(initData(&d_packetOut, "packetOut", "Data to send: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255.\n"
                            "The value of 'header' will be sent at the beginning of the sent data,\n"
@@ -84,7 +84,6 @@ SerialPortBridgeGeneric::~SerialPortBridgeGeneric()
 void SerialPortBridgeGeneric::init()
 {
     d_componentState.setValue(ComponentState::Valid);
-    dataDeprecationManagement();
     checkConnection();
 
     if(d_splitPacket.getValue() && !d_precise.getValue())
@@ -133,15 +132,6 @@ void SerialPortBridgeGeneric::init()
     }
 }
 
-void SerialPortBridgeGeneric::dataDeprecationManagement()
-{
-    if(!d_header.isSet())
-        msg_info() << "An old implementation was using 245 as the default header for sentData. This is not the case anymore. The default header is now equal to 255.";
-
-    if(d_precise.getValue())
-        msg_info() << "An old implementation was multiplying the values of sentData by 1000 when setting precise=true. This is not the case anymore.";
-}
-
 std::set<std::string> SerialPortBridgeGeneric::getPortList() {
     std::set<std::string> portList;
 
@@ -186,12 +176,12 @@ void SerialPortBridgeGeneric::checkConnection()
             msg_info() << "Serial port found: " << d_customPort.getValue();
             return;
         }
-    } else {
-        char status = m_serial.Open(d_port.getValueString().c_str(), d_baudRate.getValue());
-        if (status==1) {
-            msg_info() << "Serial port found: " << d_port.getValueString();
-            return;
-        }
+    }
+
+    char status = m_serial.Open(d_port.getValueString().c_str(), d_baudRate.getValue());
+    if (status==1) {
+        msg_info() << "Serial port found: " << d_port.getValueString();
+        return;
     }
 
     msg_warning() << "No serial port found";
