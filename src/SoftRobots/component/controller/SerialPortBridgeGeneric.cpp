@@ -76,13 +76,10 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
 
     this->addUpdateCallback("updatePort", {&d_port}, [this](const core::DataTracker&)
     {
-        char status = m_serial.Open(d_port.getValueString().c_str(), d_baudRate.getValue());
-        if (status==1) {
-            msg_info() << "Connected to: " << d_port.getValueString();
-            return sofa::core::objectmodel::ComponentState::Valid;
-        }
-        msg_warning() << "Connection with serial port " << d_port.getValueString() << " failed.";
-        return sofa::core::objectmodel::ComponentState::Invalid;
+        m_serial.Close();
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+        checkConnection();
+        return d_componentState.getValue();
     }, {});
 }
 
@@ -143,6 +140,7 @@ void SerialPortBridgeGeneric::init()
     }
 }
 
+
 std::set<std::string> SerialPortBridgeGeneric::getPortList() {
     std::set<std::string> portList;
 
@@ -181,21 +179,25 @@ std::set<std::string> SerialPortBridgeGeneric::getPortList() {
 
 void SerialPortBridgeGeneric::checkConnection()
 {
-    if (d_customPort.isSet()) {
+    if (d_customPort.isSet() && !d_customPort.getValueString().empty()) {
         char status = m_serial.Open(d_customPort.getValue().c_str(), d_baudRate.getValue());
         if (status==1) {
-            msg_info() << "Serial port found: " << d_customPort.getValue();
+            msg_info() << "Connected to serial port : " << d_customPort.getValue();
             return;
+        } else {
+            msg_warning() << "Connection to serial port " << d_customPort.getValue() << " failed.";
         }
     }
 
     char status = m_serial.Open(d_port.getValueString().c_str(), d_baudRate.getValue());
     if (status==1) {
-        msg_info() << "Serial port found: " << d_port.getValueString();
+        msg_info() << "Connected to serial port : " << d_port.getValueString();
         return;
+    } else {
+        msg_warning() << "Connection to serial port " << d_port.getValue() << " failed.";
     }
 
-    msg_warning() << "No serial port found";
+    msg_error() << "No valid serial port found.";
     d_componentState.setValue(ComponentState::Invalid);
 }
 
@@ -220,9 +222,6 @@ void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
         return;
 
     checkData();
-
-    if(d_componentState.getValue() == ComponentState::Invalid)
-        return;
 
     if(d_precise.getValue()) sendPacketPrecise();
     else                     sendPacket();
