@@ -223,6 +223,9 @@ void SerialPortBridgeGeneric::onEndAnimationStep(const double dt)
 
     checkData();
 
+    if(d_componentState.getValue() == ComponentState::Invalid)
+        return;
+
     if(d_precise.getValue()) sendPacketPrecise();
     else                     sendPacket();
 }
@@ -307,7 +310,7 @@ void SerialPortBridgeGeneric::checkData()
 
     if(d_packetOut.getValue().size()!=d_size.getValue())
     {
-        msg_warning() <<"The user specified a size for packetOut, size="<<d_size.getValue()
+        msg_error() <<"The user specified a size for packetOut, size="<<d_size.getValue()
                      <<" but packetOut.size="<<d_packetOut.getValue().size()<<"."
                     <<" To remove this warning you can either change the value of 'size' or 'packetOut'."
                    <<" Make sure the size and format of the data correspond to what the microcontroller in the robot is expecting."
