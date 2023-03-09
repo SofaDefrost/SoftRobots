@@ -1,7 +1,7 @@
 #include <Servo.h>
 
 Servo myservo [3]; //instances of the servo object
-int ServoPin []={A6, A7, A8};
+int ServoPin []={9, 10, 11};
 int pos [] = {0, 0, 0};
 int header;
 

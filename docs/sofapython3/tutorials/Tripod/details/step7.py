@@ -6,6 +6,7 @@ import Sofa
 from tutorial import *
 from splib3.animation import animate
 from splib3.constants import Key
+from splib3.interface import serialport
 from math import floor, pi
 from tripod import Tripod
 from tripodcontroller import TripodController, setupanimation
@@ -119,7 +120,7 @@ def createScene(rootNode):
 
     tripod = scene.Modelling.addChild(Tripod())
 
-    serial = SerialPortBridgeGeneric(scene)
+    serial = SerialPortBridgeGeneric(scene, serialport=serialport.getDevicePort('Arduino', method='manufacturer'))
 
     # The real robot receives data from the 3 actuators
     serialportctrl = scene.addObject(

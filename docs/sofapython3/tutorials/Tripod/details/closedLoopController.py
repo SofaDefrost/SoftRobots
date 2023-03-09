@@ -1,6 +1,7 @@
 import Sofa
 from splib3.numerics import Quat
 from splib3.constants import Key
+from splib3.interface import serialport
 
 import numpy as np
 import math
@@ -88,7 +89,6 @@ class CloseLoopController(Sofa.Core.Controller):
     def controller(self):
 
         epsilon = [self.reference[i] - self.measure[i] for i in range(2)]
-        print(f'error = {epsilon}')
 
         proportionnal_term = [epsilon[i] * self.kp for i in range(2)]
         Ki_eps = [epsilon[i] * self.ki for i in range(2)]
@@ -106,7 +106,6 @@ class CloseLoopController(Sofa.Core.Controller):
                 self.command_sat[i] = -self.sat
             else:
                 self.command_sat[i] = self.command[i]
-        # print(f'command = {self.command_sat}')
 
     ########################################
     # other functions
@@ -162,11 +161,12 @@ class InverseController(Sofa.Core.Controller):
         # self.serialObj = serial.Serial("COM3", 57600, timeout=0.05)
         # self.serialObj = serial.Serial("/dev/cu.usbserial-1420", 57600, timeout=0.05)
         # self.serialObj = serial.Serial("/dev/ttyACM0", 57600, timeout=0.05)
-        self.serialObj = serial.Serial("/dev/ttyUSB0", 57600, timeout=0.05)
+        self.serialObj = serial.Serial(serialport.getDevicePort('Arduino', method='manufacturer'), 57600, timeout=0.05)
         self.nodeTripod = args[1]
         self.nodesInverseComponents = args[2]
         self.state = "init"
         self.sensor = [0, 0]
+        self.activate = False
 
     def onKeypressedEvent(self, event):
         key = event['key']
@@ -181,6 +181,12 @@ class InverseController(Sofa.Core.Controller):
 
     def onAnimateBeginEvent(self, e):
 
+        if self.state == "init":
+            return
+
+        if self.state == "no-comm":
+            return
+
         # read serial port
         currentLine = self.serialObj.readline()
         try:
@@ -189,18 +195,12 @@ class InverseController(Sofa.Core.Controller):
         except:
             print("Error while decoding/writing IMU data")
 
-        if self.state == "init":
-            return
-
-        if self.state == "no-comm":
-            return
-
         # write convert angles in byte
-        if (self.activate):
+        if self.activate:
 
-            Angles = [0] * 3;
+            Angles = [0] * 3
             for i in range(3):
-                Angles[i] = self.nodeTripod.actuatedarms[i].ServoMotor.Articulation.dofs.position[0][0];
+                Angles[i] = self.nodeTripod.actuatedarms[i].ServoMotor.Articulation.dofs.position[0][0]
 
             AnglesOut = []
 
@@ -215,7 +215,7 @@ class InverseController(Sofa.Core.Controller):
                 if angleByte > 180:
                     angleByte = 180
 
-                # Filling the list of the 3 angle values
+                # Filling the list with the 3 angle values
                 AnglesOut.append(angleByte)
 
         # write to serial port

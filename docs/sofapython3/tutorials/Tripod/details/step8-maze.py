@@ -8,6 +8,7 @@ from tripod import Tripod
 from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
 from maze import Maze, Sphere
 from mazecontroller import MazeController
+from splib3.interface import serialport
 
 
 def EffectorGoal(node, position):
@@ -141,7 +142,7 @@ def createScene(rootNode):
     scene.Simulation.addChild(Sphere())
 
     # Serial port bridge
-    serial = SerialPortBridgeGeneric(rootNode)
+    serial = SerialPortBridgeGeneric(rootNode, serialport=serialport.getDevicePort('Arduino', method='manufacturer'))
 
     # The real robot receives data from the 3 actuators
     # serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))

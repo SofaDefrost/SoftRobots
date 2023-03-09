@@ -6,6 +6,7 @@ import Sofa
 from tutorial import *
 from tripod import Tripod
 from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
+from splib3.interface import serialport
 
 
 def EffectorGoal(position):
@@ -125,7 +126,7 @@ def createScene(rootNode):
     tripod = scene.Modelling.addChild(Tripod())
 
     # Serial port bridge
-    serial = SerialPortBridgeGeneric(rootNode)
+    serial = SerialPortBridgeGeneric(rootNode, serialport=serialport.getDevicePort('Arduino', method='manufacturer'))
 
     # Choose here to control position or orientation of end-effector
     orientation = False
