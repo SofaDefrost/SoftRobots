@@ -284,7 +284,7 @@ void PositionModel<DataTypes>::draw(const VisualParams* vparams)
     {
         points.push_back(positions[indices[i]]);
     }
-    drawPoints(vparams, points, 10.0f, RGBAColor(0.,1.,0.,1.));
+    drawPoints(vparams, points, 10.0f, RGBAColor::green());
 }
 
 } // namespace constraintset
