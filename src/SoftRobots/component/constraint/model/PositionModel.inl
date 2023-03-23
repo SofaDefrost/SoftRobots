@@ -170,7 +170,7 @@ void PositionModel<DataTypes>::checkIndicesRegardingState()
     {
         if (positions.size() <= indices[i])
         {
-            msg_error(this) << "Indices at index " << i << " is to large regarding mechanicalState [position] size" ;
+            msg_error(this) << "Index at index " << i << " is too large regarding mechanicalState [position] size" ;
             d_componentState = ComponentState::Invalid;
             return;
         }
