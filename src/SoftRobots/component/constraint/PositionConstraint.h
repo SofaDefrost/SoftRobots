@@ -181,8 +181,6 @@ private:
     void setUpForceLimits(double& imposedValue, double& minDisplacement, double& maxDisplacement);
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 #if !defined(SOFTROBOTS_POSITIONCONSTRAINT_CPP)
 extern template class PositionConstraint<sofa::defaulttype::Vec3Types>;
 extern template class PositionConstraint<sofa::defaulttype::Vec2Types>;
