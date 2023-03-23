@@ -31,13 +31,7 @@
 
 #include <SoftRobots/component/constraint/model/PositionModel.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using sofa::core::objectmodel::ComponentState;
