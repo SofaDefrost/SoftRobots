@@ -95,10 +95,6 @@ protected:
     Data<type::vector<double>>                    d_delta;
 
     ////////////////////////// Inherited attributes ////////////////////////////
-    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    /// Bring inherited attributes and function in the current lookup context.
-    /// otherwise any access to the base::attribute would require
-    /// the "this->" approach.
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::m_constraintId ;
     using SoftRobotsConstraint<DataTypes>::d_componentState ;
