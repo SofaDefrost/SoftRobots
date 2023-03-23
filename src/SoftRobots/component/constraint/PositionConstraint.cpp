@@ -114,11 +114,6 @@ void PositionForceConstraintResolution::resolution(int line, double** w, double*
 
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
-// Registering the component
-// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-RegisterObject("description") + .add<> : Register the component
-// 2-.add<>(true) : Set default template
-
 int PositionConstraintClass = RegisterObject("Simulate a Position.")
 .add< PositionConstraint<Vec3Types> >(true)
 .add< PositionConstraint<Vec2Types> >()
