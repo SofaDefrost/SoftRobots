@@ -89,7 +89,7 @@ public:
 
 protected:
     Data<type::vector<unsigned int> >             d_indices;
-    Data<double>                                  d_weight;
+    Data<Real>                                  d_weight;
     Data<VecDeriv>                                d_directions;
     Data<Vec<Deriv::total_size,bool>>             d_useDirections;
     Data<type::vector<double>>                    d_delta;
