@@ -91,7 +91,7 @@ protected:
     Data<type::vector<unsigned int> >             d_indices;
     Data<Real>                                  d_weight;
     Data<VecDeriv>                                d_directions;
-    Data<Vec<Deriv::total_size,bool>>             d_useDirections;
+    Data<sofa::type::fixed_array<Deriv::total_size,bool>>             d_useDirections;
     Data<type::vector<Real>>                    d_delta;
 
     ////////////////////////// Inherited attributes ////////////////////////////
