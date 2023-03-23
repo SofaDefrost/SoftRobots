@@ -80,7 +80,7 @@ PositionConstraint<DataTypes>::PositionConstraint(MechanicalState* object)
                                   "If unspecified the default value is {0}"))
 
     , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
-                                          "displacement = the contstraint will impose the displacement provided in data value[valueIndex] \n"
+                                          "displacement = the constraint will impose the displacement provided in data value[valueIndex] \n"
                                           "force = the contstraint will impose the force provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
