@@ -79,10 +79,6 @@ void PositionModel<Rigid3Types>::drawPoints(const VisualParams* vparams, const s
     vparams->drawTool()->drawPoints(pointsVec3, size, color);
 }
 
-// Force template specialization for the most common sofa type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 using namespace sofa::defaulttype;
 template class PositionModel<Vec3Types>;
 template class PositionModel<Rigid3Types>;
