@@ -246,8 +246,7 @@ void PositionModel<DataTypes>::storeResults(vector<double> &delta)
 template<class DataTypes>
 void PositionModel<DataTypes>::setDefaultDirections()
 {
-    VecDeriv directions;
-    directions.resize(Deriv::total_size);
+    VecDeriv directions(Deriv::total_size);
     for(Size i=0; i<Deriv::total_size; i++)
         directions[i][i] = 1.;
     d_directions.setValue(directions);
