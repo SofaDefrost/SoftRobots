@@ -118,12 +118,8 @@ void PositionModel<DataTypes>::internalInit()
     }
     else
     {
-        int count = 0;
-        for(Size i=0; i<Deriv::total_size; i++)
-            if(d_useDirections.getValue()[i])
-                count++;
-
-        if(count==0)
+        const auto useDirections = sofa::helper::getReadAccessor(d_useDirections);
+        if (std::find(useDirections.begin(), useDirections().end(), true) == useDirections.cend())
         {
             setDefaultUseDirections();
             msg_warning(this) << "No direction given in useDirection. Set default all.";
