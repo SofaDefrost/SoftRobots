@@ -128,8 +128,6 @@ void PositionModel<defaulttype::Vec2Types>::drawPoints(const VisualParams* vpara
 template<> SOFA_SOFTROBOTS_API
 void PositionModel<defaulttype::Rigid3Types>::drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  type::RGBAColor& color);
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 #if !defined(SOFTROBOTS_POSITIONMODEL_CPP)
 extern template class SOFA_SOFTROBOTS_API PositionModel<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_SOFTROBOTS_API PositionModel<sofa::defaulttype::Vec2Types>;
