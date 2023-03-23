@@ -253,8 +253,7 @@ template<class DataTypes>
 void PositionModel<DataTypes>::setDefaultUseDirections()
 {
     Vec<Deriv::total_size,bool> useDirections;
-    for(Size i=0; i<Deriv::total_size; i++)
-        useDirections[i] = true;
+    useDirections.assign(true);
     d_useDirections.setValue(useDirections);
 }
 
