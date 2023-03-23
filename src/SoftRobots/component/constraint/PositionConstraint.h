@@ -93,11 +93,6 @@ protected:
 
 
 
-/**
- * This component simulates a force exerted by a cable to solve an effector constraint.
- * Description can be found at:
- * https://softrobotscomponents.readthedocs.io
-*/
 template< class DataTypes >
 class PositionConstraint : public PositionModel<DataTypes>
 {
