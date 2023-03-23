@@ -165,9 +165,10 @@ void PositionModel<DataTypes>::checkIndicesRegardingState()
         return;
     }
 
-    for(unsigned int i=0; i<d_indices.getValue().size(); i++)
+    const auto& indices = d_indices.getValue();
+    for(unsigned int i=0; i<indices .size(); i++)
     {
-        if (positions.size() <= d_indices.getValue()[i])
+        if (positions.size() <= indices[i])
         {
             msg_error(this) << "Indices at index " << i << " is to large regarding mechanicalState [position] size" ;
             d_componentState = ComponentState::Invalid;
