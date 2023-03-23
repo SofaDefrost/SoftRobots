@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*               SOFA, Simulation Open-Framework Architecture                  *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,13 +16,16 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                           Plugin SoftRobots v1.0                            *
 *                                                                             *
-* This component is not open-source                                           *
+* This plugin is also distributed under the GNU LGPL (Lesser General          *
+* Public License) license with the same conditions than SOFA.                 *
 *                                                                             *
-* Authors: Christian Duriez                                                   *
+* Contributors: Defrost team  (INRIA, University of Lille, CNRS,              *
+*               Ecole Centrale de Lille)                                      *
 *                                                                             *
-* Contact information: contact@sofa-framework.org                             *
+* Contact information: https://project.inria.fr/softrobot/contact/            *
+*                                                                             *
 ******************************************************************************/
 #define SOFTROBOTS_POSITIONMODEL_CPP
 #include <SoftRobots/component/constraint/model/PositionModel.inl>

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*               SOFA, Simulation Open-Framework Architecture                  *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,13 +16,16 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                           Plugin SoftRobots v1.0                            *
 *                                                                             *
-* This component is not open-source                                           *
+* This plugin is also distributed under the GNU LGPL (Lesser General          *
+* Public License) license with the same conditions than SOFA.                 *
 *                                                                             *
-* Authors: Christian Duriez                                                   *
+* Contributors: Defrost team  (INRIA, University of Lille, CNRS,              *
+*               Ecole Centrale de Lille)                                      *
 *                                                                             *
-* Contact information: contact@sofa-framework.org                             *
+* Contact information: https://project.inria.fr/softrobot/contact/            *
+*                                                                             *
 ******************************************************************************/
 #pragma once
 
@@ -111,7 +114,6 @@ void PositionModel<DataTypes>::internalInit()
     else
         normalizeDirections();
 
-
     if(!d_useDirections.isSet())
     {
         setDefaultUseDirections();
@@ -119,7 +121,7 @@ void PositionModel<DataTypes>::internalInit()
     else
     {
         const auto useDirections = sofa::helper::getReadAccessor(d_useDirections);
-        if (std::find(useDirections.begin(), useDirections().end(), true) == useDirections.cend())
+        if (std::find(useDirections.begin(), useDirections.end(), true) == useDirections.end())
         {
             setDefaultUseDirections();
             msg_warning(this) << "No direction given in useDirection. Set default all.";
@@ -206,17 +208,21 @@ void PositionModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cPa
 
     m_constraintId = cIndex;
     MatrixDeriv& column = *cMatrix.beginEdit();
-    sofa::Index sizeIndices = d_indices.getValue().size();
+    const auto indices = sofa::helper::getReadAccessor(d_indices);
+    sofa::Index sizeIndices = indices.size();
+    const auto useDirections = sofa::helper::getReadAccessor(d_useDirections);
+    const auto directions = sofa::helper::getReadAccessor(d_directions);
+    const auto weight = sofa::helper::getReadAccessor(d_weight);
 
     unsigned int index = 0;
     for (unsigned i=0; i<sizeIndices; i++)
     {
         for(Size j=0; j<Deriv::total_size; j++)
         {
-            if(d_useDirections.getValue()[j])
+            if(useDirections[j])
             {
                 MatrixDerivRowIterator rowIterator = column.writeLine(m_constraintId+index);
-                rowIterator.setCol(d_indices.getValue()[i], d_directions.getValue()[j]*d_weight.getValue());
+                rowIterator.setCol(indices[i], directions[j]*weight);
                 index++;
             }
         }
@@ -252,7 +258,7 @@ void PositionModel<DataTypes>::setDefaultDirections()
 template<class DataTypes>
 void PositionModel<DataTypes>::setDefaultUseDirections()
 {
-    Vec<Deriv::total_size,bool> useDirections;
+    Vec<Deriv::total_size, bool> useDirections;
     useDirections.assign(true);
     d_useDirections.setValue(useDirections);
 }
@@ -277,9 +283,10 @@ void PositionModel<DataTypes>::draw(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowInteractionForceFields())
         return;
 
-    vector<Coord> points;
     ReadAccessor<Data<VecCoord> > positions = m_state->readPositions();
     ReadAccessor<Data<type::vector<sofa::Index>> > indices = d_indices;
+    vector<Coord> points;
+    points.reserve(indices.size());
     for (unsigned int i=0; i<indices.size(); i++)
     {
         points.push_back(positions[indices[i]]);
@@ -287,9 +294,5 @@ void PositionModel<DataTypes>::draw(const VisualParams* vparams)
     drawPoints(vparams, points, 10.0f, RGBAColor::green());
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+}
 
