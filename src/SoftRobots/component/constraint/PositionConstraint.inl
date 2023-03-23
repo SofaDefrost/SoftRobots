@@ -81,7 +81,7 @@ PositionConstraint<DataTypes>::PositionConstraint(MechanicalState* object)
 
     , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
                                           "displacement = the constraint will impose the displacement provided in data value[valueIndex] \n"
-                                          "force = the contstraint will impose the force provided in data value[valueIndex] \n"
+                                          "force = the constraint will impose the force provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
     d_force.setGroup("Vector");
