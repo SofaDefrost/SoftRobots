@@ -52,8 +52,8 @@ void PositionModel<Rigid3Types>::normalizeDirections()
     for(unsigned int i=0; i<6; i++)
     {
         directions[i] = d_directions.getValue()[i];
-        Vec<3, Real> vector1 = Vec<3, Real>(directions[i][0],directions[i][1],directions[i][2]);
-        Vec<3, Real> vector2 = Vec<3, Real>(directions[i][3],directions[i][4],directions[i][5]);
+        Vec<3, Real> vector1 {directions[i][0],directions[i][1],directions[i][2]};
+        Vec<3, Real> vector2 {directions[i][3],directions[i][4],directions[i][5]};
         vector1.normalize();
         vector2.normalize();
         directions[i] = Deriv(vector1,vector2);
