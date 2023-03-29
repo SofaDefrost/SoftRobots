@@ -65,11 +65,7 @@ void PositionDisplacementConstraintResolution::resolution(int line, double** w, 
     // da=Waa*(lambda_a) + Sum Wai * lambda_i  = m_imposedDisplacement
     lambda[line] -= (d[line]-m_imposedDisplacement) / m_wActuatorActuator;
 
-    if (lambda[line]<m_minForce)
-        lambda[line]=m_minForce;
-
-    if (lambda[line]>m_maxForce)
-        lambda[line]=m_maxForce;
+    std::clamp(lambda[line], m_minForce, m_maxForce);
 }
 
 
