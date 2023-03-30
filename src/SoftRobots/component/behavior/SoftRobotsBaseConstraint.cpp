@@ -46,95 +46,95 @@ SoftRobotsBaseConstraint::SoftRobotsBaseConstraint()
 {
 }
 
-bool SoftRobotsBaseConstraint::hasDeltaMax()
+bool SoftRobotsBaseConstraint::hasDeltaMax() const
 {
     return m_hasDeltaMax;
 }
 
-bool SoftRobotsBaseConstraint::hasDeltaMin()
+bool SoftRobotsBaseConstraint::hasDeltaMin() const
 {
     return m_hasDeltaMin;
 }
 
-bool SoftRobotsBaseConstraint::hasDeltaEqual()
+bool SoftRobotsBaseConstraint::hasDeltaEqual() const
 {
     return m_hasDeltaEqual;
 }
 
 
 
-bool SoftRobotsBaseConstraint::hasLambdaMax()
+bool SoftRobotsBaseConstraint::hasLambdaMax() const
 {
     return m_hasLambdaMax;
 }
 
-bool SoftRobotsBaseConstraint::hasLambdaMin()
+bool SoftRobotsBaseConstraint::hasLambdaMin() const
 {
     return m_hasLambdaMin;
 }
 
-bool SoftRobotsBaseConstraint::hasLambdaEqual()
+bool SoftRobotsBaseConstraint::hasLambdaEqual() const
 {
     return m_hasLambdaEqual;
 }
 
-bool SoftRobotsBaseConstraint::hasLambdaInit()
+bool SoftRobotsBaseConstraint::hasLambdaInit() const
 {
     return m_hasLambdaInit;
 }
 
 
-bool SoftRobotsBaseConstraint::hasEpsilon()
+bool SoftRobotsBaseConstraint::hasEpsilon() const
 {
     return m_hasEpsilon;
 }
 
 
-SReal SoftRobotsBaseConstraint::getDeltaMax(const size_t i)
+SReal SoftRobotsBaseConstraint::getDeltaMax(const size_t i) const
 {
     return m_deltaMax[i];
 }
 
-SReal SoftRobotsBaseConstraint::getDeltaMin(const size_t i)
+SReal SoftRobotsBaseConstraint::getDeltaMin(const size_t i) const
 {
     return m_deltaMin[i];
 }
 
-SReal SoftRobotsBaseConstraint::getDeltaEqual(const size_t i)
+SReal SoftRobotsBaseConstraint::getDeltaEqual(const size_t i) const
 {
     return m_deltaEqual[i];
 }
 
 
 
-SReal SoftRobotsBaseConstraint::getLambdaMax(const size_t i)
+SReal SoftRobotsBaseConstraint::getLambdaMax(const size_t i) const
 {
     return m_lambdaMax[i];
 }
 
-SReal SoftRobotsBaseConstraint::getLambdaMin(const size_t i)
+SReal SoftRobotsBaseConstraint::getLambdaMin(const size_t i) const
 {
     return m_lambdaMin[i];
 }
 
-SReal SoftRobotsBaseConstraint::getLambdaEqual(const size_t i)
+SReal SoftRobotsBaseConstraint::getLambdaEqual(const size_t i) const
 {
     return m_lambdaEqual[i];
 }
 
-SReal SoftRobotsBaseConstraint::getLambdaInit(const size_t i)
+SReal SoftRobotsBaseConstraint::getLambdaInit(const size_t i) const
 {
     return m_lambdaInit[i];
 }
 
 
-SReal SoftRobotsBaseConstraint::getEpsilon()
+SReal SoftRobotsBaseConstraint::getEpsilon() const
 {
     return m_epsilon;
 }
 
 
-unsigned int SoftRobotsBaseConstraint::getNbLines()
+unsigned int SoftRobotsBaseConstraint::getNbLines() const
 {
     return m_nbLines;
 }
