@@ -34,7 +34,7 @@
 #include <SoftRobots/component/behavior/SoftRobotsBaseConstraint.h>
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa::core::behavior
+namespace SoftRobots
 {
 
 using sofa::core::objectmodel::BaseContext ;
@@ -47,9 +47,8 @@ using sofa::linearalgebra::BaseVector;
  *  This class defines the abstract API common to inverse problem constraints using a given type
  *  of DOFs.
  */
-
 template<class DataTypes>
-class SOFA_SOFTROBOTS_API SoftRobotsConstraint : public SoftRobotsBaseConstraint
+class SoftRobotsConstraint : public sofa::core::behavior::SoftRobotsBaseConstraint
 {
 public:
 
@@ -62,9 +61,9 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowConstIterator MatrixDerivRowConstIterator;
     typedef typename DataTypes::MatrixDeriv::ColConstIterator MatrixDerivColConstIterator;
 
-    typedef Data<VecCoord>		DataVecCoord;
-    typedef Data<VecDeriv>		DataVecDeriv;
-    typedef Data<MatrixDeriv>   DataMatrixDeriv;
+    typedef sofa::Data<VecCoord>		DataVecCoord;
+    typedef sofa::Data<VecDeriv>		DataVecDeriv;
+    typedef sofa::Data<MatrixDeriv>   DataMatrixDeriv;
 
 public:
     //////////////////////////////// Came from BaseObject ///////////////////////////
@@ -74,14 +73,11 @@ public:
     ///< if false, the constraint does nothing
     virtual bool isActive() const;
 
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState() { return m_state; }
-
     /// Construct the constraint violations vector of each constraint
     ///
     /// \param resV is the result vector that contains the whole constraint violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void getConstraintViolation(const ConstraintParams* cParams,
+    void getConstraintViolation(const sofa::core::ConstraintParams* cParams,
                                 BaseVector *resV) override;
 
     /// Construct the constraint violations vector of each constraint
@@ -92,7 +88,7 @@ public:
     ///
     /// This is the method that should be implemented by the component
     using SoftRobotsBaseConstraint::getConstraintViolation; // to avoid warning about hidden overloaded virtual function
-    virtual void getConstraintViolation(const ConstraintParams* cParams,
+    virtual void getConstraintViolation(const sofa::core::ConstraintParams* cParams,
                                         BaseVector *resV,
                                         const BaseVector *Jdx) = 0;
 
@@ -103,8 +99,8 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// Warning: is constraint matrix is built with the current position. Free configuration available in cParams
-    void buildConstraintMatrix(const ConstraintParams* cParams,
-                               MultiMatrixDerivId cId,
+    void buildConstraintMatrix(const sofa::core::ConstraintParams* cParams,
+                               sofa::core::MultiMatrixDerivId cId,
                                unsigned int &cIndex) override;
 
     /// Construct the Jacobian Matrix
@@ -115,37 +111,39 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams,
+    virtual void buildConstraintMatrix(const sofa::core::ConstraintParams* cParams,
                                        DataMatrixDeriv &c,
                                        unsigned int &cIndex,
                                        const DataVecCoord &x) = 0;
 
 
-    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const linearalgebra::BaseVector* lambda) override;
+    void storeLambda(const sofa::core::ConstraintParams* cParams, sofa::core::MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
 
 
 protected:
-    Data<Real> d_endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    sofa::Data<Real> d_endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
 
-    SoftRobotsConstraint(MechanicalState<DataTypes> *mm = NULL);
+    SoftRobotsConstraint(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
     ~SoftRobotsConstraint() override;
 
-    MechanicalState<DataTypes> *m_state; ///< Associated mechanical state
+    sofa::core::behavior::MechanicalState<DataTypes> *m_state { nullptr }; ///< Associated mechanical state
 
 private:
-    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda);
+    void storeLambda(const sofa::core::ConstraintParams* cParams, sofa::Data<VecDeriv>& resId, const sofa::Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda);
 };
 
 
-// Force template specialization for the most common sofa float related type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
+#if !defined(SOFTROBOTS_SOFTROBOTSCONSTRAINT_CPP)
+extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Rigid3Types>;
+#endif
+} // namespace SoftRobots
 
-extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Vec3Types>;
-extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Vec2Types>;
-extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Vec1Types>;
-extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<defaulttype::Rigid3Types>;
-
-} // namespace sofa::core::behavior
+namespace sofa::core::behavior
+{
+    template <class DataTypes>
+    using SoftRobotsConstraint = SoftRobots::SoftRobotsConstraint<DataTypes>;
+}
 

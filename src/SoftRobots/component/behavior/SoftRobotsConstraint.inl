@@ -34,14 +34,14 @@
 
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
-namespace sofa::core::behavior
+namespace SoftRobots
 {
 
 using sofa::linearalgebra::FullVector;
-using helper::ReadAccessor;
+using sofa::helper::ReadAccessor;
 
 template<class DataTypes>
-SoftRobotsConstraint<DataTypes>::SoftRobotsConstraint(MechanicalState<DataTypes> *mm)
+SoftRobotsConstraint<DataTypes>::SoftRobotsConstraint(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : d_endTime( initData(&d_endTime,(Real)-1, "endTime",
                           "The SoftRobotsConstraint stops acting after the given value.\n"
                           "Use a negative value for infinite SoftRobotsConstraints") )
@@ -73,7 +73,7 @@ void SoftRobotsConstraint<DataTypes>::init()
     if(getContext()==nullptr)
         dmsg_error() << "A constraint assumes that there is a valid context. Please fix your code. " ;
 
-    m_state = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    m_state = dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
 
 
@@ -84,14 +84,14 @@ void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const sofa::core::C
     if (cParams)
     {
         const DataVecCoord& xfree = *cParams->readX(m_state);
-        ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
+        ReadAccessor<sofa::Data<VecCoord>> x = m_state->readPositions();
 
         VecDeriv dx;
         dx.resize(m_state->getSize());
         for(unsigned int i=0; i<dx.size(); i++)
             dx[i] = DataTypes::coordDifference(xfree.getValue()[i],x[i]);
 
-        const Data<MatrixDeriv> *J = cParams->j()[m_state].read();
+        const sofa::Data<MatrixDeriv> *J = cParams->j()[m_state].read();
         FullVector<Real> Jdx;
         Jdx.resize(m_nbLines);
         Jdx.clear();
@@ -108,8 +108,8 @@ void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const sofa::core::C
 
 
 template<class DataTypes>
-void SoftRobotsConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams,
-                                                            MultiMatrixDerivId cId,
+void SoftRobotsConstraint<DataTypes>::buildConstraintMatrix(const sofa::core::ConstraintParams* cParams,
+                                                            sofa::core::MultiMatrixDerivId cId,
                                                             unsigned int &cIndex)
 {
     if (cParams)
@@ -122,8 +122,8 @@ void SoftRobotsConstraint<DataTypes>::buildConstraintMatrix(const ConstraintPara
 
 
 template<class DataTypes>
-void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
-                                                  MultiVecDerivId res,
+void SoftRobotsConstraint<DataTypes>::storeLambda(const sofa::core::ConstraintParams* cParams,
+                                                  sofa::core::MultiVecDerivId res,
                                                   const BaseVector* lambda)
 {
     if (cParams)
@@ -132,9 +132,9 @@ void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParam
 
 
 template<class DataTypes>
-void SoftRobotsConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
-                                                  Data<VecDeriv>& result,
-                                                  const Data<MatrixDeriv>& jacobian,
+void SoftRobotsConstraint<DataTypes>::storeLambda(const sofa::core::ConstraintParams* cParams,
+                                                  sofa::Data<VecDeriv>& result,
+                                                  const sofa::Data<MatrixDeriv>& jacobian,
                                                   const BaseVector* lambda)
 {
     SOFA_UNUSED(cParams);
