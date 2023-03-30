@@ -42,7 +42,7 @@ using namespace sofa::helper;
 using namespace sofa::core;
 
 //----------- Displacement constraint --------------
-CableDisplacementConstraintResolution::CableDisplacementConstraintResolution(const double& imposedDisplacement, const double &min, const double &max)
+CableDisplacementConstraintResolution::CableDisplacementConstraintResolution(const SReal& imposedDisplacement, const SReal &min, const SReal &max)
     : sofa::core::behavior::ConstraintResolution(1)
     , m_imposedDisplacement(imposedDisplacement)
     , m_minForce(min)
@@ -50,14 +50,14 @@ CableDisplacementConstraintResolution::CableDisplacementConstraintResolution(con
 { }
 
 
-void CableDisplacementConstraintResolution::init(int line, double** w, double * lambda)
+void CableDisplacementConstraintResolution::init(int line, SReal** w, SReal * lambda)
 {
     SOFA_UNUSED(lambda);
     m_wActuatorActuator = w[line][line];
 }
 
 
-void CableDisplacementConstraintResolution::resolution(int line, double** w, double* d, double* lambda, double* dfree)
+void CableDisplacementConstraintResolution::resolution(int line, SReal** w, SReal* d, SReal* lambda, SReal* dfree)
 {
     SOFA_UNUSED(dfree);
     SOFA_UNUSED(w);
@@ -74,7 +74,7 @@ void CableDisplacementConstraintResolution::resolution(int line, double** w, dou
 
 
 //--------------- Force constraint -------------
-CableForceConstraintResolution::CableForceConstraintResolution(const double &imposedForce, const double& min, const double& max)
+CableForceConstraintResolution::CableForceConstraintResolution(const SReal &imposedForce, const SReal& min, const SReal& max)
     : ConstraintResolution(1)
     , m_imposedForce(imposedForce)
     , m_minDisplacement(min)
@@ -82,18 +82,18 @@ CableForceConstraintResolution::CableForceConstraintResolution(const double &imp
 { }
 
 
-void CableForceConstraintResolution::init(int line, double** w, double * lambda)
+void CableForceConstraintResolution::init(int line, SReal** w, SReal * lambda)
 {
     SOFA_UNUSED(lambda);
     m_wActuatorActuator = w[line][line];
 }
 
-void CableForceConstraintResolution::resolution(int line, double** w, double* d, double* lambda, double* dfree)
+void CableForceConstraintResolution::resolution(int line, SReal** w, SReal* d, SReal* lambda, SReal* dfree)
 {
     SOFA_UNUSED(dfree);
     SOFA_UNUSED(w);
 
-    double displacement = m_wActuatorActuator*m_imposedForce + d[line];
+    SReal displacement = m_wActuatorActuator*m_imposedForce + d[line];
 
     if (displacement<m_minDisplacement)
     {
