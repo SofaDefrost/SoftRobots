@@ -31,13 +31,7 @@
 
 #include <SoftRobots/component/constraint/PartialRigidificationConstraint.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using defaulttype::Rigid3dTypes;
@@ -117,10 +111,5 @@ void PartialRigidificationConstraint<DataTypes>::getConstraintResolution(std::ve
     // Indicates the size of the block on which the constraint resoluation works
     offset += 6;
 }
-
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::constraintset
 

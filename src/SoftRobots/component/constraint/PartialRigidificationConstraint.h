@@ -30,18 +30,14 @@
 
 #pragma once
 
+#include <SoftRobots/component/initSoftRobots.h>
 #include <sofa/core/behavior/Constraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/linearalgebra/BaseVector.h>
 
-namespace sofa
+namespace sofa::component::constraintset
 {
 
-namespace component
-{
-
-namespace constraintset
-{
 using sofa::core::behavior::ConstraintResolution ;
 using sofa::core::ConstraintParams ;
 using sofa::core::behavior::Constraint ;
@@ -112,14 +108,8 @@ private:
     ////////////////////////////////////////////////////////////////////////////
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class PartialRigidificationConstraint<sofa::defaulttype::Rigid3Types>;
-
-
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+#if !defined(SOFTROBOTS_PARTIALRIGIDIFICATIONCONSTRAINT_CPP)
+extern template class SOFA_SOFTROBOTS_API PartialRigidificationConstraint<sofa::defaulttype::Rigid3Types>;
+#endif
+} // namespace sofa::component::constraintset
 
