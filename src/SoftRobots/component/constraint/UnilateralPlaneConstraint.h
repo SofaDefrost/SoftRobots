@@ -38,13 +38,7 @@
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using sofa::core::visual::VisualParams;
@@ -63,8 +57,8 @@ public:
     UnilateralPlaneConstraintResolution(const unsigned int nbLines) ;
 
     /////////////// Inherited from ConstraintResolution ////////////
-    void init(int line, double** w, double* force) override;
-    void resolution(int line, double** w, double* d, double* force, double* dFree) override;
+    void init(int line, SReal** w, SReal* force) override;
+    void resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dFree) override;
     ////////////////////////////////////////////////////////////////
 };
 
@@ -147,12 +141,8 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
+#if !defined(SOFTROBOTS_UNILATERALPLANECONSTRAINT_CPP)
 extern template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
-
-
-} // namespace constraintset
-
-} // namespace component
-
+#endif
 } // namespace sofa
 

@@ -27,7 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
+#define SOFTROBOTS_SURFACEPRESSURECONSTRAINT_CPP
 #include <SoftRobots/component/constraint/SurfacePressureConstraint.inl>
 
 #include <sofa/core/ObjectFactory.h>
@@ -43,7 +43,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::core;
 
-SurfacePressureConstraintResolution::SurfacePressureConstraintResolution(const double& imposedPressure, const double &minVolumeGrowth, const double &maxVolumeGrowth)
+SurfacePressureConstraintResolution::SurfacePressureConstraintResolution(const SReal& imposedPressure, const SReal &minVolumeGrowth, const SReal &maxVolumeGrowth)
     : ConstraintResolution(1)
     , m_imposedPressure(imposedPressure)
     , m_minVolumeGrowth(minVolumeGrowth)
@@ -51,14 +51,14 @@ SurfacePressureConstraintResolution::SurfacePressureConstraintResolution(const d
 {
 }
 
-void SurfacePressureConstraintResolution::init(int line, double**w, double*force)
+void SurfacePressureConstraintResolution::init(int line, SReal**w, SReal*force)
 {
     SOFA_UNUSED(force);
 
     m_wActuatorActuator = w[line][line];
 }
 
-void SurfacePressureConstraintResolution::resolution(int line, double** w, double* d, double* force, double* dfree)
+void SurfacePressureConstraintResolution::resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dfree)
 {
     SOFA_UNUSED(w);
     SOFA_UNUSED(d);
@@ -88,7 +88,7 @@ void SurfacePressureConstraintResolution::resolution(int line, double** w, doubl
 
 /////////////////////////////////// VolumeGrowthConstraintResolution ///////////////////////////////////////
 
-VolumeGrowthConstraintResolution::VolumeGrowthConstraintResolution(const double &imposedVolumeGrowth, const double &minPressure, const double &maxPressure)
+VolumeGrowthConstraintResolution::VolumeGrowthConstraintResolution(const SReal &imposedVolumeGrowth, const SReal &minPressure, const SReal &maxPressure)
     : ConstraintResolution(1)
     , m_imposedVolumeGrowth(imposedVolumeGrowth)
     , m_minPressure(minPressure)
@@ -96,14 +96,14 @@ VolumeGrowthConstraintResolution::VolumeGrowthConstraintResolution(const double 
 {
 }
 
-void VolumeGrowthConstraintResolution::init(int line, double**w, double*force)
+void VolumeGrowthConstraintResolution::init(int line, SReal**w, SReal*force)
 {
     SOFA_UNUSED(force);
 
     m_wActuatorActuator = w[line][line];
 }
 
-void VolumeGrowthConstraintResolution::resolution(int line, double** w, double* d, double* lambda, double* dfree)
+void VolumeGrowthConstraintResolution::resolution(int line, SReal** w, SReal* d, SReal* lambda, SReal* dfree)
 {
     SOFA_UNUSED(dfree);
     SOFA_UNUSED(w);
@@ -137,7 +137,7 @@ int SurfacePressureConstraintClass = core::RegisterObject("This component constr
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-template class SurfacePressureConstraint<Vec3Types>;
+template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3Types>;
 
 
 }
