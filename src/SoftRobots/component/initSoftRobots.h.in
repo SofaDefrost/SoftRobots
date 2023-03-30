@@ -44,9 +44,10 @@
 #cmakedefine01 SOFTROBOTS_HAVE_SOFAPYTHON3
 #cmakedefine01 SOFTROBOTS_HAVE_SOFA_GL
 
-
-/** \mainpage
-  This is the plugin for the control of soft robots
-  */
+namespace SoftRobots
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+}
 
 #endif // INITSOFTROBOTS_H

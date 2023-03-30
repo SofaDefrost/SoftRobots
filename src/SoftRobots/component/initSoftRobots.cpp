@@ -35,9 +35,7 @@ using sofa::helper::system::PluginManager;
 
 #include <fstream>
 
-namespace sofa
-{
-namespace component
+namespace SoftRobots
 {
 
 extern "C" {
@@ -63,18 +61,16 @@ void initExternalModule()
     {
         PluginManager::getInstance().loadPlugin("STLIB") ;
     }
-
-    //SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > test;
 }
 
 const char* getModuleName()
 {
-    return "SoftRobots";
+    return MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return "1.0";
+    return MODULE_VERSION;
 }
 
 const char* getModuleLicense()
@@ -90,12 +86,10 @@ const char* getModuleDescription()
 const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
-    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
     return classes.c_str();
 }
-
-} // namespace component
-} // namespace sofa
+} // namespace SoftRobots
 
 SOFA_LINK_CLASS(AnimationEditor)
 SOFA_LINK_CLASS(DataVariationLimiter)
