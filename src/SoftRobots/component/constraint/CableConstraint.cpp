@@ -27,7 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
+#define SOFTROBOTS_CABLECONSTRAINT_CPP
 
 #include <SoftRobots/component/constraint/CableConstraint.inl>
 
@@ -131,8 +131,8 @@ int CableConstraintClass = RegisterObject("Simulate a cable.")
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-template class CableConstraint<Vec3Types>;
-template class CableConstraint<Vec2Types>;
+template class SOFA_SOFTROBOTS_API CableConstraint<Vec3Types>;
+template class SOFA_SOFTROBOTS_API CableConstraint<Vec2Types>;
 //template class CableConstraint<Rigid3Types>;
 
 

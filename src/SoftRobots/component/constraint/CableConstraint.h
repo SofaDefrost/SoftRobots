@@ -158,14 +158,14 @@ protected:
     void internalInit();
 
 private:
-    void setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce);
-    void setUpForceLimits(double& imposedValue, double& minDisplacement, double& maxDisplacement);
+    void setUpDisplacementLimits(Real& imposedValue, Real& minForce, Real& maxForce);
+    void setUpForceLimits(Real& imposedValue, Real& minDisplacement, Real& maxDisplacement);
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class CableConstraint<sofa::defaulttype::Vec3Types>;
-
+#if !defined(SOFTROBOTS_CABLECONSTRAINT_CPP)
+    extern template class SOFA_SOFTROBOTS_API CableConstraint<sofa::defaulttype::Vec3Types>;
+    extern template class SOFA_SOFTROBOTS_API CableConstraint<sofa::defaulttype::Vec2Types>;
+#endif
 
 } // namespace constraintset
 

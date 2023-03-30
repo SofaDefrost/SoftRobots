@@ -111,12 +111,12 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
 
     SOFA_UNUSED(cParam);
 
-    double imposedValue=d_value.getValue()[d_valueIndex.getValue()];
+    Real imposedValue=d_value.getValue()[d_valueIndex.getValue()];
 
     if(d_valueType.getValue().getSelectedItem() == "displacement") // displacement
     {
-        double maxForce = std::numeric_limits<double>::max();
-        double minForce = -maxForce;
+        Real maxForce = std::numeric_limits<Real>::max();
+        Real minForce = -maxForce;
         setUpDisplacementLimits(imposedValue,minForce,maxForce);
 
         CableDisplacementConstraintResolution *cr=  new CableDisplacementConstraintResolution(imposedValue, minForce, maxForce);
@@ -124,8 +124,8 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
     }
     else // force
     {
-        double maxDisplacement = std::numeric_limits<double>::max();
-        double minDisplacement = -maxDisplacement;
+        Real maxDisplacement = std::numeric_limits<Real>::max();
+        Real minDisplacement = -maxDisplacement;
         setUpForceLimits(imposedValue,minDisplacement,maxDisplacement);
 
         CableForceConstraintResolution *cr=  new CableForceConstraintResolution(imposedValue, minDisplacement, maxDisplacement);
@@ -134,11 +134,11 @@ void CableConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
 }
 
 template<class DataTypes>
-void CableConstraint<DataTypes>::setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce)
+void CableConstraint<DataTypes>::setUpDisplacementLimits(Real& imposedValue, Real& minForce, Real& maxForce)
 {
     if(d_maxDispVariation.isSet())
     {
-        double displacement = d_displacement.getValue();
+        Real displacement = d_displacement.getValue();
         if(imposedValue > displacement && imposedValue-displacement>d_maxDispVariation.getValue())
             imposedValue = displacement+d_maxDispVariation.getValue();
 
@@ -159,7 +159,7 @@ void CableConstraint<DataTypes>::setUpDisplacementLimits(double& imposedValue, d
 }
 
 template<class DataTypes>
-void CableConstraint<DataTypes>::setUpForceLimits(double& imposedValue, double& minDisplacement, double& maxDisplacement)
+void CableConstraint<DataTypes>::setUpForceLimits(Real& imposedValue, Real& minDisplacement, Real& maxDisplacement)
 {
     if(d_maxForce.isSet() && imposedValue>d_maxForce.getValue())
         imposedValue = d_maxForce.getValue();
