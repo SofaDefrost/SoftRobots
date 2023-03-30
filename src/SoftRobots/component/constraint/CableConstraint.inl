@@ -56,7 +56,7 @@ CableConstraint<DataTypes>::CableConstraint(MechanicalState* object)
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"displacement","force"), "valueType",
+    , d_valueType(initData(&d_valueType, {"displacement","force"}, "valueType",
                                           "displacement = the contstraint will impose the displacement provided in data value[valueIndex] \n"
                                           "force = the contstraint will impose the force provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is displacement"))
