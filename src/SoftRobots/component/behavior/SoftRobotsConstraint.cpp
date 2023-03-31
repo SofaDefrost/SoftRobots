@@ -41,4 +41,4 @@ template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec1Types>;
 template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid3Types>;
 
 
-} // SoftRobots
+} // softrobots

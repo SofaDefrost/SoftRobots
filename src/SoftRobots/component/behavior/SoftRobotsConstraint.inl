@@ -143,5 +143,5 @@ void SoftRobotsConstraint<DataTypes>::storeLambda(const sofa::core::ConstraintPa
     j.multTransposeBaseVector(res, lambda ); // lambda is a vector of scalar value so block size is one.
 }
 
-} // namespace sofa::core::behavior
+} // namespace softrobots
 
