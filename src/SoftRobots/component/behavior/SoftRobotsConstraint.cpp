@@ -30,7 +30,7 @@
 #define SOFTROBOTS_SOFTROBOTSCONSTRAINT_CPP
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.inl>
 
-namespace SoftRobots
+namespace softrobots
 {
 
 using namespace sofa::defaulttype;

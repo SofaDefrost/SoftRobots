@@ -34,7 +34,7 @@
 #include <SoftRobots/component/behavior/SoftRobotsBaseConstraint.h>
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace SoftRobots
+namespace softrobots
 {
 
 using sofa::core::objectmodel::BaseContext ;
@@ -144,6 +144,6 @@ extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype
 namespace sofa::core::behavior
 {
     template <class DataTypes>
-    using SoftRobotsConstraint = SoftRobots::SoftRobotsConstraint<DataTypes>;
+    using SoftRobotsConstraint = softrobots::SoftRobotsConstraint<DataTypes>;
 }
 

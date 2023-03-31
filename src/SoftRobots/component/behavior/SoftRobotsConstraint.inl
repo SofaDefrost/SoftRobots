@@ -34,7 +34,7 @@
 
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
-namespace SoftRobots
+namespace softrobots
 {
 
 using sofa::linearalgebra::FullVector;

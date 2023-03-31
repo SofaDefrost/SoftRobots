@@ -35,7 +35,7 @@ using sofa::helper::system::PluginManager;
 
 #include <fstream>
 
-namespace SoftRobots
+namespace softrobots
 {
 
 extern "C" {
