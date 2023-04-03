@@ -134,8 +134,11 @@ void PositionConstraint<DataTypes>::getConstraintViolation(const ConstraintParam
     SOFA_UNUSED(cParams);
 
     ReadAccessor<sofa::Data<VecCoord>> x = m_state->readPositions() ;
-    ReadAccessor<sofa::Data<sofa::type::vector<sofa::Index>> > indices = d_indices;
-    sofa::Index sizeIndices = d_indices.getValue().size();
+    const auto& useDirections = sofa::helper::getReadAccessor(d_useDirections);
+    const auto& directions = sofa::helper::getReadAccessor(d_directions);
+    const auto& weight = sofa::helper::getReadAccessor(d_weight);
+    const auto& indices = sofa::helper::getReadAccessor(d_indices);
+    sofa::Index sizeIndices = indices.size();
 
     int index = 0;
     for (unsigned int i=0; i<sizeIndices; i++)
@@ -146,9 +149,9 @@ void PositionConstraint<DataTypes>::getConstraintViolation(const ConstraintParam
         Deriv d = DataTypes::coordDifference(pos, pos0);
 
         for(sofa::Size j=0; j<DataTypes::Deriv::total_size; j++)
-            if(d_useDirections.getValue()[j])
+            if(useDirections[j])
             {
-                Real dfree = Jdx->element(index) + d*d_directions.getValue()[j]*d_weight.getValue();
+                Real dfree = Jdx->element(index) + d*directions[j]*weight;
                 resV->set(m_constraintId+index, dfree);
                 index++;
             }

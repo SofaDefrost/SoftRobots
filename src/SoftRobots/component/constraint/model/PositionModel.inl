@@ -208,11 +208,11 @@ void PositionModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cPa
 
     m_constraintId = cIndex;
     MatrixDeriv& column = *cMatrix.beginEdit();
-    const auto indices = sofa::helper::getReadAccessor(d_indices);
+    const auto& indices = sofa::helper::getReadAccessor(d_indices);
     sofa::Index sizeIndices = indices.size();
-    const auto useDirections = sofa::helper::getReadAccessor(d_useDirections);
-    const auto directions = sofa::helper::getReadAccessor(d_directions);
-    const auto weight = sofa::helper::getReadAccessor(d_weight);
+    const auto& useDirections = sofa::helper::getReadAccessor(d_useDirections);
+    const auto& directions = sofa::helper::getReadAccessor(d_directions);
+    const auto& weight = sofa::helper::getReadAccessor(d_weight);
 
     unsigned int index = 0;
     for (unsigned i=0; i<sizeIndices; i++)
