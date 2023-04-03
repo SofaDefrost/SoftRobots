@@ -33,13 +33,7 @@
 
 using sofa::helper::OptionsGroup;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace softrobots::constraintset
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -102,7 +96,7 @@ void PositionConstraint<DataTypes>::init()
 
     internalInit();
 
-    ReadAccessor<Data<VecCoord> > x = m_state->readPositions();
+    ReadAccessor<sofa::Data<VecCoord> > x = m_state->readPositions();
     m_x0 = x;
 }
 
@@ -117,7 +111,7 @@ void PositionConstraint<DataTypes>::internalInit()
 {
     if(d_value.getValue().size()==0)
     {
-        WriteAccessor<Data<vector<Real>>> value = d_value;
+        WriteAccessor<sofa::Data<vector<Real>>> value = d_value;
         value.resize(1);
     }
 
@@ -139,8 +133,8 @@ void PositionConstraint<DataTypes>::getConstraintViolation(const ConstraintParam
 
     SOFA_UNUSED(cParams);
 
-    ReadAccessor<Data<VecCoord>> x = m_state->readPositions() ;
-    ReadAccessor<Data<type::vector<sofa::Index>> > indices = d_indices;
+    ReadAccessor<sofa::Data<VecCoord>> x = m_state->readPositions() ;
+    ReadAccessor<sofa::Data<sofa::type::vector<sofa::Index>> > indices = d_indices;
     sofa::Index sizeIndices = d_indices.getValue().size();
 
     int index = 0;
@@ -151,7 +145,7 @@ void PositionConstraint<DataTypes>::getConstraintViolation(const ConstraintParam
 
         Deriv d = DataTypes::coordDifference(pos, pos0);
 
-        for(Size j=0; j<DataTypes::Deriv::total_size; j++)
+        for(sofa::Size j=0; j<DataTypes::Deriv::total_size; j++)
             if(d_useDirections.getValue()[j])
             {
                 Real dfree = Jdx->element(index) + d*d_directions.getValue()[j]*d_weight.getValue();
@@ -200,7 +194,7 @@ void PositionConstraint<DataTypes>::getConstraintResolution(const ConstraintPara
 
 template<class DataTypes>
 void PositionConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
-                                                core::MultiVecDerivId res,
+                                                sofa::core::MultiVecDerivId res,
                                                 const sofa::linearalgebra::BaseVector* lambda)
 {
     SOFA_UNUSED(res);
@@ -244,9 +238,5 @@ void PositionConstraint<DataTypes>::setUpForceLimits(double& imposedValue, doubl
 }
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

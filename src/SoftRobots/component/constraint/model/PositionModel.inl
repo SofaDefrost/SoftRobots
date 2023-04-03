@@ -34,7 +34,7 @@
 
 #include <SoftRobots/component/constraint/model/PositionModel.h>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraintset
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -154,7 +154,7 @@ void PositionModel<DataTypes>::internalInit()
 template<class DataTypes>
 void PositionModel<DataTypes>::checkIndicesRegardingState()
 {
-    ReadAccessor<Data<VecCoord> > positions = m_state->readPositions();
+    ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
 
     if(d_indices.getValue().size() > positions.size())
     {
@@ -181,14 +181,14 @@ void PositionModel<DataTypes>::checkIndicesRegardingState()
 template<class DataTypes>
 void PositionModel<DataTypes>::setIndicesDefaultValue()
 {
-    WriteAccessor<Data<vector<unsigned int> > > defaultIndices = d_indices;
+    WriteAccessor<sofa::Data<vector<unsigned int> > > defaultIndices = d_indices;
     defaultIndices.resize(1);
 }
 
 template<class DataTypes>
 void PositionModel<DataTypes>::resizeIndicesRegardingState()
 {
-    WriteAccessor<Data<vector<unsigned int>>> indices = d_indices;
+    WriteAccessor<sofa::Data<vector<unsigned int>>> indices = d_indices;
     indices.resize(m_state->getSize());
 }
 
@@ -217,7 +217,7 @@ void PositionModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cPa
     unsigned int index = 0;
     for (unsigned i=0; i<sizeIndices; i++)
     {
-        for(Size j=0; j<Deriv::total_size; j++)
+        for(sofa::Size j=0; j<Deriv::total_size; j++)
         {
             if(useDirections[j])
             {
@@ -249,7 +249,7 @@ template<class DataTypes>
 void PositionModel<DataTypes>::setDefaultDirections()
 {
     VecDeriv directions(Deriv::total_size);
-    for(Size i=0; i<Deriv::total_size; i++)
+    for(sofa::Size i=0; i<Deriv::total_size; i++)
         directions[i][i] = 1.;
     d_directions.setValue(directions);
 }
@@ -267,7 +267,7 @@ void PositionModel<DataTypes>::setDefaultUseDirections()
 template<class DataTypes>
 void PositionModel<DataTypes>::normalizeDirections()
 {
-    WriteAccessor<Data<VecDeriv>> directions = d_directions;
+    WriteAccessor<sofa::Data<VecDeriv>> directions = d_directions;
     directions.resize(Deriv::total_size);
     for(unsigned int i=0; i<Deriv::total_size; i++)
         directions[i].normalize();
@@ -283,8 +283,8 @@ void PositionModel<DataTypes>::draw(const VisualParams* vparams)
     if (!vparams->displayFlags().getShowInteractionForceFields())
         return;
 
-    ReadAccessor<Data<VecCoord> > positions = m_state->readPositions();
-    ReadAccessor<Data<type::vector<sofa::Index>> > indices = d_indices;
+    ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
+    ReadAccessor<sofa::Data<sofa::type::vector<sofa::Index>> > indices = d_indices;
     vector<Coord> points;
     points.reserve(indices.size());
     for (unsigned int i=0; i<indices.size(); i++)
@@ -294,5 +294,5 @@ void PositionModel<DataTypes>::draw(const VisualParams* vparams)
     drawPoints(vparams, points, 10.0f, RGBAColor::green());
 }
 
-}
+} // namespace
 

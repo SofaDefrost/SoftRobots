@@ -31,17 +31,11 @@
 #include <SoftRobots/component/constraint/model/PositionModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace softrobots::constraintset
 {
 
 using namespace sofa::defaulttype;
-using core::ConstraintParams;
+using sofa::core::ConstraintParams;
 
 
 template<>
@@ -87,8 +81,4 @@ template class PositionModel<Vec3Types>;
 template class PositionModel<Rigid3Types>;
 template class PositionModel<Vec2Types>;
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace

@@ -33,7 +33,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraintset
 {
 
 //////////////////////////////////////PositionConstraintConstraintResolution1Dof/////////////////////////////////////////////

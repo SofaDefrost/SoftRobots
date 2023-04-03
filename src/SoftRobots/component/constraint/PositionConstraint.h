@@ -34,13 +34,7 @@
 
 #include <SoftRobots/component/constraint/model/PositionModel.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace softrobots::constraintset
 {
 using sofa::type::Vec;
 using sofa::type::Vec3d;
@@ -106,11 +100,11 @@ public:
     typedef typename DataTypes::Real Real;
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    typedef Data<VecCoord>		DataVecCoord;
-    typedef Data<VecDeriv>		DataVecDeriv;
-    typedef Data<MatrixDeriv>    DataMatrixDeriv;
+    typedef sofa::Data<VecCoord>		DataVecCoord;
+    typedef sofa::Data<VecDeriv>		DataVecDeriv;
+    typedef sofa::Data<MatrixDeriv>    DataMatrixDeriv;
 
 public:
     PositionConstraint(MechanicalState* object = nullptr);
@@ -126,12 +120,12 @@ public:
                                 BaseVector *resV,
                                 const BaseVector *Jdx) override;
 
-    void getConstraintResolution(const core::ConstraintParams *cParam,
+    void getConstraintResolution(const sofa::core::ConstraintParams *cParam,
                                  std::vector<ConstraintResolution*>& resTab,
                                  unsigned int& offset) override;
 
     void storeLambda(const ConstraintParams* cParams,
-                     core::MultiVecDerivId res,
+                     sofa::core::MultiVecDerivId res,
                      const BaseVector* lambda) override;
     ////////////////////////////////////////////////////////////////
 
@@ -148,20 +142,20 @@ public:
 
 protected:
     //Input data
-    Data<double>                d_force; ///< force applied on the points
-    Data<double>                d_displacement; ///< displacement of the points
+    sofa::Data<double>                d_force; ///< force applied on the points
+    sofa::Data<double>                d_displacement; ///< displacement of the points
 
-    Data<Real>                  d_maxForce; ///< maximum force applied on the points
-    Data<Real>                  d_minForce; ///< minimum force applied on the points
+    sofa::Data<Real>                  d_maxForce; ///< maximum force applied on the points
+    sofa::Data<Real>                  d_minForce; ///< minimum force applied on the points
 
-    Data<Real>                  d_maxPositiveDisplacement; ///< maximum displacement of the points in the positive direction
-    Data<Real>                  d_maxNegativeDisplacement; ///< maximum displacement of the points in the negative direction
+    sofa::Data<Real>                  d_maxPositiveDisplacement; ///< maximum displacement of the points in the positive direction
+    sofa::Data<Real>                  d_maxNegativeDisplacement; ///< maximum displacement of the points in the negative direction
 
-    Data<type::vector< Real > >       d_value;
-    Data<unsigned int>                d_valueIndex;
-    Data<helper::OptionsGroup>        d_valueType;
-                                     // displacement = the constraint will impose the displacement provided in data d_inputValue[d_iputIndex]
-                                     // force = the constraint will impose the force provided in data d_inputValue[d_iputIndex]
+    sofa::Data<sofa::type::vector< Real > > d_value;
+    sofa::Data<unsigned int>                d_valueIndex;
+    sofa::Data<sofa::helper::OptionsGroup>  d_valueType;
+                                            // displacement = the constraint will impose the displacement provided in data d_inputValue[d_iputIndex]
+                                            // force = the constraint will impose the force provided in data d_inputValue[d_iputIndex]
 
     VecCoord                    m_x0;
 
@@ -179,9 +173,5 @@ extern template class PositionConstraint<sofa::defaulttype::Rigid3Types>;
 #endif
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

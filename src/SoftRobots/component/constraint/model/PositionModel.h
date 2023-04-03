@@ -31,14 +31,9 @@
 
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
-namespace sofa
+namespace softrobots::constraintset
 {
 
-namespace component
-{
-
-namespace constraintset
-{
 using sofa::core::behavior::SoftRobotsConstraint ;
 using sofa::core::ConstraintParams ;
 using sofa::linearalgebra::BaseVector ;
@@ -61,12 +56,12 @@ public:
     typedef typename DataTypes::Deriv               Deriv;
     typedef typename DataTypes::MatrixDeriv         MatrixDeriv;
     typedef typename Coord::value_type              Real;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef Data<VecCoord>                          DataVecCoord;
-    typedef Data<VecDeriv>                          DataVecDeriv;
-    typedef Data<MatrixDeriv>                       DataMatrixDeriv;
+    typedef sofa::Data<VecCoord>                          DataVecCoord;
+    typedef sofa::Data<VecDeriv>                          DataVecDeriv;
+    typedef sofa::Data<MatrixDeriv>                       DataMatrixDeriv;
 
 public:
     PositionModel(MechanicalState* object = nullptr);
@@ -87,15 +82,15 @@ public:
 
 
     /////////////// Inherited from BaseSoftRobotsConstraint ////////////////
-    void storeResults(type::vector<double> &delta) override;
+    void storeResults(sofa::type::vector<double> &delta) override;
     ///////////////////////////////////////////////////////////////////////////
 
 protected:
-    Data<type::vector<unsigned int> >             d_indices;
-    Data<Real>                                  d_weight;
-    Data<VecDeriv>                                d_directions;
-    Data<Vec<Deriv::total_size, bool>>             d_useDirections;
-    Data<type::vector<Real>>                    d_delta;
+    sofa::Data<sofa::type::vector<unsigned int> >     d_indices;
+    sofa::Data<Real>                                  d_weight;
+    sofa::Data<VecDeriv>                              d_directions;
+    sofa::Data<Vec<Deriv::total_size, bool>>          d_useDirections;
+    sofa::Data<sofa::type::vector<Real>>              d_delta;
 
     ////////////////////////// Inherited attributes ////////////////////////////
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
@@ -107,7 +102,7 @@ protected:
     void setDefaultDirections();
     void setDefaultUseDirections();
     void normalizeDirections();
-    void drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  type::RGBAColor& color) ;
+    void drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  sofa::type::RGBAColor& color) ;
 
 private:
     void internalInit();
@@ -120,16 +115,16 @@ private:
 
 
 template<> SOFA_SOFTROBOTS_API
-void PositionModel<defaulttype::Rigid3Types>::normalizeDirections();
+void PositionModel<sofa::defaulttype::Rigid3Types>::normalizeDirections();
 
 template<> SOFA_SOFTROBOTS_API
-void PositionModel<defaulttype::Vec3Types>::drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  type::RGBAColor& color);
+void PositionModel<sofa::defaulttype::Vec3Types>::drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  sofa::type::RGBAColor& color);
 
 template<> SOFA_SOFTROBOTS_API
-void PositionModel<defaulttype::Vec2Types>::drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  type::RGBAColor& color);
+void PositionModel<sofa::defaulttype::Vec2Types>::drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  sofa::type::RGBAColor& color);
 
 template<> SOFA_SOFTROBOTS_API
-void PositionModel<defaulttype::Rigid3Types>::drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  type::RGBAColor& color);
+void PositionModel<sofa::defaulttype::Rigid3Types>::drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  sofa::type::RGBAColor& color);
 
 #if !defined(SOFTROBOTS_POSITIONMODEL_CPP)
 extern template class SOFA_SOFTROBOTS_API PositionModel<sofa::defaulttype::Vec3Types>;
@@ -137,9 +132,6 @@ extern template class SOFA_SOFTROBOTS_API PositionModel<sofa::defaulttype::Vec2T
 extern template class SOFA_SOFTROBOTS_API PositionModel<sofa::defaulttype::Rigid3Types>;
 #endif
 
-} // namespace constraintset
+} // namespace
 
-} // namespace component
-
-} // namespace sofa
 
