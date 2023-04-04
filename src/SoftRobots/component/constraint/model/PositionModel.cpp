@@ -31,7 +31,7 @@
 #include <SoftRobots/component/constraint/model/PositionModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace softrobots::constraintset
+namespace softrobots::constraint
 {
 
 using namespace sofa::defaulttype;

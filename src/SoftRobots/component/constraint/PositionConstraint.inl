@@ -33,7 +33,7 @@
 
 using sofa::helper::OptionsGroup;
 
-namespace softrobots::constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::objectmodel::ComponentState;

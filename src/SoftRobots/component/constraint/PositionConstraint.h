@@ -34,7 +34,7 @@
 
 #include <SoftRobots/component/constraint/model/PositionModel.h>
 
-namespace softrobots::constraintset
+namespace softrobots::constraint
 {
 using sofa::type::Vec;
 using sofa::type::Vec3d;

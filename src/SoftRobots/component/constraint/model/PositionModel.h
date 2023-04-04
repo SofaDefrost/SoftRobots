@@ -31,7 +31,7 @@
 
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
-namespace softrobots::constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::behavior::SoftRobotsConstraint ;
