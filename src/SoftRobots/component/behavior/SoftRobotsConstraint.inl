@@ -34,7 +34,7 @@
 
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
-namespace softrobots
+namespace softrobots::behavior
 {
 
 using sofa::linearalgebra::FullVector;
@@ -143,5 +143,5 @@ void SoftRobotsConstraint<DataTypes>::storeLambda(const sofa::core::ConstraintPa
     j.multTransposeBaseVector(res, lambda ); // lambda is a vector of scalar value so block size is one.
 }
 
-} // namespace softrobots
+} // namespace softrobots::behavior
 

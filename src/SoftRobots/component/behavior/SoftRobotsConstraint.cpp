@@ -30,7 +30,7 @@
 #define SOFTROBOTS_SOFTROBOTSCONSTRAINT_CPP
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.inl>
 
-namespace softrobots
+namespace softrobots::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -41,4 +41,4 @@ template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec1Types>;
 template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid3Types>;
 
 
-} // softrobots
+} // softrobots::behavior
