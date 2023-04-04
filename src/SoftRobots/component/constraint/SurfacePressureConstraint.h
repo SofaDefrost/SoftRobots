@@ -35,13 +35,7 @@
 #include <SoftRobots/component/constraint/model/SurfacePressureModel.h>
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 namespace _surfacepressureconstraint_
@@ -55,35 +49,35 @@ namespace _surfacepressureconstraint_
 class VolumeGrowthConstraintResolution : public ConstraintResolution
 {
 public:
-    VolumeGrowthConstraintResolution(const double& imposedVolumeGrowth, const double& minPressure, const double& maxPressure);
+    VolumeGrowthConstraintResolution(const SReal& imposedVolumeGrowth, const SReal& minPressure, const SReal& maxPressure);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    void init(int line, double** w, double *lambda) override;
-    void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
+    void init(int line, SReal** w, SReal *lambda) override;
+    void resolution(int line, SReal** w, SReal* d, SReal* lambda, SReal* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
-    double      m_wActuatorActuator;
-    double      m_imposedVolumeGrowth;
-    double      m_minPressure;
-    double      m_maxPressure;
+    SReal m_wActuatorActuator;
+    SReal m_imposedVolumeGrowth;
+    SReal m_minPressure;
+    SReal m_maxPressure;
 };
 
 class SurfacePressureConstraintResolution : public ConstraintResolution
 {
 public:
-    SurfacePressureConstraintResolution(const double& imposedPressure, const double& minVolumeGrowth, const double& maxVolumeGrowth);
+    SurfacePressureConstraintResolution(const SReal& imposedPressure, const SReal& minVolumeGrowth, const SReal& maxVolumeGrowth);
 
     //////////////////// Inherited from ConstraintResolution ///////////////////
-    void init(int line, double** w, double *force) override;
-    void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+    void init(int line, SReal** w, SReal *force) override;
+    void resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
-    double      m_wActuatorActuator;
-    double      m_imposedPressure;
-    double      m_minVolumeGrowth;
-    double      m_maxVolumeGrowth;
+    SReal m_wActuatorActuator;
+    SReal m_imposedPressure;
+    SReal m_minVolumeGrowth;
+    SReal m_maxVolumeGrowth;
 };
 
 
@@ -161,8 +155,10 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
+#if !defined(SOFTROBOTS_SURFACEPRESSURECONSTRAINT_CPP)
 using defaulttype::Vec3Types;
 extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3Types>;
+#endif
 
 
 }
@@ -170,10 +166,5 @@ extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3Types>;
 using _surfacepressureconstraint_::SurfacePressureConstraint;
 using _surfacepressureconstraint_::SurfacePressureConstraintResolution;
 using _surfacepressureconstraint_::VolumeGrowthConstraintResolution;
-
-} // namespace constraintset
-
-} // namespace component
-
 } // namespace sofa
 

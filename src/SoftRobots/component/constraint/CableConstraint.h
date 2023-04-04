@@ -55,38 +55,38 @@ using sofa::core::behavior::ConstraintResolution;
 class CableDisplacementConstraintResolution : public ConstraintResolution
 {
 public:
-    CableDisplacementConstraintResolution(const double &imposedDisplacement, const double& min, const double& max);
+    CableDisplacementConstraintResolution(const SReal &imposedDisplacement, const SReal& min, const SReal& max);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    void init(int line, double** w, double *lambda) override;
-    void resolution(int line, double** w, double* d, double* lambda, double* dfree) override;
+    void init(int line, SReal** w, SReal *lambda) override;
+    void resolution(int line, SReal** w, SReal* d, SReal* lambda, SReal* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
 
-    double      m_wActuatorActuator;
-    double      m_imposedDisplacement;
-    double      m_minForce;
-    double      m_maxForce;
+    SReal m_wActuatorActuator;
+    SReal m_imposedDisplacement;
+    SReal m_minForce;
+    SReal m_maxForce;
 
 };
 
 class CableForceConstraintResolution : public ConstraintResolution
 {
 public:
-    CableForceConstraintResolution(const double& imposedForce, const double& min, const double& max);
+    CableForceConstraintResolution(const SReal& imposedForce, const SReal& min, const SReal& max);
 
     //////////////////// Inherited from ConstraintResolution ////////////////////
-    void init(int line, double** w, double *force) override;
-    void resolution(int line, double** w, double* d, double* force, double* dfree) override;
+    void init(int line, SReal** w, SReal *force) override;
+    void resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dfree) override;
     /////////////////////////////////////////////////////////////////////////////
 
 protected:
 
-    double      m_wActuatorActuator;
-    double      m_imposedForce;
-    double      m_minDisplacement;
-    double      m_maxDisplacement;
+    SReal m_wActuatorActuator;
+    SReal m_imposedForce;
+    SReal m_minDisplacement;
+    SReal m_maxDisplacement;
 
 };
 
@@ -158,14 +158,14 @@ protected:
     void internalInit();
 
 private:
-    void setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce);
-    void setUpForceLimits(double& imposedValue, double& minDisplacement, double& maxDisplacement);
+    void setUpDisplacementLimits(Real& imposedValue, Real& minForce, Real& maxForce);
+    void setUpForceLimits(Real& imposedValue, Real& minDisplacement, Real& maxDisplacement);
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class CableConstraint<sofa::defaulttype::Vec3Types>;
-
+#if !defined(SOFTROBOTS_CABLECONSTRAINT_CPP)
+    extern template class SOFA_SOFTROBOTS_API CableConstraint<sofa::defaulttype::Vec3Types>;
+    extern template class SOFA_SOFTROBOTS_API CableConstraint<sofa::defaulttype::Vec2Types>;
+#endif
 
 } // namespace constraintset
 

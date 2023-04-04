@@ -31,16 +31,7 @@
 
 #include <SoftRobots/component/constraint/SurfacePressureConstraint.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
-{
-
-namespace _surfacepressureconstraint_
+namespace sofa::component::constraintset::_surfacepressureconstraint_
 {
 
 using sofa::core::objectmodel::ComponentState ;
@@ -59,7 +50,7 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState*
                                   "Index of the value (in InputValue vector) that we want to impose \n"
                                   "If unspecified the default value is {0}"))
 
-    , d_valueType(initData(&d_valueType, OptionsGroup(2,"pressure","volumeGrowth"), "valueType",
+    , d_valueType(initData(&d_valueType, {"pressure","volumeGrowth"}, "valueType",
                                           "volumeGrowth = the contstraint will impose the volume growth provided in data value[valueIndex] \n"
                                           "pressure = the contstraint will impose the pressure provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is pressure"))
@@ -201,12 +192,5 @@ void SurfacePressureConstraint<DataTypes>::setUpPressureLimits(double& imposedVa
     if(d_maxVolumeGrowth.isSet())
         maxVolumeGrowth = d_maxVolumeGrowth.getValue();
 }
-
-}
-
-} // namespace constraintset
-
-} // namespace component
-
 } // namespace sofa
 

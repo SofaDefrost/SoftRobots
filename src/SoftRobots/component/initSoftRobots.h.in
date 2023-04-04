@@ -40,13 +40,23 @@
 #define SOFA_SOFTROBOTS_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#ifdef SOFA_BUILD_SOFTROBOTS
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v23.06", "v23.12", \
+        "Namespace in the plugin SoftRobots is now 'softrobots'.")
+#endif
+
 #cmakedefine01 SOFTROBOTS_HAVE_SOFAPYTHON
 #cmakedefine01 SOFTROBOTS_HAVE_SOFAPYTHON3
 #cmakedefine01 SOFTROBOTS_HAVE_SOFA_GL
 
-
-/** \mainpage
-  This is the plugin for the control of soft robots
-  */
+namespace softrobots
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+}
 
 #endif // INITSOFTROBOTS_H

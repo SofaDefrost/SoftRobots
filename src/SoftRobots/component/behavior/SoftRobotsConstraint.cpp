@@ -27,22 +27,18 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#define SOFTROBOTS_SOFTROBOTSCONSTRAINT_CPP
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.inl>
 
-namespace sofa::core::behavior
+namespace softrobots::behavior
 {
 
 using namespace sofa::defaulttype;
 
-
-// Force template specialization for the most common sofa float related type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-template class SoftRobotsConstraint<Vec3Types>;
-template class SoftRobotsConstraint<Vec2Types>;
-template class SoftRobotsConstraint<Vec1Types>;
-template class SoftRobotsConstraint<Rigid3Types>;
+template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec3Types>;
+template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec2Types>;
+template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Vec1Types>;
+template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<Rigid3Types>;
 
 
-} // namespace
+} // softrobots::behavior

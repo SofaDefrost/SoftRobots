@@ -34,13 +34,7 @@
 
 #include <SoftRobots/component/constraint/UnilateralPlaneConstraint.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace sofa::component::constraintset
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -243,13 +237,8 @@ void UnilateralPlaneConstraint<DataTypes>::drawArrows(const VisualParams* vparam
         normal = -normal;
     normal.normalize();
 
-    RGBAColor color(0.9f,0.4f,0.0f,1.0f);
+    static constexpr RGBAColor color(0.9f,0.4f,0.0f,1.0f);
     vparams->drawTool()->drawArrow((p1+p2+p3)/3., (p1+p2+p3)/3. + normal, 0.1, color, 4);
 }
-
-} // namespace constraintset
-
-} // namespace component
-
 } // namespace sofa
 

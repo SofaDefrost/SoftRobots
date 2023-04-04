@@ -27,7 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-
+#define SOFTROBOTS_UNILATERALPLANECONSTRAINT_CPP
 #include <SoftRobots/component/constraint/UnilateralPlaneConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
@@ -44,14 +44,14 @@ UnilateralPlaneConstraintResolution::UnilateralPlaneConstraintResolution(const u
 {
 }
 
-void UnilateralPlaneConstraintResolution::init(int line, double**w, double*force)
+void UnilateralPlaneConstraintResolution::init(int line, SReal**w, SReal*force)
 {
     SOFA_UNUSED(line);
     SOFA_UNUSED(w);
     SOFA_UNUSED(force);
 }
 
-void UnilateralPlaneConstraintResolution::resolution(int line, double**w, double*d, double*force, double*dFree)
+void UnilateralPlaneConstraintResolution::resolution(int line, SReal**w, SReal*d, SReal*force, SReal*dFree)
 {
     SOFA_UNUSED(dFree);
 
@@ -85,7 +85,7 @@ int UnilateralPlaneConstraintClass = core::RegisterObject("This component is a s
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-template class UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
+template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
 
 
 } // namespace

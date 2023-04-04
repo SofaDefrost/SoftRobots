@@ -62,62 +62,62 @@ public:
     ConstraintType m_constraintType;
 
     /// Returns if the constraint has a maximum value for delta or not
-    bool hasDeltaMax();
+    bool hasDeltaMax() const;
 
     /// Returns if the constraint has a minimum value for delta or not
-    bool hasDeltaMin();
+    bool hasDeltaMin() const;
 
     /// Returns if the constraint has an equal constraint value for delta or not
-    bool hasDeltaEqual();
+    bool hasDeltaEqual() const;
 
 
     /// Returns if the constraint has a maximum value for lambda or not
-    bool hasLambdaMax();
+    bool hasLambdaMax() const;
 
     /// Returns if the constraint has a minimum value for lambda or not
-    bool hasLambdaMin();
+    bool hasLambdaMin() const;
 
     /// Returns if the constraint has an equal constraint value for lambda or not
-    bool hasLambdaEqual();
+    bool hasLambdaEqual() const;
 
     /// Returns if the constraint has an initial value for lambda or not
-    bool hasLambdaInit();
+    bool hasLambdaInit() const;
 
 
     /// Returns if the constraint has an epsilon value that can be used to prioritize the constraint (for actuator with inverse problem)
-    bool hasEpsilon();
+    bool hasEpsilon() const;
 
 
     /// Accessor to maximum value of delta
-    SReal getDeltaMax(const size_t i);
+    SReal getDeltaMax(const size_t i) const;
 
     /// Accessor to minimum value of delta
-    SReal getDeltaMin(const size_t i);
+    SReal getDeltaMin(const size_t i) const;
 
     /// Accessor to equal constraint value of delta
-    SReal getDeltaEqual(const size_t i);
+    SReal getDeltaEqual(const size_t i) const;
 
 
     /// Accessor to maximum value of lambda
-    SReal getLambdaMax(const size_t i);
+    SReal getLambdaMax(const size_t i) const;
 
     /// Accessor to maximum value of lambda
-    SReal getLambdaMin(const size_t i);
+    SReal getLambdaMin(const size_t i) const;
 
     /// Accessor to equal constraint value of lambda
-    SReal getLambdaEqual(const size_t i);
+    SReal getLambdaEqual(const size_t i) const;
 
     /// Accessor to initial value of lambda
-    SReal getLambdaInit(const size_t i);
+    SReal getLambdaInit(const size_t i) const;
 
 
     /// Accessor to epsilon value that can be used to prioritize the constraint (for actuator with inverse problem)
-    SReal getEpsilon();
+    SReal getEpsilon() const;
 
 
 
     /// Accessor to nbLines value
-    unsigned int getNbLines();
+    unsigned int getNbLines() const;
 
     /// Allows the constraint to access to the results. Called from QPInverseProblemSolver.
     virtual void storeResults(type::vector<double> &lambda, type::vector<double> &delta);
