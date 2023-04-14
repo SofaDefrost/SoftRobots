@@ -29,6 +29,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <SoftRobots/component/initSoftRobots.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
@@ -139,5 +140,10 @@ private :
     using ForceField<DataTypes>::d_componentState;
     ////////////////////////////////////////////////////////////////////////////
 };
+
+#if !defined(SOFTROBOTS_PREQUIVALENTSTIFFNESSFORCEFIELD_CPP)
+extern template class SOFA_SOFTROBOTS_API PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types>;
+#endif
+
 } // namespace sofa::component::forcefield
 

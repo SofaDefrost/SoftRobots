@@ -43,9 +43,9 @@ using sofa::type::Vector2;
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 using namespace sofa::defaulttype;
-template class CableModel<Vec3Types>;
+template class SOFA_SOFTROBOTS_API CableModel<Vec3Types>;
 //template class CableModel<Rigid3Types>;
-template class CableModel<Vec2Types>;
+template class SOFA_SOFTROBOTS_API CableModel<Vec2Types>;
 
 
 } // namespace

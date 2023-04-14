@@ -118,9 +118,9 @@ int PositionConstraintClass = RegisterObject("Simulate a Position.")
 ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template class PositionConstraint<Vec3Types>;
-template class PositionConstraint<Vec2Types>;
-template class PositionConstraint<Rigid3Types>;
+template class SOFA_SOFTROBOTS_API PositionConstraint<Vec3Types>;
+template class SOFA_SOFTROBOTS_API PositionConstraint<Vec2Types>;
+template class SOFA_SOFTROBOTS_API PositionConstraint<Rigid3Types>;
 
 
 } // namespace

@@ -29,6 +29,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <SoftRobots/component/initSoftRobots.h>
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
@@ -41,13 +42,7 @@
 #include <sofa/component/mapping/linear/BarycentricMapping.h>
 #include <sofa/core/behavior/ForceField.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 using sofa::type::Vec ;
 using sofa::type::Mat ;
@@ -178,8 +173,8 @@ private :
     ////////////////////////////////////////////////////////////////////////////
 };
 
-
-} // forcefield
-} // component
-} // sofa
+#if !defined(SOFTROBOTS_PIPEFORCEFIELD_CPP)
+extern template class SOFA_SOFTROBOTS_API PipeForceField<Vec3Types>;
+#endif
+} // sofa::component::forcefield
 

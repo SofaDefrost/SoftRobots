@@ -77,8 +77,8 @@ void PositionModel<Rigid3Types>::drawPoints(const VisualParams* vparams, const s
 }
 
 using namespace sofa::defaulttype;
-template class PositionModel<Vec3Types>;
-template class PositionModel<Rigid3Types>;
-template class PositionModel<Vec2Types>;
+template class SOFA_SOFTROBOTS_API PositionModel<Vec3Types>;
+template class SOFA_SOFTROBOTS_API PositionModel<Rigid3Types>;
+template class SOFA_SOFTROBOTS_API PositionModel<Vec2Types>;
 
 } // namespace

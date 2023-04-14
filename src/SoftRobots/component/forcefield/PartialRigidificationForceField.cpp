@@ -27,6 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#define SOFTROBOTS_PARTIALRIGIDIFICATIONFORCEFIELD_CPP
 #include <SoftRobots/component/forcefield/PartialRigidificationForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -54,7 +55,7 @@ int PartialRigidificationForceFieldClass = core::RegisterObject("Partially rigid
 // This goes with the extern template declaration in the .h. Declaring extern template
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-template class PartialRigidificationForceField<Vec3Types, Rigid3Types>;
+template class SOFA_SOFTROBOTS_API PartialRigidificationForceField<Vec3Types, Rigid3Types>;
 
 
 }

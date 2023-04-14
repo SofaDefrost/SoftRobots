@@ -29,6 +29,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <SoftRobots/component/initSoftRobots.h>
 #include <sofa/core/behavior/MixedInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -186,5 +187,10 @@ protected:
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::getContext ;
     ////////////////////////////////////////////////////////////////////////////
 };
+
+#if !defined(SOFTROBOTS_PARTIALRIGIDIFICATIONFORCEFIELD_CPP)
+extern template class SOFA_SOFTROBOTS_API PartialRigidificationForceField<Vec3Types, Rigid3Types>;
+#endif
+
 } // namespace sofa::component::interactionforcefield
 
