@@ -42,7 +42,7 @@ class ServoArm(Sofa.Prefab):
                        translation2=[0, 25, 0])
 
     def setRigidMapping(self, path):
-        self.addObject('RigidRigidMapping', name='mapping', input=path, index=self.indexInput.value)
+        self.addObject('RigidMapping', name='mapping', input=path, index=self.indexInput.value)
 
         visual = self.addChild(VisualModel(visualMeshPath='data/mesh/SG90_servoarm.stl', translation=[0., -25., 0.],
                                            color=[1., 1., 1., 0.75]))

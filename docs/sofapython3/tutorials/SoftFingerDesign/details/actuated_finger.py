@@ -53,7 +53,7 @@ class ActuatedFinger(Sofa.Prefab):
 
         servoArm = arm.ServoMotor.Articulation.ServoWheel.ServoArm
         servoArm.addChild(rigidifiedStruct.RigidParts)
-        servoArm.RigidParts.addObject('RigidRigidMapping', index=0, input=servoArm.dofs.getLinkPath())
+        servoArm.RigidParts.addObject('RigidMapping', index=0, input=servoArm.dofs.getLinkPath())
 
         # Add a fixing box to constrain the other part of the finger
         FixingBox(self, self.elasticMaterial, translation=[10.0e-3, 0.0, 14.0e-3], scale=[15e-3, 25e-3, 6e-3])
