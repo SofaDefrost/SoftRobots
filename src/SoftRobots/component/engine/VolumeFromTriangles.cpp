@@ -42,7 +42,7 @@ int VolumeFromTrianglesClass = RegisterObject("This class computes the volume of
 
         ;
 
-template class VolumeFromTriangles<Vec3Types>;
+template class SOFA_SOFTROBOTS_API VolumeFromTriangles<Vec3Types>;
 
 
 }

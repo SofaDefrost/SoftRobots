@@ -27,6 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#define SOFTROBOTS_PREQUIVALENTSTIFFNESSFORCEFIELD_CPP
 #include <SoftRobots/component/forcefield/PREquivalentStiffnessForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
@@ -50,7 +51,7 @@ int PREquivalentStiffnessForceFieldClass = core::RegisterObject("Partial Rigidif
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 
-template class PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types>;
+template class SOFA_SOFTROBOTS_API PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types>;
 
 
 }

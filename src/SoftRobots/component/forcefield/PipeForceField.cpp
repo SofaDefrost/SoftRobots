@@ -27,6 +27,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#define SOFTROBOTS_PIPEFORCEFIELD_CPP
 #include <SoftRobots/component/forcefield/PipeForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
@@ -51,7 +52,7 @@ int PipeForceFieldClass = core::RegisterObject("This component is used to pull u
 // avoid the code generation of the template for each compilation unit.
 // see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 
-template class PipeForceField<Vec3Types>;
+template class SOFA_SOFTROBOTS_API PipeForceField<Vec3Types>;
 
 
 }
