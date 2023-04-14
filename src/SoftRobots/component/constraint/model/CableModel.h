@@ -33,7 +33,6 @@
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
-#include <sofa/helper/proximity.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa

@@ -32,6 +32,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
 #include <SoftRobots/component/constraint/model/CableModel.h>
+#include <sofa/geometry/proximity/PointTriangle.h>
 
 namespace sofa
 {
@@ -79,7 +80,7 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
 
     , d_cableLength(initData(&d_cableLength, Real(0.0), "cableLength","Computation done at the end of the time step"))
 
-    , d_method(initData(&d_method, sofa::helper::OptionsGroup(3,"point","sphere","geodesic"), "method", "Default is point method. \n"
+    , d_method(initData(&d_method, sofa::helper::OptionsGroup({"point","sphere","geodesic"}), "method", "Default is point method. \n"
                                     "In point method, cable force is applied on a single point. \n"
                                     "Both methods sphere and geodesic are compatible with passing point on a surface only. \n "
                                     "In sphere method, cable force is dispatched in the intersection between a 3D sphere and a surface. \n"
@@ -559,7 +560,6 @@ void CableModel<DataTypes>::getPositionFromTopology(Coord& position, sofa::Index
 template<class DataTypes>
 SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const Triangle& triangle, Coord& projectionOnTriangle)
 {
-    static sofa::helper::DistancePointTri proximitySolver;
     Coord p0 { type::NOINIT };
     Coord p1 { type::NOINIT };
     Coord p2 { type::NOINIT };
@@ -567,7 +567,8 @@ SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const 
     getPositionFromTopology(p1, triangle[1]);
     getPositionFromTopology(p2, triangle[2]);
     Vec3 projection { type::NOINIT };
-    proximitySolver.NewComputation(Vec3(p0), Vec3(p1), Vec3(p2), Vec3(position), projection);
+    SOFA_UNUSED(sofa::geometry::proximity::computeClosestPointOnTriangleToPoint(Vec3(p0), Vec3(p1), Vec3(p2), Vec3(position), projection));
+
     projectionOnTriangle = projection;
     const Real distanceToTriangle = (projectionOnTriangle - position).norm();
     return distanceToTriangle;
