@@ -22,8 +22,7 @@
 //*                                                                             *
 //* Contact information: contact@sofa-framework.org                             *
 //******************************************************************************/
-#ifndef SOFA_CORE_CAMERA_POINTCLOUDPROCESSING_H
-#define SOFA_CORE_CAMERA_POINTCLOUDPROCESSING_H
+#pragma once
 
 #include "PointCloudStreaming.h"
 #include <SoftRobots/component/initSoftRobots.h>
@@ -31,19 +30,13 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <Eigen/Dense>
 
 
 #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace pointcloudprocessing
+namespace softrobots::camera
 {
 
 using sofa::core::objectmodel::BaseObject;
@@ -61,16 +54,16 @@ class PointCloudProcessing : public  BaseObject
         PointCloudProcessing();
         ~PointCloudProcessing() override {}
 
-        void handleEvent(core::objectmodel::Event *event) override;
+        void handleEvent(sofa::core::objectmodel::Event *event) override;
         void init() override;
         void update();
 
         Data<VecCoord> d_effectorPositions;
         Data<VecCoord> d_goalPositions;
         Data<VecCoord> d_normalDirections;
-        Data<type::vector<int>> d_contactLocations;
+        Data<sofa::type::vector<int>> d_contactLocations;
 
-        Data<type::Mat3x4d> d_M;
+        Data<sofa::type::Mat3x4d> d_M;
         Eigen::Matrix4d m_transform;
 
         /// Region growing segmentation tuning
@@ -109,10 +102,5 @@ class PointCloudProcessing : public  BaseObject
 };
 
 
-} // namespace pointcloudprocessing
+} // namespace
 
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_CORE_CAMERA_POINTCLOUDPROCESSING_H
