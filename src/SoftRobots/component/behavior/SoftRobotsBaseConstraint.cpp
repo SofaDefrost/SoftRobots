@@ -29,10 +29,10 @@
 ******************************************************************************/
 #include <SoftRobots/component/behavior/SoftRobotsBaseConstraint.h>
 
-namespace sofa::core::behavior
+namespace softrobots::behavior
 {
 
-using type::vector;
+using sofa::type::vector;
 
 SoftRobotsBaseConstraint::SoftRobotsBaseConstraint()
     : m_hasDeltaMax(false)

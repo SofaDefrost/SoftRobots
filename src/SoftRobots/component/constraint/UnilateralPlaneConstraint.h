@@ -42,7 +42,7 @@ namespace sofa::component::constraintset
 {
 
 using sofa::core::visual::VisualParams;
-using sofa::core::behavior::SoftRobotsConstraint;
+using softrobots::behavior::SoftRobotsConstraint;
 using sofa::core::ConstraintParams;
 using sofa::linearalgebra::BaseVector;
 using sofa::type::Vec;

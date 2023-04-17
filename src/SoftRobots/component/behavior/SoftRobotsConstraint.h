@@ -48,7 +48,7 @@ using sofa::linearalgebra::BaseVector;
  *  of DOFs.
  */
 template<class DataTypes>
-class SoftRobotsConstraint : public sofa::core::behavior::SoftRobotsBaseConstraint
+class SoftRobotsConstraint : public softrobots::behavior::SoftRobotsBaseConstraint
 {
 public:
 
@@ -139,6 +139,7 @@ extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype
 extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype::Rigid3Types>;
 #endif
+
 } // namespace softrobots::behavior
 
 namespace sofa::core::behavior

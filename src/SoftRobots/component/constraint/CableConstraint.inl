@@ -33,13 +33,7 @@
 
 using sofa::helper::OptionsGroup;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -174,9 +168,5 @@ void CableConstraint<DataTypes>::setUpForceLimits(Real& imposedValue, Real& minD
 }
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

@@ -34,14 +34,9 @@
 
 #include <SoftRobots/component/constraint/model/CableModel.h>
 
-namespace sofa
+namespace softrobots::constraint
 {
 
-namespace component
-{
-
-namespace constraintset
-{
 using sofa::type::Vec;
 using sofa::type::Vec3d;
 using sofa::helper::WriteAccessor;
@@ -92,7 +87,6 @@ protected:
 
 
 
-
 /**
  * This component simulates a force exerted by a cable to solve an effector constraint.
  * Description can be found at:
@@ -109,7 +103,7 @@ public:
     typedef typename DataTypes::Real Real;
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
@@ -126,7 +120,7 @@ public:
 
 
     /////////////////// Inherited from BaseConstraint ///////////////
-    void getConstraintResolution(const core::ConstraintParams *cParam,
+    void getConstraintResolution(const sofa::core::ConstraintParams *cParam,
                                  std::vector<ConstraintResolution*>& resTab,
                                  unsigned int& offset) override;
     ////////////////////////////////////////////////////////////////
@@ -149,9 +143,9 @@ public:
 
 protected:
     //Input data
-    Data<type::vector< Real > >       d_value;
+    Data<sofa::type::vector< Real > >       d_value;
     Data<unsigned int>                  d_valueIndex;
-    Data<helper::OptionsGroup>          d_valueType;
+    Data<sofa::helper::OptionsGroup>          d_valueType;
                                         // displacement = the constraint will impose the displacement provided in data d_inputValue[d_iputIndex]
                                         // force = the constraint will impose the force provided in data d_inputValue[d_iputIndex]
 
@@ -167,9 +161,4 @@ private:
     extern template class SOFA_SOFTROBOTS_API CableConstraint<sofa::defaulttype::Vec2Types>;
 #endif
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace
