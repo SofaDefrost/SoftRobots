@@ -27,22 +27,18 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#include "InteractiveControl.h"
+#include <SoftRobots/component/controller/InteractiveControl.h>
 
 #include <sofa/helper/messaging/FileMessage.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace controller
+namespace softrobots::controller
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
 
-int InteractiveControlClass = core::RegisterObject("InteractiveControl (Controls external motors via network)")
+int InteractiveControlClass = sofa::core::RegisterObject("InteractiveControl (Controls external motors via network)")
         .add< InteractiveControl >();
 
 InteractiveControl::InteractiveControl()
@@ -119,7 +115,7 @@ void InteractiveControl::send()
     }
     catch(std::exception const &e)
     {
-        serr << e.what() << sendl;
+        msg_error() << e.what();
     }
 
     gettimeofday(&tv, nullptr);
@@ -128,7 +124,7 @@ void InteractiveControl::send()
 
 void InteractiveControl::connect()
 {
-    sout<<"Connexion @ "<<d_address.getValue().c_str()<<':'<<d_port.getValue()<<" [IN PROGRESS]"<<sendl;
+    msg_info() <<"Connexion @ "<<d_address.getValue().c_str()<<':'<<d_port.getValue()<<" [IN PROGRESS]";
 
     try
     {
@@ -159,7 +155,5 @@ void InteractiveControl::processDataReceivedFromHardware()
     }
 }
 
-} // sofa::component::controller
-} // sofa::component
-} // sofa
+} // namespace
 

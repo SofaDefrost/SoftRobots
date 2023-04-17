@@ -27,11 +27,10 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIVE_CONTROL_H
-#define SOFA_COMPONENT_INTERACTIVE_CONTROL_H
+#pragma once
 
 #include <sofa/core/ObjectFactory.h>
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/component/controller/Controller.h>
 
 #ifdef WIN32
     #include <time.h>
@@ -49,14 +48,12 @@
     #include <QUdpSocket>
 #endif // SOFA_QT5
 
-#include "modules/Network.h"
 #include <math.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace controller
+#include <SoftRobots/component/controller/modules/Network.h>
+#include <SoftRobots/component/initSoftRobots.h>
+
+namespace softrobots::controller
 {
 
 using namespace sofa::defaulttype;
@@ -68,25 +65,25 @@ typedef struct
     float setpoint;
 }Packet;
 
-class InteractiveControl : public Controller
+class InteractiveControl : public sofa::component::controller::Controller
 {
 
 public:
-    SOFA_CLASS(InteractiveControl , Controller);
+    SOFA_CLASS(InteractiveControl , sofa::component::controller::Controller);
 
 protected:
 
-    Data<unsigned int> d_motorIndex;
-    Data<unsigned int> d_mode;
-    Data<type::Vec1f> d_setPoint;
-    Data<float> d_rotorDiameter;
-    Data<float> d_manualSetpoint;
-    Data<std::string> d_address;
-    Data<unsigned int> d_port;
+    sofa::Data<unsigned int> d_motorIndex;
+    sofa::Data<unsigned int> d_mode;
+    sofa::Data<sofa::type::Vec1f> d_setPoint;
+    sofa::Data<float> d_rotorDiameter;
+    sofa::Data<float> d_manualSetpoint;
+    sofa::Data<std::string> d_address;
+    sofa::Data<unsigned int> d_port;
     // Choose if interactive control is made via network or serial
     // network have priority
-    Data<bool> d_useNetwork;
-    Data<bool> d_printCableDisplacement;
+    sofa::Data<bool> d_useNetwork;
+    sofa::Data<bool> d_printCableDisplacement;
 
     QUdpSocket * m_socket;
 
@@ -110,8 +107,11 @@ protected:
     void processDataReceivedFromHardware();
 };
 
-} // sofa::component::controller
-} // sofa::component
-} // sofa
+} // namespace
 
-#endif // SOFA_COMPONENT_INTERACTIVE_CONTROL_H
+namespace sofa::component::controller
+{
+    using InteractiveControl SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::controller::InteractiveControl;
+}
+
