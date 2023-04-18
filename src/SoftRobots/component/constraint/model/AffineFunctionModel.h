@@ -43,7 +43,7 @@ namespace component
 namespace constraintset
 {
 
-using sofa::core::behavior::SoftRobotsConstraint ;
+using softrobots::behavior::SoftRobotsConstraint ;
 using sofa::core::visual::VisualParams ;
 using sofa::core::objectmodel::Data ;
 using sofa::defaulttype::Vec3dTypes ;

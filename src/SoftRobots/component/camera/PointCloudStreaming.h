@@ -22,8 +22,7 @@
 //*                                                                             *
 //* Contact information: contact@sofa-framework.org                             *
 //******************************************************************************/
-#ifndef SOFTROBOTS_CAMERA_POINTCLOUDSTREAMING_H
-#define SOFTROBOTS_CAMERA_POINTCLOUDSTREAMING_H
+#pragma once
 
 #include <SoftRobots/component/initSoftRobots.h>
 
@@ -37,6 +36,8 @@
 #include <pcl/filters/conditional_removal.h>
 
 #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
+
+namespace softrobots::camera {
 
 class PointCloudStreaming
 {
@@ -64,6 +65,4 @@ private:
 
 };
 
-
-
-#endif //SOFTROBOTS_CAMERA_POINTCLOUDSTREAMING_H
+}

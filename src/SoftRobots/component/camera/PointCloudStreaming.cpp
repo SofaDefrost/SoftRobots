@@ -22,7 +22,7 @@
 //*                                                                             *
 //* Contact information: contact@sofa-framework.org                             *
 //******************************************************************************/
-#include "PointCloudStreaming.h"
+#include <SoftRobots/component/camera/PointCloudStreaming.h>
 
 #include <pcl/point_types.h>
 #include <pcl/filters/passthrough.h>
@@ -32,8 +32,9 @@
 #include <vector>
 #include <iostream>
 
-using namespace std;
+namespace softrobots::camera {
 
+using namespace std;
 
 void PointCloudStreaming::initCamera(){
     // Declare RealSense pipeline, encapsulating the actual device and sensors
@@ -105,7 +106,6 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudStreaming::updatePcl()
 
 
     //////////////////////////////////////////////////////////////////Point cloud filter/////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////Point cloud filter/////////////////////////////////////////////////
     //filter the original point cloud
     pcl::PassThrough<pcl::PointXYZRGB> pass;
     // X-filtering
@@ -145,3 +145,5 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudStreaming::updatePcl()
 
     return pcl_filtered_points;
 }
+
+} // namespace

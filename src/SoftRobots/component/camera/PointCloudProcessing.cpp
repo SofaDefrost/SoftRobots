@@ -22,9 +22,6 @@
 //*                                                                             *
 //* Contact information: contact@sofa-framework.org                             *
 //******************************************************************************/
-#include "PointCloudProcessing.h"
-
-
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/helper/accessor.h>
@@ -59,16 +56,12 @@
 #include <iomanip>
 #include <fstream>
 
+#include <SoftRobots/component/camera/PointCloudProcessing.h>
+
 using sofa::helper::ReadAccessor;
 using sofa::helper::WriteOnlyAccessor;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace pointcloudprocessing
+namespace softrobots::camera
 {
 
 using namespace Eigen;
@@ -81,9 +74,9 @@ PointCloudProcessing::PointCloudProcessing() :
     d_goalPositions(initData(&d_goalPositions, "goalPositions", "Position of the contact forces.")),
     d_normalDirections(initData(&d_normalDirections, "normalDirection", "The normal directions of effectors")),
     d_contactLocations(initData(&d_contactLocations, "contactLocations", "The index of contact locations")),
-    d_M(initData(&d_M, defaulttype::Mat3x4d(defaulttype::Matrix4::Line(-0.69419594, -0.71476897, 0.08483703, -14.18895169 / 1000.0),
-                                            defaulttype::Matrix4::Line(-0.7196964, 0.68741082, -0.09748567, 35.32077316 / 1000.0),
-                                            defaulttype::Matrix4::Line(0.01136184, -0.12873106, -0.99161445, 578.52358217 / 1000.0)
+    d_M(initData(&d_M, sofa::type::Mat3x4d(sofa::type::Matrix4::Line(-0.69419594, -0.71476897, 0.08483703, -14.18895169 / 1000.0),
+                                            sofa::type::Matrix4::Line(-0.7196964, 0.68741082, -0.09748567, 35.32077316 / 1000.0),
+                                            sofa::type::Matrix4::Line(0.01136184, -0.12873106, -0.99161445, 578.52358217 / 1000.0)
                                             ),"R", "The camera's rotation matrix, in the robot's coordinate system")),
     d_distanceThreshold(initData(&d_distanceThreshold, 0.01f, "distanceThreshold",  "It is used to determine whether the point is neighbouring or not. If the point is located at a distance less than the given threshold, then it is considered to be neighbouring.")),
     d_pointColorThreshold(initData(&d_pointColorThreshold, 6.0f, "pointColorThreshold", "This line sets the color threshold. Just as angle threshold is used for testing points normals in pcl::RegionGrowing to determine if the point belongs to cluster, this value is used for testing points colors.")),
@@ -117,7 +110,7 @@ void PointCloudProcessing::init()
     //user-defined
     //The following vector and matrix are the calibration matrix between the camera coordinate system and the robot coordinate system.
     //build rotation matrix
-    const defaulttype::Mat3x4d& m = d_M.getValue();
+    const sofa::type::Mat3x4d& m = d_M.getValue();
     m_transform = Eigen::Matrix4d::Identity();
     for (int i =0 ; i < 3 ; ++i)
         for (int j =0 ; j < 4 ; ++j)
@@ -556,7 +549,7 @@ void PointCloudProcessing::update()
 }
 
 
-void PointCloudProcessing::handleEvent(core::objectmodel::Event *event)
+void PointCloudProcessing::handleEvent(sofa::core::objectmodel::Event *event)
 {
     if (sofa::simulation::AnimateEndEvent::checkEventType(event))
     {
@@ -565,20 +558,10 @@ void PointCloudProcessing::handleEvent(core::objectmodel::Event *event)
 }
 
 
-////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
-// Registering the component
-// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-RegisterObject("description") + .add<> : Register the component
-// 2-.add<>(true) : Set default template
 using namespace sofa::defaulttype;
 
-static int PointCloudProcessingClass = core::RegisterObject("Exposing a RealSense RGBD camera in the Sofa Scene")
+static int PointCloudProcessingClass = sofa::core::RegisterObject("Exposing a RealSense RGBD camera in the Sofa Scene")
         .add<PointCloudProcessing>();
-//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace

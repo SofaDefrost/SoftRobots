@@ -28,24 +28,18 @@
 *                                                                             *
 ******************************************************************************/
 
-#ifndef SOFA_CONTROLLER_GameTrak_H
-#define SOFA_CONTROLLER_GameTrak_H
+#pragma once
 
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/component/controller/Controller.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
 
-#include "modules/libgametrak/GameTrak.h"
+#include <SoftRobots/component/controller/modules/libgametrak/GameTrak.h>
 
 #include <sofa/helper/OptionsGroup.h>
+#include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace softrobots::controller
 {
 
 /**
@@ -53,11 +47,11 @@ namespace controller
  * Description can be found at:
  * https://softrobotscomponents.readthedocs.io
  */
-class GameTrakController : public Controller
+class GameTrakController : public sofa::component::controller::Controller
 {
 public:
 
-    SOFA_CLASS(GameTrakController, Controller);
+    SOFA_CLASS(GameTrakController, sofa::component::controller::Controller);
 
     GameTrakController();
     ~GameTrakController() override;
@@ -79,32 +73,32 @@ public:
     /// Bring inherited attributes and function in the current lookup context.
     /// otherwise any access to the base::attribute would require
     /// the "this->" approach.
-    using Controller::f_listening ;
+    using sofa::component::controller::Controller::f_listening ;
     ////////////////////////////////////////////////////////////////////////////
 
 
 protected:
 
-    Data<type::Vec3d>                       d_translation;
-    Data<type::Vec3d>                       d_offset;
-    Data<double>                                   d_sizeCoeff;
+    sofa::Data<sofa::type::Vec3d>                       d_translation;
+    sofa::Data<sofa::type::Vec3d>                       d_offset;
+    sofa::Data<double>                                   d_sizeCoeff;
 
-    Data<helper::OptionsGroup>                     d_x;
-    Data<helper::OptionsGroup>                     d_y;
-    Data<helper::OptionsGroup>                     d_z;
+    sofa::Data<sofa::helper::OptionsGroup>                     d_x;
+    sofa::Data<sofa::helper::OptionsGroup>                     d_y;
+    sofa::Data<sofa::helper::OptionsGroup>                     d_z;
 
-    Data<std::string>                              d_deviceURI;
-    Data<bool>                                     d_buttonPressed;
-    Data<type::vector<sofa::type::Vec3d>> d_output;
+    sofa::Data<std::string>                              d_deviceURI;
+    sofa::Data<bool>                                     d_buttonPressed;
+    sofa::Data<sofa::type::vector<sofa::type::Vec3d>> d_output;
 
     gametrak::GameTrak  *m_gameTrak;
     bool                 m_isButtonPressed;
 
     gametrak::TimeStamp::inttime m_lastTime;
 
-    type::Vec3d m_initLeft;
-    type::Vec3d m_initRight;
-    sofa::type::vector<type::Vec3d> m_output;
+    sofa::type::Vec3d m_initLeft;
+    sofa::type::Vec3d m_initRight;
+    sofa::type::vector<sofa::type::Vec3d> m_output;
 
 
     void GameTrakCallback(void *context,
@@ -122,10 +116,12 @@ protected:
 
     void initAxis();
 
-};   //class GameTrak
+};   //class GameTrakController
 
-}   //namespace controller
-}   //namespace component
-}   //namespace sofa
+}   //namespace
 
-#endif // SOFA_CONTROLLER_GameTrak_CPP
+namespace sofa::component::controller
+{
+    using GameTrakController SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::controller::GameTrakController;
+}

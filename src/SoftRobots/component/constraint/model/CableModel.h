@@ -36,16 +36,10 @@
 #include <sofa/helper/proximity.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa
+namespace softrobots::constraint
 {
 
-namespace component
-{
-
-namespace constraintset
-{
-
-using sofa::core::behavior::SoftRobotsConstraint ;
+using softrobots::behavior::SoftRobotsConstraint ;
 using sofa::core::visual::VisualParams ;
 using sofa::core::objectmodel::Data ;
 using sofa::defaulttype::Vec3dTypes ;
@@ -77,15 +71,15 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename Coord::value_type Real;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
-    typedef type::vector<unsigned int> SetIndexArray;
+    typedef sofa::type::vector<unsigned int> SetIndexArray;
 
-    typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
+    typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename sofa::component::topology::container::dynamic::TriangleSetTopologyContainer TriangleSetTopologyContainer;
     typedef typename TriangleSetTopologyContainer::TrianglesAroundVertex TrianglesAroundVertex;
 
@@ -116,7 +110,7 @@ public:
 
     ////////////////////////// Inherited from BaseConstraint ////////////////
     void storeLambda(const ConstraintParams* cParams,
-                     core::MultiVecDerivId res,
+                     sofa::core::MultiVecDerivId res,
                      const BaseVector* lambda) override;
     /////////////////////////////////////////////////////////////////////////
 
@@ -133,14 +127,14 @@ protected:
     Data<sofa::helper::OptionsGroup>        d_method; ///< method used for computing cable area effect
     Data<VecCoord>              d_centers; ///< list of positions describing attachment of cables on the surface
     bool                        m_hasCenters;
-    Data<type::vector<Real>>    d_radii;  ///< list of radius used to compute pulling application areas from centers
-    SingleLink<CableModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_surfaceTopology;  ///< link to the topology container of the surface on which the cable is attached
-    type::vector<SetIndexArray> m_areaIndices;
-    type::vector<type::vector<Real>> m_ratios;
+    Data<sofa::type::vector<Real>>    d_radii;  ///< list of radius used to compute pulling application areas from centers
+    sofa::SingleLink<CableModel<DataTypes>, sofa::core::topology::BaseMeshTopology, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_surfaceTopology;  ///< link to the topology container of the surface on which the cable is attached
+    sofa::type::vector<SetIndexArray> m_areaIndices;
+    sofa::type::vector<sofa::type::vector<Real>> m_ratios;
 
-    type::vector<Real> m_alphaBarycentric; 
-    type::vector<Real> m_betaBarycentric; 
-    type::vector<Triangle> m_closestTriangle;
+    sofa::type::vector<Real> m_alphaBarycentric;
+    sofa::type::vector<Real> m_betaBarycentric;
+    sofa::type::vector<Triangle> m_closestTriangle;
 
     Data<double>                d_force; ///< pulling force applied on the cable
     Data<double>                d_displacement; ///< displacement of the cable
@@ -157,7 +151,7 @@ protected:
     Data<bool>                  d_drawPoints; ///< to draw center points of cable
     Data<bool>                  d_drawPulledAreas; ///< to draw points in cable area effect
 
-    Data<type::RGBAColor>       d_color;
+    Data<sofa::type::RGBAColor>       d_color;
 
     bool                        m_hasSlidingPoint;
 
@@ -196,15 +190,18 @@ private:
 
 // Declares template as extern to avoid the code generation of the template for
 // each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-#if !defined(SOFTROBOTS_COMPONENT_BEHAVIOR_CONSTRAINT_MODEL_CABLEMODEL_CPP)
-extern template class SOFA_SOFTROBOTS_API CableModel<defaulttype::Vec3Types>;
-extern template class SOFA_SOFTROBOTS_API CableModel<defaulttype::Vec2Types>;
+#if !defined(SOFTROBOTS_CABLEMODEL_CPP)
+extern template class SOFA_SOFTROBOTS_API CableModel<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFTROBOTS_API CableModel<sofa::defaulttype::Vec2Types>;
 #endif
 
 
-} // namespace constraintset
+} // namespace
 
-} // namespace component
-
-} // namespace sofa
+namespace sofa::component::constraintset
+{
+    template <class DataTypes>
+    using CableModel SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::constraint::CableModel<DataTypes>;
+}
 

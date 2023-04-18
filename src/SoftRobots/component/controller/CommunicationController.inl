@@ -55,9 +55,9 @@ using core::objectmodel::ComponentState;
 template<class DataTypes>
 CommunicationController<DataTypes>::CommunicationController()
     : Inherited()
-    , d_job(initData(&d_job, OptionsGroup(2,"sender","receiver"), "job",
+    , d_job(initData(&d_job, {"sender","receiver"}, "job",
                      "If unspecified, the default value is sender"))
-    , d_pattern(initData(&d_pattern, OptionsGroup(2,"publish/subscribe","request/reply"), "pattern",
+    , d_pattern(initData(&d_pattern, {"publish/subscribe","request/reply"}, "pattern",
                          "Pattern used for communication. \n"
                          "publish/subscribe: Messages sent are distributed in a fan out fashion to all connected peers. Never blocks.\n"
                          "request/reply: Message sent are waiting for reply. Allows only an alternating sequence of send\reply calls.\n"

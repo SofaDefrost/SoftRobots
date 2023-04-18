@@ -33,13 +33,7 @@
 #include <sofa/type/Vec.h>
 #include <SoftRobots/component/constraint/model/CableModel.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -79,7 +73,7 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
 
     , d_cableLength(initData(&d_cableLength, Real(0.0), "cableLength","Computation done at the end of the time step"))
 
-    , d_method(initData(&d_method, sofa::helper::OptionsGroup(3,"point","sphere","geodesic"), "method", "Default is point method. \n"
+    , d_method(initData(&d_method, {"point","sphere","geodesic"}, "method", "Default is point method. \n"
                                     "In point method, cable force is applied on a single point. \n"
                                     "Both methods sphere and geodesic are compatible with passing point on a surface only. \n "
                                     "In sphere method, cable force is dispatched in the intersection between a 3D sphere and a surface. \n"
@@ -560,13 +554,13 @@ template<class DataTypes>
 SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const Triangle& triangle, Coord& projectionOnTriangle)
 {
     static sofa::helper::DistancePointTri proximitySolver;
-    Coord p0 { type::NOINIT };
-    Coord p1 { type::NOINIT };
-    Coord p2 { type::NOINIT };
+    Coord p0 { sofa::type::NOINIT };
+    Coord p1 { sofa::type::NOINIT };
+    Coord p2 { sofa::type::NOINIT };
     getPositionFromTopology(p0, triangle[0]);
     getPositionFromTopology(p1, triangle[1]);
     getPositionFromTopology(p2, triangle[2]);
-    Vec3 projection { type::NOINIT };
+    Vec3 projection { sofa::type::NOINIT };
     proximitySolver.NewComputation(Vec3(p0), Vec3(p1), Vec3(p2), Vec3(position), projection);
     projectionOnTriangle = projection;
     const Real distanceToTriangle = (projectionOnTriangle - position).norm();
@@ -577,9 +571,9 @@ SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const 
 template<class DataTypes>
 void CableModel<DataTypes>::computeBarycentric(const Triangle& triangle, const Coord& p, Real& alpha, Real& beta)
 {
-    Coord v0 { type::NOINIT };  
-    Coord v1 { type::NOINIT };  
-    Coord v2 { type::NOINIT }; 
+    Coord v0 { sofa::type::NOINIT };
+    Coord v1 { sofa::type::NOINIT };
+    Coord v2 { sofa::type::NOINIT };
     getPositionFromTopology(v0, triangle[0]);
     getPositionFromTopology(v1, triangle[1]);
     getPositionFromTopology(v2, triangle[2]); 
@@ -814,7 +808,7 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 
 template<class DataTypes>
 void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
-                                        core::MultiVecDerivId res,
+                                        sofa::core::MultiVecDerivId res,
                                         const sofa::linearalgebra::BaseVector* lambda)
 {
     SOFA_UNUSED(res);
@@ -979,9 +973,5 @@ void CableModel<DataTypes>::drawPulledAreas(const VisualParams* vparams)
 
 
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

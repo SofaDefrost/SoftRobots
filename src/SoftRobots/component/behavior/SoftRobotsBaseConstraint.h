@@ -33,10 +33,10 @@
 
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa::core::behavior
+namespace softrobots::behavior
 {
 
-using type::vector;
+using sofa::type::vector;
 
 /**
  *  \brief Component computing inverse problem constraints within a simulated body.
@@ -44,7 +44,7 @@ using type::vector;
  *  This class defines the abstract API common to all inverse problem constraints.
  */
 
-class SOFA_SOFTROBOTS_API SoftRobotsBaseConstraint : public BaseConstraint
+class SOFA_SOFTROBOTS_API SoftRobotsBaseConstraint : public sofa::core::behavior::BaseConstraint
 {
 public:
 
@@ -120,9 +120,9 @@ public:
     unsigned int getNbLines() const;
 
     /// Allows the constraint to access to the results. Called from QPInverseProblemSolver.
-    virtual void storeResults(type::vector<double> &lambda, type::vector<double> &delta);
+    virtual void storeResults(sofa::type::vector<double> &lambda, sofa::type::vector<double> &delta);
 
-    virtual void storeResults(type::vector<double> &delta);
+    virtual void storeResults(sofa::type::vector<double> &delta);
 
 
 protected:
@@ -158,5 +158,10 @@ protected:
 
 };
 
-} // namespace sofa::core::behavior
+} // namespace
 
+namespace sofa::core::behavior
+{
+    using SoftRobotsBaseConstraint SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::behavior::SoftRobotsBaseConstraint;
+}

@@ -27,34 +27,21 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 *                                                                             *
 ******************************************************************************/
+#define SOFTROBOTS_GAMETRAK_CPP
 
-#ifndef SOFA_CONTROLLER_GameTrak_CPP
-#define SOFA_CONTROLLER_GameTrak_CPP
-
-#include "GameTrakController.h"
+#include <SoftRobots/component/controller/GameTrakController.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <fstream>
 #include <iomanip>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace softrobots::controller
 {
 
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
 using sofa::core::RegisterObject ;
 
-// Registering the component
-// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
-// 2-RegisterObject("description") + .add<> : Register the component
-// 3-.add<>(true) : Set default template
 SOFA_DECL_CLASS(GameTrakController)
 
 int GameTrakControllerClass = RegisterObject("Interface for GameTrak device.")
@@ -65,14 +52,11 @@ int GameTrakControllerClass = RegisterObject("Interface for GameTrak device.")
 using namespace gametrak ;
 using std::exception;
 using std::runtime_error;
-using std::cout;
-using std::endl;
-using std::cerr;
 using sofa::helper::WriteAccessor;
 using sofa::type::vector;
 using sofa::type::Vec3d;
-using helper::WriteAccessor;
-using helper::OptionsGroup;
+using sofa::helper::WriteAccessor;
+using sofa::helper::OptionsGroup;
 
 GameTrakController::GameTrakController()
     :
@@ -80,11 +64,11 @@ GameTrakController::GameTrakController()
     , d_offset(initData(&d_offset,Vec3d(0.,0.,0.), "offset","Starting offset between both joysticks."))
     , d_sizeCoeff(initData(&d_sizeCoeff,1.,"sizeCoeff","The gametrak datas are in millimeters."))
 
-    , d_x( initData(&d_x, OptionsGroup(6,"x","-x","y","-y","z","-z"), "x","Option to change the direction of the x axis of gametrak. \n"
+    , d_x( initData(&d_x, {"x","-x","y","-y","z","-z"}, "x","Option to change the direction of the x axis of gametrak. \n"
                                                                           "Corresponds to the right direction."))
-    , d_y( initData(&d_y, OptionsGroup(6,"x","-x","y","-y","z","-z"), "y","Option to change the direction of the y axis of gametrak. \n"
+    , d_y( initData(&d_y, {"x","-x","y","-y","z","-z"}, "y","Option to change the direction of the y axis of gametrak. \n"
                                                                           "Corresponds to the up lift direction."))
-    , d_z( initData(&d_z, OptionsGroup(6,"x","-x","y","-y","z","-z"), "z","Option to change the direction of the z axis of gametrak. \n"
+    , d_z( initData(&d_z, {"x","-x","y","-y","z","-z"}, "z","Option to change the direction of the z axis of gametrak. \n"
                                                                           "Corresponds to the direction towards the user."))
 
     , d_deviceURI(initData(&d_deviceURI,"deviceURI",""))
@@ -117,7 +101,6 @@ void GameTrakController::GameTrakCallbackStatic(void *context,
                                                 bool button)
 {
     GameTrakController* pointer = static_cast<GameTrakController*>(context);
-//    std::cout<<leftx<<std::endl;
     pointer->GameTrakCallback(context, timeStamp, leftx, lefty, leftz, rightx, righty, rightz, button);
 }
 
@@ -132,7 +115,7 @@ void GameTrakController::GameTrakCallback(void *context,
 
     if (!m_gameTrak) return;
 
-    WriteAccessor<Data<bool>> pedal = d_buttonPressed;
+    WriteAccessor<sofa::Data<bool>> pedal = d_buttonPressed;
 
     Vec3d left(leftx,lefty,leftz);
     Vec3d right(rightx,righty,rightz);
@@ -162,7 +145,7 @@ void GameTrakController::GameTrakCallback(void *context,
 
 void GameTrakController::init()
 {
-    WriteAccessor<Data<vector<Vec3d>>> output = d_output;
+    WriteAccessor<sofa::Data<vector<Vec3d>>> output = d_output;
     output.resize(2); //TODO autorized multiple gametrak
     m_output.resize(2);
 
@@ -178,11 +161,11 @@ void GameTrakController::init()
     }
     catch (runtime_error &e)
     {
-        cerr << "Runtime error: " << e.what() << endl ;
+        msg_error() << "Runtime error: " << e.what() ;
     }
     catch (exception &e)
     {
-        cerr << "Exception: " << e.what() << endl ;
+        msg_error() << "Exception: " << e.what() ;
     }
 
     m_initLeft[0]  = output[0][0] + m_initLeft[0];
@@ -228,7 +211,7 @@ void GameTrakController::reset()
 void GameTrakController::onBeginAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
-    WriteAccessor<Data<vector<Vec3d>>> output = d_output;
+    WriteAccessor<sofa::Data<vector<Vec3d>>> output = d_output;
     Vec3d offset = d_offset.getValue();
     for (unsigned int i=0; i<3; i++)
     {
@@ -245,7 +228,7 @@ void GameTrakController::onEndAnimationStep(const double dt)
 
 void GameTrakController::initAxis()
 {
-    OptionsGroup option(6,"x","-x","y","-y","z","-z");
+    OptionsGroup option{"x","-x","y","-y","z","-z"};
 
     if(!d_x.isSet())
     {
@@ -267,8 +250,4 @@ void GameTrakController::initAxis()
 }
 
 
-}//namespace controller
-}//namespace component
-}//namespace sofa
-
-#endif // SOFA_CONTROLLER_GameTrak_CPP
+} // namespace
