@@ -29,7 +29,7 @@
 ******************************************************************************/
 
 #include <SoftRobots/component/constraint/SurfacePressureConstraint.h>
-using sofa::component::constraintset::SurfacePressureConstraint;
+using softrobots::constraint::SurfacePressureConstraint;
 
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/helper/BackTrace.h>
@@ -55,7 +55,7 @@ using std::stof;
 
 using sofa::core::objectmodel::ComponentState;
 
-namespace sofa {
+namespace softrobots {
 
     template <typename _DataTypes>
     struct SurfacePressureConstraintTest : public sofa::testing::BaseTest, SurfacePressureConstraint<_DataTypes>
@@ -63,8 +63,8 @@ namespace sofa {
 
         using SurfacePressureConstraint<_DataTypes>::d_componentState;
 
-        simulation::Node::SPtr m_root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
-        simulation::Simulation* m_simulation;          ///< created by the constructor an re-used in the tests
+        sofa::simulation::Node::SPtr m_root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
+        sofa::simulation::Simulation* m_simulation;          ///< created by the constructor an re-used in the tests
 
         typedef _DataTypes DataTypes;
         typedef typename DataTypes::Deriv Deriv;
@@ -81,19 +81,19 @@ namespace sofa {
 
         void SetUp()
         {
-            simpleapi::importPlugin("Sofa.Component");
+            sofa::simpleapi::importPlugin("Sofa.Component");
 
-            simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
+            sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
 
             /// Load the scene
             string sceneName = "SurfacePressureConstraint.scn";
 
             string fileName  = string(SOFTROBOTS_TEST_DIR) + "/component/constraint/scenes/" + sceneName;
 
-            m_root = core::objectmodel::SPtr_dynamic_cast<simulation::Node>( simulation::getSimulation()->load(fileName.c_str()));
+            m_root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
             /// Test if load has succeededls
-            simulation::SceneLoaderXML scene;
+            sofa::simulation::SceneLoaderXML scene;
 
             if(!m_root || !scene.loadSucceed)
                 ADD_FAILURE() << "Error while loading the scene: " << sceneName << std::endl;
@@ -103,7 +103,7 @@ namespace sofa {
         // Test the behavior of the algorithm
         void behaviorTests()
         {
-            helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+            sofa::helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
             SetUp();
 

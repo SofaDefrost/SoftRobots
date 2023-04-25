@@ -30,15 +30,10 @@
 
 #include <SoftRobots/component/constraint/model/SurfacePressureModel.inl>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraint
 {
 
 using namespace sofa::defaulttype;
-
-// Force template specialization for the most common sofa type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 template class SOFA_SOFTROBOTS_API SurfacePressureModel<Vec3Types>;
 
 

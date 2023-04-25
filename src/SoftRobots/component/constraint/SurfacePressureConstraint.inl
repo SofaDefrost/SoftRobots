@@ -29,7 +29,7 @@
 
 #include <SoftRobots/component/constraint/SurfacePressureConstraint.h>
 
-namespace sofa::component::constraintset::_surfacepressureconstraint_
+namespace softrobots::constraint
 {
 
 using sofa::core::objectmodel::ComponentState ;
@@ -190,5 +190,6 @@ void SurfacePressureConstraint<DataTypes>::setUpPressureLimits(double& imposedVa
     if(d_maxVolumeGrowth.isSet())
         maxVolumeGrowth = d_maxVolumeGrowth.getValue();
 }
-} // namespace sofa
+
+} // namespace
 

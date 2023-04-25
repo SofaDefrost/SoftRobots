@@ -33,16 +33,13 @@
 #include <SoftRobots/component/constraint/model/SurfacePressureModel.h>
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraint
 {
 
-namespace _surfacepressureconstraint_
-{
-
-    using sofa::core::ConstraintParams ;
-    using sofa::linearalgebra::BaseVector ;
-    using sofa::core::behavior::ConstraintResolution ;
-    using type::vector;
+using sofa::core::ConstraintParams ;
+using sofa::linearalgebra::BaseVector ;
+using sofa::core::behavior::ConstraintResolution ;
+using sofa::type::vector;
 
 class VolumeGrowthConstraintResolution : public ConstraintResolution
 {
@@ -96,7 +93,7 @@ public:
     typedef typename DataTypes::Deriv       Deriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename Coord::value_type      Real;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
@@ -124,7 +121,7 @@ protected:
 
     Data<vector<Real> >                     d_value;
     Data<unsigned int>                      d_valueIndex;
-    Data<helper::OptionsGroup>              d_valueType;
+    Data<sofa::helper::OptionsGroup>        d_valueType;
 
     double                                  m_pressure;
     double                                  m_volumeGrowth;
@@ -151,18 +148,16 @@ private:
 
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 #if !defined(SOFTROBOTS_SURFACEPRESSURECONSTRAINT_CPP)
-using defaulttype::Vec3Types;
+using sofa::defaulttype::Vec3Types;
 extern template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3Types>;
 #endif
 
+} // namespace
 
+namespace sofa::component::constraintset
+{
+    template <class DataTypes>
+    using SurfacePressureConstraint SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::constraint::SurfacePressureConstraint<DataTypes>;
 }
-
-using _surfacepressureconstraint_::SurfacePressureConstraint;
-using _surfacepressureconstraint_::SurfacePressureConstraintResolution;
-using _surfacepressureconstraint_::VolumeGrowthConstraintResolution;
-} // namespace sofa
-

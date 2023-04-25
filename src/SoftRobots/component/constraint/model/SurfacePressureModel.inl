@@ -33,18 +33,12 @@
 
 #include <SoftRobots/component/constraint/model/SurfacePressureModel.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::visual::VisualParams;
-using core::ConstVecCoordId;
+using sofa::core::ConstVecCoordId;
 using sofa::type::Mat;
 using sofa::type::Vec3;
 using sofa::type::RGBAColor;
@@ -384,7 +378,7 @@ void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintPar
 
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
-                                                  core::MultiVecDerivId res,
+                                                  sofa::core::MultiVecDerivId res,
                                                   const sofa::linearalgebra::BaseVector* lambda)
 {
     SOFA_UNUSED(res);
@@ -433,7 +427,7 @@ void SurfacePressureModel<DataTypes>::draw(const VisualParams* vparams)
 }
 
 template<class DataTypes>
-void SurfacePressureModel<DataTypes>::drawValue(const core::visual::VisualParams* vparams)
+void SurfacePressureModel<DataTypes>::drawValue(const sofa::core::visual::VisualParams* vparams)
 {
     float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * d_drawScale.getValue() );
     string value = getValueString(d_pressure.getValue());
@@ -555,9 +549,5 @@ void SurfacePressureModel<DataTypes>::computeEdges()
     }
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

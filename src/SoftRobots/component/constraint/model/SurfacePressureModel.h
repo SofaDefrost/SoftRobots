@@ -32,13 +32,7 @@
 
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::topology::BaseMeshTopology ;
@@ -69,17 +63,17 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename Coord::value_type Real;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
-    typedef type::vector<unsigned int> SetIndexArray;
+    typedef sofa::type::vector<unsigned int> SetIndexArray;
 
-    typedef core::topology::BaseMeshTopology::Triangle      Triangle;
-    typedef core::topology::BaseMeshTopology::Quad          Quad;
-    typedef core::topology::BaseMeshTopology::Edge          Edge;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle      Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::Quad          Quad;
+    typedef sofa::core::topology::BaseMeshTopology::Edge          Edge;
 
 public:
     SurfacePressureModel(MechanicalState* object = nullptr);
@@ -106,14 +100,14 @@ public:
 
     ////////////////////////// Inherited from BaseConstraint ////////////////
     void storeLambda(const ConstraintParams* cParams,
-                             core::MultiVecDerivId res,
+                             sofa::core::MultiVecDerivId res,
                              const BaseVector* lambda) override;
     /////////////////////////////////////////////////////////////////////////
 
 protected:
-    Data<type::vector<Triangle> >     d_triangles;
-    Data<type::vector<Quad> >         d_quads;
-    type::vector<Edge>                m_edges;
+    Data<sofa::type::vector<Triangle> >     d_triangles;
+    Data<sofa::type::vector<Quad> >         d_quads;
+    sofa::type::vector<Edge>                m_edges;
 
     Data<Real>                          d_initialCavityVolume;
     Data<Real>                          d_cavityVolume;
@@ -143,10 +137,6 @@ protected:
     std::string getValueString(Real pressure);
 
     ////////////////////////// Inherited attributes ////////////////////////////
-    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    /// Bring m_state in the current lookup context.
-    /// otherwise any access to the base::attribute would require
-    /// using the "this->" approach.
     using SoftRobotsConstraint<DataTypes>::m_state ;
     using SoftRobotsConstraint<DataTypes>::getContext ;
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
@@ -158,18 +148,18 @@ private:
     void setUpData();
     void internalInit();
 
-    void drawValue(const core::visual::VisualParams* vparams);
+    void drawValue(const sofa::core::visual::VisualParams* vparams);
     void computeEdges();
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class SurfacePressureModel<defaulttype::Vec3Types>;
+extern template class SurfacePressureModel<sofa::defaulttype::Vec3Types>;
 
 
-} // namespace constraintset
+} // namespace
 
-} // namespace component
-
-} // namespace sofa
-
+namespace sofa::component::constraintset
+{
+    template <class DataTypes>
+    using SurfacePressureModel SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::constraint::SurfacePressureModel<DataTypes>;
+}
