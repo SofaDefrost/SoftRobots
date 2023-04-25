@@ -124,10 +124,6 @@ public:
     ////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited attributes ////////////////////////////
-    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    /// Bring inherited attributes and function in the current lookup context.
-    /// otherwise any access to the base::attribute would require
-    /// the "this->" approach.
     using CableModel<DataTypes>::d_maxDispVariation ;
     using CableModel<DataTypes>::d_maxPositiveDisplacement ;
     using CableModel<DataTypes>::d_maxNegativeDisplacement ;

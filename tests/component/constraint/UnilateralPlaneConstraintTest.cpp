@@ -55,15 +55,15 @@ using sofa::core::objectmodel::BaseData ;
 using sofa::component::statecontainer::MechanicalObject ;
 
 #include <SoftRobots/component/constraint/UnilateralPlaneConstraint.h>
-using sofa::component::constraintset::UnilateralPlaneConstraint ;
+using softrobots::constraint::UnilateralPlaneConstraint ;
 
 
-namespace sofa
+namespace softrobots
 {
 
 template <typename _DataTypes>
 struct UnilateralPlaneConstraintTest : public sofa::testing::BaseTest,
-        UnilateralPlaneConstraint<_DataTypes>
+        softrobots::constraint::UnilateralPlaneConstraint<_DataTypes>
 {
     typedef UnilateralPlaneConstraint<_DataTypes> ThisClass ;
     typedef _DataTypes DataTypes;

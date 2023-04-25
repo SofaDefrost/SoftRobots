@@ -29,41 +29,21 @@
 #include <SoftRobots/component/constraint/PartialRigidificationConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraint
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-//////////////////////// DEFINITIONS //////////////////////////////////////////////////////////////
-
-/////////////////// PartialRigidificationConstraintResolution6Dof /////////////////////////////////
 PartialRigidificationConstraintResolution6Dof::PartialRigidificationConstraintResolution6Dof()
     : ConstraintResolution(6)
 {
 }
 
-
-
-/////////////////// PartialRigidificationConstraint //////////////////////////////////////////////
-
-
-//////////////////////// FACTORY //////////////////////////////////////////////////////////////////
-// Registering the component
-// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-RegisterObject("description") + .add<> : Register the component
-// 2-.add<>(true) : Set default template
-
-int PartialRigidificationConstraintClass = core::RegisterObject("PartialRigidificationConstraint")
+int PartialRigidificationConstraintClass = sofa::core::RegisterObject("PartialRigidificationConstraint")
         .add< PartialRigidificationConstraint<Rigid3Types> >(true)
 
         ;
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Force template specialization for the most common sofa floating point related type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 template class SOFA_SOFTROBOTS_API PartialRigidificationConstraint<Rigid3Types>;
 
 

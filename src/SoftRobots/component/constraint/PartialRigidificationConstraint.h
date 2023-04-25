@@ -33,7 +33,7 @@
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/linearalgebra/BaseVector.h>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::behavior::ConstraintResolution ;
@@ -53,7 +53,7 @@ class PartialRigidificationConstraint : public Constraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PartialRigidificationConstraint,DataTypes),
-               SOFA_TEMPLATE(core::behavior::Constraint,DataTypes));
+               SOFA_TEMPLATE(sofa::core::behavior::Constraint,DataTypes));
 
     typedef typename DataTypes::VecCoord        VecCoord;
     typedef typename DataTypes::VecDeriv        VecDeriv;
@@ -62,12 +62,12 @@ public:
     typedef typename DataTypes::MatrixDeriv     MatrixDeriv;
     typedef typename Coord::value_type          Real;
     typedef Vec<3, Real>                        Vec3;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename MatrixDeriv::RowIterator   MatrixDerivRowIterator;
-    typedef Data<VecCoord>           DataVecCoord;
-    typedef Data<VecDeriv>           DataVecDeriv;
-    typedef Data<MatrixDeriv>        DataMatrixDeriv;
+    typedef sofa::Data<VecCoord>           DataVecCoord;
+    typedef sofa::Data<VecDeriv>           DataVecDeriv;
+    typedef sofa::Data<MatrixDeriv>        DataMatrixDeriv;
 
 public:
     //////////////////// Inherited from BaseObject /////////////////////
@@ -98,10 +98,6 @@ protected:
 private:
 
     ////////////////////////// Inherited attributes ////////////////////////////
-    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    /// Bring inherited attributes and function in the current lookup context.
-    /// otherwise any access to the base::attribute would require
-    /// the "this->" approach.
     using Constraint<DataTypes>::mstate ;
     ////////////////////////////////////////////////////////////////////////////
 };
@@ -109,5 +105,12 @@ private:
 #if !defined(SOFTROBOTS_PARTIALRIGIDIFICATIONCONSTRAINT_CPP)
 extern template class SOFA_SOFTROBOTS_API PartialRigidificationConstraint<sofa::defaulttype::Rigid3Types>;
 #endif
-} // namespace sofa::component::constraintset
+} // namespace
+
+namespace sofa::component::constraintset
+{
+    template <class DataTypes>
+    using PartialRigidificationConstraint SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::constraint::PartialRigidificationConstraint<DataTypes>;
+}
 

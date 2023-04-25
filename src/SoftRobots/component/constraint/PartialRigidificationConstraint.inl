@@ -29,10 +29,10 @@
 
 #include <SoftRobots/component/constraint/PartialRigidificationConstraint.h>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraint
 {
 
-using defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3dTypes;
 
 template<class DataTypes>
 PartialRigidificationConstraint<DataTypes>::PartialRigidificationConstraint(MechanicalState* object)
@@ -109,5 +109,5 @@ void PartialRigidificationConstraint<DataTypes>::getConstraintResolution(std::ve
     // Indicates the size of the block on which the constraint resoluation works
     offset += 6;
 }
-} // namespace sofa::component::constraintset
+} // namespace
 

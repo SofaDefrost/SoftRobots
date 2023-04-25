@@ -36,7 +36,7 @@
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::visual::VisualParams;
@@ -46,7 +46,7 @@ using sofa::linearalgebra::BaseVector;
 using sofa::type::Vec;
 
 using sofa::core::behavior::ConstraintResolution ;
-using core::visual::VisualParams ;
+using sofa::core::visual::VisualParams ;
 
 
 class SOFA_SOFTROBOTS_API UnilateralPlaneConstraintResolution: public ConstraintResolution
@@ -81,12 +81,12 @@ public:
     typedef typename DataTypes::Deriv               Deriv;
     typedef typename DataTypes::MatrixDeriv         MatrixDeriv;
     typedef typename Coord::value_type              Real;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef Data<VecCoord>                          DataVecCoord;
-    typedef Data<VecDeriv>                          DataVecDeriv;
-    typedef Data<MatrixDeriv>                       DataMatrixDeriv;
+    typedef sofa::Data<VecCoord>                          DataVecCoord;
+    typedef sofa::Data<VecDeriv>                          DataVecDeriv;
+    typedef sofa::Data<MatrixDeriv>                       DataMatrixDeriv;
 
 public:
     UnilateralPlaneConstraint(MechanicalState* object = nullptr);
@@ -109,25 +109,21 @@ public:
                                 const BaseVector *Jdx) override;
 
     void getConstraintResolution(const ConstraintParams* cParams,
-                                 std::vector<core::behavior::ConstraintResolution*>& resTab,
+                                 std::vector<sofa::core::behavior::ConstraintResolution*>& resTab,
                                  unsigned int& offset) override;
     ///////////////////////////////////////////////////////////////
 
 protected:
 
     ////////////////////////// Inherited attributes ////////////////////////////
-    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    /// Bring inherited attributes and function in the current lookup context.
-    /// otherwise any access to the base::attribute would require
-    /// the "this->" approach.
     using SoftRobotsConstraint<DataTypes>::m_state ;
     using SoftRobotsConstraint<DataTypes>::m_constraintId ;
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::d_componentState ;
     ////////////////////////////////////////////////////////////////////////////
 
-    Data<Vec<4,unsigned int>>   d_indices;
-    Data<bool>         d_flipNormal;
+    sofa::Data<Vec<4,unsigned int>>   d_indices;
+    sofa::Data<bool>         d_flipNormal;
 
     void drawPoints(const VisualParams* vparams);
     void drawTriangles(const VisualParams* vparams);
@@ -137,10 +133,16 @@ private:
     void checkIndicesRegardingState();
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 #if !defined(SOFTROBOTS_UNILATERALPLANECONSTRAINT_CPP)
 extern template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
 #endif
-} // namespace sofa
+
+} // namespace
+
+namespace sofa::component::constraintset
+{
+    template <class DataTypes>
+    using UnilateralPlaneConstraint SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::constraint::UnilateralPlaneConstraint<DataTypes>;
+}
 

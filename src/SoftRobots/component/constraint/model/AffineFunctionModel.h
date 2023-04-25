@@ -32,13 +32,7 @@
 
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace softrobots::constraint
 {
 
 using softrobots::behavior::SoftRobotsConstraint ;
@@ -66,13 +60,13 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef typename Coord::value_type Real;
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef Data<VecCoord>		DataVecCoord;
     typedef Data<VecDeriv>		DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
-    typedef type::vector<unsigned int> SetIndexArray;
+    typedef sofa::type::vector<unsigned int> SetIndexArray;
 
 public:
     AffineFunctionModel(MechanicalState* object = nullptr);
@@ -98,7 +92,7 @@ public:
 
     ////////////////////////// Inherited from BaseConstraint ////////////////
     void storeLambda(const ConstraintParams* cParams,
-                     core::MultiVecDerivId res,
+                     sofa::core::MultiVecDerivId res,
                      const BaseVector* lambda) override;
     /////////////////////////////////////////////////////////////////////////
 
@@ -119,10 +113,6 @@ protected:
     SReal getAffineFunctionValue(const VecCoord &positions);
 
     ////////////////////////// Inherited attributes ////////////////////////////
-    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    /// Bring m_state in the current lookup context.
-    /// otherwise any access to the base::attribute would require
-    /// using the "this->" approach.
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::m_constraintId ;
     using SoftRobotsConstraint<DataTypes>::m_state ;
@@ -136,14 +126,14 @@ private:
 	void checkSizes();
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-extern template class AffineFunctionModel<defaulttype::Vec3Types>;
-extern template class AffineFunctionModel<defaulttype::Rigid3Types>;
+extern template class AffineFunctionModel<sofa::defaulttype::Vec3Types>;
+extern template class AffineFunctionModel<sofa::defaulttype::Rigid3Types>;
 
-} // namespace constraintset
+} // namespace
 
-} // namespace component
-
-} // namespace sofa
-
+namespace sofa::component::constraintset
+{
+    template <class DataTypes>
+    using AffineFunctionModel SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::constraint::AffineFunctionModel<DataTypes>;
+}

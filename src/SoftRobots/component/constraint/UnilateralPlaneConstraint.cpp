@@ -29,12 +29,12 @@
 #include <SoftRobots/component/constraint/UnilateralPlaneConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraint
 {
 
 
 using namespace sofa::defaulttype;
-using core::ConstraintParams;
+using sofa::core::ConstraintParams;
 
 /////////////////// UnilateralPlaneConstraintResolution ///////////////////////////////////////
 UnilateralPlaneConstraintResolution::UnilateralPlaneConstraintResolution(const unsigned int _nbLines)
@@ -62,27 +62,15 @@ void UnilateralPlaneConstraintResolution::resolution(int line, SReal**w, SReal*d
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 using namespace sofa::helper;
-// Registering the component
-// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-RegisterObject("description") + .add<> : Register the component
-// 2-.add<>(true) : Set default template
-
-int UnilateralPlaneConstraintClass = core::RegisterObject("This component is a simple point plane collision model. \n"
-                                                          "By providing 4 points to the component, the first point will \n"
-                                                          "be constrained to stay in one side of the plane described \n"
-                                                          "by the three other points (in the direction of the plane normal). \n"
-                                                          "All the four points, the triangle and the normal can be \n"
-                                                          "seen by allowing the 'Collision Model' in the 'View' tab.")
+int UnilateralPlaneConstraintClass = sofa::core::RegisterObject("This component is a simple point plane collision model. \n"
+                                                                "By providing 4 points to the component, the first point will \n"
+                                                                "be constrained to stay in one side of the plane described \n"
+                                                                "by the three other points (in the direction of the plane normal). \n"
+                                                                "All the four points, the triangle and the normal can be \n"
+                                                                "seen by allowing the 'Collision Model' in the 'View' tab.")
                 .add< UnilateralPlaneConstraint<Vec3Types> >(true)
         
         ;
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Force template specialization for the most common sofa floating point related type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
 
 

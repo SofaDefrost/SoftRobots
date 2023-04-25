@@ -32,7 +32,7 @@
 
 #include <SoftRobots/component/constraint/UnilateralPlaneConstraint.h>
 
-namespace sofa::component::constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -94,7 +94,7 @@ void UnilateralPlaneConstraint<DataTypes>::reinit()
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::checkIndicesRegardingState()
 {
-    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
+    ReadAccessor<sofa::Data<VecCoord>> positions = m_state->readPositions();
 
     for(int i=0; i<4; i++)
     {
@@ -121,7 +121,7 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 
     MatrixDerivRowIterator rowIterator = column.writeLine(m_constraintId);
 
-    ReadAccessor<Data<VecCoord>> positions = x;
+    ReadAccessor<sofa::Data<VecCoord>> positions = x;
     Coord p1 = positions[d_indices.getValue()[1]];
     Coord p2 = positions[d_indices.getValue()[2]];
     Coord p3 = positions[d_indices.getValue()[3]];
@@ -151,7 +151,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintViolation(const Constrai
 
     SOFA_UNUSED(cParams);
 
-    ReadAccessor<Data<VecCoord>> x = m_state->readPositions();
+    ReadAccessor<sofa::Data<VecCoord>> x = m_state->readPositions();
 
     Coord p0 = x[d_indices.getValue()[0]];
     Coord p1 = x[d_indices.getValue()[1]];
@@ -199,7 +199,7 @@ void UnilateralPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::drawPoints(const VisualParams* vparams)
 {
-    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
+    ReadAccessor<sofa::Data<VecCoord>> positions = m_state->readPositions();
 
     unsigned int nbPoints = 4;
     vector<Vec3> points(nbPoints);
@@ -212,7 +212,7 @@ void UnilateralPlaneConstraint<DataTypes>::drawPoints(const VisualParams* vparam
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::drawTriangles(const VisualParams* vparams)
 {
-    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
+    ReadAccessor<sofa::Data<VecCoord>> positions = m_state->readPositions();
 
     vector<Vec3> points(3);
     for (unsigned int i=0; i<3; i++)
@@ -225,7 +225,7 @@ void UnilateralPlaneConstraint<DataTypes>::drawTriangles(const VisualParams* vpa
 template<class DataTypes>
 void UnilateralPlaneConstraint<DataTypes>::drawArrows(const VisualParams* vparams)
 {
-    ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
+    ReadAccessor<sofa::Data<VecCoord>> positions = m_state->readPositions();
 
     Coord p1 = positions[d_indices.getValue()[1]];
     Coord p2 = positions[d_indices.getValue()[2]];
@@ -238,5 +238,6 @@ void UnilateralPlaneConstraint<DataTypes>::drawArrows(const VisualParams* vparam
     static constexpr RGBAColor color(0.9f,0.4f,0.0f,1.0f);
     vparams->drawTool()->drawArrow((p1+p2+p3)/3., (p1+p2+p3)/3. + normal, 0.1, color, 4);
 }
-} // namespace sofa
+
+} // namespace
 

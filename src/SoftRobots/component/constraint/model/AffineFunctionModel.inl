@@ -29,13 +29,7 @@
 
 #include <SoftRobots/component/constraint/model/AffineFunctionModel.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace constraintset
+namespace softrobots::constraint
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -220,8 +214,8 @@ void AffineFunctionModel<DataTypes>::buildConstraintMatrix(const ConstraintParam
 
 template<class DataTypes>
 void AffineFunctionModel<DataTypes>::getConstraintViolation(const ConstraintParams* cParams,
-                                                   BaseVector *resV,
-                                                   const BaseVector *Jdx)
+                                                           BaseVector *resV,
+                                                           const BaseVector *Jdx)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
@@ -237,8 +231,8 @@ void AffineFunctionModel<DataTypes>::getConstraintViolation(const ConstraintPara
 
 template<class DataTypes>
 void AffineFunctionModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
-                                        core::MultiVecDerivId res,
-                                        const sofa::linearalgebra::BaseVector* lambda)
+                                                sofa::core::MultiVecDerivId res,
+                                                const sofa::linearalgebra::BaseVector* lambda)
 {
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);
@@ -252,9 +246,4 @@ void AffineFunctionModel<DataTypes>::storeLambda(const ConstraintParams* cParams
     d_displacement.setValue(d_functionValue.getValue());
 }
 
-} // namespace constraintset
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace
