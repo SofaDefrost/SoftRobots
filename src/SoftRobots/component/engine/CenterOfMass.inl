@@ -32,21 +32,15 @@
 
 #include <SoftRobots/component/engine/CenterOfMass.h>
 
-namespace sofa
+namespace softrobots::engine
 {
 
-namespace component
-{
-
-namespace engine
-{
-
-using core::objectmodel::ComponentState;
-using helper::ReadAccessor;
-using helper::WriteAccessor;
-using core::ConstVecCoordId;
-using core::objectmodel::BaseData ;
-using core::visual::VisualParams ;
+using sofa::core::objectmodel::ComponentState;
+using sofa::helper::ReadAccessor;
+using sofa::helper::WriteAccessor;
+using sofa::core::ConstVecCoordId;
+using sofa::core::objectmodel::BaseData ;
+using sofa::core::visual::VisualParams ;
 using sofa::type::RGBAColor ;
 using sofa::type::Vec3 ;
 using sofa::type::vector;
@@ -118,7 +112,7 @@ void CenterOfMass<DataTypes>::doUpdate()
 template <class DataTypes>
 void CenterOfMass<DataTypes>::computeCenterOfMass()
 {
-    ReadAccessor<Data<VecCoord> > positions = d_positions;
+    ReadAccessor<sofa::Data<VecCoord> > positions = d_positions;
     int nbPoints = positions.size();
 
     Real totalMass = 0.0;
@@ -147,9 +141,5 @@ void CenterOfMass<DataTypes>::draw(const VisualParams *vparams)
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

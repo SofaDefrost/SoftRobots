@@ -28,12 +28,12 @@
 #include <SoftRobots/component/engine/VolumeFromTriangles.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace softrobots::engine
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-using core::RegisterObject;
+using sofa::core::RegisterObject;
 
 int VolumeFromTrianglesClass = RegisterObject("This class computes the volume of a given closed surfacic mesh.")
         .add< VolumeFromTriangles<Vec3Types> >(true)

@@ -33,13 +33,7 @@
 
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace softrobots::engine
 {
 
 /**
@@ -48,24 +42,24 @@ namespace engine
  * https://softrobotscomponents.readthedocs.io
  */
 template <class DataTypes>
-class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons : public core::DataEngine
+class SOFA_SOFTROBOTS_API VolumeFromTetrahedrons : public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(VolumeFromTetrahedrons,DataTypes),core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(VolumeFromTetrahedrons,DataTypes), sofa::core::DataEngine);
 
     typedef typename DataTypes::VecCoord VecCoord;
 
     typedef typename DataTypes::Coord  Coord;
     typedef typename Coord::value_type Real;
 
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef typename core::topology::BaseMeshTopology           BaseMeshTopology;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::topology::BaseMeshTopology           BaseMeshTopology;
 
-    typedef core::topology::BaseMeshTopology::Tetra         Tetra;
-    typedef core::topology::BaseMeshTopology::Hexa          Hexa;
+    typedef sofa::core::topology::BaseMeshTopology::Tetra         Tetra;
+    typedef sofa::core::topology::BaseMeshTopology::Hexa          Hexa;
 
-    typedef core::topology::BaseMeshTopology::SeqTetrahedra     VecTetras;
-    typedef core::topology::BaseMeshTopology::SeqHexahedra      VecHexas;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra     VecTetras;
+    typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra      VecHexas;
 
 public:
 
@@ -88,12 +82,12 @@ protected:
     MechanicalState*   m_state;
     BaseMeshTopology*  m_topology;
 
-    Data<VecCoord>     d_positions;
-    Data<VecTetras>    d_tetras;
-    Data<VecHexas>     d_hexas;
+    sofa::Data<VecCoord>     d_positions;
+    sofa::Data<VecTetras>    d_tetras;
+    sofa::Data<VecHexas>     d_hexas;
 
-    Data<Real>         d_volume;
-    Data<bool>         d_doUpdate;
+    sofa::Data<Real>         d_volume;
+    sofa::Data<bool>         d_doUpdate;
 
     void updateVolume();
 
@@ -106,17 +100,14 @@ private:
     SReal getElementVolume(const Hexa& hexa);
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 extern template class VolumeFromTetrahedrons<sofa::defaulttype::Vec3Types>;
 
+} // namespace
 
-extern template class VolumeFromTetrahedrons<sofa::defaulttype::Vec3Types>;
-
-
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+namespace sofa::component::engine
+{
+    template <class DataTypes>
+    using VolumeFromTetrahedrons SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::engine::VolumeFromTetrahedrons<DataTypes>;
+}
 

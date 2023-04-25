@@ -28,12 +28,12 @@
 #include <SoftRobots/component/engine/VolumeFromTetrahedrons.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace softrobots::engine
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-using core::RegisterObject;
+using sofa::core::RegisterObject;
 
 int VolumeFromTetrahedronsClass = RegisterObject("This class computes the volume of a given volumetric mesh.")
         .add< VolumeFromTetrahedrons<Vec3Types> >(true)

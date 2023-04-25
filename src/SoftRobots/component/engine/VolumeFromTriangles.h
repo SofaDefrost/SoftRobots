@@ -33,13 +33,7 @@
 
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace softrobots::engine
 {
 
 /**
@@ -48,24 +42,24 @@ namespace engine
  * https://softrobotscomponents.readthedocs.io
  */
 template <class DataTypes>
-class SOFA_SOFTROBOTS_API VolumeFromTriangles : public core::DataEngine
+class SOFA_SOFTROBOTS_API VolumeFromTriangles : public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(VolumeFromTriangles,DataTypes),core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(VolumeFromTriangles,DataTypes), sofa::core::DataEngine);
 
     typedef typename DataTypes::VecCoord VecCoord;
 
     typedef typename DataTypes::Coord  Coord;
     typedef typename Coord::value_type Real;
 
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef typename core::topology::BaseMeshTopology           BaseMeshTopology;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::topology::BaseMeshTopology           BaseMeshTopology;
 
-    typedef core::topology::BaseMeshTopology::Triangle      Triangle;
-    typedef core::topology::BaseMeshTopology::Quad          Quad;
+    typedef sofa::core::topology::BaseMeshTopology::Triangle      Triangle;
+    typedef sofa::core::topology::BaseMeshTopology::Quad          Quad;
 
-    typedef core::topology::BaseMeshTopology::SeqTriangles      VecTriangles;
-    typedef core::topology::BaseMeshTopology::SeqQuads          VecQuads;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles      VecTriangles;
+    typedef sofa::core::topology::BaseMeshTopology::SeqQuads          VecQuads;
 
 public:
 
@@ -89,12 +83,12 @@ protected:
     MechanicalState*   m_state;
     BaseMeshTopology*  m_topology;
 
-    Data<VecCoord>     d_positions;
-    Data<VecTriangles> d_triangles;
-    Data<VecQuads>     d_quads;
+    sofa::Data<VecCoord>     d_positions;
+    sofa::Data<VecTriangles> d_triangles;
+    sofa::Data<VecQuads>     d_quads;
 
-    Data<Real>         d_volume;
-    Data<bool>         d_doUpdate;
+    sofa::Data<Real>         d_volume;
+    sofa::Data<bool>         d_doUpdate;
 
     void updateVolume();
 
@@ -105,14 +99,14 @@ private:
 
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 extern template class SOFA_SOFTROBOTS_API VolumeFromTriangles<sofa::defaulttype::Vec3Types>;
 
+} // namespace
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+namespace sofa::component::engine
+{
+    template <class DataTypes>
+    using VolumeFromTriangles SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::engine::VolumeFromTriangles<DataTypes>;
+}
 

@@ -58,18 +58,17 @@ using sofa::core::objectmodel::BaseData ;
 using sofa::component::statecontainer::MechanicalObject ;
 
 #include <SoftRobots/component/engine/VolumeFromTetrahedrons.h>
-using sofa::component::engine::VolumeFromTetrahedrons ;
+using softrobots::engine::VolumeFromTetrahedrons ;
 
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository;
 
 
-namespace sofa
+namespace softrobots
 {
 
 template <typename _DataTypes>
-struct VolumeFromTetrahedronsTest : public sofa::testing::BaseTest,
-        VolumeFromTetrahedrons<_DataTypes>
+struct VolumeFromTetrahedronsTest : public sofa::testing::BaseTest, VolumeFromTetrahedrons<_DataTypes>
 {
     typedef VolumeFromTetrahedrons<_DataTypes> ThisClass ;
     typedef _DataTypes DataTypes;

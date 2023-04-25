@@ -58,18 +58,17 @@ using sofa::core::objectmodel::BaseData ;
 using sofa::component::statecontainer::MechanicalObject ;
 
 #include <SoftRobots/component/engine/VolumeFromTriangles.h>
-using sofa::component::engine::VolumeFromTriangles ;
+using softrobots::engine::VolumeFromTriangles ;
 
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository;
 
 
-namespace sofa
+namespace softrobots
 {
 
 template <typename _DataTypes>
-struct VolumeFromTrianglesTest : public sofa::testing::BaseTest,
-        VolumeFromTriangles<_DataTypes>
+struct VolumeFromTrianglesTest : public sofa::testing::BaseTest, VolumeFromTriangles<_DataTypes>
 {
     typedef VolumeFromTriangles<_DataTypes> ThisClass ;
     typedef _DataTypes DataTypes;

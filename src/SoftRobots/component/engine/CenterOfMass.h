@@ -33,13 +33,7 @@
 
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace engine
+namespace softrobots::engine
 {
 
 /**
@@ -48,18 +42,18 @@ namespace engine
  * https://softrobotscomponents.readthedocs.io
  */
 template <class DataTypes>
-class SOFA_SOFTROBOTS_API CenterOfMass : public core::DataEngine
+class SOFA_SOFTROBOTS_API CenterOfMass : public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(CenterOfMass,DataTypes),core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(CenterOfMass,DataTypes), sofa::core::DataEngine);
 
     typedef typename DataTypes::VecCoord VecCoord;
 
     typedef typename DataTypes::Coord  Coord;
     typedef typename Coord::value_type Real;
 
-    typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef typename core::behavior::Mass<DataTypes>            Mass;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::core::behavior::Mass<DataTypes>            Mass;
 
 public:
 
@@ -70,7 +64,7 @@ public:
     ////////////////////////// Inherited from BaseObject ///////////////////
     void init() override;
     void reinit() override;
-    void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
     ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from DataEngine////////////////////
@@ -84,24 +78,24 @@ protected:
     MechanicalState* m_state;
     Mass* m_mass;
 
-    Data<VecCoord>d_positions;
-    Data<Coord>   d_centerOfMass;
-    Data<bool>    d_visualization;
-    Data<float>   d_visuSize;
-    Data<type::RGBAColor>   d_visuColor;
+    sofa::Data<VecCoord>d_positions;
+    sofa::Data<Coord>   d_centerOfMass;
+    sofa::Data<bool>    d_visualization;
+    sofa::Data<float>   d_visuSize;
+    sofa::Data<sofa::type::RGBAColor>   d_visuColor;
 
     void computeCenterOfMass();
 
 };
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 extern template class SOFA_SOFTROBOTS_API CenterOfMass<sofa::defaulttype::Vec3Types>;
 
+} // namespace
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+namespace sofa::component::engine
+{
+    template <class DataTypes>
+    using CenterOfMass SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::engine::CenterOfMass<DataTypes>;
+}
 

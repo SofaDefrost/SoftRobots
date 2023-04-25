@@ -31,20 +31,14 @@
 
 #include <SoftRobots/component/engine/VolumeFromTriangles.h>
 
-namespace sofa
+namespace softrobots::engine
 {
 
-namespace component
-{
-
-namespace engine
-{
-
-using core::objectmodel::ComponentState;
-using helper::ReadAccessor;
-using type::vector;
+using sofa::core::objectmodel::ComponentState;
+using sofa::helper::ReadAccessor;
+using sofa::type::vector;
 using sofa::core::ConstVecCoordId;
-using core::objectmodel::BaseData ;
+using sofa::core::objectmodel::BaseData ;
 
 template <class DataTypes>
 VolumeFromTriangles<DataTypes>::VolumeFromTriangles()
@@ -125,9 +119,9 @@ void VolumeFromTriangles<DataTypes>::initTopology()
 template <class DataTypes>
 void VolumeFromTriangles<DataTypes>::checkTopology()
 {
-    ReadAccessor<Data<VecCoord> >       positions = d_positions;
-    ReadAccessor<Data<VecTriangles> >   triangles = d_triangles;
-    ReadAccessor<Data<VecQuads> >       quads     = d_quads;
+    ReadAccessor<sofa::Data<VecCoord> >       positions = d_positions;
+    ReadAccessor<sofa::Data<VecTriangles> >   triangles = d_triangles;
+    ReadAccessor<sofa::Data<VecQuads> >       quads     = d_quads;
 
     /// Check that the triangles datafield does not contains indices that would crash the
     /// component.
@@ -162,7 +156,7 @@ void VolumeFromTriangles<DataTypes>::doUpdate()
 
     if(m_state && d_doUpdate.getValue())
     {
-        ReadAccessor<Data<VecCoord> > positions = m_state->readPositions();
+        ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
         d_positions.setValue(positions.ref());
         updateVolume();
     }
@@ -174,9 +168,9 @@ void VolumeFromTriangles<DataTypes>::updateVolume()
 {
     Real volume = 0;
 
-    ReadAccessor<Data<VecCoord>>     positions = d_positions;
-    ReadAccessor<Data<VecTriangles>> triangles = d_triangles;
-    ReadAccessor<Data<VecQuads>>     quads     = d_quads;
+    ReadAccessor<sofa::Data<VecCoord>>     positions = d_positions;
+    ReadAccessor<sofa::Data<VecTriangles>> triangles = d_triangles;
+    ReadAccessor<sofa::Data<VecQuads>>     quads     = d_quads;
 
     for (unsigned int t=0; t<triangles.size(); t++)
     {
@@ -211,9 +205,5 @@ void VolumeFromTriangles<DataTypes>::updateVolume()
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

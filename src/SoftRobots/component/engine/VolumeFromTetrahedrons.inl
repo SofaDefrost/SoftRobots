@@ -30,20 +30,14 @@
 #include <sofa/config.h>
 #include <SoftRobots/component/engine/VolumeFromTetrahedrons.h>
 
-namespace sofa
+namespace softrobots::engine
 {
 
-namespace component
-{
-
-namespace engine
-{
-
-using core::objectmodel::ComponentState;
-using helper::ReadAccessor;
-using type::vector;
-using core::ConstVecCoordId;
-using core::objectmodel::BaseData;
+using sofa::core::objectmodel::ComponentState;
+using sofa::helper::ReadAccessor;
+using sofa::type::vector;
+using sofa::core::ConstVecCoordId;
+using sofa::core::objectmodel::BaseData;
 
 
 template <class DataTypes>
@@ -126,9 +120,9 @@ void VolumeFromTetrahedrons<DataTypes>::initTopology()
 template <class DataTypes>
 void VolumeFromTetrahedrons<DataTypes>::checkTopology()
 {
-    ReadAccessor<Data<VecCoord> >  positions = d_positions;
-    ReadAccessor<Data<VecTetras> > tetras    = d_tetras;
-    ReadAccessor<Data<VecHexas> >  hexas     = d_hexas;
+    ReadAccessor<sofa::Data<VecCoord> >  positions = d_positions;
+    ReadAccessor<sofa::Data<VecTetras> > tetras    = d_tetras;
+    ReadAccessor<sofa::Data<VecHexas> >  hexas     = d_hexas;
 
     /// Check that the tetras datafield does not contains indices that would crash the
     /// component.
@@ -164,7 +158,7 @@ void VolumeFromTetrahedrons<DataTypes>::doUpdate()
 
     if(m_state && d_doUpdate.getValue())
     {
-        ReadAccessor<Data<VecCoord> > positions = m_state->readPositions();
+        ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
         d_positions.setValue(positions.ref());
         updateVolume();
     }
@@ -176,8 +170,8 @@ void VolumeFromTetrahedrons<DataTypes>::updateVolume()
 {
     Real volume = 0.;
 
-    ReadAccessor<Data<VecTetras>> tetras = d_tetras;
-    ReadAccessor<Data<VecHexas>>  hexas  = d_hexas;
+    ReadAccessor<sofa::Data<VecTetras>> tetras = d_tetras;
+    ReadAccessor<sofa::Data<VecHexas>>  hexas  = d_hexas;
 
     for (unsigned int t=0; t<tetras.size(); t++)
         volume += getElementVolume(tetras[t]);
@@ -193,7 +187,7 @@ void VolumeFromTetrahedrons<DataTypes>::updateVolume()
 template <class DataTypes>
 SReal VolumeFromTetrahedrons<DataTypes>::getElementVolume(const Tetra& tetra)
 {
-    ReadAccessor<Data<VecCoord> > positions = d_positions;
+    ReadAccessor<sofa::Data<VecCoord> > positions = d_positions;
 
     Coord p0 = positions[tetra[0]];
     Coord p1 = positions[tetra[1]];
@@ -209,7 +203,7 @@ SReal VolumeFromTetrahedrons<DataTypes>::getElementVolume(const Tetra& tetra)
 template <class DataTypes>
 SReal VolumeFromTetrahedrons<DataTypes>::getElementVolume(const Hexa& hexa)
 {
-    ReadAccessor<Data<VecCoord> > positions = d_positions;
+    ReadAccessor<sofa::Data<VecCoord> > positions = d_positions;
 
     Real volume = 0.;
     Coord p0, p1, p2, p3;
@@ -245,9 +239,4 @@ SReal VolumeFromTetrahedrons<DataTypes>::getElementVolume(const Hexa& hexa)
     return volume;
 }
 
-
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
