@@ -40,7 +40,7 @@
 #include <sofa/component/mapping/linear/BarycentricMapping.h>
 #include <sofa/core/behavior/ForceField.h>
 
-namespace sofa::component::forcefield
+namespace softrobots::forcefield
 {
 using sofa::type::Vec ;
 using sofa::type::Mat ;
@@ -70,8 +70,8 @@ public :
     typedef typename DataTypes::Coord    Coord;
     typedef typename DataTypes::Deriv    Deriv;
 
-    typedef Data<VecCoord>    DataVecCoord;
-    typedef Data<VecDeriv>    DataVecDeriv;
+    typedef sofa::Data<VecCoord>    DataVecCoord;
+    typedef sofa::Data<VecDeriv>    DataVecDeriv;
 
     typedef Vec<3, Real>                Vec3;
     typedef Vec<6, Real>                Vec6;
@@ -87,9 +87,9 @@ public :
     typedef typename CompressedRowSparseMatrix<Mat66>::RowBlockConstIterator CSRMatB66RowBlockIter;
     typedef typename CompressedRowSparseMatrix<Mat66>::BlockConstAccessor CSRMatB66BlockConstAccessor;
 
-    typedef type::vector<Vec6> VecVec6;
-    typedef type::vector<Mat66> VecMat66;
-    typedef type::vector<Mat12x12> VecMat12;
+    typedef sofa::type::vector<Vec6> VecVec6;
+    typedef sofa::type::vector<Mat66> VecMat66;
+    typedef sofa::type::vector<Mat12x12> VecMat12;
 
     typedef Mat<3, 3, Real> _3_3_Matrix_Type;
 
@@ -128,10 +128,10 @@ public :
 
 protected:
 
-    core::behavior::MechanicalState<DataTypes> * m_mstate;
+    sofa::core::behavior::MechanicalState<DataTypes> * m_mstate;
 
-    SingleLink < PipeForceField<DataTypes>, BarycentricMapping<DataTypes, DataTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > l_barycentricMapping;
-    SingleLink < PipeForceField<DataTypes>, MeshSpringForceField<DataTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > l_mappedForceField;
+    sofa::SingleLink < PipeForceField<DataTypes>, BarycentricMapping<DataTypes, DataTypes>, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_barycentricMapping;
+    sofa::SingleLink < PipeForceField<DataTypes>, MeshSpringForceField<DataTypes>, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_mappedForceField;
 
 
     /**
@@ -172,7 +172,14 @@ private :
 };
 
 #if !defined(SOFTROBOTS_PIPEFORCEFIELD_CPP)
-extern template class SOFA_SOFTROBOTS_API PipeForceField<Vec3Types>;
+extern template class SOFA_SOFTROBOTS_API PipeForceField<sofa::defaulttype::Vec3Types>;
 #endif
-} // sofa::component::forcefield
 
+} // namespace
+
+namespace sofa::component::forcefield
+{
+    template <class DataTypes>
+    using PipeForceField SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::forcefield::PipeForceField<DataTypes>;
+}

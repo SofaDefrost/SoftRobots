@@ -26,30 +26,16 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 ******************************************************************************/
 #define SOFTROBOTS_PREQUIVALENTSTIFFNESSFORCEFIELD_CPP
+
 #include <SoftRobots/component/forcefield/PREquivalentStiffnessForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::forcefield
+namespace softrobots::forcefield
 {
 
-////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
-// Registering the component
-// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-RegisterObject("description") + .add<> : Register the component
-// 2-.add<>(true) : Set default template
-
-int PREquivalentStiffnessForceFieldClass = core::RegisterObject("Partial Rigidification equivalent stiffness forcefield")
+int PREquivalentStiffnessForceFieldClass = sofa::core::RegisterObject("Partial Rigidification equivalent stiffness forcefield")
         .add<PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types> >(true)
-
         ;
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Force template specialization for the most common sofa floating point related type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-
 template class SOFA_SOFTROBOTS_API PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types>;
-
 
 }

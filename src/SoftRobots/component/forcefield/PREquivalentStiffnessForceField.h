@@ -39,7 +39,7 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <string>
 
-namespace sofa::component::forcefield
+namespace softrobots::forcefield
 {
 
 using sofa::type::Vec ;
@@ -61,10 +61,10 @@ public :
     typedef typename DataTypes::Deriv   Deriv;
     typedef typename Coord::Pos         Pos;
     typedef typename Coord::Quat        Quaternion;
-    typedef type::vector<Coord>       VecCoord;
-    typedef type::vector<Deriv>       VecDeriv;
-    typedef Data<VecCoord>              DataVecCoord;
-    typedef Data<VecDeriv>              DataVecDeriv;
+    typedef sofa::type::vector<Coord>       VecCoord;
+    typedef sofa::type::vector<Deriv>       VecDeriv;
+    typedef sofa::Data<VecCoord>              DataVecCoord;
+    typedef sofa::Data<VecDeriv>              DataVecDeriv;
 
     typedef Vec<3, Real>                Vec3;
     typedef Vec<6, Real>                Vec6;
@@ -82,9 +82,9 @@ public :
     typedef typename sofa::defaulttype::SolidTypes<Real>::Transform Transform;
     typedef typename sofa::defaulttype::SolidTypes<Real>::SpatialVector SpatialVector;
 
-    typedef type::vector<Vec6> VecVec6;
-    typedef type::vector<Mat66> VecMat66;
-    typedef type::vector<Mat12x12> VecMat12;
+    typedef sofa::type::vector<Vec6> VecVec6;
+    typedef sofa::type::vector<Mat66> VecMat66;
+    typedef sofa::type::vector<Mat12x12> VecMat12;
 
 
 public :
@@ -116,9 +116,9 @@ public :
     void displaceFrames(const VecCoord& frames, VecCoord& displaced, VecDeriv& dq, const Real epsilon);
 
 protected :
-    Data<std::string>   d_complianceFile;
-    Data<Real>          d_coeff;
-    Data<unsigned int>  d_startIndex;
+    sofa::Data<std::string>   d_complianceFile;
+    sofa::Data<Real>          d_coeff;
+    sofa::Data<unsigned int>  d_startIndex;
     VecMat66            m_complianceMat;
     VecMat66            m_CInv;
     VecMat66            m_H;
@@ -130,10 +130,6 @@ private :
     void computeForce(const VecCoord& pos, const VecCoord& restPos, VecDeriv& f);
 
     ////////////////////////// Inherited attributes ////////////////////////////
-    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    /// Bring inherited attributes and function in the current lookup context.
-    /// otherwise any access to the base::attribute would require
-    /// the "this->" approach.
     using ForceField<DataTypes>::getContext ;
     using ForceField<DataTypes>::d_componentState;
     ////////////////////////////////////////////////////////////////////////////
@@ -143,5 +139,11 @@ private :
 extern template class SOFA_SOFTROBOTS_API PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types>;
 #endif
 
-} // namespace sofa::component::forcefield
+} // namespace
 
+namespace sofa::component::forcefield
+{
+    template <class DataTypes>
+    using PREquivalentStiffnessForceField SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::forcefield::PREquivalentStiffnessForceField<DataTypes>;
+}

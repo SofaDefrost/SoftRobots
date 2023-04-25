@@ -36,13 +36,7 @@
 
 #include <SoftRobots/component/forcefield/PartialRigidificationForceField.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace softrobots::forcefield
 {
 
 
@@ -73,7 +67,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(mstate1, mstate2);
     MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(mstate2, mstate1);
 
-    const type::vector<BaseMatrix*>* J0J1 = d_subsetMultiMapping.get()->getJs();
+    const sofa::type::vector<BaseMatrix*>* J0J1 = d_subsetMultiMapping.get()->getJs();
 
     if(J0J1 == nullptr)
         dmsg_warning()<<"J0J1 null";
@@ -110,7 +104,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     // get the stiffness matrix from the mapped ForceField
     CompressedRowSparseMatrix< _3_3_Matrix_Type >* mappedFFMatrix = new CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
 
-    core::behavior::BaseMechanicalState* mstate = d_mappedForceField.get()->getContext()->getMechanicalState();
+    sofa::core::behavior::BaseMechanicalState* mstate = d_mappedForceField.get()->getContext()->getMechanicalState();
     mappedFFMatrix->resizeBloc( mstate->getSize() ,  mstate->getSize());
 
     DefaultMultiMatrixAccessor* mappedFFMatrixAccessor;
@@ -227,7 +221,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::testBuildJacobian(
 {
     CompressedRowSparseMatrix< _3_3_Matrix_Type >* mappedFFMatrix = new CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
 
-    core::behavior::BaseMechanicalState* mstate = d_mappedForceField.get()->getContext()->getMechanicalState();
+    sofa::core::behavior::BaseMechanicalState* mstate = d_mappedForceField.get()->getContext()->getMechanicalState();
     mappedFFMatrix->resizeBloc( mstate->getSize() ,  mstate->getSize());
 
     DefaultMultiMatrixAccessor* mappedFFMatrixAccessor;
@@ -426,9 +420,5 @@ double PartialRigidificationForceField<DataTypes1, DataTypes2>::getPotentialEner
     return 0.0;
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

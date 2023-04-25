@@ -29,27 +29,15 @@
 #include <SoftRobots/component/forcefield/PipeForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::forcefield
+namespace softrobots::forcefield
 {
 
-////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
-// Registering the component
-// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-RegisterObject("description") + .add<> : Register the component
-// 2-.add<>(true) : Set default template
 using namespace sofa::defaulttype;
 
-int PipeForceFieldClass = core::RegisterObject("This component is used to pull up mapped string forces (from a child node)")
+int PipeForceFieldClass = sofa::core::RegisterObject("This component is used to pull up mapped string forces (from a child node)")
         .add<PipeForceField<Vec3Types> >(true)
 
         ;
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Force template specialization for the most common sofa floating point related type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-
 template class SOFA_SOFTROBOTS_API PipeForceField<Vec3Types>;
 
 

@@ -39,7 +39,7 @@
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
 #include <sofa/component/mapping/linear/SubsetMultiMapping.h>
 
-namespace sofa::component::interactionforcefield
+namespace softrobots::forcefield
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -74,7 +74,7 @@ public:
     typedef typename DataTypes1::Deriv    Deriv1;
     typedef typename DataTypes1::Real     Real1;
     typedef typename DataTypes1::MatrixDeriv MatrixDeriv1;
-    typedef Data<MatrixDeriv1>  DataMatrixDeriv1;
+    typedef sofa::Data<MatrixDeriv1>  DataMatrixDeriv1;
 
     // Rigid
     typedef TDataTypes2 DataTypes2;
@@ -84,10 +84,10 @@ public:
     typedef typename DataTypes2::Deriv    Deriv2;
     typedef typename DataTypes2::Real     Real2;
 
-    typedef Data<VecCoord1>    DataVecCoord1;
-    typedef Data<VecDeriv1>    DataVecDeriv1;
-    typedef Data<VecCoord2>    DataVecCoord2;
-    typedef Data<VecDeriv2>    DataVecDeriv2;
+    typedef sofa::Data<VecCoord1>    DataVecCoord1;
+    typedef sofa::Data<VecDeriv1>    DataVecDeriv1;
+    typedef sofa::Data<VecCoord2>    DataVecCoord2;
+    typedef sofa::Data<VecDeriv2>    DataVecDeriv2;
 
     typedef Mat<6, 3, Real1> _6_3_Matrix_Type;
     typedef Mat<6, 6, Real2> _6_6_Matrix_Type;
@@ -116,9 +116,9 @@ public:
 
 
 protected:
-    SingleLink < PartialRigidificationForceField<DataTypes1, DataTypes2>, RigidMapping<DataTypes2, DataTypes1>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > d_rigidMapping;
-    SingleLink < PartialRigidificationForceField<DataTypes1, DataTypes2>, SubsetMultiMapping<DataTypes1, DataTypes1>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > d_subsetMultiMapping;
-    SingleLink < PartialRigidificationForceField<DataTypes1, DataTypes2>, BaseForceField, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > d_mappedForceField;
+    sofa::SingleLink < PartialRigidificationForceField<DataTypes1, DataTypes2>, RigidMapping<DataTypes2, DataTypes1>, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > d_rigidMapping;
+    sofa::SingleLink < PartialRigidificationForceField<DataTypes1, DataTypes2>, SubsetMultiMapping<DataTypes1, DataTypes1>, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > d_subsetMultiMapping;
+    sofa::SingleLink < PartialRigidificationForceField<DataTypes1, DataTypes2>, BaseForceField, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > d_mappedForceField;
 
     PartialRigidificationForceField() ;
 
@@ -187,8 +187,15 @@ protected:
 };
 
 #if !defined(SOFTROBOTS_PARTIALRIGIDIFICATIONFORCEFIELD_CPP)
-extern template class SOFA_SOFTROBOTS_API PartialRigidificationForceField<Vec3Types, Rigid3Types>;
+extern template class SOFA_SOFTROBOTS_API PartialRigidificationForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types>;
 #endif
 
-} // namespace sofa::component::interactionforcefield
+} // namespace
+
+namespace sofa::component::forcefield
+{
+    template <class DataTypes1, class DataTypes2>
+    using PartialRigidificationForceField SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::forcefield::PartialRigidificationForceField<DataTypes1, DataTypes2>;
+}
 

@@ -52,13 +52,7 @@ using std::endl ;
 #include <algorithm>
 #include <ctime>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace softrobots::forcefield
 {
 
 using sofa::core::behavior::DefaultMultiMatrixAccessor ;
@@ -292,7 +286,5 @@ void PipeForceField<DataTypes>::multMatricesT(const CompressedRowSparseMatrix<Ma
     }
 }
 
-} // forcefield
-} // component
-} // sofa
+} // namespace
 

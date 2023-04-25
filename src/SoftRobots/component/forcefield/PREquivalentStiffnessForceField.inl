@@ -48,13 +48,7 @@ using std::filebuf ;
 #include <algorithm>
 #include <ctime>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace softrobots::forcefield
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -62,12 +56,9 @@ using sofa::core::objectmodel::ComponentState;
 template<typename DataTypes>
 PREquivalentStiffnessForceField<DataTypes>::PREquivalentStiffnessForceField()
     : Inherit1(),
-      d_complianceFile(initData(&d_complianceFile, "complianceFile",
-                                "Name of the file where the compliance matrix is stored .")),
-      d_coeff(initData(&d_coeff, Real(1.0), "coefForce",
-                                "Coefficient")),
-      d_startIndex(initData(&d_startIndex, (unsigned int)0, "startIndex",
-                                "Nodes below this indices won't be computed."))
+      d_complianceFile(initData(&d_complianceFile, "complianceFile", "Name of the file where the compliance matrix is stored .")),
+      d_coeff(initData(&d_coeff, Real(1.0), "coefForce", "Coefficient")),
+      d_startIndex(initData(&d_startIndex, (unsigned int)0, "startIndex", "Nodes below this indices won't be computed."))
 {
 
 }
@@ -100,7 +91,7 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
 
     // Read rest positions
     WriteAccessor<VecCoord> restPosWriter(m_restPos);
-    ReadAccessor<DataVecCoord> restPosReader(*mstate->read(core::ConstVecCoordId::restPosition()));
+    ReadAccessor<DataVecCoord> restPosReader(*mstate->read(sofa::core::ConstVecCoordId::restPosition()));
 
     size_t nFrames = restPosReader.size();
     restPosWriter.resize(nFrames);
@@ -138,9 +129,9 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
 
 template<typename DataTypes>
 void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams*,
-        DataVecDeriv& f,
-        const DataVecCoord& x,
-        const DataVecDeriv& v)
+                                                            DataVecDeriv& f,
+                                                            const DataVecCoord& x,
+                                                            const DataVecDeriv& v)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
@@ -474,9 +465,5 @@ void PREquivalentStiffnessForceField<DataTypes>::computeForce(const VecCoord& po
     }
 }
 
-} // forcefield
-
-} // component
-
-} // sofa
+} // namespace
 
