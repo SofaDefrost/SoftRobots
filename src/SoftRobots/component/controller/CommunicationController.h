@@ -36,18 +36,11 @@
 
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
+namespace softrobots::controller
 {
 
-namespace component
-{
-
-namespace controller
-{
-
-
-using core::objectmodel::Event;
-using core::objectmodel::BaseObjectDescription;
+using sofa::core::objectmodel::Event;
+using sofa::core::objectmodel::BaseObjectDescription;
 using std::map;
 using std::string;
 using sofa::core::objectmodel::vectorData;
@@ -59,7 +52,7 @@ using sofa::core::objectmodel::vectorData;
  * https://softrobotscomponents.readthedocs.io
  */
 template< class DataTypes >
-class SOFA_SOFTROBOTS_API CommunicationController : public Controller
+class SOFA_SOFTROBOTS_API CommunicationController : public sofa::component::controller::Controller
 {
 public:
 
@@ -88,16 +81,16 @@ public:
     /// instead of the default one generated automatically by the SOFA_CLASS() macro.
     static std::string GetCustomTemplateName();
 
-    Data<helper::OptionsGroup>              d_job;
-    Data<helper::OptionsGroup>              d_pattern;
-    Data<uint64_t>                          d_HWM;
-    Data<string>                            d_port;
-    Data<string>                            d_ipAdress;
-    Data<bool>                              d_atBeginAnimationStep;
-    Data<double>                            d_beginAt;
-    Data<unsigned int>                      d_timeOut;
+    sofa::Data<sofa::helper::OptionsGroup>              d_job;
+    sofa::Data<sofa::helper::OptionsGroup>              d_pattern;
+    sofa::Data<uint64_t>                          d_HWM;
+    sofa::Data<string>                            d_port;
+    sofa::Data<string>                            d_ipAdress;
+    sofa::Data<bool>                              d_atBeginAnimationStep;
+    sofa::Data<double>                            d_beginAt;
+    sofa::Data<unsigned int>                      d_timeOut;
     double                                  m_time{0.};
-    Data<unsigned int>                      d_nbDataField;
+    sofa::Data<unsigned int>                      d_nbDataField;
     vectorData<DataTypes>                   d_data;
 
 protected:
@@ -118,7 +111,12 @@ protected:
 
 };  //class CommunicationController
 
-}   //namespace controller
-}   //namespace component
-}   //namespace sofa
+}   //namespace
+
+namespace sofa::component::controller
+{
+    template <class DataTypes>
+    using CommunicationController SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::controller::CommunicationController<DataTypes>;
+}
 

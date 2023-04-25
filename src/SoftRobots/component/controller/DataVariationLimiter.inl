@@ -29,20 +29,13 @@
 
 #include <SoftRobots/component/controller/DataVariationLimiter.h>
 
-namespace sofa
+namespace softrobots::controller
 {
-
-namespace component
-{
-
-namespace controller
-{
-
 
 using std::cout;
 using std::endl;
-using helper::WriteAccessor;
-using helper::ReadAccessor;
+using sofa::helper::WriteAccessor;
+using sofa::helper::ReadAccessor;
 
 
 template <class DataTypes>
@@ -142,8 +135,8 @@ void DataVariationLimiter<DataTypes>::onBeginAnimationStep(const double dt)
     if(!d_input.isSet())
         return;
 
-    WriteAccessor<Data<VecValue>> output = d_output;
-    ReadAccessor<Data<VecValue>>  input  = d_input;
+    WriteAccessor<sofa::Data<VecValue>> output = d_output;
+    ReadAccessor<sofa::Data<VecValue>>  input  = d_input;
 
     if(input.size()<d_inputSize.getValue())
     {
@@ -169,8 +162,8 @@ template <class DataTypes>
 void DataVariationLimiter<DataTypes>::interpolate(const int index)
 {
 
-    WriteAccessor<Data<VecValue>> output = d_output;
-    ReadAccessor<Data<VecValue>>  input  = d_input;
+    WriteAccessor<sofa::Data<VecValue>> output = d_output;
+    ReadAccessor<sofa::Data<VecValue>>  input  = d_input;
 
     if(d_inputSize.getValue() != output.size() || d_inputSize.getValue() != m_step.size() || d_inputSize.getValue() != m_isStabilizing.size())
     {
@@ -204,15 +197,15 @@ std::string DataVariationLimiter<DataTypes>::GetCustomTemplateName()
     {
     case 1:
     {
-        return defaulttype::DataTypeInfo<type::Vec<1,ValueType>>::name();
+        return sofa::defaulttype::DataTypeInfo<sofa::type::Vec<1,ValueType>>::name();
     }
     case 2:
     {
-        return defaulttype::DataTypeInfo<type::Vec<2,ValueType>>::name();
+        return sofa::defaulttype::DataTypeInfo<sofa::type::Vec<2,ValueType>>::name();
     }
     case 3:
     {
-        return defaulttype::DataTypeInfo<type::Vec<3,ValueType>>::name();
+        return sofa::defaulttype::DataTypeInfo<sofa::type::Vec<3,ValueType>>::name();
     }
     default: break;
     }
@@ -220,9 +213,5 @@ std::string DataVariationLimiter<DataTypes>::GetCustomTemplateName()
     return "";
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} // namespace
 

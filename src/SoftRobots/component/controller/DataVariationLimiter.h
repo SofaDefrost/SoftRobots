@@ -31,13 +31,7 @@
 
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace softrobots::controller
 {
 
 /**
@@ -46,12 +40,12 @@ namespace controller
  * https://softrobotscomponents.readthedocs.io
  */
 template <class T>
-class SOFA_SOFTROBOTS_API DataVariationLimiter : public Controller
+class SOFA_SOFTROBOTS_API DataVariationLimiter : public sofa::component::controller::Controller
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DataVariationLimiter,T),Controller);
 
-    typedef typename type::vector<T> VecValue;
+    typedef typename sofa::type::vector<T> VecValue;
     typedef T                        Value;
     typedef typename T::value_type   ValueType;
 
@@ -80,16 +74,16 @@ public:
 
 protected:
 
-    Data<VecValue>     d_input;
-    Data<VecValue>     d_output;
-    Data<unsigned int> d_inputSize;
-    Data<double>       d_maxJump;
-    Data<unsigned int> d_nbStep;
+    sofa::Data<VecValue>     d_input;
+    sofa::Data<VecValue>     d_output;
+    sofa::Data<unsigned int> d_inputSize;
+    sofa::Data<double>       d_maxJump;
+    sofa::Data<unsigned int> d_nbStep;
 
-    Data<bool>         d_initOuput;
+    sofa::Data<bool>         d_initOuput;
 
-    type::vector<bool>                   m_isStabilizing;
-    type::vector<unsigned int>           m_step;
+    sofa::type::vector<bool>                   m_isStabilizing;
+    sofa::type::vector<unsigned int>           m_step;
 
 
     VecValue           m_inititialOuput;
@@ -101,22 +95,20 @@ private:
 
 };
 
-
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec3d>;
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec2d>;
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec1d>;
-
-
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec1i>;
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec2i>;
 extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec3i>;
 
 
-} // namespace engine
+} // namespace
 
-} // namespace component
-
-} // namespace sofa
+namespace sofa::component::controller
+{
+    template <class DataTypes>
+    using DataVariationLimiter SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::controller::DataVariationLimiter<DataTypes>;
+}
 

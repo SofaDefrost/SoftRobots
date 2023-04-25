@@ -48,10 +48,10 @@ using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::SceneLoaderXML ;
 
 #include <SoftRobots/component/controller/DataVariationLimiter.h>
-using sofa::component::controller::DataVariationLimiter ;
+using softrobots::controller::DataVariationLimiter ;
 
 
-namespace sofa
+namespace softrobots
 {
 
 template <typename _DataTypes>
@@ -59,7 +59,7 @@ struct DataVariationLimiterTest : public sofa::testing::BaseTest, DataVariationL
 {
     typedef DataVariationLimiter<_DataTypes> ThisClass ;
     typedef _DataTypes DataTypes;
-    typedef typename type::vector<DataTypes> VecValue;
+    typedef typename sofa::type::vector<DataTypes> VecValue;
 
     ///////////////////////////////////////////////////////////////
     // Bring parents members in the current lookup context.
@@ -155,7 +155,7 @@ struct DataVariationLimiterTest : public sofa::testing::BaseTest, DataVariationL
 };
 
 using ::testing::Types;
-typedef Types<type::Vec3d> DataTypes;
+typedef Types<sofa::type::Vec3d> DataTypes;
 
 TYPED_TEST_SUITE(DataVariationLimiterTest, DataTypes);
 

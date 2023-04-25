@@ -38,15 +38,15 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 
-namespace sofa::component::controller
+namespace softrobots::controller
 {
 
-using type::Vec;
+using sofa::type::Vec;
 using sofa::helper::WriteAccessor;
 using sofa::core::objectmodel::ComponentState;
 
-int SerialPortBridgeGenericClass = core::RegisterObject("Send data (ex: force, displacement, pressure…) through the usb port. \n"
-                                                        "Usually used to send data to an Arduino card to control the real robot.")
+int SerialPortBridgeGenericClass = sofa::core::RegisterObject("Send data (ex: force, displacement, pressure…) through the usb port. \n"
+                                                              "Usually used to send data to an Arduino card to control the real robot.")
         .add< SerialPortBridgeGeneric >()
         ;
 
@@ -58,7 +58,7 @@ SerialPortBridgeGeneric::SerialPortBridgeGeneric()
                            "enabling to implement a header research in the 'receiving' code, for synchronization purposes.\n"
                            ))
     , d_packetIn(initData(&d_packetIn, "packetIn", "Data received: vector of unsigned char, each entry should be an integer between 0 and header-1 <= 255."))
-    , d_header(initData(&d_header, type::vector<unsigned char>{255,254}, "header", "Vector of unsigned char. Only one value is espected, two values if splitPacket = 1."))
+    , d_header(initData(&d_header, sofa::type::vector<unsigned char>{255,254}, "header", "Vector of unsigned char. Only one value is espected, two values if splitPacket = 1."))
     , d_size(initData(&d_size,(unsigned int)0,"size","Size of the arrow to send. Use to check sentData size. \n"
                                             "Will return a warning if sentData size does not match this value."))
     , d_precise(initData(&d_precise,false,"precise","If true, will send the data in the format [header[0],[MSB,LSB]*2*size]"))
@@ -93,14 +93,14 @@ void SerialPortBridgeGeneric::init()
         if(d_header.getValue().size()<2)
         {
             msg_warning() << "Problem with header size. Set default [255,254].";
-            d_header.setValue(type::vector<unsigned char>{255,254});
+            d_header.setValue(sofa::type::vector<unsigned char>{255,254});
         }
 
     }
     else if(d_header.getValue().size()==0)
     {
         msg_warning() << "Problem with header size. Set default 255.";
-        d_header.setValue(type::vector<unsigned char>{255,254});
+        d_header.setValue(sofa::type::vector<unsigned char>{255,254});
     }
 
 
@@ -232,7 +232,7 @@ void SerialPortBridgeGeneric::sendPacket()
 
 void SerialPortBridgeGeneric::receivePacket()
 {
-    WriteAccessor<Data<type::vector<unsigned char>>> packetIn = d_packetIn;
+    WriteAccessor<sofa::Data<sofa::type::vector<unsigned char>>> packetIn = d_packetIn;
 
     unsigned int nbData = 1;
     packetIn.clear();
@@ -269,7 +269,7 @@ void SerialPortBridgeGeneric::checkData()
     }
 }
 
-}//namespace
+} // namespace
 
 #endif //SOFAVRPNCLIENT_SERIALPORTBRIDGEGENERIC_CPP
 

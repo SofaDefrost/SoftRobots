@@ -54,17 +54,17 @@ using sofa::component::statecontainer::MechanicalObject ;
 using sofa::simulation::SceneLoaderXML ;
 
 #include <SoftRobots/component/controller/AnimationEditor.h>
-using sofa::component::controller::AnimationEditor ;
+using softrobots::controller::AnimationEditor ;
 
 #include <sofa/core/behavior/MechanicalState.h>
 using sofa::core::behavior::MechanicalState;
 
 
-namespace sofa
+namespace softrobots
 {
 
 template <typename DataTypes>
-struct AnimationEditorTest : public sofa::testing::BaseTest, AnimationEditor<DataTypes>
+struct AnimationEditorTest : public sofa::testing::BaseTest, controller::AnimationEditor<DataTypes>
 {
     typedef AnimationEditor<DataTypes> ThisClass ;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -224,13 +224,13 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, AnimationEditor<Dat
             d_maxKeyFrame.setValue(1);
 
         m_keyFramesID.push_back(0);
-        m_animation.resize(1,m_state->read(core::ConstVecCoordId::position())->getValue());
+        m_animation.resize(1,m_state->read(sofa::core::ConstVecCoordId::position())->getValue());
 
         d_cursor.setValue(5);
         VecCoord newPosition;
         newPosition.resize(1);
         newPosition[0] = Coord(0.,12.5,0.);
-        m_state->write(core::VecCoordId::position())->setValue(newPosition);
+        m_state->write(sofa::core::VecCoordId::position())->setValue(newPosition);
         addKeyFrame();
         if(m_keyFramesID.size() != (unsigned int)2) return false;
         if(m_keyFramesID[1] != (unsigned int)5) return false;

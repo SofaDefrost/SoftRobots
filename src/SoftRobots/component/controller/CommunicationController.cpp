@@ -34,7 +34,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::controller
+namespace softrobots::controller
 {
 
 using sofa::type::Vec3d;
@@ -42,7 +42,7 @@ using sofa::type::Vec3f;
 using sofa::type::Vec1d;
 using sofa::type::Vec1f;
 using sofa::type::Vec;
-using type::vector;
+using sofa::type::vector;
 
 using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid3fTypes;
@@ -53,7 +53,7 @@ void CommunicationController<double>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<double>> data = d_data[i];
+        ReadAccessor<sofa::Data<double>> data = d_data[i];
         messageStr += std::to_string(data) + " ";
     }
 }
@@ -63,7 +63,7 @@ void CommunicationController<int>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<int>> data = d_data[i];
+        ReadAccessor<sofa::Data<int>> data = d_data[i];
         messageStr += std::to_string(data) + " ";
     }
 }
@@ -73,7 +73,7 @@ void CommunicationController<float>::convertDataToMessage(string& messageStr)
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<float>> data = d_data[i];
+        ReadAccessor<sofa::Data<float>> data = d_data[i];
         messageStr += std::to_string(data) + " ";
     }
 }
@@ -83,7 +83,7 @@ void CommunicationController<unsigned int>::convertDataToMessage(string& message
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<unsigned int>> data = d_data[i];
+        ReadAccessor<sofa::Data<unsigned int>> data = d_data[i];
         messageStr += std::to_string(data) + " ";
     }
 }
@@ -173,13 +173,9 @@ std::string CommunicationController<vector<Rigid3fTypes::Coord>>::GetCustomTempl
 
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
 using sofa::core::RegisterObject ;
-using defaulttype::Rigid3Types;
-using defaulttype::Vec3Types;
-using defaulttype::Vec1Types;
-// Registering the component
-// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-RegisterObject("description") + .add<> : Register the component
-// 2-.add<>(true) : Set default template
+using sofa::defaulttype::Rigid3Types;
+using sofa::defaulttype::Vec3Types;
+using sofa::defaulttype::Vec1Types;
 
 int CommunicationControllerClass = RegisterObject("This component is used to build a communication between two simulations")
 
@@ -194,12 +190,6 @@ int CommunicationControllerClass = RegisterObject("This component is used to bui
 .add< CommunicationController<vector<Vec<2,unsigned int>>> >()
 ;
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Force template specialization for the most common sofa floating point related type.
-// This goes with the extern template declaration in the .h. Declaring extern template
-// avoid the code generation of the template for each compilation unit.
-// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 template class CommunicationController<double>;
 template class CommunicationController<vector<Vec3Types::Coord>>;
 template class CommunicationController<vector<Vec1Types::Coord>>;

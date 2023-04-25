@@ -40,13 +40,7 @@
 #define         DEVICE_PORT             "/dev/ttyACM0"                         
 #endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace softrobots::controller
 {
 
 using namespace sofa::defaulttype;
@@ -59,7 +53,7 @@ using std::string;
  * Description can be found at:
  * https://softrobotscomponents.readthedocs.io
  */
-class SOFA_SOFTROBOTS_API SerialPortBridgeGeneric : public Controller
+class SOFA_SOFTROBOTS_API SerialPortBridgeGeneric : public sofa::component::controller::Controller
 {
 public:
     SOFA_CLASS(SerialPortBridgeGeneric, Controller);
@@ -77,22 +71,22 @@ public:
     /////////////////////////////////////////////////////////////
 
     //Config
-    Data<string>                 d_port;
-    Data<unsigned int>           d_baudRate;
-    Data<type::vector<unsigned char>> d_packetOut;
-    Data<type::vector<unsigned char>> d_packetIn;
+    sofa::Data<string>                 d_port;
+    sofa::Data<unsigned int>           d_baudRate;
+    sofa::Data<sofa::type::vector<unsigned char>> d_packetOut;
+    sofa::Data<sofa::type::vector<unsigned char>> d_packetIn;
 
-    Data<type::vector<unsigned char>> d_header;
-    Data<unsigned int>           d_size;
-    Data<bool>                   d_precise;
-    Data<bool>                   d_splitPacket;
-    Data<unsigned int>           d_redundancy;
-    Data<bool>                   d_doReceive;
+    sofa::Data<sofa::type::vector<unsigned char>> d_header;
+    sofa::Data<unsigned int>           d_size;
+    sofa::Data<bool>                   d_precise;
+    sofa::Data<bool>                   d_splitPacket;
+    sofa::Data<unsigned int>           d_redundancy;
+    sofa::Data<bool>                   d_doReceive;
 
 protected:
 
     Serial m_serial;
-    type::vector<unsigned char> m_packetOut; //member variable to enable tests
+    sofa::type::vector<unsigned char> m_packetOut; //member variable to enable tests
 
     void checkConnection();
     void checkData();
@@ -103,12 +97,13 @@ protected:
 
     void dataDeprecationManagement();
 
-};  //class SerialPortBridgeGeneric
+};
 
+}   // namespace
 
-}   //namespace controller
-
-}   //namespace component
-
-}   //namespace sofa
+namespace sofa::component::controller
+{
+    using SerialPortBridgeGeneric SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::controller::SerialPortBridgeGeneric;
+}
 

@@ -33,13 +33,7 @@
 #include <sstream>
 #include <string>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace softrobots::controller
 {
 
 using sofa::helper::OptionsGroup;
@@ -48,7 +42,7 @@ using std::stringstream;
 using sofa::helper::WriteAccessor;
 using sofa::helper::ReadAccessor;
 using std::string;
-using core::objectmodel::ComponentState;
+using sofa::core::objectmodel::ComponentState;
 
 template<class DataTypes>
 CommunicationController<DataTypes>::CommunicationController()
@@ -259,7 +253,7 @@ void CommunicationController<DataTypes>::convertDataToMessage(string& messageStr
 {
     for(unsigned int i=0; i<d_data.size(); i++)
     {
-        ReadAccessor<Data<DataTypes>> data = d_data[i];
+        ReadAccessor<sofa::Data<DataTypes>> data = d_data[i];
         messageStr += std::to_string(data.size()) + " ";
         for(unsigned int j=0; j<data.size(); j++)
             for(unsigned int k=0; k<data[j].size(); k++)
@@ -273,7 +267,7 @@ void CommunicationController<DataTypes>::convertStringStreamToData(stringstream*
 {
     for (unsigned int i= 0; i<d_data.size(); i++)
     {
-        WriteAccessor<Data<DataTypes>> data = d_data[i];
+        WriteAccessor<sofa::Data<DataTypes>> data = d_data[i];
         int dataSize = 0;
         (*stream) >> dataSize;
         data.resize(dataSize);
@@ -384,7 +378,5 @@ void CommunicationController<DataTypes>::receiveRequest()
 }
 
 
-}   //namespace controller
-}   //namespace component
-}   //namespace sofa
+} // namespace
 

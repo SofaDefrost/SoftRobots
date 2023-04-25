@@ -48,22 +48,22 @@ using sofa::core::objectmodel::BaseData ;
 using sofa::simulation::SceneLoaderXML ;
 
 #include <SoftRobots/component/controller/SerialPortBridgeGeneric.h>
-using sofa::component::controller::SerialPortBridgeGeneric ;
+using softrobots::controller::SerialPortBridgeGeneric ;
 
 
-namespace sofa
+namespace softrobots
 {
 
-using type::vector;
-using helper::WriteAccessor;
-using core::objectmodel::ComponentState;
+using sofa::type::vector;
+using sofa::helper::WriteAccessor;
+using sofa::core::objectmodel::ComponentState;
 
 template <typename _DataTypes>
 struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortBridgeGeneric
 {
     typedef SerialPortBridgeGeneric ThisClass ;
     typedef _DataTypes DataTypes;
-    typedef typename type::vector<DataTypes> VecValue;
+    typedef typename sofa::type::vector<DataTypes> VecValue;
 
     ///////////////////////////////////////////////////////////////
     // Bring parents members in the current lookup context.
@@ -125,7 +125,7 @@ struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortB
 
     void checkIndicesTest(){
 
-        helper::WriteAccessor<Data<type::vector<unsigned char>>> packOut = d_packetOut;
+        sofa::helper::WriteAccessor<sofa::Data<sofa::type::vector<unsigned char>>> packOut = d_packetOut;
         packOut.resize(2);
         d_size.setValue(0);
 
@@ -174,7 +174,7 @@ struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortB
 
     void onEndAnimationStepTest(){
 
-        WriteAccessor<Data<vector<unsigned char>>> packet = d_packetOut;
+        WriteAccessor<sofa::Data<vector<unsigned char>>> packet = d_packetOut;
 
         d_size.setValue(4);
         d_precise.setValue(false);
@@ -208,7 +208,7 @@ struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortB
 };
 
 using ::testing::Types;
-typedef Types<type::Vec3d> DataTypes;
+typedef Types<sofa::type::Vec3d> DataTypes;
 
 TYPED_TEST_SUITE(SerialPortBridgeGenericTest, DataTypes);
 

@@ -47,16 +47,7 @@ using sofa::gl::glVertexT;
 #include <fstream>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
-{
-
-namespace _animationeditor_
+namespace softrobots::controller
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -338,7 +329,7 @@ void AnimationEditor<DataTypes>::onBeginAnimationStep(const double dt)
     {
         m_isFrameDirty = false;
         if(d_cursor.getValue()<m_animation.size())
-            m_state->write(core::VecCoordId::position())->setValue(m_animation[d_cursor.getValue()]);
+            m_state->write(sofa::core::VecCoordId::position())->setValue(m_animation[d_cursor.getValue()]);
     }
 }
 
@@ -454,7 +445,7 @@ void AnimationEditor<DataTypes>::moveCursor(const char key)
 template<class DataTypes>
 void AnimationEditor<DataTypes>::moveCursorWithdx()
 {
-    ReadAccessor<Data<double>> dx = d_dx;
+    ReadAccessor<sofa::Data<double>> dx = d_dx;
     unsigned int cursor = d_cursor.getValue();
     if(dx>0)
     {
@@ -863,8 +854,5 @@ void AnimationEditor<DataTypes>::drawTrajectory(const VisualParams* vparams)
     vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,RGBAColor(0.5,0.5,0.5,1.));
 }
 
-}//namespace _animationeditor_
-}//namespace controller
-}//namespace component
-}//namespace sofa
+} // namespace
 

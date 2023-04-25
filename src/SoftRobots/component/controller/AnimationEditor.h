@@ -34,24 +34,15 @@
 
 #include <SoftRobots/component/initSoftRobots.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
-{
-
-namespace _animationeditor_
+namespace softrobots::controller
 {
 
 using sofa::type::Vec;
-using core::objectmodel::Event;
-using type::vector;
-using core::behavior::MechanicalState;
+using sofa::core::objectmodel::Event;
+using sofa::type::vector;
+using sofa::core::behavior::MechanicalState;
 using std::string;
-using core::visual::VisualParams;
+using sofa::core::visual::VisualParams;
 
 
 /**
@@ -60,7 +51,7 @@ using core::visual::VisualParams;
  * https://softrobotscomponents.readthedocs.io
  */
 template<class DataTypes>
-class SOFA_SOFTROBOTS_API AnimationEditor : public Controller
+class SOFA_SOFTROBOTS_API AnimationEditor : public sofa::component::controller::Controller
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(AnimationEditor,DataTypes),Controller);
@@ -84,7 +75,7 @@ public:
     void bwdInit() override;
     void reinit() override;
     void reset() override;
-    void draw(const core::visual::VisualParams* vparams) override;
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
     /////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from Controller ////////////////////
@@ -98,16 +89,16 @@ public:
     void setIsPlaying(const bool& isPlaying) {m_isPlaying = isPlaying;}
     vector<unsigned int> getKeyFramesID() {return m_keyFramesID;}
 
-    Data<unsigned int>      d_maxKeyFrame;
-    Data<string>            d_filename;
-    Data<bool>              d_loop;
-    Data<bool>              d_load;
-    Data<double>            d_dx;
-    Data<double>            d_frameTime;
-    Data<bool>              d_drawTimeline;
-    Data<double>            d_drawSize;
-    Data<bool>              d_drawTrajectory;
-    Data<unsigned int>      d_cursor;
+    sofa::Data<unsigned int>      d_maxKeyFrame;
+    sofa::Data<string>            d_filename;
+    sofa::Data<bool>              d_loop;
+    sofa::Data<bool>              d_load;
+    sofa::Data<double>            d_dx;
+    sofa::Data<double>            d_frameTime;
+    sofa::Data<bool>              d_drawTimeline;
+    sofa::Data<double>            d_drawSize;
+    sofa::Data<bool>              d_drawTrajectory;
+    sofa::Data<unsigned int>      d_cursor;
 
     vector<unsigned int>    m_keyFramesID;
     vector<vector<Coord>>   m_animation;
@@ -150,17 +141,15 @@ protected:
 };   //class AnimationEditor
 
 
-// Declares template as extern to avoid the code generation of the template for
-// each compilation unit. see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
-using defaulttype::Vec3Types;
+using sofa::defaulttype::Vec3Types;
 extern template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3Types>;
 
 
-}   //namespace _animationeditor_
+}   //namespace
 
-using _animationeditor_::AnimationEditor;
-
-}   //namespace controller
-}   //namespace component
-}   //namespace sofa
-
+namespace sofa::component::controller
+{
+    template <class DataTypes>
+    using AnimationEditor SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
+        = softrobots::controller::AnimationEditor<DataTypes>;
+}

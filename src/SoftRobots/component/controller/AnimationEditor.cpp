@@ -33,15 +33,13 @@
 
 #include <SoftRobots/component/controller/AnimationEditor.inl>
 
-namespace sofa::component::controller
+namespace softrobots::controller
 {
 
 using Quat = sofa::type::Quat<double>;
 using sofa::defaulttype::Vec3Types ;
 using sofa::defaulttype::Rigid3Types ;
 
-
-namespace _animationeditor_ {
 
 template<>
 void AnimationEditor<Rigid3Types>::updateAnimationWithInterpolation(const int startKey,
@@ -59,7 +57,7 @@ void AnimationEditor<Rigid3Types>::updateAnimationWithInterpolation(const int st
         return;
     }
 
-    int nbPositions = m_state->read(core::ConstVecCoordId::position())->getValue().size();
+    int nbPositions = m_state->read(sofa::core::ConstVecCoordId::position())->getValue().size();
     int nbStep = endKey - startKey;
 
     for (int i=0; i<nbStep+1; i++)
@@ -112,17 +110,12 @@ void AnimationEditor<Rigid3Types>::drawTrajectory(const VisualParams* vparams)
         lines.push_back(points[i+1]);
     }
 
-    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2.,type::RGBAColor(0.5,0.5,0.5,1.));
+    vparams->drawTool()->drawLines(lines,d_drawSize.getValue()*2., sofa::type::RGBAColor(0.5,0.5,0.5,1.));
 }
 
 
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
 using sofa::core::RegisterObject ;
-// Registering the component
-// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
-// 1-RegisterObject("description") + .add<> : Register the component
-// 2-.add<>(true) : Set default template
-
 int AnimationEditorClass = RegisterObject("Build an animation from key points motion: \n"
                                    "ctrl+a: add keyframe \n"
                                    "ctrl+d: delete keyframe \n"
@@ -144,5 +137,4 @@ template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3Types>;
 template class SOFA_SOFTROBOTS_API AnimationEditor<Rigid3Types>;
 
 
-}//namespace _animationeditor_
-}//namespace
+} // namespace
