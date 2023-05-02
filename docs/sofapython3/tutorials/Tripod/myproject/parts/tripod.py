@@ -145,23 +145,3 @@ def createScene(rootNode):
             arm.angleIn = -factor * math.pi / 4.
 
     animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)
-
-    # Temporary additions to have the system correctly built in SOFA
-    # Will no longer be required in SOFA v23.12
-    scene.Simulation.addObject('MechanicalMatrixMapper',
-                                 name="deformableAndFreeCenterCoupling",
-                                 template='Vec3,Rigid3',
-                                 object1=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
-                                 object2=tripod["RigidifiedStructure.FreeCenter.dofs"].getLinkPath(),
-                                 nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())
-
-    # Temporary additions to have the system correctly built in SOFA
-    # Will no longer be required in SOFA v23.12
-    for i in range(3):
-        scene.Simulation.addObject('MechanicalMatrixMapper',
-                                   name="deformableAndArm{i}Coupling".format(i=i),
-                                   template='Vec1,Vec3',
-                                   object1=tripod["ActuatedArm" + str(i) + ".ServoMotor.Articulation.dofs"].getLinkPath(),
-                                   object2=tripod["RigidifiedStructure.DeformableParts.dofs"].getLinkPath(),
-                                   skipJ2tKJ2=False if i == 0 else True,
-                                   nodeToParse=tripod["RigidifiedStructure.DeformableParts.MechanicalModel"].getLinkPath())

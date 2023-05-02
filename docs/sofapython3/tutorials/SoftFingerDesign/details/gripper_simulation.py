@@ -60,13 +60,4 @@ def createScene(rootNode):
     scene.addObject(FingerController(name='FingerController', objectDof=cylObst.collision.MechanicalObject,
                                      actuator=scene.Modelling.ActuatedFinger.ActuatedArm, node=rootNode))
 
-    # Temporary addition to have the system correctly built in SOFA
-    # Will no longer be required in SOFA v22.12
-    scene.Simulation.addObject('MechanicalMatrixMapper',
-                               name="deformableAndFreeCenterCoupling",
-                               template='Vec1,Vec3',
-                               object1=actuatedFinger.ActuatedArm.ServoMotor.Articulation.dofs.getLinkPath(),
-                               object2=actuatedFinger.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),
-                               nodeToParse=actuatedFinger.RigidifiedStructure.DeformableParts.ElasticMaterialObject.getLinkPath())
-
     return rootNode

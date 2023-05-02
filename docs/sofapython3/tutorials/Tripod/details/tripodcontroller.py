@@ -266,11 +266,6 @@ def createScene(rootNode):
                                                        tripod.ActuatedArm2]))
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
-    scene.Simulation.addObject('MechanicalMatrixMapper',
-                               template='Vec3,Rigid3',
-                               object1="@RigidifiedStructure/DeformableParts/dofs",
-                               object2="@RigidifiedStructure/RigidParts/dofs",
-                               nodeToParse="@RigidifiedStructure/DeformableParts/ElasticMaterialObject")
     motors = scene.Simulation.addChild("Motors")
     motors.addChild(tripod.ActuatedArm0)
     motors.addChild(tripod.ActuatedArm1)

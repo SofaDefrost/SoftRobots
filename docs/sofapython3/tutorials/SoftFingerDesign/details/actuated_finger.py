@@ -198,12 +198,3 @@ def createScene(rootNode):
     actuatedFinger.ActuatedArm.ServoMotor.Articulation.ServoWheel.ServoArm.dofs.showObjectScale = 0.01
     actuatedFinger.ActuatedArm.ServoMotor.Articulation.ServoWheel.ServoArm.RigidParts.dofs.showObject = True
     actuatedFinger.ActuatedArm.ServoMotor.Articulation.ServoWheel.ServoArm.RigidParts.dofs.showObjectScale = 0.02
-
-    # Temporary addition to have the system correctly built in SOFA
-    # Will no longer be required in SOFA v22.12
-    scene.Simulation.addObject('MechanicalMatrixMapper',
-                               name="deformableAndFreeCenterCoupling",
-                               template='Vec1,Vec3',
-                               object1=actuatedFinger.ActuatedArm.ServoMotor.Articulation.dofs.getLinkPath(),
-                               object2=actuatedFinger.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),
-                               nodeToParse=actuatedFinger.RigidifiedStructure.DeformableParts.ElasticMaterialObject.getLinkPath())
