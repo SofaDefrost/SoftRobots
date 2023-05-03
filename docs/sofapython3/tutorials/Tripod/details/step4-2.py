@@ -126,12 +126,3 @@ def createScene(rootNode):
             arm.ServoMotor.angleIn = -factor * math.pi / 4.
 
     animate(myanimate, {"targets": [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]}, duration=1)
-
-    # Temporary additions to have the system correctly built in SOFA
-    # Will no longer be required in SOFA v23.12
-    scene.Simulation.addObject('MechanicalMatrixMapper',
-                               template='Vec3,Rigid3',
-                               name="RigidAndDeformableCoupling",
-                               object1=tripod.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),
-                               object2=tripod.RigidifiedStructure.RigidParts.dofs.getLinkPath(),
-                               nodeToParse=tripod.RigidifiedStructure.DeformableParts.MechanicalModel.getLinkPath())
