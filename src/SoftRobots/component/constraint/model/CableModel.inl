@@ -28,6 +28,7 @@
 #pragma once
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/geometry/proximity/PointTriangle.h>
 #include <sofa/type/Vec.h>
 #include <SoftRobots/component/constraint/model/CableModel.h>
 
@@ -551,7 +552,6 @@ void CableModel<DataTypes>::getPositionFromTopology(Coord& position, sofa::Index
 template<class DataTypes>
 SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const Triangle& triangle, Coord& projectionOnTriangle)
 {
-    static sofa::helper::DistancePointTri proximitySolver;
     Coord p0 { sofa::type::NOINIT };
     Coord p1 { sofa::type::NOINIT };
     Coord p2 { sofa::type::NOINIT };
@@ -559,7 +559,8 @@ SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const 
     getPositionFromTopology(p1, triangle[1]);
     getPositionFromTopology(p2, triangle[2]);
     Vec3 projection { sofa::type::NOINIT };
-    proximitySolver.NewComputation(Vec3(p0), Vec3(p1), Vec3(p2), Vec3(position), projection);
+    const bool r = sofa::geometry::proximity::computeClosestPointOnTriangleToPoint(Vec3(p0), Vec3(p1), Vec3(p2), Vec3(position), projection);
+    assert(r);
     projectionOnTriangle = projection;
     const Real distanceToTriangle = (projectionOnTriangle - position).norm();
     return distanceToTriangle;

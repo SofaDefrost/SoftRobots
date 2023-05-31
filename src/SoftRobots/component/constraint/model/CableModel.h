@@ -31,7 +31,6 @@
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
-#include <sofa/helper/proximity.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace softrobots::constraint
@@ -142,8 +141,8 @@ protected:
     Data<Real>                  d_eqForce; ///< equality force of the cable
     Data<Real>                  d_maxPositiveDisplacement; ///< maximum displacement of the cable in the positive direction
     Data<Real>                  d_maxNegativeDisplacement; ///< maximum displacement of the cable in the negative direction
-    Data<Real>                  d_eqDisplacement; ///< equality dispalcement of the cable
-    Data<Real>                  d_maxDispVariation; ///< maximum dispalcement of the cable allowed
+    Data<Real>                  d_eqDisplacement; ///< equality displacement of the cable
+    Data<Real>                  d_maxDispVariation; ///< maximum displacement of the cable allowed
 
     Data<bool>                  d_drawPullPoint; ///< to draw pull point
     Data<bool>                  d_drawPoints; ///< to draw center points of cable
