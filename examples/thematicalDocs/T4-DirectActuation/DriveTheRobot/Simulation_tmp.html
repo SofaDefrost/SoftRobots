@@ -11,7 +11,7 @@
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
-  <link rel="stylesheet" href="../../../../../docs/style.css" />
+  <link rel="stylesheet" href="../../../../docs/style.css" />
 </head>
 <body>
 <h1 id="t4-directactuation-with-python-controller">T4-DirectActuation with Python Controller</h1>
@@ -25,7 +25,7 @@
 <p>Because this <em>PythonScriptController</em> comes from the plugin <strong><em>SofaPython</em></strong> which is already compiled and comes with our plugin <strong><em>SoftRobots</em></strong>.</p>
 <p>Now we can now add our <em>PythonScriptController</em> component in our SOFA scene :</p>
 <pre><code>rootNode.createObject(&#39;PythonScriptController&#39;, classname=&quot;controller&quot;, filename=&quot;controlKeyboard.py&quot;)</code></pre>
-<p>there are 2 arguments to this component : - <strong><em>classname</em></strong> : corespond to the name of our function - <strong><em>filename</em></strong> : corespond to the path (?) and name of our python file</p>
+<p>there are 2 arguments to this component : - <strong><em>classname</em></strong> : correspond to the name of our function - <strong><em>filename</em></strong> : correspond to the path (?) and name of our python file</p>
 <blockquote>
 <p>Now that we have instanciate it in our sofa scene we have to make the actual script to execute during animation time.</p>
 </blockquote>

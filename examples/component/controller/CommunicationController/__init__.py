@@ -21,7 +21,7 @@ The **CommunicationController** component can be used to send data from a simula
 
 3- Compile SOFA
 
-In this directory ("SoftRobots/docs/sofapython3/examples/component/controller/CommunicationController") you will find one example showing how to use the component:
+In this directory ("SoftRobots/examples/component/controller/CommunicationController") you will find one example showing how to use the component:
 
 - **SimulationDirect_Receiver.py** : Soft actuated accordion, direct problem
 - **SimulationInverse_Sender.py** : Soft actuated accordion, inverse problem

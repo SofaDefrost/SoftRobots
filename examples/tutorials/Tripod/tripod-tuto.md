@@ -62,9 +62,9 @@ Finally, the two representations are linked together by a mapping, which allows 
 
 The resulting simulation looks like this:
 <pre>
-<a href="details/step1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step1.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step1code' class='hide'>
 ```python
@@ -127,9 +127,9 @@ However, before using this prefabricated object, let's first build our own, base
 
 
 <pre>
-<a href="details/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step2code' class='hide'>
 ```python
@@ -168,9 +168,9 @@ In parallel, in order to lighten the code and ease the reading, the introduction
 Such a function is defined at the beginning of the scene, and can be called as often as wished in the description of the scene (i.e. in the function `createScene(rootNode)`{.python}).
 
 <pre>
-<a href="details/step3.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step3.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step3code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step3code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step3code' class='hide'>
 ```python
@@ -248,9 +248,9 @@ Tripod(parent, name="Tripod", radius, numMotors, angleShift)
 ```
 
 <pre>
-<a href="details/step4-1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4-1.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step4-1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step4-1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step4-1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4-1code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-1code' class='hide'>
 ```python
@@ -285,9 +285,9 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 - Rigidify some parts of a deformable object
 
 <pre>
-<a href="details/step4-2.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4-2.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step4-2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step4-2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step4-2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4-2code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-2code' class='hide'>
 ```python
@@ -310,9 +310,9 @@ More particularily, in the `ServoMotor` prefab of each `ActuatedArm`, a `ServoWh
 - Link a deformable object to a rigid actuator
 
 <pre>
-<a href="details/step4-3.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4-3.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step4-3code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step4-3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step4-3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4-3code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step4-3code' class='hide'>
 ```python
@@ -359,9 +359,9 @@ The animation is implemented, using the function `animate(cb, params,duration)` 
 The controller is added as another node in the scene.
 
 <pre>
-<a href="details/step5.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step5.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step5code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step5.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step5.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step5code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step5code' class='hide'>
 ```python
@@ -428,9 +428,9 @@ Keyboard keys                                                                   
 <img class="centered" src="../../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                    Decrease                 2
 
 <pre>
-<a href="details/step6.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step6.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step6code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step6.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step6.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step6code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step6code' class='hide'>
 ```python
@@ -471,9 +471,9 @@ Keyboard keys                                                                   
 
 
 <pre>
-<a href="details/step7.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step7.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step7code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step7.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step7.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step7code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step7code' class='hide'>
 ```python
@@ -497,9 +497,9 @@ The same keystrokes as in the previous steps are used, adding a new one to start
 - Keystroke to start the inverse resolution: <img class="centered" src="../../../images/keys/Ctrl_I.png" alt="Ctrl + I" width="100px"/>
 
 <pre>
-<a href="details/step8.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step8.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step8code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step8.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step8.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step8code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step8code' class='hide'>
 ```python
@@ -521,9 +521,9 @@ In the previous steps we where controlling the robot in inverse mode interactive
 better in the simulation than in reality.
 
 <pre>
-<a href="details/maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step8.2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/maze.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/maze.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step8.2code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step8.2code' class='hide'>
 ```python
@@ -544,9 +544,9 @@ better in the simulation than in reality.
 We can now include the maze trajectory withing the tripod robot scene to make a full simulation and compare it with the real-world example. Run the scene step8-maze.py, and press ctrl+a to set the Tripod in the starting configuration, then press ctrl+i to start the inverse resolution. 
 
 <pre>
-<a href="details/step8-maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step8-maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step8.3code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step8-maze.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step8-maze.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step8.3code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step8.3code' class='hide'>
 ```python
@@ -576,10 +576,10 @@ We want now to implement the following controller.
 </center>
 
 <pre>
-<a href="arduino/servoTimerDFRobot/ServoTimerDFRobot.ino"> <img src="../../../images/icons/play.png" width="14px"/>Arduino code for IMU.</a>
-<a href="arduino/servoTimerAdafruit/ServoTimerAdafruit.ino"> <img src="../../../images/icons/play.png" width="14px"/>Arduino code for adafruit.</a>
-<a href="details/closedLoopController.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/closedLoopController.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="arduino/servoTimerDFRobot/ServoTimerDFRobot.ino"> <img src="../../../docs/images/icons/play.png" width="14px"/>Arduino code for IMU.</a>
+<a href="arduino/servoTimerAdafruit/ServoTimerAdafruit.ino"> <img src="../../../docs/images/icons/play.png" width="14px"/>Arduino code for adafruit.</a>
+<a href="details/closedLoopController.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/closedLoopController.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
 </pre>
 
 

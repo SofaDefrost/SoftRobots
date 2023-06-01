@@ -180,8 +180,8 @@ servomotor rotation
 between the inner surfaces of the left and right walls
 
 <pre>
-<a href="details/gripper_simulation.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/gripper_simulation.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id='step1code' class='hide'>
 ```python

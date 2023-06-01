@@ -74,7 +74,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../../../docs/style.css" />
+  <link rel="stylesheet" href="../../../docs/style.css" />
 </head>
 <body>
 <p><img src="images/tripodtuto.png" /></p>
@@ -129,9 +129,9 @@ Then, a Visual model of the piece is built, using the same mesh file as for the 
 Finally, the two representations are linked together by a mapping, which allows to adapt the visual model to the deformations of the mechanical model of the soft piece. As the same mesh is used for both the mechanical and the visual model, the mapping is simply mirroring the mechanical model to adapt the visual one. This is why we use an <code>IdentityMapping</code> here.</p>
 The resulting simulation looks like this:
 <pre>
-<a href="details/step1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step1.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step1code" class="hide">
 <div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -238,9 +238,9 @@ In order to implement the deformation behaviour, the <code>MechanicalObject</cod
 <a class="sourceLine" id="cb3-10" title="10">                                    solver)</a></code></pre></div>
 <p>However, before using this prefabricated object, let’s first build our own, based on a corotational Finite Element Method with a tetrahedral volumetric representation of the shape. The mesh <code>tripod_mid.gidmsh</code> used to store the shape of the deformable object was built with the GiD mesh generator. Starting from the model obtained in the last step, the parameters of the elastic deformation are added to the silicone piece with a <code>ForceField</code> component.</p>
 <pre>
-<a href="details/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step2.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step2code" class="hide">
 <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb4-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -359,9 +359,9 @@ Figure 3: Interaction with the soft material with the central part fixed.
 <p>In parallel, in order to lighten the code and ease the reading, the introduction of a function <code class="sourceCode python">ElasticBody(parent)</code> is proposed in this step, bringing together all the components of the silicone piece model. This function also uses the prefab <code>ElasticMaterialObject</code>, that implements the mechanical model of an elastic material (including a mesh loader, mass definition, time integration and solver tools, and the description of the Force Fields).<br />
 Such a function is defined at the beginning of the scene, and can be called as often as wished in the description of the scene (i.e. in the function <code class="sourceCode python">createScene(rootNode)</code>).</p>
 <pre>
-<a href="details/step3.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step3.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step3code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step3code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step3code" class="hide">
 <div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb6-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -476,9 +476,9 @@ Figure 5: Display of the servomotor (left) from <em>SG90_servomotor.stl</em> and
 Just like for the <code>ElasticBody</code>, a function <code>Tripod()</code> is introduced, now that all the pieces of the robot have been modelled:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb10-1" title="1">Tripod(parent, name<span class="op">=</span><span class="st">&quot;Tripod&quot;</span>, radius, numMotors, angleShift)</a></code></pre></div>
 <pre>
-<a href="details/step4-1.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4-1.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step4-1code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step4-1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step4-1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4-1code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step4-1code" class="hide">
 <div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb11-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -601,9 +601,9 @@ Figure 6: Deformable piece with the extremities rigidified.
 <li>Rigidify some parts of a deformable object</li>
 </ul>
 <pre>
-<a href="details/step4-2.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4-2.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step4-2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step4-2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step4-2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4-2code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step4-2code" class="hide">
 <div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb12-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -759,9 +759,9 @@ Figure 7: Deformable piece with the extremities rigidified and attached to the s
 <li>Link a deformable object to a rigid actuator</li>
 </ul>
 <pre>
-<a href="details/step4-3.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step4-3.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step4-3code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step4-3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step4-3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4-3code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step4-3code" class="hide">
 <div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb13-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -973,9 +973,9 @@ The following combinations allow to control the angular position of the servomot
 Moreover, another animation is added in the function <code>setupanimation(actuators, step, angularstep, factor)</code>, in order to move with one keystroke the three servomotors from their default angular position to the initial position of the real robot. It is triggered by the following keystroke: <img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/> The animation is implemented, using the function <code>animate(cb, params,duration)</code> from the STLIB plugin, and the function <code>setupanimation(actuators, step, angularstep, factor)</code>. The <code>animate</code> function calls <code>setupanimation</code> and provides the structure of the animation: a small variation of the parameters (<code>step</code> value) is computed each time that the <code>steupanimation</code> function is called; the <code>animate</code> function is a recursive function, that calls itself over and over again, as long as the <code>duration</code> value hasn’t been reached.<br />
 The controller is added as another node in the scene.</p>
 <pre>
-<a href="details/step5.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step5.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step5code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step5.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step5.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step5code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step5code" class="hide">
 <div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb14-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -1144,9 +1144,9 @@ Figure 11: Tripod simulation with collision between a sphere, the deformable par
 </tbody>
 </table>
 <pre>
-<a href="details/step6.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step6.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step6code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step6.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step6.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step6code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step6code" class="hide">
 <div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb15-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -1337,9 +1337,9 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 </tbody>
 </table>
 <pre>
-<a href="details/step7.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step7.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step7code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step7.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step7.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step7code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step7code" class="hide">
 <div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb16-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -1511,9 +1511,9 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <li>Keystroke to start the inverse resolution: <img class="centered" src="../../../images/keys/Ctrl_I.png" alt="Ctrl + I" width="100px"/></li>
 </ul>
 <pre>
-<a href="details/step8.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step8.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step8code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step8.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step8.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step8code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step8code" class="hide">
 <div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb17-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
@@ -1699,9 +1699,9 @@ Figure 12: Maze with a little ball.
 </center>
 <p>In the previous steps we where controlling the robot in inverse mode interactively. We want now to make the robot follow a predefined path. For that we will play with a maze. Let’s try to define a path that will move a little ball inside the maze. Open the file mazeplanning.json, and add new points, then press ctrl+r to reload the scene and verify the results in simulation. Tips: To make the trajectory work well on the robot, try to emphasize the movements. Sometimes the ball rolls better in the simulation than in reality.</p>
 <pre>
-<a href="details/maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step8.2code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/maze.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/maze.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step8.2code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step8.2code" class="hide">
 <div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb18-1" title="1"><span class="im">import</span> Sofa</a>
@@ -1809,9 +1809,9 @@ Figure 13: Tripod with maze on top.
 </center>
 <p>We can now include the maze trajectory withing the tripod robot scene to make a full simulation and compare it with the real-world example. Run the scene step8-maze.py, and press ctrl+a to set the Tripod in the starting configuration, then press ctrl+i to start the inverse resolution.</p>
 <pre>
-<a href="details/step8-maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
-<a href="myproject/step8-maze.py"> <img src="../../../images/icons/play.png" width="14px"/>Write it yourself.</a>
-<a href="javascript:void(0)" onclick="toggle('step8.3code');"> <img src="../../../images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+<a href="details/step8-maze.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="myproject/step8-maze.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step8.3code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
 </pre>
 <div id="step8.3code" class="hide">
 <div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb19-1" title="1"><span class="co"># -*- coding: utf-8 -*-</span></a>
