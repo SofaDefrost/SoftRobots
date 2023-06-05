@@ -344,17 +344,17 @@ The following combinations allow to control the angular position of the servomot
 
 Keyboard keys[^credits]                                                                                              Effect on angle          For Servo
 ---------------------------------------------------------------------------------------------------------          ----------------------   --------------
-<img class="centered" src="../../../images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/>                          Increase                 0
-<img class="centered" src="../../../images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/>                      Decrease                 0
-<img class="centered" src="../../../images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/>                      Increase                 1
-<img class="centered" src="../../../images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/>                    Decrease                 1
-<img class="centered" src="../../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/>                         Increase                 2
-<img class="centered" src="../../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                       Decrease                 2
+<img class="centered" src="../../../docs/images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/>                          Increase                 0
+<img class="centered" src="../../../docs/images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/>                      Decrease                 0
+<img class="centered" src="../../../docs/images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/>                      Increase                 1
+<img class="centered" src="../../../docs/images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/>                    Decrease                 1
+<img class="centered" src="../../../docs/images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/>                         Increase                 2
+<img class="centered" src="../../../docs/images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                       Decrease                 2
 
 SOFA allows a default animation management: this is what was being used up to now. In this step, we want to add a more specific animation that updates the scene at each timestep, depending on the keys pressed by the user. The control of this animation is done thanks to a python script controller (`class CONTROLLER_NAME(Sofa.Core.Controller)`) that is added in our scene file. It uses the function (or *method*) `onKeypressedEvent()` that is included in SOFA by default and that triggers an action if a designated key is pressed.
 The controller is implemented such as, after each key press, the designated servomotor moves from  a `stepsize` value of *0.1* rad (that is a little less than 6°) by changing the value of the attribute `ServoMotor.angleIn`.  
 Moreover, another animation is added in the function `setupanimation(actuators, step, angularstep, factor)`, in order to move with one keystroke the three servomotors from their default angular position to the initial position of the real robot. It is triggered by the following keystroke:
-<img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
+<img class="centered" src="../../../docs/images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
 The animation is implemented, using the function `animate(cb, params,duration)` from the STLIB plugin, and the function `setupanimation(actuators, step, angularstep, factor)`. The `animate` function calls `setupanimation` and provides the structure of the animation: a small variation of the parameters (`step` value) is computed each time that the `steupanimation` function is called; the `animate` function is a recursive function, that calls itself over and over again, as long as the `duration` value hasn't been reached.  
 The controller is added as another node in the scene.
 
@@ -413,19 +413,19 @@ A new controller, called `JumpController`, is also added to change rapidely the 
 
 The same keystrokes as in the previous steps are used, adding two new intermediate positions for a more dynamical response.
 
-- Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
-- Keystroke to position the servomotors to an intermediate position: <img class="centered" src="../../../images/keys/Ctrl_Q.png" alt="Ctrl + Q" width="100px"/>
-- Keystrokes to position the servomotors to a high angular position: <img class="centered" src="../../../images/keys/Ctrl_Z.png" alt="Ctrl + Z" width="100px"/>
+- Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
+- Keystroke to position the servomotors to an intermediate position: <img class="centered" src="../../../docs/images/keys/Ctrl_Q.png" alt="Ctrl + Q" width="100px"/>
+- Keystrokes to position the servomotors to a high angular position: <img class="centered" src="../../../docs/images/keys/Ctrl_Z.png" alt="Ctrl + Z" width="100px"/>
 - Keystrokes to control the angular position of each servomotor:
 
 Keyboard keys                                                                                                      Effect on angle          For Servo
 ----------------------------------------------------------------------------------------------------------      ----------------------   --------------
-<img class="centered" src="../../../images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/>                       Increase                 0
-<img class="centered" src="../../../images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/>                   Decrease                 0
-<img class="centered" src="../../../images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/>                   Increase                 1
-<img class="centered" src="../../../images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/>                 Decrease                 1
-<img class="centered" src="../../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/>                      Increase                 2
-<img class="centered" src="../../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                    Decrease                 2
+<img class="centered" src="../../../docs/images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/>                       Increase                 0
+<img class="centered" src="../../../docs/images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/>                   Decrease                 0
+<img class="centered" src="../../../docs/images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/>                   Increase                 1
+<img class="centered" src="../../../docs/images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/>                 Decrease                 1
+<img class="centered" src="../../../docs/images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/>                      Increase                 2
+<img class="centered" src="../../../docs/images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                    Decrease                 2
 
 <pre>
 <a href="details/step6.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
@@ -456,18 +456,18 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 
 The keystrokes implemented are the same as for the previous steps, adding one to start sending data to the robot.
 
-- Keystroke to start sending data to the real robot: <img class="centered" src="../../../images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/>
-- Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
+- Keystroke to start sending data to the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/>
+- Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
 - Keystrokes to control the angular position of each servomotor:
 
 Keyboard keys                                                                                                     Effect on angle          For Servo
 ----------------------------------------------------------------------------------------------------------      ----------------------   --------------
-<img class="centered" src="../../../images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/>                      Increase                 0
-<img class="centered" src="../../../images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/>                  Decrease                 0
-<img class="centered" src="../../../images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/>                  Increase                 1
-<img class="centered" src="../../../images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/>                Decrease                 1
-<img class="centered" src="../../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/>                     Increase                 2
-<img class="centered" src="../../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                   Decrease                 2
+<img class="centered" src="../../../docs/images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/>                      Increase                 0
+<img class="centered" src="../../../docs/images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/>                  Decrease                 0
+<img class="centered" src="../../../docs/images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/>                  Increase                 1
+<img class="centered" src="../../../docs/images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/>                Decrease                 1
+<img class="centered" src="../../../docs/images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/>                     Increase                 2
+<img class="centered" src="../../../docs/images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/>                   Decrease                 2
 
 
 <pre>
@@ -492,9 +492,9 @@ In the previous steps we where controlling  the robot by directly specifying the
 
 The same keystrokes as in the previous steps are used, adding a new one to start the inverse resolution.
 
-- Keystroke to start sending data to the real robot: <img class="centered" src="../../../images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/>
-- Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
-- Keystroke to start the inverse resolution: <img class="centered" src="../../../images/keys/Ctrl_I.png" alt="Ctrl + I" width="100px"/>
+- Keystroke to start sending data to the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/>
+- Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/>
+- Keystroke to start the inverse resolution: <img class="centered" src="../../../docs/images/keys/Ctrl_I.png" alt="Ctrl + I" width="100px"/>
 
 <pre>
 <a href="details/step8.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>

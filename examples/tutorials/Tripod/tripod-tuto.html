@@ -938,39 +938,39 @@ The following combinations allow to control the angular position of the servomot
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/></td>
 <td style="text-align: center;">Increase</td>
 <td style="text-align: center;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/></td>
 <td style="text-align: center;">Decrease</td>
 <td style="text-align: center;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/></td>
 <td style="text-align: center;">Increase</td>
 <td style="text-align: center;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/></td>
 <td style="text-align: center;">Decrease</td>
 <td style="text-align: center;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/></td>
 <td style="text-align: center;">Increase</td>
 <td style="text-align: center;">2</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/></td>
 <td style="text-align: center;">Decrease</td>
 <td style="text-align: center;">2</td>
 </tr>
 </tbody>
 </table>
 <p>SOFA allows a default animation management: this is what was being used up to now. In this step, we want to add a more specific animation that updates the scene at each timestep, depending on the keys pressed by the user. The control of this animation is done thanks to a python script controller (<code>class CONTROLLER_NAME(Sofa.Core.Controller)</code>) that is added in our scene file. It uses the function (or <em>method</em>) <code>onKeypressedEvent()</code> that is included in SOFA by default and that triggers an action if a designated key is pressed. The controller is implemented such as, after each key press, the designated servomotor moves from a <code>stepsize</code> value of <em>0.1</em> rad (that is a little less than 6°) by changing the value of the attribute <code>ServoMotor.angleIn</code>.<br />
-Moreover, another animation is added in the function <code>setupanimation(actuators, step, angularstep, factor)</code>, in order to move with one keystroke the three servomotors from their default angular position to the initial position of the real robot. It is triggered by the following keystroke: <img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/> The animation is implemented, using the function <code>animate(cb, params,duration)</code> from the STLIB plugin, and the function <code>setupanimation(actuators, step, angularstep, factor)</code>. The <code>animate</code> function calls <code>setupanimation</code> and provides the structure of the animation: a small variation of the parameters (<code>step</code> value) is computed each time that the <code>steupanimation</code> function is called; the <code>animate</code> function is a recursive function, that calls itself over and over again, as long as the <code>duration</code> value hasn’t been reached.<br />
+Moreover, another animation is added in the function <code>setupanimation(actuators, step, angularstep, factor)</code>, in order to move with one keystroke the three servomotors from their default angular position to the initial position of the real robot. It is triggered by the following keystroke: <img class="centered" src="../../../docs/images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/> The animation is implemented, using the function <code>animate(cb, params,duration)</code> from the STLIB plugin, and the function <code>setupanimation(actuators, step, angularstep, factor)</code>. The <code>animate</code> function calls <code>setupanimation</code> and provides the structure of the animation: a small variation of the parameters (<code>step</code> value) is computed each time that the <code>steupanimation</code> function is called; the <code>animate</code> function is a recursive function, that calls itself over and over again, as long as the <code>duration</code> value hasn’t been reached.<br />
 The controller is added as another node in the scene.</p>
 <pre>
 <a href="details/step5.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
@@ -1097,9 +1097,9 @@ Figure 11: Tripod simulation with collision between a sphere, the deformable par
 <p>A new controller, called <code>JumpController</code>, is also added to change rapidely the servo motors angles so the robot can play with the falling ball.</p>
 <p>The same keystrokes as in the previous steps are used, adding two new intermediate positions for a more dynamical response.</p>
 <ul>
-<li>Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/></li>
-<li>Keystroke to position the servomotors to an intermediate position: <img class="centered" src="../../../images/keys/Ctrl_Q.png" alt="Ctrl + Q" width="100px"/></li>
-<li>Keystrokes to position the servomotors to a high angular position: <img class="centered" src="../../../images/keys/Ctrl_Z.png" alt="Ctrl + Z" width="100px"/></li>
+<li>Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/></li>
+<li>Keystroke to position the servomotors to an intermediate position: <img class="centered" src="../../../docs/images/keys/Ctrl_Q.png" alt="Ctrl + Q" width="100px"/></li>
+<li>Keystrokes to position the servomotors to a high angular position: <img class="centered" src="../../../docs/images/keys/Ctrl_Z.png" alt="Ctrl + Z" width="100px"/></li>
 <li>Keystrokes to control the angular position of each servomotor:</li>
 </ul>
 <table>
@@ -1112,32 +1112,32 @@ Figure 11: Tripod simulation with collision between a sphere, the deformable par
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/></td>
 <td style="text-align: center;">Increase</td>
 <td style="text-align: center;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/></td>
 <td style="text-align: center;">Decrease</td>
 <td style="text-align: center;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/></td>
 <td style="text-align: center;">Increase</td>
 <td style="text-align: center;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/></td>
 <td style="text-align: center;">Decrease</td>
 <td style="text-align: center;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/></td>
 <td style="text-align: center;">Increase</td>
 <td style="text-align: center;">2</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/></td>
 <td style="text-align: center;">Decrease</td>
 <td style="text-align: center;">2</td>
 </tr>
@@ -1291,8 +1291,8 @@ The second one, <code>SerialPortController</code>, is another Controller, readin
 Because the data are now sent to the real robot, it is necessary to implement a limitation of the possible angular positions to be reached: between 60 and 180 degrees. Any angle outside this interval is limited to the interval’s extrem value instead.</p>
 <p>The keystrokes implemented are the same as for the previous steps, adding one to start sending data to the robot.</p>
 <ul>
-<li>Keystroke to start sending data to the real robot: <img class="centered" src="../../../images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/></li>
-<li>Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/></li>
+<li>Keystroke to start sending data to the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/></li>
+<li>Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/></li>
 <li>Keystrokes to control the angular position of each servomotor:</li>
 </ul>
 <table>
@@ -1305,32 +1305,32 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_up.png" alt="Ctrl + Cursor up" width="100px"/></td>
 <td style="text-align: center;">Increase</td>
 <td style="text-align: center;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_down.png" alt="Ctrl + Cursor down" width="100px"/></td>
 <td style="text-align: center;">Decrease</td>
 <td style="text-align: center;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_left.png" alt="Ctrl + Cursor left" width="100px"/></td>
 <td style="text-align: center;">Increase</td>
 <td style="text-align: center;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_right.png" alt="Ctrl + Cursor right" width="100px"/></td>
 <td style="text-align: center;">Decrease</td>
 <td style="text-align: center;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_plus.png" alt="Ctrl + Key plus" width="100px"/></td>
 <td style="text-align: center;">Increase</td>
 <td style="text-align: center;">2</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><img class="centered" src="../../../images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/></td>
+<td style="text-align: left;"><img class="centered" src="../../../docs/images/keys/Ctrl_minus.png" alt="Ctrl + Key minus" width="100px"/></td>
 <td style="text-align: center;">Decrease</td>
 <td style="text-align: center;">2</td>
 </tr>
@@ -1506,9 +1506,9 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <p>In the previous steps we where controlling the robot by directly specifying the angle of the ServorMotor object. In this step we will use SOFA to inverse the model and adding an effector to the simulation so that it becomes possible to specify the effector’s position and let the simulation compute the angular positions to apply to reach the effectors’s position.</p>
 <p>The same keystrokes as in the previous steps are used, adding a new one to start the inverse resolution.</p>
 <ul>
-<li>Keystroke to start sending data to the real robot: <img class="centered" src="../../../images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/></li>
-<li>Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/></li>
-<li>Keystroke to start the inverse resolution: <img class="centered" src="../../../images/keys/Ctrl_I.png" alt="Ctrl + I" width="100px"/></li>
+<li>Keystroke to start sending data to the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_B.png" alt="Ctrl + B" width="100px"/></li>
+<li>Keystroke to move the servomotors from their default position to the initial one of the real robot: <img class="centered" src="../../../docs/images/keys/Ctrl_A.png" alt="Ctrl + A" width="100px"/></li>
+<li>Keystroke to start the inverse resolution: <img class="centered" src="../../../docs/images/keys/Ctrl_I.png" alt="Ctrl + I" width="100px"/></li>
 </ul>
 <pre>
 <a href="details/step8.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
