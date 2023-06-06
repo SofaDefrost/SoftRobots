@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../../../docs/style.css" />
+</head>
+<body>
+<h1 id="tendon-driven-soft-arm-with-gripper">Tendon Driven Soft Arm with Gripper</h1>
+<p><img src="images/softarmgripper.png" /></p>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li><a href="https://github.com/sofa-framework/sofa">SOFA</a></li>
+<li><a href="https://github.com/SofaDefrost/SoftRobots">SoftRobots</a> plugin for SOFA</li>
+<li><a href="https://github.com/sofa-framework/BeamAdapter">BeamAdapter</a> plugin for SOFA</li>
+<li><a href="https://github.com/sofa-framework/SofaPython3">SofaPython3</a> plugin for SOFA</li>
+</ul>
+<p>Binaries of SOFA with the above plugins are also available <a href="https://github.com/sofa-framework/sofa/releases">here</a>.</p>
+<h2 id="optional-requirements">Optional requirements</h2>
+<p>If you want to you use the GUI to pilot the robot (forward kinematics) please install <a href="https://riptutorial.com/tkinter/example/3206/installation-or-setup">tkinter for python3</a> and set <code>armGUI=True</code> in the file <code>params.py</code></p>
+<p>If you want to solve the inverse kinematics of the robot, you will need the SoftRobots.Inverse plugin which is distributed with the <a href="https://github.com/sofa-framework/sofa/releases">binaries</a>. Then in the file <code>params.py</code> set <code>inverse=True</code>.</p>
+</body>
+</html>

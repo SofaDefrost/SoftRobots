@@ -20,7 +20,7 @@
 import os
 import sys
 # sys.path.insert(0, os.path.abspath('.'))
-path = os.getcwd()+"/../sofapython3/examples/"
+path = os.getcwd()+"/../../examples/"
 sys.path.append(path)
 
 # -- General configuration ------------------------------------------------

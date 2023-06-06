@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>index</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../../../docs/style.css" />
+</head>
+<body>
+<h3 id="volumetric-mesh-generation">Volumetric Mesh Generation</h3>
+<p>Volumetric mesh generation is a complex topic and several tools exists to perform this task such as: <a href="http://www.gidhome.com/">GID</a>, <a href="http://www.cgal.org/">CGAL</a> or <a href="http://geuz.org/gmsh/">Gmsh</a>. We choose to use the C++ library <code>CGAL</code> (<a href="http://www.cgal.org">CGAL</a>) as a dedicated plug-in for Sofa exists. Volumetric mesh can be computed either using a surface mesh or an image. Whatever the input, we need to add the <code>CGALPlugin</code> with the following line:</p>
+<pre><code>rootNode.createObject(&#39;RequiredPlugin&#39;, pluginName=&#39;CGALPlugin&#39;)</code></pre>
+<p>All the components that will help to build the volumetric mesh will be placed in a child node, this is performed with</p>
+<pre><code>node = rootNode.createChild(&#39;node&#39;)</code></pre>
+<p>Then, we need to load the surface mesh that will be used as input for CGAL. Many file formats are supported (<code>OBJ</code>, <code>VTK</code>, <code>STL</code>…). In our example, a STL file has been produced using some CAD software. This file is then loaded with:</p>
+<pre><code>node.createObject(&#39;MeshSTLLoader&#39;, name=&#39;mesh&#39;, filename=path+&#39;finger.stl&#39;)</code></pre>
+<p>And then the magic is performed with the <code>MeshGenerationFromPolyhedron</code> where four parameters are used to control the meshing:</p>
+<ul>
+<li><code>cellSize</code>: this parameter controls the size of mesh tetrahedra. It provides an upper bound on the circumradius of the mesh tetrahedra</li>
+<li><code>facetAngle</code>: This parameter controls the shape of surface facets. Actually, it is a lower bound for the angle (in degree) of surface facets. When boundary surfaces are smooth, the termination of the meshing process is guaranteed if the angular bound is at most 30 degrees</li>
+<li><code>facetAngle</code>: this parameter controls the shape of surface facets. Actually, it is a lower bound for the angle (in degree) of surface facets. When boundary surfaces are smooth, the termination of the meshing process is guaranteed if the angular bound is at most 30 degrees</li>
+<li><code>cellRatio</code>: this parameter controls the shape of mesh cells. Actually, it is an upper bound for the ratio between the circumradius of a mesh tetrahedron and its shortest edge. There is a theoretical bound for this parameter: the Delaunay refinement process is guaranteed to terminate for values larger than 2</li>
+<li><code>facetApproximation</code>: the approximation error between the boundary and the subdivision surface. It provides an upper bound for the distance between the circumcenter of a surface facet and the center of a surface Delaunay ball of this facet</li>
+</ul>
+<p>It may require some trials and errors to find a good set of parameters that capture well the details of the surface mesh without leading to a large number of tetrahedra. The framerate of the simulation is quite sensitive to the setting of these parameters. If the simulation is running to slow consider changing them in order to reduce the number of tetrahedra. For our example, the set of parameters is:</p>
+<pre><code>node.createObject(&#39;MeshGenerationFromPolyhedron&#39;, name=&#39;gen&#39;, template=&#39;Vec3d&#39;, inputPoints=&#39;@mesh.position&#39;, inputTriangles=&#39;@mesh.triangles&#39;, drawTetras=&#39;1&#39;,
+    cellSize=&quot;10&quot;,
+    facetAngle=&quot;30&quot;,
+    facetSize=&quot;4&quot;,
+    cellRatio=&quot;2&quot;,   #Convergence problem if lower than 2
+    facetApproximation=&quot;1&quot;
+    )</code></pre>
+<p>The computed tetrahedra are then stored in a mesh container for later usage with:</p>
+<pre><code>node.createObject(&#39;Mesh&#39;, position=&#39;@gen.outputPoints&#39;, tetrahedra=&#39;@gen.outputTetras&#39;)</code></pre>
+<p>Mind the fact that the syntax used links the output of the generator ‘gen’ to the created ‘Mesh’ object using ‘@’. After that you may export the resulting volumetric mesh with the following line for further use:</p>
+<pre><code>node.createObject(&#39;VTKExporter&#39;, filename=path+&#39;finger&#39;, edges=&#39;0&#39;, tetras=&#39;1&#39;, exportAtBegin=&#39;1&#39;)</code></pre>
+<p>We want to export only the tetrahedra (no edges, no triangles) and we want a single export that is performed at the beginning of the simulation (a single export is needed since the mesh will not deform during this simulation).</p>
+<p>For an interactive feedback of what has been computed by <code>CGAL</code>, we can use this line:</p>
+<pre><code>node.createObject(&#39;OglModel&#39;, filename=path+&quot;finger.stl&quot;, color=&quot;0.0 0.7 0.7 0.5&quot;)</code></pre>
+<p>It will superimpose the surface mesh on the volumetric mesh.</p>
+</body>
+</html>

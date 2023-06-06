@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Simulation</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../../../../docs/style.css" />
+</head>
+<body>
+<h1 id="t4-directactuation-with-python-controller">T4-DirectActuation with Python Controller</h1>
+<p>To add script that will be executed during the animation of our scene we use the component called <strong><em>PythonScriptController</em></strong>. We call it controller because it will allow use to recuperate data of component during the animation to modify and actualize the components data.</p>
+<blockquote>
+<p>During this tutorial we will show you how to use this component to control via KeyBoard the movement of a robot.</p>
+</blockquote>
+<h2 id="instanciation">Instanciation</h2>
+<p>In our scene we need first to add this line in the beginning :</p>
+<pre><code>rootNode.createObject(&#39;RequiredPlugin&#39;, pluginName=&#39;SofaPython&#39;)</code></pre>
+<p>Because this <em>PythonScriptController</em> comes from the plugin <strong><em>SofaPython</em></strong> which is already compiled and comes with our plugin <strong><em>SoftRobots</em></strong>.</p>
+<p>Now we can now add our <em>PythonScriptController</em> component in our SOFA scene :</p>
+<pre><code>rootNode.createObject(&#39;PythonScriptController&#39;, classname=&quot;controller&quot;, filename=&quot;controlKeyboard.py&quot;)</code></pre>
+<p>there are 2 arguments to this component : - <strong><em>classname</em></strong> : corespond to the name of our function - <strong><em>filename</em></strong> : corespond to the path (?) and name of our python file</p>
+<blockquote>
+<p>Now that we have instanciate it in our sofa scene we have to make the actual script to execute during animation time.</p>
+</blockquote>
+<h2 id="control-our-robot">Control our robot</h2>
+<p>With the previous instanciation we now have to create a file <em>controlKeyboard</em>.<em>py</em> that will implement a function called <em>controller</em>.</p>
+<p>first we have to import Sofa library :</p>
+<pre><code>import Sofa</code></pre>
+<p>Then declare our class :</p>
+<pre><code>class controller(Sofa.PythonScriptController):</code></pre>
+<h4 id="bindings">Bindings</h4>
+<hr />
+<blockquote>
+<p>This <em>PythonScriptController</em> allows <strong>bindings</strong> between SOFA and python so our python script can use standard function name like <strong>initGraph</strong> which will then be executed with all the other SOFA component during initialization and animation.</p>
+</blockquote>
+<p>Here we will use two binded functions : - <strong><em>initGraph(self , node)</em></strong> :</p>
+<pre><code>in this function we can initialize all the variables our class will need and it will be instanciate during SOFA initialization phase with all the other components of our SOFA scene</code></pre>
+<ul>
+<li><p><strong><em>onKeyPressed(self , c)</em></strong> :</p>
+<p>this function is executed when <strong>ctrl + any KeyBoard key</strong> is pressed. We recuparate the key <strong>c</strong> and if it’s the right key trigger a response.</p></li>
+</ul>
+<p>To see all the other possible functions you can use, go to <strong>LINK_TO_SofaPython_DOC</strong>.</p>
+<h4 id="description-of-initgraph">Description of initGraph</h4>
+<hr />
+<p>We define the links to the current SOFA <strong>node</strong>, our <strong>increment</strong> to move the robots and initialize two list : - <strong>restPositionNodes</strong> that will contains the links to the actuator objects we want to modify. - <strong>initPose</strong> that will contains the first position allowing us to come back easily to it.</p>
+<pre><code>def initGraph(self, node):
+    self.node = node
+    self.increment = 5
+    self.restPositionNodes = []
+    self.initPose = []</code></pre>
+<p>We fill <em>restPositionNodes</em> with the links to our actuators:</p>
+<pre><code>    for i in range(3):
+        print &#39;RestPositionLeg&#39;+str(i)
+        self.restPositionNodes.append(self.node.getChild(&#39;RestPositionLeg&#39;+str(i))) </code></pre>
+<p>We fill <em>initPose</em> with the initial values :</p>
+<pre><code>    for i in range(len(self.restPositionNodes)):
+        self.initPose.append(self.restPositionNodes[i].getObject(&#39;meca&#39;+str(i)).translation[0])</code></pre>
+<h4 id="description-of-onkeypressed">Description of onKeyPressed</h4>
+<hr />
+<p>On key pressed we first have to get the current values of our actuator position :</p>
+<pre><code>def onKeyPressed(self,c):
+    
+    currentValues = []
+    for i in range(len(self.restPositionNodes)):
+        currentValues.append(self.restPositionNodes[i].getObject(&#39;meca&#39;+str(i)).translation[0])</code></pre>
+<p>Then depending of the key pressed, we -/+ increment the actuator position. We decided to have 6 keys : - 3 for each direction - 1 for all up - 1 for all down - 1 to reset to the initial values</p>
+<pre><code>    if (ord(c) == 18):  #  &lt;--
+        currentValues[0][2] += self.increment
+        currentValues[1][2] += self.increment
+        currentValues[2][2] -= self.increment
+    ...
+    # Same things for the other 5 key we have</code></pre>
+<p>And finally we can update the new position we have into the actuator :</p>
+<pre><code>for i in range(len(self.restPositionNodes)):
+    self.restPositionNodes[i].getObject(&#39;meca&#39;+str(i)).findData(&quot;translation&quot;).value =  currentValues[i]</code></pre>
+</body>
+</html>

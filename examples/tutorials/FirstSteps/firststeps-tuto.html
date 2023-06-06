@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>firststeps-tuto</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../docs/style.css" />
+</head>
+<body>
+<p><img src="../../../docs/images/pluginimage.png" style="width:100.0%" /></p>
+<script language="javascript">
+function toggle(target) {
+    d = document.getElementById(target);
+    if(d.className === "show")
+        d.className = "hide"
+    else 
+        d.className = "show"
+    return false;
+}
+</script>
+<h2 id="first-steps-with-sofa-softrobots">First steps with Sofa &amp; SoftRobots</h2>
+<p>Welcome to Sofa and the SoftRobots plugins. This tutorial is intended for people who have never used Sofa, and aims at providing them quickly with the basis of scene modelling with Sofa.</p>
+<p>This tutorial describes how to set up a simulation environment, a scene, using <a href="https://www.sofa-framework.org/">SOFA</a> and how to use the Sofa Template Library <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> to add simulated elements.</p>
+<p>Tutorials prequisites:</p>
+<ul>
+<li><p><a href="https://www.sofa-framework.org/">SOFA</a> and the library <a href="http://stlib.readthedocs.io/en/latest/">STLIB</a> are installed.</p></li>
+<li><p>you have basic knowledge of the <a href="https://www.python.org/">Python</a> programming language. If not, you can go to <a href="https://www.python.org/">Python</a>Tutorials.</p></li>
+</ul>
+<!-- ### Step 1: Loading a scene on Sofa
+
+Sofa is loading the description of the simulation from *.py* files. Sofa is started with the command `runSofa`{.bash} in the terminal.  
+To run a file `MyScene.py`, use the following command:
+
+```bash
+PATH_TO_SOFA_DIRECTORY/build/bin/runSofa PATH_TO_SCENE_FILE/MyScene.py
+```
+In order to be able to send data to a connected robot, one way is to start Sofa with administrator rights, using the command `sudo` (it requires the administrator password):  
+
+```bash
+sudo PATH_TO_BUILD_DIRECTORY/bin/runSofa PATH_TO_SCENE/MyScene.py
+```
+-->
+<h3 id="step-1-setting-up-a-simple-scene">Step 1: Setting up a simple scene</h3>
+<p>####<i>At the end of this step, you will be able to:</i> - Write a simple scene in Sofa using built-in objects called <em>prefabs</em> (or <em>templates</em>) - Modify the properties of these objects - Conveniently reload the scene after each modification</p>
+<p>The content of the <code>.py</code> simulation files is in fact standard python code with at least one function named <code>createScene</code> taking a single parameter, the root of the scene hierarchy. This function is the entry point used by Sofa to fill the simulation’s content and this is the place where you will type your scene’s description. A scene is an ordered tree of nodes, representing objects (example of node: hand), with parent/child relationship (example of hand’s child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is called “rootNode”. Additional components can be added to the scene, that aren’t nodes (they cannot have children), related to the behaviour of the object (examples: <em>UniformMass</em> for vertexMass parameters definition, and <em>OGLModel</em> for the settings of the graphic display).</p>
+Making a very simple scene:
+<div>
+<pre>
+<a href="details/step1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/> Try the scene in Sofa.</a>
+<a href="myproject/mystep1.py"> <img src="../../../docs/images/icons/play.png" width="14px"/> Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../docs/images/icons/play.png" width="14px"/> Show/Hide the code.</a>
+</pre>
+<div id="step1code" class="hide">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" title="1"><span class="im">from</span> stlib3.scene <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>, <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="im">from</span> stlib3.visuals <span class="im">import</span> ShowGrid</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a></a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb1-7" title="7">    <span class="co">&quot;&quot;&quot;This is my first scene&quot;&quot;&quot;</span></a>
+<a class="sourceLine" id="cb1-8" title="8">    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.MainHeader">MainHeader</a>(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])</a>
+<a class="sourceLine" id="cb1-9" title="9">    <a href="http://stlib.readthedocs.io/en/latest/_autosummary/stlib.scene.html#stlib.scene.ContactHeader">ContactHeader</a>(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb1-10" title="10"></a>
+<a class="sourceLine" id="cb1-11" title="11">    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Floor">Floor</a>(rootNode,</a>
+<a class="sourceLine" id="cb1-12" title="12">          translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">160.0</span>,<span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb1-13" title="13">          isAStaticObject<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb1-14" title="14"></a>
+<a class="sourceLine" id="cb1-15" title="15">    <a href="http://stlib.readthedocs.io/en/latest/_modules/stlib/physics/rigid.html#Cube">Cube</a>(rootNode,</a>
+<a class="sourceLine" id="cb1-16" title="16">          translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb1-17" title="17">          uniformScale<span class="op">=</span><span class="fl">20.0</span>)</a>
+<a class="sourceLine" id="cb1-18" title="18"></a>
+<a class="sourceLine" id="cb1-19" title="19"></a>
+<a class="sourceLine" id="cb1-20" title="20">    <span class="cf">return</span> rootNode</a></code></pre></div>
+</div>
+</div>
+<p>####<i>Remarks</i> - Two nodes are attached to the main node (rootNode) in this scene: Floor and Cube (the two physical objects present in the scene). - The rootNode includes two behaviour descriptions: <code>MainHeader</code> (defining gravity as the main force exercised on the objects, assuming the length is in centimeters) and <code>ContactHeader</code> (stating how a contact between the objects is handled: here the objects must not be able to go through one another). As I have defined them in the rootNode, these behaviours apply to all the nodes attached to it. - Both the Cube and the Floor are built-in objects, <em>prefabs</em>, which means that they are already implemented simulation models, including components and child nodes.</p>
+<p>####<i>Exploring the scene</i></p>
+<ul>
+<li><p>The [<em>Animate</em>] button allows to start and stop playing the scene.</p></li>
+<li><p>All scene codes can be modified: right click anywhere in the <em>Graph</em> panel of the Sofa GUI, and click on <em>Open file in editor</em> in the dropdown menu. The modifications need to be saved ([<em>Save</em>] button) before reloading the scene.</p></li>
+<li><p>In order to reload the scene (after each modification of the code), press <em>Ctrl+R</em> or select <em>File &gt; Reload</em> in the menu bar.</p></li>
+<li><p>To automatically reload the scene when there are changes, add the option <code>-i</code> when first loading the scene in the terminal: <code class="sourceCode bash"><span class="ex">runSofa</span> firststeps.py -i</code>.</p></li>
+<li><p>In order to vizualize the properties of the objects directly from the GUI, double-click on the wanted item in the <em>Graph</em> panel to open the corresponding settings window. The properties can be modified directly from this window (click on the [<em>Update</em>] button to reload the scene with the new parameters afterwards).</p></li>
+</ul>
+<p>You can try the following manipulations, in order to get familiar with Sofa environment:<br />
+(Click on the text to Show/Hide the solution)</p>
+<div>
+<pre>
+<a href="javascript:void(0)" onclick="toggle('step1exo');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Change the position of the cube from the Sofa GUI</a>
+<a href="javascript:void(0)" onclick="toggle('step1exo2');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Change the color of the cube, directly in the code</a>
+</pre>
+<div id="step1exo" class="hide">
+<p>In the <em>Graph</em> panel on the left, expand the ‘Cube’ menu and double-click on ‘MechanicalObject mstate’.<br />
+In the window that appears, go to the <em>Transformation</em> tab: the line ‘translation’ allows you to move the object in the scene.<br />
+Such changes don’t modify the code of the scene, and are only kept in memory as long as the scene is running.</p>
+</div>
+<div id="step1exo2" class="hide">
+<p>After having opened the code file, add the <code>color</code> argument to the <code>Cube</code> object.<br />
+The function becomes</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb2-1" title="1">Cube(rootNode,</a>
+<a class="sourceLine" id="cb2-2" title="2">      translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb2-3" title="3">      uniformScale<span class="op">=</span><span class="fl">20.0</span>,</a>
+<a class="sourceLine" id="cb2-4" title="4">      color<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">1.0</span>])</a></code></pre></div>
+<p>The color vector is defined by percentages of [Red,Green,Blue].<br />
+Don’t forget to save and reload the scene.</p>
+</div>
+</div>
+<!-- ca marche, voir si on veut mettre le txt de la solution en forme ou pas-->
+<h3 id="step-2-building-a-mechanical-model-for-an-object-simulation-its-visual-model">Step 2: Building a Mechanical model for an object simulation &amp; its Visual model</h3>
+<p>####<i>At the end of this step, you will be able to:</i> - Build a simple mechanical model for a rigid object - Build a corresponding visual object - Add time integration and solving tools - Understand the necessity for a collision management model</p>
+<p>Both the Cube and the Floor objects used in Step 2 are actually built-in objects called <em>prefabs</em>. In the following steps, a deeper insight into Sofa’s rigid object modeling is provided. The next two steps aim at recreating the <em>prefab</em> Cube used in Step 2. (For a more dynamic scene, the Floor prefab is still present.)<br />
+The node Cube is defined and attached to the rootNode with the function <code>node.createChild()</code>.<br />
+In the particular case where the simulated object is rigid, like here, all of its points are moving together. This means that studying the movement of a single point - usually the center of gravity - is equivalent to studying the movement of all the points. The aim of the simulation is to compute, at each time step, the next position and velocity of this gravity center, based on the forces it is subjected to. The center of gravity can move in the three directions of space and rotate around these three axes. This means that it has 6 degrees of freedom (DOFs). All the positions and velocities that are computed are stored in what is called the <em>MechanicalObject</em>. The different objects of the Cube are added via the function <code>node.createObject()</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb3-1" title="1">cube.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name, template, translation, rotation)</a></code></pre></div>
+<p>The physical properties of the object material, like its vertexMass distribution, are also implemented.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb4-1" title="1">cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name, vertexMass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])</a></code></pre></div>
+<p>A time integration scheme is then added and defines the system to be solved at each time step of the simulation (here the implicit Euler Method). A solving method is in turn added (here the Conjugate Gradient method), that solves the equations governing the model at each time step, and updates the <em>MechanicalObject</em>.</p>
+This model alone is enough to run the simulation of the Cube’s fall under gravity force. However, to be able to view it on screen, a visual model of the object must be created. The visual model is defined in a new node. The virtual object is modeled with graphic vectors: the surface of the object is discretized, that is divided into small surface elements connected together by points (called nodes). The resulting set of points and their connections to each other (vectors) is called the <em>mesh</em>. Figure 1 below shows the initial mesh for the visual model: the outer surface of the cube has been split into triangular elements.
+<figure>
+<img class="centered" src="CubeMeshViewer.png" alt="" width="200px"/>
+<figcaption>
+Figure 1: A view of the cube’s mesh for the visual model as described in the file <i>smCube27.obj</i>
+</figcaption>
+</figure>
+<p>At each time step, the <em>MechanicalObject</em> undergoes modifications (of its position, speed …).<br />
+Finally, in order to have the visual representation moving along with the mechanical one, a mapping tool is implemented: it builds the correspondance between the properties of the MechanicalObject (translation, rotation, velocity) and the nodes of the mesh.</p>
+<div>
+<pre>
+<a href="details/step2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/mystep2.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step2code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+</pre>
+<div id="step2code" class="hide">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb5-1" title="1"><span class="im">from</span> stlib3.scene <span class="im">import</span> MainHeader</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="im">from</span> stlib3.visuals <span class="im">import</span> ShowGrid</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="im">from</span> stlib3.solver <span class="im">import</span> DefaultSolver</a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> Floor</a>
+<a class="sourceLine" id="cb5-5" title="5"></a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb5-7" title="7">  ShowGrid(rootNode)</a>
+<a class="sourceLine" id="cb5-8" title="8"></a>
+<a class="sourceLine" id="cb5-9" title="9">  <span class="co"># A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.</span></a>
+<a class="sourceLine" id="cb5-10" title="10">  MainHeader(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])</a>
+<a class="sourceLine" id="cb5-11" title="11"></a>
+<a class="sourceLine" id="cb5-12" title="12">  cube <span class="op">=</span> rootNode.createChild(<span class="st">&quot;Cube&quot;</span>)</a>
+<a class="sourceLine" id="cb5-13" title="13"></a>
+<a class="sourceLine" id="cb5-14" title="14">  <span class="co">### Mechanical model</span></a>
+<a class="sourceLine" id="cb5-15" title="15"></a>
+<a class="sourceLine" id="cb5-16" title="16">  totalMass <span class="op">=</span> <span class="fl">1.0</span></a>
+<a class="sourceLine" id="cb5-17" title="17">  volume <span class="op">=</span> <span class="fl">1.0</span></a>
+<a class="sourceLine" id="cb5-18" title="18">  inertiaMatrix <span class="op">=</span> [<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>]</a>
+<a class="sourceLine" id="cb5-19" title="19"></a>
+<a class="sourceLine" id="cb5-20" title="20"></a>
+<a class="sourceLine" id="cb5-21" title="21">  cube.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&quot;DOF&quot;</span>, template<span class="op">=</span><span class="st">&quot;Rigid3&quot;</span>, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])</a>
+<a class="sourceLine" id="cb5-22" title="22">  cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name<span class="op">=</span><span class="st">&quot;vertexMass&quot;</span>, vertexMass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])</a>
+<a class="sourceLine" id="cb5-23" title="23"></a>
+<a class="sourceLine" id="cb5-24" title="24">  <span class="co"># The following line defines the material behaviour when submitted to constraints; it is not necessary in this step, as no interaction between objects has been defined</span></a>
+<a class="sourceLine" id="cb5-25" title="25">  <span class="co">#cube.createObject(&#39;UncoupledConstraintCorrection&#39;)</span></a>
+<a class="sourceLine" id="cb5-26" title="26"></a>
+<a class="sourceLine" id="cb5-27" title="27">  <span class="co">### Time integration and solver</span></a>
+<a class="sourceLine" id="cb5-28" title="28"></a>
+<a class="sourceLine" id="cb5-29" title="29">  cube.createObject(<span class="st">&#39;EulerImplicit&#39;</span>, name<span class="op">=</span><span class="st">&#39;odesolver&#39;</span>)</a>
+<a class="sourceLine" id="cb5-30" title="30">  cube.createObject(<span class="st">&#39;CGLinearSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;Solver&#39;</span>)</a>
+<a class="sourceLine" id="cb5-31" title="31"></a>
+<a class="sourceLine" id="cb5-32" title="32"></a>
+<a class="sourceLine" id="cb5-33" title="33">  <span class="co">### Visual Object of the Cube</span></a>
+<a class="sourceLine" id="cb5-34" title="34"></a>
+<a class="sourceLine" id="cb5-35" title="35">  visual <span class="op">=</span> cube.createChild(<span class="st">&quot;CubeVisual&quot;</span>)</a>
+<a class="sourceLine" id="cb5-36" title="36">  <span class="co"># Graphic model based on a mesh</span></a>
+<a class="sourceLine" id="cb5-37" title="37">  visual.createObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&quot;Visual&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;mesh/smCube27.obj&quot;</span>, color<span class="op">=</span>[<span class="fl">0.1</span>,<span class="fl">0.0</span>,<span class="fl">1.0</span>], scale<span class="op">=</span><span class="fl">20.0</span>)</a>
+<a class="sourceLine" id="cb5-38" title="38">  <span class="co"># Building a correspondance between the mechanical and the graphical representation</span></a>
+<a class="sourceLine" id="cb5-39" title="39">  visual.createObject(<span class="st">&#39;RigidMapping&#39;</span>)</a>
+<a class="sourceLine" id="cb5-40" title="40"></a>
+<a class="sourceLine" id="cb5-41" title="41">  <span class="co">########################################</span></a>
+<a class="sourceLine" id="cb5-42" title="42">  <span class="co">### Adding the Floor for more fun ;) </span><span class="al">###</span></a>
+<a class="sourceLine" id="cb5-43" title="43">  Floor(rootNode,</a>
+<a class="sourceLine" id="cb5-44" title="44">          translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">300.0</span>,<span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb5-45" title="45">          uniformScale<span class="op">=</span><span class="fl">5.0</span>,</a>
+<a class="sourceLine" id="cb5-46" title="46">          isAStaticObject<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb5-47" title="47"></a>
+<a class="sourceLine" id="cb5-48" title="48"></a>
+<a class="sourceLine" id="cb5-49" title="49">  <span class="cf">return</span> rootNode</a></code></pre></div>
+</div>
+</div>
+<p>####<i>Remarks</i> - The points of the mesh are called nodes, but this term has nothing to do with the <em>nodes</em> of Sofa, related to the hierarchy of the objects. - The objects simulated in this tutorial are rigid. The additional components describing the internal forces of deformable objects will not be discussed in this introduction tutorial.</p>
+<p>####<i>Exploring the scene</i> By clicking on the [<em>Animate</em>] button, the Cube can be seen falling endlessly, due to gravity force. It even goes through the Floor as if it were a ghost. The reason for this behaviour is that the two objects of the scene (the Cube and the Floor) have been modeled separately. No line code refers to the behaviour to adopt when they collide.</p>
+<h3 id="step-3-adding-interactions-between-objects---collision-modeling.">Step 3: Adding interactions between objects - collision modeling.</h3>
+<p>####<i>At the end of this step, you will be able to:</i> - Add a collision model to the objects in a scene - Understand the multi-model representation of the objects in Sofa</p>
+<p>In order to make objects interact with each other, a <em>collision</em> model is required. The collision model is another child node of the Cube. Collisions are handled with yet another MechanicalObject representing the Cube, and specifications on how the Cube should react to a contact: here the contact is stopping it from moving further. This is implemented with the following line from Step 2, now uncommented:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb6-1" title="1">cube.createObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</a></code></pre></div>
+<p>The constraints of the collision apply on the surface on the Cube. In our discretized representation of the cube, its outer surface is decomposed into triangular elements, and also shows some line elements and points. They represent the degrees of freedom of the collision model. The surface mesh is described based on the one used in the Visual model. In addition to a collision model, it is necessary to describe the rules of collision detection, and how they are handled when they occur. This is what the <code>ContactHeader</code> object is doing. As the rules apply for all the objects in the scene, it is positionned in the rootNode. Here the rules are as follows: potential collisions are looked for within an <code>AlarmDistance</code> radius from the objet. If a collision situation is detected, the collision model computes the behaviour of the objects, which are stopped at a <code>ContactDistance</code> from each other.<br />
+Finally, in order to map those collision DOFs with those of the mechanical model, a <code>RigidMapping</code> is used here as well.</p>
+<div>
+<pre>
+<a href="details/step3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/mystep3.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step3code');"> <img src="../../../docs/images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+</pre>
+<div id="step3code" class="hide">
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb7-1" title="1"><span class="im">from</span> stlib3.scene <span class="im">import</span> MainHeader, ContactHeader</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="im">from</span> stlib3.visuals <span class="im">import</span> ShowGrid</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="im">from</span> stlib3.solver <span class="im">import</span> DefaultSolver</a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> Floor</a>
+<a class="sourceLine" id="cb7-5" title="5"></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb7-7" title="7">  ShowGrid(rootNode)</a>
+<a class="sourceLine" id="cb7-8" title="8"></a>
+<a class="sourceLine" id="cb7-9" title="9">  <span class="co"># A default gravity force is implemented on Sofa. Here we reset it, choosing millimeters as the length unit for the scene.</span></a>
+<a class="sourceLine" id="cb7-10" title="10">  MainHeader(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])</a>
+<a class="sourceLine" id="cb7-11" title="11"></a>
+<a class="sourceLine" id="cb7-12" title="12">  <span class="co">#Collision handling built-in function (already used in Step 1)</span></a>
+<a class="sourceLine" id="cb7-13" title="13">  ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">10</span>, contactDistance<span class="op">=</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb7-14" title="14"></a>
+<a class="sourceLine" id="cb7-15" title="15">  cube <span class="op">=</span> rootNode.createChild(<span class="st">&quot;Cube&quot;</span>)</a>
+<a class="sourceLine" id="cb7-16" title="16"></a>
+<a class="sourceLine" id="cb7-17" title="17">  <span class="co">### Mechanical model</span></a>
+<a class="sourceLine" id="cb7-18" title="18"></a>
+<a class="sourceLine" id="cb7-19" title="19">  totalMass <span class="op">=</span> <span class="fl">1.0</span></a>
+<a class="sourceLine" id="cb7-20" title="20">  volume <span class="op">=</span> <span class="fl">1.0</span></a>
+<a class="sourceLine" id="cb7-21" title="21">  inertiaMatrix <span class="op">=</span> [<span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>]</a>
+<a class="sourceLine" id="cb7-22" title="22"></a>
+<a class="sourceLine" id="cb7-23" title="23"></a>
+<a class="sourceLine" id="cb7-24" title="24">  cube.createObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&quot;DOF&quot;</span>, template<span class="op">=</span><span class="st">&quot;Rigid3&quot;</span>, translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>], rotation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>])</a>
+<a class="sourceLine" id="cb7-25" title="25">  cube.createObject(<span class="st">&#39;UniformMass&#39;</span>, name<span class="op">=</span><span class="st">&quot;vertexMass&quot;</span>, vertexMass<span class="op">=</span>[totalMass, volume, inertiaMatrix[:]])</a>
+<a class="sourceLine" id="cb7-26" title="26"></a>
+<a class="sourceLine" id="cb7-27" title="27">  <span class="co"># Material behaviour when submitted to constraints</span></a>
+<a class="sourceLine" id="cb7-28" title="28">  cube.createObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb7-29" title="29"></a>
+<a class="sourceLine" id="cb7-30" title="30">  <span class="co">### Time integration and solver</span></a>
+<a class="sourceLine" id="cb7-31" title="31"></a>
+<a class="sourceLine" id="cb7-32" title="32">  cube.createObject(<span class="st">&#39;EulerImplicit&#39;</span>, name<span class="op">=</span><span class="st">&#39;odesolver&#39;</span>)</a>
+<a class="sourceLine" id="cb7-33" title="33">  cube.createObject(<span class="st">&#39;CGLinearSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;Solver&#39;</span>)</a>
+<a class="sourceLine" id="cb7-34" title="34"></a>
+<a class="sourceLine" id="cb7-35" title="35"></a>
+<a class="sourceLine" id="cb7-36" title="36">  <span class="co">### Visual Object of the Cube</span></a>
+<a class="sourceLine" id="cb7-37" title="37"></a>
+<a class="sourceLine" id="cb7-38" title="38">  visual <span class="op">=</span> cube.createChild(<span class="st">&quot;CubeVisual&quot;</span>)</a>
+<a class="sourceLine" id="cb7-39" title="39">  <span class="co"># Graphic model based on a mesh</span></a>
+<a class="sourceLine" id="cb7-40" title="40">  visual.createObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&quot;Visual&quot;</span>, fileMesh<span class="op">=</span><span class="st">&quot;mesh/smCube27.obj&quot;</span>, color<span class="op">=</span>[<span class="fl">0.1</span>,<span class="fl">0.0</span>,<span class="fl">1.0</span>], scale<span class="op">=</span><span class="fl">20.0</span>)</a>
+<a class="sourceLine" id="cb7-41" title="41">  <span class="co"># Building a correspondance between the mechanical and the graphical representation</span></a>
+<a class="sourceLine" id="cb7-42" title="42">  visual.createObject(<span class="st">&#39;RigidMapping&#39;</span>)</a>
+<a class="sourceLine" id="cb7-43" title="43"></a>
+<a class="sourceLine" id="cb7-44" title="44">  <span class="co">### Collision Object for the Cube</span></a>
+<a class="sourceLine" id="cb7-45" title="45"></a>
+<a class="sourceLine" id="cb7-46" title="46">  collision <span class="op">=</span> cube.createChild(<span class="st">&quot;CubeCollisionModel&quot;</span>)</a>
+<a class="sourceLine" id="cb7-47" title="47">  collision.createObject(<span class="st">&#39;MeshObjLoader&#39;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;mesh/smCube27.obj&quot;</span>, triangulate<span class="op">=</span><span class="st">&quot;true&quot;</span>, scale<span class="op">=</span><span class="fl">20.0</span>)</a>
+<a class="sourceLine" id="cb7-48" title="48"></a>
+<a class="sourceLine" id="cb7-49" title="49">  collision.createObject(<span class="st">&#39;Mesh&#39;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)</a>
+<a class="sourceLine" id="cb7-50" title="50">  collision.createObject(<span class="st">&#39;MechanicalObject&#39;</span>)</a>
+<a class="sourceLine" id="cb7-51" title="51"></a>
+<a class="sourceLine" id="cb7-52" title="52">  collision.createObject(<span class="st">&#39;Triangle&#39;</span>)</a>
+<a class="sourceLine" id="cb7-53" title="53">  collision.createObject(<span class="st">&#39;Line&#39;</span>)</a>
+<a class="sourceLine" id="cb7-54" title="54">  collision.createObject(<span class="st">&#39;Point&#39;</span>)</a>
+<a class="sourceLine" id="cb7-55" title="55"></a>
+<a class="sourceLine" id="cb7-56" title="56">  collision.createObject(<span class="st">&#39;RigidMapping&#39;</span>)</a>
+<a class="sourceLine" id="cb7-57" title="57"></a>
+<a class="sourceLine" id="cb7-58" title="58"></a>
+<a class="sourceLine" id="cb7-59" title="59">  <span class="co">########################################</span></a>
+<a class="sourceLine" id="cb7-60" title="60">  <span class="co">### Adding the Floor for more fun ;) </span><span class="al">###</span></a>
+<a class="sourceLine" id="cb7-61" title="61">  floor <span class="op">=</span> Floor(rootNode,</a>
+<a class="sourceLine" id="cb7-62" title="62">      name<span class="op">=</span><span class="st">&quot;Floor&quot;</span>,</a>
+<a class="sourceLine" id="cb7-63" title="63">          translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">300.0</span>,<span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb7-64" title="64">          uniformScale<span class="op">=</span><span class="fl">5.0</span>,</a>
+<a class="sourceLine" id="cb7-65" title="65">          isAStaticObject<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb7-66" title="66"></a>
+<a class="sourceLine" id="cb7-67" title="67"></a>
+<a class="sourceLine" id="cb7-68" title="68">  <span class="cf">return</span> rootNode</a></code></pre></div>
+</div>
+</div>
+####<i>Exploring the scene</i> - Thanks to the collision model, the Cube’s fall is now stopped by the Floor.<br />
+- With the addition of the collision model, there are now three representations of the same Cube object: a mechanical one, a visual one, and a collision model representation (see Figure 2 below). This multi-model representation is characteristic of Sofa, along with the mapping functions to build correspondance between the representations.
+<figure>
+<img class="centered" src="MultiModalRep.png" alt="" width="600px"/>
+<figcaption>
+Figure 2: Multi-modal representation of the cube</i>
+</figcaption>
+</figure>
+<ul>
+<li>These representations are accessible via the <em>View</em> panel of the Sofa GUI, in which you can switch between those you want to display.</li>
+</ul>
+<p>####<i>Remarks</i> - The code that was built in the last two steps in order to implement the Cube model constitutes the <code>Cube()</code> prefab. Such prefab objects allow great time savings, and a lighter code.<br />
+- The same collision model is also implemented by default in the Floor prefab.<br />
+- By zooming in the simulation window (scroll the mouse wheel), a small gap can be observed between the cube and the floor: it corresponds to the <code>ContactDistance</code> at which the cube is stoppped from the floor. Because the time is discretized, it is important not to assign too small a value to the <code>AlarmDistance</code>; otherwise the risk is that, from an instant to the next one that is computed, the objects have already entered collision, in which case the collision would not be computed correctly.</p>
+<h3 id="step-4-use-prefabs-to-quickly-model-more-complex-scenes">Step 4: Use <em>prefabs</em> to quickly model more complex scenes</h3>
+<p>####<i>At the end of this step, you will be able to:</i> - Build a more complex scene with prefabs - Use a loop structure to build several instances of the same object</p>
+Based on the prefab object <code>Cube()</code> and <code>Foor()</code>, as well as the collision management function <code>ContactHeader()</code>, the aim of this step is to build rapidly the scene on Figure 3 below:<br />
+
+<figure>
+<img class="centered" src="result_step4.png" alt="" width="400px"/>
+<figcaption>
+Figure 3: Initial view of the simulation</i>
+</figcaption>
+</figure>
+<div>
+<pre>
+<a href="details/step4.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in Sofa.</a>
+<a href="myproject/mystep4.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Write it yourself.</a>
+<a href="javascript:void(0)" onclick="toggle('step4code');"> <img src="../../../docs/images/icons/play.png" width="16px"/>Show/Hide the code.</a>
+</pre>
+<div id="step4code" class="hide">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb8-1" title="1"><span class="im">from</span> stlib3.scene <span class="im">import</span> MainHeader, ContactHeader</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="im">from</span> stlib3.visuals <span class="im">import</span> ShowGrid</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> Floor</a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="im">from</span> stlib3.physics.rigid <span class="im">import</span> Cube</a>
+<a class="sourceLine" id="cb8-5" title="5"></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb8-7" title="7">    <span class="co">&quot;&quot;&quot;This is my first scene&quot;&quot;&quot;</span></a>
+<a class="sourceLine" id="cb8-8" title="8">    MainHeader(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">981.0</span>,<span class="fl">0.0</span>])</a>
+<a class="sourceLine" id="cb8-9" title="9">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">8</span>, contactDistance<span class="op">=</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb8-10" title="10"></a>
+<a class="sourceLine" id="cb8-11" title="11">    ShowGrid(rootNode)</a>
+<a class="sourceLine" id="cb8-12" title="12"></a>
+<a class="sourceLine" id="cb8-13" title="13">    Floor(rootNode,</a>
+<a class="sourceLine" id="cb8-14" title="14">          translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">160.0</span>,<span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb8-15" title="15">          uniformScale<span class="op">=</span><span class="fl">5.0</span>,</a>
+<a class="sourceLine" id="cb8-16" title="16">          isAStaticObject<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb8-17" title="17">    </a>
+<a class="sourceLine" id="cb8-18" title="18">    Floor(rootNode,</a>
+<a class="sourceLine" id="cb8-19" title="19">           name<span class="op">=</span><span class="st">&quot;FloorObstacle&quot;</span>,</a>
+<a class="sourceLine" id="cb8-20" title="20">             translation<span class="op">=</span>[<span class="fl">0.0</span>,<span class="op">-</span><span class="fl">80.0</span>,<span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb8-21" title="21">             color<span class="op">=</span>[<span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">0.0</span>,<span class="fl">1.0</span>],</a>
+<a class="sourceLine" id="cb8-22" title="22">             uniformScale<span class="op">=</span><span class="fl">0.8</span>,</a>
+<a class="sourceLine" id="cb8-23" title="23">             isAStaticObject<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb8-24" title="24"></a>
+<a class="sourceLine" id="cb8-25" title="25">    <span class="cf">for</span> c <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>):</a>
+<a class="sourceLine" id="cb8-26" title="26">        Cube(rootNode,</a>
+<a class="sourceLine" id="cb8-27" title="27">       name<span class="op">=</span><span class="st">&quot;Cube&quot;</span><span class="op">+</span><span class="bu">str</span>(<span class="op">-</span><span class="dv">210</span><span class="op">+</span>c<span class="op">*</span><span class="dv">70</span>),</a>
+<a class="sourceLine" id="cb8-28" title="28">             translation<span class="op">=</span>[<span class="op">-</span><span class="dv">210</span><span class="op">+</span>c<span class="op">*</span><span class="dv">70</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],</a>
+<a class="sourceLine" id="cb8-29" title="29">             color<span class="op">=</span>[c<span class="op">/</span><span class="fl">10.0</span>,c<span class="op">*</span><span class="fl">0.7</span><span class="op">/</span><span class="fl">10.0</span>,<span class="fl">0.9</span>,<span class="fl">1.0</span>],</a>
+<a class="sourceLine" id="cb8-30" title="30">             uniformScale<span class="op">=</span><span class="fl">20.0</span>)</a>
+<a class="sourceLine" id="cb8-31" title="31"></a>
+<a class="sourceLine" id="cb8-32" title="32"></a>
+<a class="sourceLine" id="cb8-33" title="33"></a>
+<a class="sourceLine" id="cb8-34" title="34">    <span class="cf">return</span> rootNode</a></code></pre></div>
+</div>
+</div>
+<p>####<i>Exploring the scene</i> - All seven cubes are similar in size and two of their coordinates are identical. A variable <code>c</code> is defined, in order to modify the translation parameter and the color of each cube. By using a loop structure, the Cube prefab function can be written only once. - The collision model of this scene is more complex: collisions are possible between the cubes, between the central cubes and the intermediate green floor, and finally between the cubes and the yellow floor. The function <code>ContactHeader</code> applies to all the nodes attached to the rootNode, governing the whole collision possibilities with one call of the function in the rootNode.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>Congratulations, you completed this tutorial! You are strongly encouraged to pursue with the other tutorials and read the thematical documentations.</p>
+<p>If you have any questions or suggestions, please submit them on our github/SoftRobots page.</p>
+</body>
+</html>

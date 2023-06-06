@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>pneunetgripper-tuto</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../docs/style.css" />
+</head>
+<body>
+<h1 id="simulation">Simulation</h1>
+<p>The simulation is done using the SOFA Open Source Framework and the “Soft-Robots” Plugin dedicated for Real-time simulation of Soft Robots. To define the simulation, a Python scene file is created and fed as input to SOFA. In the following, we will describe, step by step, the creation of scene file that perfom the simulation of the soft Pneunet gripper. A SOFA scene is an ordered tree of nodes (ex: <code>finger.</code>), with parent/child relationship (set up by <code>node.addChild()</code>). Each node has one or a few components (set up with <code>node.addObject()</code>). Every node and component has a name and a few features. The main node at the top of the tree is called “rootNode”.</p>
+<h2 id="volumetric-meshing-and-loading">Volumetric Meshing and Loading</h2>
+<p>To be able to simulate the soft robot, the first step is to discretise the soft robot in space, by creating a volumetric mesh, typically with tetrahedra. This can be done with any meshing tool such as Gmsh or CGAL. In this example, we use Gmsh. This will generate a vtk file containing all the information about postion of the nodes and connectivity between them through the tetrahedra.</p>
+<p><a href="images/PneuNets-gripper_mesh.png">Meshed finger</a></p>
+<p>In a SOFA scene the mesh is loaded using the loader component:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb1-1" title="1">finger.addObject(<span class="st">&#39;MeshVTKLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/pneunetCutCoarse.vtk&#39;</span>)</a></code></pre></div>
+<p>This mesh is then stored in a <code>Mesh</code> component (linked to the loader through its <code>src</code> attribute), and a MechanicalObject component is created to store the degrees of freedom of the robot (which are the positions of all the nodes in the mesh)</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb2-1" title="1">finger.addObject(<span class="st">&#39;Mesh&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, name<span class="op">=</span><span class="st">&#39;container&#39;</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2">finger.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;tetras&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec3d&#39;</span>)</a></code></pre></div>
+<p><a href="details/step1-meshLoading.py">Step1</a> ## Constitutive law of the material and Mass</p>
+<h3 id="main-body">Main Body</h3>
+<p>Next, we need to define what kind of material we are going to simulate, and this is done by adding a ForceField component, which describes what internal forces are created when the object is deformed. In particular, this will define how soft or stiff the material is, if it has an elastic or more complex behaviour (Hyperelastic, plastic, etc…). In this example, we use the TetrehedronFEMForceField component which corresponds to an elastic material deformation but with large rotations. Attributes such as Young’s Modulus and Poisson’s ratio can be set within this component:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb3-1" title="1">finger.addObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec3d&#39;</span>, name<span class="op">=</span><span class="st">&#39;FEM&#39;</span>, method<span class="op">=</span><span class="st">&#39;large&#39;</span>, poissonRatio<span class="op">=</span><span class="fl">0.3</span>,  youngModulus<span class="op">=</span><span class="dv">500</span>)</a></code></pre></div>
+<p>The vertexMass of the material can be defined with the UniformMass component, which assumes a uniform distribution of the vertexMass inside the body:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb4-1" title="1">finger.addObject(<span class="st">&#39;UniformMass&#39;</span>, totalMass<span class="op">=</span><span class="fl">0.0008</span>)</a></code></pre></div>
+<p>Note that by default, the gravity is defined as “0 -9.81 0”. You can redefine it with the following command in the rootNode:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb5-1" title="1">rootNode.findData(<span class="st">&#39;gravity&#39;</span>).value<span class="op">=</span>[<span class="op">-</span><span class="dv">9810</span>, <span class="dv">0</span>, <span class="dv">0</span>]<span class="op">;</span></a></code></pre></div>
+<p>This corresponds to a gravity defined along the x axis, assuming the length unit is millimeters.</p>
+<p><a href="details/step2-forceFieldAndMass.py">Step2</a></p>
+<h3 id="stiff-layer">Stiff layer</h3>
+<p>To define the constitutive law of the stiff layer, we will create a new node and define a new ForceField with stiffer parameters only on the points which constitute the layer. To easily define the indices of the points which will be selected, we use the boxROI component wich allows to define a box that will contain all the points of the layer (refered by the node “<code>modelSubTopo</code>”). The box component contains successively the extreme coordinates along x, y and z</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb6-1" title="1">finger.addObject(<span class="st">&#39;BoxROI&#39;</span>, name<span class="op">=</span><span class="st">&#39;boxROISubTopo&#39;</span>, box<span class="op">=</span>[<span class="op">-</span><span class="dv">100</span>, <span class="fl">22.5</span>, <span class="dv">-8</span>, <span class="dv">-19</span>, <span class="dv">28</span>, <span class="dv">8</span>])</a>
+<a class="sourceLine" id="cb6-2" title="2">modelSubTopo <span class="op">=</span> finger.addChild(<span class="st">&#39;modelSubTopo&#39;</span>)</a>
+<a class="sourceLine" id="cb6-3" title="3">modelSubTopo.addObject(<span class="st">&#39;Mesh&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, tetrahedra<span class="op">=</span><span class="st">&quot;@boxROISubTopo.tetrahedraInROI&quot;</span>, name<span class="op">=</span><span class="st">&#39;container&#39;</span>)</a>
+<a class="sourceLine" id="cb6-4" title="4">modelSubTopo.addObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec3d&#39;</span>, name<span class="op">=</span><span class="st">&#39;FEM&#39;</span>, method<span class="op">=</span><span class="st">&#39;large&#39;</span>, poissonRatio<span class="op">=</span><span class="fl">0.3</span>,  youngModulus<span class="op">=</span><span class="dv">1500</span>)</a></code></pre></div>
+<p><a href="details/step3-stiffLayer.py">Step3</a></p>
+<h2 id="boundary-conditions">Boundary Conditions</h2>
+<p>To fix the finger in space, it is necessary to define boundary conditions on some parts of the object. This can be done in several ways in SOFA. In this case, we use the component RestShapeSpringsForceField, which creates springs between the current position of a part of the body and its initial position. The stiffness of these springs can be adjusted. In particular, setting a very large stiffness will be equivalent to fixing the points in space. To easily define the indices of the points which will be fixed, we use the boxROI component:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb7-1" title="1">finger.addObject(<span class="st">&#39;BoxROI&#39;</span>, name<span class="op">=</span><span class="st">&#39;boxROI&#39;</span>, box<span class="op">=</span>[<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">-20</span>, <span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">20</span>])</a>
+<a class="sourceLine" id="cb7-2" title="2">finger.addObject(<span class="st">&#39;RestShapeSpringsForceField&#39;</span>, points<span class="op">=</span><span class="st">&#39;@boxROI.indices&#39;</span>, stiffness<span class="op">=</span><span class="fl">1e12</span>, angularStiffness<span class="op">=</span><span class="fl">1e12</span>)</a></code></pre></div>
+<p><a href="details/step4-boundaryConditions.py">Step4</a></p>
+<h2 id="implicit-time-integration-and-matrix-solver">Implicit Time Integration and Matrix Solver</h2>
+<p>Now that all the minimal elements of the scene have been described, it is already possible to simulate the deformation of the finger. To do that, we need to define a time integration scheme, which will define the system to be solved at each time step of the simulation, as well as a matrix solver, to solve that system and compute the updated velocities and positions of the nodes of the robot. In this case, we choose to use an Implicit Euler Scheme and a sparse direct Solver base on an LDL matrix decomposition:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb8-1" title="1">finger.addObject(<span class="st">&#39;EulerImplicit&#39;</span>, name<span class="op">=</span><span class="st">&#39;odesolver&#39;</span>)</a>
+<a class="sourceLine" id="cb8-2" title="2">finger.addObject(<span class="st">&#39;SparseLDLSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;directSolver&#39;</span>)</a></code></pre></div>
+<p>With the scene in this state, not much will happen in the simulation, merely a small deformation due to gravity on the finger. Indeed, we did not include the pneumatic actuator yet.</p>
+<p><a href="details/step5-timeIntegrationAndMatrixSolver.py">Step5</a></p>
+<h2 id="pneumatic-actuator-and-python-script-controller">Pneumatic Actuator and Python script controller</h2>
+<p>In this section, we will introduce a pneumatic actuator that will allow to interactively simulate the inflation of the finger’s cavity. To do that, we first create a node that will take care of this task. Then, the surface mesh of the cavity has to be loaded using a mesh loader and the position are stored in a Mesh component which is a container. A MechanicalObject is created to store the degrees of freedom of the cavity which will be deforming during the simulation. The actuator is created with the component SurfacePressureConstraint which is directly associated to the mesh container through the attribute “triangles”. The actuation can be defined either by pressure or volume growth. Finally, a BarycentricMapping component is created to map the deformation of the cavity mesh to the mesh of the finger:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb9-1" title="1">cavity <span class="op">=</span> finger.addChild(<span class="st">&#39;cavity&#39;</span>)</a>
+<a class="sourceLine" id="cb9-2" title="2">cavity.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/pneunetCavityCut.stl&#39;</span>)</a>
+<a class="sourceLine" id="cb9-3" title="3">cavity.addObject(<span class="st">&#39;Mesh&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, name<span class="op">=</span><span class="st">&#39;cavityMesh&#39;</span>)</a>
+<a class="sourceLine" id="cb9-4" title="4">cavity.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;cavity&#39;</span>)</a>
+<a class="sourceLine" id="cb9-5" title="5">cavity.addObject(<span class="st">&#39;SurfacePressureConstraint&#39;</span>, name<span class="op">=</span><span class="st">&quot;SurfacePressureConstraint&quot;</span>, template<span class="op">=</span><span class="st">&#39;Vec3d&#39;</span>, value<span class="op">=</span><span class="fl">0.0001</span>, triangles<span class="op">=</span><span class="st">&#39;@topo.triangles&#39;</span>, valueType<span class="op">=</span><span class="st">&quot;pressure&quot;</span>)</a>
+<a class="sourceLine" id="cb9-6" title="6">cavity.addObject(<span class="st">&#39;BarycentricMapping&#39;</span>, name<span class="op">=</span><span class="st">&#39;mapping&#39;</span>)</a></code></pre></div>
+<p>To interactively inflate the cavity, we use a PythonScriptController, which is a component referring to a python file performing some actions at the initialisation or during the simulation:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb10-1" title="1">rootNode.addObject(<span class="st">&#39;PythonScriptController&#39;</span>, filename<span class="op">=</span><span class="st">&quot;controllerGripper.py&quot;</span>, classname<span class="op">=</span><span class="st">&quot;controller&quot;</span>)</a></code></pre></div>
+<p>In this case, the controller allows to interactively inflate the cavity by pressing ctrl + ‘+’ and deflate it by pressing ctrl + ‘-’.</p>
+<h2 id="solving-the-constraints">Solving the constraints</h2>
+<p>To solve the constraints, such as the one define by the pressure actuator, we have to add to the rootNode the component FreeMotionAnimationLoop that will build up the system including constraints. The component GenericConstraintSolver will also be added to solve the constraints problem. Finally, we add the component LinearConstraintCorrection to the finger Node to take into account the correction due to the cavity constraint to the velocity and position:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb11-1" title="1">rootNode.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb11-2" title="2">rootNode.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">10000</span>, tolerance<span class="op">=</span><span class="fl">1e-3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb12-1" title="1">finger.addObject(<span class="st">&#39;LinearSolverConstraintCorrection&#39;</span>, solverName<span class="op">=</span><span class="st">&#39;directSolver&#39;</span>)</a></code></pre></div>
+<p>With all these components, the scene is now runable and can be used to inflate and deflate the finger.</p>
+<p><a href="images/PneuNets-gripper_OneFingerBendingAll.png">Real images</a></p>
+<p><a href="details/step6-pneumaticActuatorAndPythonScriptController.py">Step6</a></p>
+<h2 id="creating-the-gripper">Creating the gripper</h2>
+<h3 id="add-fingers">Add fingers</h3>
+<p>Now, to create an actual gripper, we just need to create two more fingers and define their positions. To do that, you can use the same mesh files and use the ‘translation’ and ‘rotation’ attributes in the mesh loaders. Check the scene file in the appendix for more details.</p>
+<h3 id="add-an-object-to-grab-and-a-plane-to-put-it-on">Add an object to grab and a plane to put it on</h3>
+<p>In this scene, we create the object to grab and define it as rigid. This implies creating a new node, adding a time integration and a solver component, defining a vertexMass, and defining constraint corrections that will be used later for collisons.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb13-1" title="1">cube <span class="op">=</span> rootNode.addChild(<span class="st">&#39;cube&#39;</span>)</a>
+<a class="sourceLine" id="cb13-2" title="2">cube.addObject(<span class="st">&#39;EulerImplicit&#39;</span>, name<span class="op">=</span><span class="st">&#39;odesolver&#39;</span>)</a>
+<a class="sourceLine" id="cb13-3" title="3">cube.addObject(<span class="st">&#39;SparseLDLSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;linearSolver&#39;</span>)</a>
+<a class="sourceLine" id="cb13-4" title="4">cube.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, template<span class="op">=</span><span class="st">&quot;Rigid3&quot;</span>, scale<span class="op">=</span><span class="st">&quot;4&quot;</span>, position<span class="op">=</span>[<span class="op">-</span><span class="dv">23</span>, <span class="dv">16</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb13-5" title="5">cube.addObject(<span class="st">&#39;UniformMass&#39;</span>, vertexMass<span class="op">=</span><span class="st">&#39;0.0008  74088  0.2352 0 0  0 0.2352 0  0 0 0.2352&#39;</span>)                cube.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</a></code></pre></div>
+<p>We also need to define a plane, using the predefined meshes of SOFA:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb14-1" title="1">planeNode <span class="op">=</span> rootNode.addChild(<span class="st">&#39;Plane&#39;</span>)</a>
+<a class="sourceLine" id="cb14-2" title="2">planeNode.addObject(<span class="st">&#39;MeshObjLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&quot;mesh/floorFlat.obj&quot;</span>, triangulate<span class="op">=</span><span class="va">True</span>, rotation<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">270</span>], scale <span class="op">=</span><span class="dv">10</span>, translation<span class="op">=</span>[<span class="op">-</span><span class="dv">122</span>, <span class="dv">0</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb14-3" title="3">planeNode.addObject(<span class="st">&#39;Mesh&#39;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)</a>
+<a class="sourceLine" id="cb14-4" title="4">planeNode.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)</a></code></pre></div>
+<p>In this case, the file “floorFlat.obj” is defined in a shared directory of SOFA that is accessible in any SOFA scene.</p>
+<h3 id="add-collisions">Add collisions</h3>
+<p>As it stands, objects would go through each other as if they were ghosts. It is therefore necessary to handle collisions. This is simply done in SOFA by adding a collision model. In the case of 3-dimensional objects described with triangles and tetrahedra, this is typically done by adding the components ‘Triangle’, ‘Line’ and ‘Point’, that define the elements on the surface of the objects.</p>
+<h4 id="plane">Plane</h4>
+<p>The case of the plane is the most straignthforward: it is described by a surface and the components of collision can be directly added to its node, specifying it is not moving during the simulation:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb15-1" title="1">planeNode.addObject(<span class="st">&#39;Triangle&#39;</span>, simulated<span class="op">=</span><span class="va">False</span>, moving<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb15-2" title="2">planeNode.addObject(<span class="st">&#39;Line&#39;</span>, simulated<span class="op">=</span><span class="va">False</span>, moving<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb15-3" title="3">planeNode.addObject(<span class="st">&#39;Point&#39;</span>, simulated<span class="op">=</span><span class="va">False</span>, moving<span class="op">=</span><span class="va">False</span>)</a></code></pre></div>
+<h4 id="object-to-grab">Object to grab</h4>
+<p>For the object to grab, we said it as going to be rigid, but we did not define its shape yet. This is needed to define a collision model. Hence, we create a child node that will load this shape (predefined mesh available in SOFA), which we choose to be a cube and we add the collision model. It is also necessary to add a rigid mapping which will map the degrees of freedom of the cube mesh to a rigid SOFA component.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb16-1" title="1">cubeCollis <span class="op">=</span> cube.addChild(<span class="st">&#39;cubeCollis&#39;</span>)</a>
+<a class="sourceLine" id="cb16-2" title="2">cubeCollis.addObject(<span class="st">&#39;MeshObjLoader&#39;</span>, name<span class="op">=</span><span class="st">&quot;loader&quot;</span>, filename<span class="op">=</span><span class="st">&quot;mesh/smCube27.obj&quot;</span>, triangulate<span class="op">=</span><span class="va">True</span>,  scale<span class="op">=</span><span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb16-3" title="3">cubeCollis.addObject(<span class="st">&#39;Mesh&#39;</span>, src<span class="op">=</span><span class="st">&quot;@loader&quot;</span>)</a>
+<a class="sourceLine" id="cb16-4" title="4">cubeCollis.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, translation<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb16-5" title="5">cubeCollis.addObject(<span class="st">&#39;Triangle&#39;</span>)</a>
+<a class="sourceLine" id="cb16-6" title="6">cubeCollis.addObject(<span class="st">&#39;Line&#39;</span>)</a>
+<a class="sourceLine" id="cb16-7" title="7">cubeCollis.addObject(<span class="st">&#39;Point&#39;</span>)</a>
+<a class="sourceLine" id="cb16-8" title="8">cubeCollis.addObject(<span class="st">&#39;RigidMapping&#39;</span>)</a></code></pre></div>
+<h4 id="fingers">Fingers</h4>
+<p>The procedure is similar with the fingers: in a child node, we load a mesh representing the surface of the fingers and apply the collision model on it. Note that the nodes of this surface mesh need not match the ones of the associated volumetric mesh. Indeed, a barycentric mapping is used to map those collision degrees of freedom to the volumetric mesh ones:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb17-1" title="1">collisionFinger <span class="op">=</span> finger.addChild(<span class="st">&#39;collisionFinger&#39;</span>)</a>
+<a class="sourceLine" id="cb17-2" title="2">collisionFinger.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span>path<span class="op">+</span><span class="st">&#39;pneunetCut.stl&#39;</span>, translation <span class="op">=</span> translateFinger)</a>
+<a class="sourceLine" id="cb17-3" title="3">collisionFinger.addObject(<span class="st">&#39;Mesh&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, name<span class="op">=</span><span class="st">&#39;topo&#39;</span>)</a>
+<a class="sourceLine" id="cb17-4" title="4">collisionFinger.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;collisMech&#39;</span>)</a>
+<a class="sourceLine" id="cb17-5" title="5">collisionFinger.addObject(<span class="st">&#39;Triangle&#39;</span>, selfCollision<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb17-6" title="6">collisionFinger.addObject(<span class="st">&#39;Line&#39;</span>,selfCollision<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb17-7" title="7">collisionFinger.addObject(<span class="st">&#39;Point&#39;</span>, selfCollision<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb17-8" title="8">collisionFinger.addObject(<span class="st">&#39;BarycentricMapping&#39;</span>)</a></code></pre></div>
+<h2 id="thats-it-you-can-now-run-the-simulation-and-try-to-grab-the-cube">That’s it, you can now run the simulation and try to grab the cube!</h2>
+<p>In this case, the controller allows to inflate all the cavities by pressing ctrl + ‘+’ and deflate them by pressing ctrl + ‘-’. The gripper can be moved up, down, left and right by pressing respectively ctrl + Up, Down, Left, Right. It can be turned clockwise and anticlockwise by pressing ctrl + ‘a’ and ctrl + ‘q’.</p>
+<p><a href="details/step7-grabTheCube.py">Step7</a> If you want to play around, you can add components OglModel for every object to have a visual representation that suits you.</p>
+<figure>
+<img src="images/PneuNets-gripper_inAction.png" alt="Real images" /><figcaption>Real images</figcaption>
+</figure>
+<h2 id="appendix">Appendix</h2>
+<p>Here is the final SOFA scene simulation of the soft pneunet Gripper</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb18-1" title="1"><span class="im">import</span> Sofa</a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="im">import</span> math</a>
+<a class="sourceLine" id="cb18-3" title="3"><span class="im">import</span> os</a>
+<a class="sourceLine" id="cb18-4" title="4"></a>
+<a class="sourceLine" id="cb18-5" title="5">youngModulusFingers <span class="op">=</span> <span class="dv">500</span></a>
+<a class="sourceLine" id="cb18-6" title="6">youngModulusStiffLayerFingers <span class="op">=</span> <span class="dv">1500</span></a>
+<a class="sourceLine" id="cb18-7" title="7"></a>
+<a class="sourceLine" id="cb18-8" title="8">radius <span class="op">=</span> <span class="dv">70</span></a>
+<a class="sourceLine" id="cb18-9" title="9">angle1 <span class="op">=</span> <span class="dv">120</span><span class="op">*</span>math.pi<span class="op">/</span><span class="dv">180</span>  <span class="co"># Angle between 1st and 2nd finger in radian</span></a>
+<a class="sourceLine" id="cb18-10" title="10">angle2 <span class="op">=</span> <span class="dv">240</span><span class="op">*</span>math.pi<span class="op">/</span><span class="dv">180</span>  <span class="co"># Angle between 1st and 3rd finger in radian</span></a>
+<a class="sourceLine" id="cb18-11" title="11">translateFinger1 <span class="op">=</span> <span class="st">&#39;0 0 0&#39;</span></a>
+<a class="sourceLine" id="cb18-12" title="12">translateFinger2 <span class="op">=</span> <span class="st">&#39;0 &#39;</span> <span class="op">+</span> <span class="bu">str</span>(radius <span class="op">+</span> radius<span class="op">*</span>math.sin(angle1<span class="op">-</span>math.pi<span class="op">/</span><span class="dv">2</span>)) <span class="op">+</span> <span class="st">&#39; &#39;</span> <span class="op">+</span> <span class="bu">str</span>(radius<span class="op">*</span>math.cos(angle1<span class="op">-</span>math.pi<span class="op">/</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb18-13" title="13">translateFinger3 <span class="op">=</span> <span class="st">&#39;0 &#39;</span> <span class="op">+</span> <span class="bu">str</span>(radius <span class="op">+</span> radius<span class="op">*</span>math.sin(angle2<span class="op">-</span>math.pi<span class="op">/</span><span class="dv">2</span>)) <span class="op">+</span> <span class="st">&#39; &#39;</span> <span class="op">+</span> <span class="bu">str</span>(radius<span class="op">*</span>math.cos(angle2<span class="op">-</span>math.pi<span class="op">/</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb18-14" title="14">translations<span class="op">=</span> [translateFinger1,translateFinger2, translateFinger3]</a>
+<a class="sourceLine" id="cb18-15" title="15">angles<span class="op">=</span>[<span class="dv">0</span>,angle1, angle2]</a>
+<a class="sourceLine" id="cb18-16" title="16"></a>
+<a class="sourceLine" id="cb18-17" title="17"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb18-18" title="18"></a>
+<a class="sourceLine" id="cb18-19" title="19">    rootNode.addObject(<span class="st">&#39;RequiredPlugin&#39;</span>, name<span class="op">=</span><span class="st">&#39;SoftRobots&#39;</span>)</a>
+<a class="sourceLine" id="cb18-20" title="20">    rootNode.addObject(<span class="st">&#39;RequiredPlugin&#39;</span>, name<span class="op">=</span><span class="st">&#39;SofaPython&#39;</span>)</a>
+<a class="sourceLine" id="cb18-21" title="21">    rootNode.addObject(<span class="st">&#39;RequiredPlugin&#39;</span>, name<span class="op">=</span><span class="st">&#39;SofaSparseSolver&#39;</span>)</a>
+<a class="sourceLine" id="cb18-22" title="22">    rootNode.addObject(<span class="st">&#39;RequiredPlugin&#39;</span>, name<span class="op">=</span><span class="st">&#39;SofaOpenglVisual&#39;</span>)</a>
+<a class="sourceLine" id="cb18-23" title="23"></a>
+<a class="sourceLine" id="cb18-24" title="24">    rootNode.addObject(<span class="st">&#39;VisualStyle&#39;</span>, displayFlags<span class="op">=</span><span class="st">&#39;showVisualModels hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe&#39;</span>)</a>
+<a class="sourceLine" id="cb18-25" title="25">    rootNode.findData(<span class="st">&#39;gravity&#39;</span>).value<span class="op">=</span>[<span class="op">-</span><span class="dv">9810</span>, <span class="dv">0</span>, <span class="dv">0</span>]<span class="op">;</span></a>
+<a class="sourceLine" id="cb18-26" title="26">    rootNode.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb18-27" title="27">    rootNode.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, tolerance<span class="op">=</span><span class="fl">1e-12</span>, maxIterations<span class="op">=</span><span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb18-28" title="28">    rootNode.addObject(<span class="st">&#39;DefaultPipeline&#39;</span>)</a>
+<a class="sourceLine" id="cb18-29" title="29">    rootNode.addObject(<span class="st">&#39;BruteForceDetection&#39;</span>)</a>
+<a class="sourceLine" id="cb18-30" title="30">    rootNode.addObject(<span class="st">&#39;DefaultContactManager&#39;</span>, response<span class="op">=</span><span class="st">&#39;FrictionContact&#39;</span>, responseParams<span class="op">=</span><span class="st">&#39;mu=0.6&#39;</span>)</a>
+<a class="sourceLine" id="cb18-31" title="31">    rootNode.addObject(<span class="st">&#39;LocalMinDistance&#39;</span>, name<span class="op">=</span><span class="st">&#39;Proximity&#39;</span>, alarmDistance<span class="op">=</span><span class="dv">5</span>, contactDistance<span class="op">=</span><span class="dv">1</span>, angleCone<span class="op">=</span><span class="fl">0.0</span>)</a>
+<a class="sourceLine" id="cb18-32" title="32"></a>
+<a class="sourceLine" id="cb18-33" title="33">    rootNode.addObject(<span class="st">&#39;BackgroundSetting&#39;</span>, color<span class="op">=</span>[<span class="dv">0</span>, <span class="fl">0.168627</span>, <span class="fl">0.211765</span>])</a>
+<a class="sourceLine" id="cb18-34" title="34">    rootNode.addObject(<span class="st">&#39;OglSceneFrame&#39;</span>, style<span class="op">=</span><span class="st">&#39;Arrows&#39;</span>, alignment<span class="op">=</span><span class="st">&#39;TopRight&#39;</span>)</a>
+<a class="sourceLine" id="cb18-35" title="35">    rootNode.addObject(<span class="st">&#39;PythonScriptController&#39;</span>, filename<span class="op">=</span><span class="st">&#39;pythonControllers/wholeGripperController.py&#39;</span>, classname<span class="op">=</span><span class="st">&#39;controller&#39;</span>)</a>
+<a class="sourceLine" id="cb18-36" title="36"></a>
+<a class="sourceLine" id="cb18-37" title="37">    planeNode <span class="op">=</span> rootNode.addChild(<span class="st">&#39;Plane&#39;</span>)</a>
+<a class="sourceLine" id="cb18-38" title="38">    planeNode.addObject(<span class="st">&#39;MeshObjLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/floorFlat.obj&#39;</span>, triangulate<span class="op">=</span><span class="va">True</span>, rotation<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">270</span>], scale<span class="op">=</span><span class="dv">10</span>, translation<span class="op">=</span>[<span class="op">-</span><span class="dv">122</span>, <span class="dv">0</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb18-39" title="39">    planeNode.addObject(<span class="st">&#39;MeshTopology&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>)</a>
+<a class="sourceLine" id="cb18-40" title="40">    planeNode.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>)</a>
+<a class="sourceLine" id="cb18-41" title="41">    planeNode.addObject(<span class="st">&#39;TriangleCollisionModel&#39;</span>, simulated<span class="op">=</span><span class="va">False</span>, moving<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb18-42" title="42">    planeNode.addObject(<span class="st">&#39;LineCollisionModel&#39;</span>, simulated<span class="op">=</span><span class="va">False</span>, moving<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb18-43" title="43">    planeNode.addObject(<span class="st">&#39;PointCollisionModel&#39;</span>, simulated<span class="op">=</span><span class="va">False</span>, moving<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb18-44" title="44">    planeNode.addObject(<span class="st">&#39;OglModel&#39;</span>,name<span class="op">=</span><span class="st">&#39;Visual&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, color<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb18-45" title="45"></a>
+<a class="sourceLine" id="cb18-46" title="46">    cube <span class="op">=</span> rootNode.addChild(<span class="st">&#39;cube&#39;</span>)</a>
+<a class="sourceLine" id="cb18-47" title="47">    cube.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;odesolver&#39;</span>)</a>
+<a class="sourceLine" id="cb18-48" title="48">    cube.addObject(<span class="st">&#39;SparseLDLSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;linearSolver&#39;</span>)</a>
+<a class="sourceLine" id="cb18-49" title="49">    cube.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, position<span class="op">=</span>[<span class="op">-</span><span class="dv">100</span>, <span class="dv">70</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb18-50" title="50">    cube.addObject(<span class="st">&#39;UniformMass&#39;</span>, totalMass<span class="op">=</span><span class="fl">0.001</span>)</a>
+<a class="sourceLine" id="cb18-51" title="51">    cube.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb18-52" title="52"></a>
+<a class="sourceLine" id="cb18-53" title="53">    <span class="co">#collision</span></a>
+<a class="sourceLine" id="cb18-54" title="54">    cubeCollis <span class="op">=</span> cube.addChild(<span class="st">&#39;cubeCollis&#39;</span>)</a>
+<a class="sourceLine" id="cb18-55" title="55">    cubeCollis.addObject(<span class="st">&#39;MeshObjLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/smCube27.obj&#39;</span>, triangulate<span class="op">=</span><span class="va">True</span>,  scale<span class="op">=</span><span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb18-56" title="56">    cubeCollis.addObject(<span class="st">&#39;MeshTopology&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>)</a>
+<a class="sourceLine" id="cb18-57" title="57">    cubeCollis.addObject(<span class="st">&#39;MechanicalObject&#39;</span>)</a>
+<a class="sourceLine" id="cb18-58" title="58">    cubeCollis.addObject(<span class="st">&#39;TriangleCollisionModel&#39;</span>)</a>
+<a class="sourceLine" id="cb18-59" title="59">    cubeCollis.addObject(<span class="st">&#39;LineCollisionModel&#39;</span>)</a>
+<a class="sourceLine" id="cb18-60" title="60">    cubeCollis.addObject(<span class="st">&#39;PointCollisionModel&#39;</span>)</a>
+<a class="sourceLine" id="cb18-61" title="61">    cubeCollis.addObject(<span class="st">&#39;RigidMapping&#39;</span>)</a>
+<a class="sourceLine" id="cb18-62" title="62"></a>
+<a class="sourceLine" id="cb18-63" title="63">    <span class="co">#visualization</span></a>
+<a class="sourceLine" id="cb18-64" title="64">    cubeVisu <span class="op">=</span> cube.addChild(<span class="st">&#39;cubeVisu&#39;</span>)</a>
+<a class="sourceLine" id="cb18-65" title="65">    cubeVisu.addObject(<span class="st">&#39;MeshObjLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/smCube27.obj&#39;</span>)</a>
+<a class="sourceLine" id="cb18-66" title="66">    cubeVisu.addObject(<span class="st">&#39;OglModel&#39;</span>, name<span class="op">=</span><span class="st">&#39;Visual&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, color<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>], scale<span class="op">=</span><span class="fl">6.2</span>)</a>
+<a class="sourceLine" id="cb18-67" title="67">    cubeVisu.addObject(<span class="st">&#39;RigidMapping&#39;</span>)</a>
+<a class="sourceLine" id="cb18-68" title="68"></a>
+<a class="sourceLine" id="cb18-69" title="69">    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</a>
+<a class="sourceLine" id="cb18-70" title="70">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-71" title="71">        <span class="co"># Finger Model                           #</span></a>
+<a class="sourceLine" id="cb18-72" title="72">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-73" title="73">        finger <span class="op">=</span> rootNode.addChild(<span class="st">&#39;finger&#39;</span><span class="op">+</span><span class="bu">str</span>(i<span class="op">+</span><span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb18-74" title="74">        finger.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;odesolver&#39;</span>, rayleighStiffness<span class="op">=</span><span class="fl">0.1</span>, rayleighMass<span class="op">=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb18-75" title="75">        finger.addObject(<span class="st">&#39;SparseLDLSolver&#39;</span>, name<span class="op">=</span><span class="st">&#39;preconditioner&#39;</span>)</a>
+<a class="sourceLine" id="cb18-76" title="76"></a>
+<a class="sourceLine" id="cb18-77" title="77">        finger.addObject(<span class="st">&#39;MeshVTKLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/pneunetCutCoarse.vtk&#39;</span>, rotation<span class="op">=</span>[<span class="dv">360</span> <span class="op">-</span> angles[i]<span class="op">*</span><span class="dv">180</span><span class="op">/</span>math.pi, <span class="dv">0</span>, <span class="dv">0</span>], translation <span class="op">=</span> translations[i])</a>
+<a class="sourceLine" id="cb18-78" title="78">        finger.addObject(<span class="st">&#39;MeshTopology&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, name<span class="op">=</span><span class="st">&#39;container&#39;</span>)</a>
+<a class="sourceLine" id="cb18-79" title="79"></a>
+<a class="sourceLine" id="cb18-80" title="80">        finger.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;tetras&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec3&#39;</span>, showIndices<span class="op">=</span><span class="va">False</span>, showIndicesScale<span class="op">=</span><span class="fl">4e-5</span>)</a>
+<a class="sourceLine" id="cb18-81" title="81">        finger.addObject(<span class="st">&#39;UniformMass&#39;</span>, totalMass<span class="op">=</span> <span class="fl">0.04</span>)</a>
+<a class="sourceLine" id="cb18-82" title="82">        finger.addObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec3&#39;</span>, name<span class="op">=</span><span class="st">&#39;FEM&#39;</span>, method<span class="op">=</span><span class="st">&#39;large&#39;</span>, poissonRatio<span class="op">=</span><span class="fl">0.3</span>,  youngModulus<span class="op">=</span>youngModulusFingers, drawAsEdges<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb18-83" title="83"></a>
+<a class="sourceLine" id="cb18-84" title="84">        finger.addObject(<span class="st">&#39;BoxROI&#39;</span>, name<span class="op">=</span><span class="st">&#39;boxROI&#39;</span>, box<span class="op">=</span>[<span class="op">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">-20</span>, <span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">20</span>])</a>
+<a class="sourceLine" id="cb18-85" title="85">        finger.addObject(<span class="st">&#39;BoxROI&#39;</span>, name<span class="op">=</span><span class="st">&#39;boxROISubTopo&#39;</span>, box<span class="op">=</span>[<span class="op">-</span><span class="dv">100</span>, <span class="fl">22.5</span>, <span class="dv">-8</span>, <span class="dv">-19</span>, <span class="dv">28</span>, <span class="dv">8</span>], strict<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb18-86" title="86">        <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span>:</a>
+<a class="sourceLine" id="cb18-87" title="87">            finger.addObject(<span class="st">&#39;RestShapeSpringsForceField&#39;</span>, points<span class="op">=</span><span class="st">&#39;@boxROI.indices&#39;</span>, stiffness<span class="op">=</span><span class="fl">1e12</span>, angularStiffness<span class="op">=</span><span class="fl">1e12</span>)</a>
+<a class="sourceLine" id="cb18-88" title="88">        <span class="cf">else</span>:</a>
+<a class="sourceLine" id="cb18-89" title="89">            finger.addObject(<span class="st">&#39;RestShapeSpringsForceField&#39;</span>, points<span class="op">=</span><span class="st">&#39;@../finger1/boxROI.indices&#39;</span>, stiffness<span class="op">=</span><span class="fl">1e12</span>, angularStiffness<span class="op">=</span><span class="fl">1e12</span>)</a>
+<a class="sourceLine" id="cb18-90" title="90"></a>
+<a class="sourceLine" id="cb18-91" title="91">        finger.addObject(<span class="st">&#39;LinearSolverConstraintCorrection&#39;</span>, solverName<span class="op">=</span><span class="st">&#39;preconditioner&#39;</span>)</a>
+<a class="sourceLine" id="cb18-92" title="92"></a>
+<a class="sourceLine" id="cb18-93" title="93">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-94" title="94">        <span class="co"># Sub topology                         #</span></a>
+<a class="sourceLine" id="cb18-95" title="95">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-96" title="96">        modelSubTopo <span class="op">=</span> finger.addChild(<span class="st">&#39;modelSubTopo&#39;</span>)</a>
+<a class="sourceLine" id="cb18-97" title="97">        <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span>:</a>
+<a class="sourceLine" id="cb18-98" title="98">            modelSubTopo.addObject(<span class="st">&#39;TetrahedronSetTopologyContainer&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, tetrahedra<span class="op">=</span><span class="st">&#39;@boxROISubTopo.tetrahedraInROI&#39;</span>, name<span class="op">=</span><span class="st">&#39;container&#39;</span>)</a>
+<a class="sourceLine" id="cb18-99" title="99">        <span class="cf">else</span>:</a>
+<a class="sourceLine" id="cb18-100" title="100">            modelSubTopo.addObject(<span class="st">&#39;TetrahedronSetTopologyContainer&#39;</span>, position<span class="op">=</span><span class="st">&#39;@loader.position&#39;</span>, tetrahedra<span class="op">=</span><span class="st">&#39;@../../finger1/boxROISubTopo.tetrahedraInROI&#39;</span>, name<span class="op">=</span><span class="st">&#39;container&#39;</span>)</a>
+<a class="sourceLine" id="cb18-101" title="101">        modelSubTopo.addObject(<span class="st">&#39;TetrahedronFEMForceField&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec3&#39;</span>, name<span class="op">=</span><span class="st">&#39;FEM&#39;</span>, method<span class="op">=</span><span class="st">&#39;large&#39;</span>, poissonRatio<span class="op">=</span><span class="fl">0.3</span>,  youngModulus<span class="op">=</span><span class="bu">str</span>(youngModulusStiffLayerFingers<span class="op">-</span>youngModulusFingers))</a>
+<a class="sourceLine" id="cb18-102" title="102"></a>
+<a class="sourceLine" id="cb18-103" title="103"></a>
+<a class="sourceLine" id="cb18-104" title="104">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-105" title="105">        <span class="co"># Constraint                             #</span></a>
+<a class="sourceLine" id="cb18-106" title="106">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-107" title="107">        cavity <span class="op">=</span> finger.addChild(<span class="st">&#39;cavity&#39;</span>)</a>
+<a class="sourceLine" id="cb18-108" title="108">        cavity.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/pneunetCavityCut.stl&#39;</span>,translation <span class="op">=</span> translations[i], rotation<span class="op">=</span>[<span class="dv">360</span> <span class="op">-</span> angles[i]<span class="op">*</span><span class="dv">180</span><span class="op">/</span>math.pi, <span class="dv">0</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb18-109" title="109">        cavity.addObject(<span class="st">&#39;MeshTopology&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, name<span class="op">=</span><span class="st">&#39;topo&#39;</span>)</a>
+<a class="sourceLine" id="cb18-110" title="110">        cavity.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;cavity&#39;</span>)</a>
+<a class="sourceLine" id="cb18-111" title="111">        cavity.addObject(<span class="st">&#39;SurfacePressureConstraint&#39;</span>, name<span class="op">=</span><span class="st">&#39;SurfacePressureConstraint&#39;</span>, template<span class="op">=</span><span class="st">&#39;Vec3&#39;</span>, value<span class="op">=</span><span class="fl">0.0001</span>, triangles<span class="op">=</span><span class="st">&#39;@topo.triangles&#39;</span>, valueType<span class="op">=</span><span class="st">&#39;pressure&#39;</span>)</a>
+<a class="sourceLine" id="cb18-112" title="112">        cavity.addObject(<span class="st">&#39;BarycentricMapping&#39;</span>, name<span class="op">=</span><span class="st">&#39;mapping&#39;</span>,  mapForces<span class="op">=</span><span class="va">False</span>, mapMasses<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb18-113" title="113"></a>
+<a class="sourceLine" id="cb18-114" title="114">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-115" title="115">        <span class="co"># Collision                           #</span></a>
+<a class="sourceLine" id="cb18-116" title="116">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-117" title="117"></a>
+<a class="sourceLine" id="cb18-118" title="118">        collisionFinger <span class="op">=</span> finger.addChild(<span class="st">&#39;collisionFinger&#39;</span>)</a>
+<a class="sourceLine" id="cb18-119" title="119">        collisionFinger.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/pneunetCut.stl&#39;</span>, translation <span class="op">=</span> translations[i], rotation<span class="op">=</span>[<span class="dv">360</span> <span class="op">-</span> angles[i]<span class="op">*</span><span class="dv">180</span><span class="op">/</span>math.pi, <span class="dv">0</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb18-120" title="120">        collisionFinger.addObject(<span class="st">&#39;MeshTopology&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, name<span class="op">=</span><span class="st">&#39;topo&#39;</span>)</a>
+<a class="sourceLine" id="cb18-121" title="121">        collisionFinger.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;collisMech&#39;</span>)</a>
+<a class="sourceLine" id="cb18-122" title="122">        collisionFinger.addObject(<span class="st">&#39;TriangleCollisionModel&#39;</span>, selfCollision<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb18-123" title="123">        collisionFinger.addObject(<span class="st">&#39;LineCollisionModel&#39;</span>, selfCollision<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb18-124" title="124">        collisionFinger.addObject(<span class="st">&#39;PointCollisionModel&#39;</span>, selfCollision<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb18-125" title="125">        collisionFinger.addObject(<span class="st">&#39;BarycentricMapping&#39;</span>)</a>
+<a class="sourceLine" id="cb18-126" title="126"></a>
+<a class="sourceLine" id="cb18-127" title="127"></a>
+<a class="sourceLine" id="cb18-128" title="128">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-129" title="129">        <span class="co"># Visualization                       #</span></a>
+<a class="sourceLine" id="cb18-130" title="130">        <span class="co">##########################################</span></a>
+<a class="sourceLine" id="cb18-131" title="131">        modelVisu <span class="op">=</span> finger.addChild(<span class="st">&#39;visu&#39;</span>)</a>
+<a class="sourceLine" id="cb18-132" title="132">        modelVisu.addObject(<span class="st">&#39;MeshSTLLoader&#39;</span>, name<span class="op">=</span><span class="st">&#39;loader&#39;</span>, filename<span class="op">=</span><span class="st">&#39;data/mesh/pneunetCut.stl&#39;</span>)</a>
+<a class="sourceLine" id="cb18-133" title="133">        modelVisu.addObject(<span class="st">&#39;OglModel&#39;</span>, src<span class="op">=</span><span class="st">&#39;@loader&#39;</span>, color<span class="op">=</span>[<span class="fl">0.7</span>, <span class="fl">0.7</span>, <span class="fl">0.7</span>, <span class="fl">0.6</span>], translation <span class="op">=</span> translations[i], rotation<span class="op">=</span>[<span class="dv">360</span> <span class="op">-</span> angles[i]<span class="op">*</span><span class="dv">180</span><span class="op">/</span>math.pi, <span class="dv">0</span>, <span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb18-134" title="134">        modelVisu.addObject(<span class="st">&#39;BarycentricMapping&#39;</span>)</a>
+<a class="sourceLine" id="cb18-135" title="135"></a>
+<a class="sourceLine" id="cb18-136" title="136">    <span class="cf">return</span> rootNode</a></code></pre></div>
+</body>
+</html>

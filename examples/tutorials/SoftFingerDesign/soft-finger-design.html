@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>soft-finger-design</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../docs/style.css" />
+</head>
+<body>
+<script language="javascript">
+function toggle(target) {
+    d = document.getElementById(target);
+    if(d.className === "show")
+        d.className = "hide"
+    else
+        d.className = "show"
+    return false;
+}
+</script>
+<p><img src="images/softfingerdesign_header.png" width="100%" title=""/></p>
+<h2 id="context-and-objectives">Context and objectives</h2>
+<p>In this hands-on session, we will tackle the problem of designing the deformable body of a soft robotics system while considering the constraints due to the fabrication process(es). For that purpose, we propose you to follow an iterative and interactive design process where fast mechanical simulations are used to predict the system behavior and performances.</p>
+<p>As a case study, you are going to optimize the design a soft gripper. There exists many design of soft grippers with different geometries and actuation strategies, such as tendons and pneumatic. For this session, the general design of the gripper is as follows (see Figure 1). It is composed of 3 soft fingers that are actuated by one servo-motor each. As a note, the structural components and the configurations of the servomotors are the same as the Tripod robot (see Tuesday’s hands-on session). While the actuation is given, the question is how to optimize the finger design to maximize the grasping performances while satisfying size and fabrication constraints.</p>
+<p><img src="images/fingers.png" width="600" title="Figure 1: Concept of soft gripper actuated with the Tripod structure" alt="Figure 1: Concept of soft gripper actuated with the Tripod structure"/></p>
+<p>The goal of this hands-on session is to learn how to leverage parametric Computer Assisted Design (CAD) and mechanical models to optimize the finger design iteratively. We propose in particular the use of a python script that will automatically generate a geometry and a mesh, starting from a base finger design and following simple inputs of design parameters. Participants who are already comfortable with soft finger/robot design are free to propose their own CAD design of finger. Don’t hesitate to call the session’s supervisors to discuss your designs! The fingers will be simulated using the mechanical FEM model implemented in the SOFA software in order to have an evaluation of the grasping force. According to the performances obtain, the participants will iterate manually on their design and repeat the process until the design specifications are achieved.</p>
+<p>Each participant will have to propose a design of finger at the end of the session, and justify their choice by filling the form at the end of this document. The session supervisors will review the finger designs and select 3 of them, based on the justifications given, to be 3D printed, assembled and tested.</p>
+<h2 id="step-0-preparations">STEP 0: Preparations</h2>
+<h3 id="python-editor">Python + Editor</h3>
+<p>The CAD generation script and the SOFA scene are both based on Python3 (version 3.7 or later). Despite any text editor will work, we highly recommand the use of a dedicated IDE for python (pyCharm, Spyder, atom to cite few others).</p>
+<h3 id="gmsh">Gmsh</h3>
+<p>The python script interacts with Gmsh (by C. Geuzaine and J.-F. Remacle, version 4.9.5 or later) to generate the volumes of the finger and discretize it with finite elements. To install it, execute the following command in the Python terminal (http://gmsh.info).</p>
+<pre class="commandline"><code>python3 -m pip install --upgrade gmsh</code></pre>
+<h3 id="sofa">SOFA</h3>
+<p>The mechanical model is implemented using SOFA (binaries of v22.06 with SoftRobots plugin). Please refer to the hands-on session of Monday and Tuesday for installation.</p>
+<h3 id="ultimaker-cura">Ultimaker CURA</h3>
+<p>Once the finger will be designed, we will use the slicer software CURA to prepare its fabrication. The last version of the software can be found here: https://ultimaker.com/fr/software/ultimaker-cura</p>
+<h3 id="hands-on-session-starting-directory">Hands-on session starting directory</h3>
+<p>The starting directory for this hands-on session includes a <code>details</code> directory that contains several files and folders: - A <code>Data</code> directory where the generated meshes are stored. The directory initially contains the servomotor 2D mesh (STL CAD) files and the mesh of the cylinder to grasp. - Python scripts for the generation of the finger geometry and meshes: - <code>mesh_finger.py</code> - <code>mesh_clamping.py</code> - <code>mesh_contact_surface.py</code> - A SOFA Python scene file and the utility python scripts that go with it - <code>gripper_simulation.py</code> - <code>actuated_finger.py</code> - <code>elastic_material_object.py</code> - <code>actuated_arm.py</code> - <code>fixing_box.py</code> - <code>s90_servo.py</code> - <code>cylinder.py</code> - A CURA file to prepare the 3D printing program of the designed finger - <code>finger_cura.3mf</code></p>
+<h2 id="step-1-determination-of-the-design-specifications">STEP 1: Determination of the design specifications</h2>
+<p>Any design process a robotic system, whether it is soft or not, should be conducted to obtain desired specifications. The first step of the process is therefore to determine these specifications. They can be qualitative (ex: obtaining a bending motion with pneumatic actuation), quantitative (ex: elongating over 20% of its initial length), driven by an application (ex: must be soft enough not to damage living tissues in medical interventions) or constrained by the integration of pre-existing parts (ex: the pneumatic components supports a maximum pressure of 100kPa) or by a fabrication process (obtained by casting). The larger the number of specifications, the harder the design process is, in particular when some of them are conflicting each other (ex: generating large forces with a soft manipulator while being compliant to have safe contacts with the environment). For this hands-on session, the design specifications are as follows:</p>
+<ul>
+<li>Criterion to maximize: contact force between the object to grasp and the soft finger at equilibrium</li>
+<li>Object to grasp: cylinder of diameter 20 mm</li>
+<li>Grasping configuration: Servomotors arm set at 30°</li>
+<li>Maximum dimensions of the finger: 80.0 x 50.0 x 20.0 mm</li>
+<li>Assembly on the servomotor: wall with thickness 5mm to be anchored on the motor arm and pass-through M3 holes for the anchoring to the gripper base (see section Servomotor Assembly)</li>
+<li>Fabrication process: Fused Filament Deposit additive manufacturing, Prusa i3 mk3 printer, Filaflex 70A material (Recreus), extruder of diameter 0.4 mm, layer thickness of 0.3 mm, infill 25%.</li>
+<li>Quantity of material: 15g maximum</li>
+</ul>
+<h3 id="servomotors-assembly">Servomotors assembly</h3>
+<p><img src="images/assembly.png" width="600" title="Figure 2: Screenshot of the servomotor and finger assembly with dimensions" alt="Figure 2: Screenshot of the servomotor and finger assembly with dimensions"/></p>
+<h2 id="step-2-choice-of-a-finger-design-and-generating-its-parametric-cad">STEP 2: Choice of a finger design and Generating its parametric CAD</h2>
+<p><img src="images/parameters.png" width="400" title="Figure 3: Design parameters of the soft finger" alt="Figure 3: Design parameters of the soft finger"/></p>
+<p>The starting design of soft finger we propose is shown on Figure 3, in the configuration where the servomotor arm is at 0°. The finger (in blue) consists initially in a U-shape, composed of left, top and right walls. The base of the left wall is fixed to the servomotor arm while the right wall is fixed to the gripper base. When actuated, the servomotor pushes on the left wall, provoking the finger’s bending. How much the finger will bend for the fixed servomotor angular displacement, and how much force it will apply on an object to grasp, depends on the finger topology and dimensions. Here, the topology is fixed, and you must determine its dimensions, this process being also called <em>dimensional synthesis</em>. You have access to the following parameters to change this geometry.</p>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 83%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parameter</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>L</td>
+<td>Length</td>
+</tr>
+<tr class="even">
+<td>l</td>
+<td>Width of the top wall</td>
+</tr>
+<tr class="odd">
+<td>e1</td>
+<td>Thickness of the left wall at the finger top</td>
+</tr>
+<tr class="even">
+<td>e2</td>
+<td>Thickness of the top wall</td>
+</tr>
+<tr class="odd">
+<td>e3</td>
+<td>Thickness of the right wall</td>
+</tr>
+<tr class="even">
+<td>n</td>
+<td>Number of intermediate points evenly spaced on the right wall</td>
+</tr>
+<tr class="odd">
+<td>di</td>
+<td>Distances between the intermediate points and the left wall (nx1 vector)</td>
+</tr>
+</tbody>
+</table>
+<p>From your choice of parameters, the python script <code>mesh_finger.py</code> generate the finger’s geometry and the mesh elements the SOFA simulation needs. It first generates a series of points describing the contour of the finger, then generate a surface from this contour and extrude it over a pre-defined finger depth (imposed here). Don’t hesitate to look at the commented code. Finally, the script generates several files from this volume:</p>
+<ul>
+<li>A 3D mesh made of tetrahedron elements for computing the elastic behavior</li>
+<li>A 2D mesh of the finger’s envelope for its visualization on SOFA and the detection of collisions</li>
+<li>2D meshes of the inner and outer surfaces for the detection and computation of collisions</li>
+</ul>
+<p>The script also generates automatically the geometries we need to attach the finger on the servomotor. Also, the script incorporate the maximum dimension specifications described above. <strong>Error messages</strong> will pop <strong>in the terminal</strong> in case the desired finger is too big or some geometries cannot be generated. To generate a new design of finger, you must:</p>
+<ul>
+<li>Choose a set of design parameters</li>
+<li>Write their value at the beginning of the code using your favorite code editor</li>
+<li>From the <code>details</code> directory, execute the Python script using the command: <code>python3 details/mesh_finger.py</code></li>
+<li>Check visually the consistency of the generated part using the now opened Gmsh window</li>
+</ul>
+<p>The script will then automatically store the generated mesh files in the <code>Data</code> of the starting repository. Note that the starting design we propose you to work with is not necessarily the best design nor the most classical. There is today a vast library of finger and gripper designs in the soft robot community, and finding the optimal one for a given grasping task is not trivial. The design presented here is simple enough to give you some intuition about how the parameters influence the finger performances, but other designs might work very well also. Don’t hesitate to discuss with the session supervisors about it!</p>
+<h2 id="step-3-simulation-of-the-finger-behaviour">STEP 3: Simulation of the finger behaviour</h2>
+<p>The SOFA scene used to evaluate the elastic behavior of the finger and the contact force with the object to grasp is provided in the file <code>gripper_simulation.py</code>. In this scene, we make use of the gripper symmetry to reduce the overall computation time. As the three servomotors and fingers are at the same distance to the object and equally distributed around it, they will apply the same force on it. Because of this, the object is likely to stay approximately at the same location before and after grasping. Therefore, we idealize the grasping scene by considering that the object is fixed in space and by simulating the behavior of one finger only.</p>
+<p><img src="images/simulation.png" width="400" title="Figure 4: Screenshot of the SOFA scene for the soft finger simulation" alt="Figure 4: Screenshot of the SOFA scene for the soft finger simulation"/></p>
+<p>The scene contains: - The 3D mesh of the finger along with an elastic force field to simulate its deformation - A box with rigidified mesh nodes at the left wall base, which pose is updated according to the servomotor rotation - A box of rigidified mesh nodes at the right wall base which pose is fixed - A mesh of the object to grasp, fixed in space. - Collision models to account for eventual collisions between the finger and the object, and between the inner surfaces of the left and right walls</p>
+<pre>
+<a href="details/gripper_simulation.py"> <img src="../../../docs/images/icons/play.png" width="14px"/>Try the scene in SOFA.</a>
+<a href="javascript:void(0)" onclick="toggle('step1code');"> <img src="../../../docs/images/icons/play.png" width="14px"/>Show/Hide the code.</a>
+</pre>
+<div id="step1code" class="hide">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb2-1" title="1"><span class="im">import</span> Sofa</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="im">from</span> actuated_finger <span class="im">import</span> ActuatedFinger</a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="im">from</span> actuated_finger <span class="im">import</span> FingerController</a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="im">from</span> fixing_box <span class="im">import</span> FixingBox</a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="im">from</span> stlib3.scene.contactheader <span class="im">import</span> ContactHeader</a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="im">from</span> cylinder <span class="im">import</span> Cylinder</a>
+<a class="sourceLine" id="cb2-8" title="8"></a>
+<a class="sourceLine" id="cb2-9" title="9"></a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="kw">def</span> createScene(rootNode):</a>
+<a class="sourceLine" id="cb2-11" title="11">    <span class="im">from</span> stlib3.scene <span class="im">import</span> Scene</a>
+<a class="sourceLine" id="cb2-12" title="12"></a>
+<a class="sourceLine" id="cb2-13" title="13">    <span class="co"># Define the main architecture of the scene, with a node Modelling, Setting and Simulation</span></a>
+<a class="sourceLine" id="cb2-14" title="14">    <span class="co"># Define also the integration method as Euler implicit and the solver as Conjugate Gradient)</span></a>
+<a class="sourceLine" id="cb2-15" title="15">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">-9.81</span>],</a>
+<a class="sourceLine" id="cb2-16" title="16">                  plugins<span class="op">=</span>[<span class="st">&#39;SofaSparseSolver&#39;</span>, <span class="st">&#39;SofaOpenglVisual&#39;</span>, <span class="st">&#39;SofaSimpleFem&#39;</span>, <span class="st">&#39;SofaDeformable&#39;</span>, <span class="st">&#39;SofaEngine&#39;</span>,</a>
+<a class="sourceLine" id="cb2-17" title="17">                           <span class="st">&#39;SofaGeneralRigid&#39;</span>, <span class="st">&#39;SofaRigid&#39;</span>, <span class="st">&#39;SofaBoundaryCondition&#39;</span>, <span class="st">&#39;SofaMeshCollision&#39;</span>],</a>
+<a class="sourceLine" id="cb2-18" title="18">                  iterative<span class="op">=</span><span class="va">False</span>)</a>
+<a class="sourceLine" id="cb2-19" title="19">    scene.addMainHeader()</a>
+<a class="sourceLine" id="cb2-20" title="20">    ContactHeader(scene, alarmDistance<span class="op">=</span><span class="fl">15e-3</span>, contactDistance<span class="op">=</span><span class="fl">0.5e-3</span>, frictionCoef<span class="op">=</span><span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb2-21" title="21"></a>
+<a class="sourceLine" id="cb2-22" title="22">    <span class="co"># Setting the time step</span></a>
+<a class="sourceLine" id="cb2-23" title="23">    rootNode.dt <span class="op">=</span> <span class="fl">0.01</span></a>
+<a class="sourceLine" id="cb2-24" title="24"></a>
+<a class="sourceLine" id="cb2-25" title="25">    <span class="co"># Define the default view of the scene on SOFA</span></a>
+<a class="sourceLine" id="cb2-26" title="26">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
+<a class="sourceLine" id="cb2-27" title="27">    scene.VisualStyle.displayFlags <span class="op">=</span> [<span class="st">&quot;hideInteractionForceFields&quot;</span>, <span class="st">&quot;showForceFields&quot;</span>,</a>
+<a class="sourceLine" id="cb2-28" title="28">                                      <span class="st">&quot;showCollisionModels&quot;</span>]</a>
+<a class="sourceLine" id="cb2-29" title="29">    <span class="co"># Add a grid on the scene with squares 10mm/10mm</span></a>
+<a class="sourceLine" id="cb2-30" title="30">    rootNode.addObject(<span class="st">&quot;VisualGrid&quot;</span>, nbSubdiv<span class="op">=</span><span class="dv">100</span>, size<span class="op">=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb2-31" title="31"></a>
+<a class="sourceLine" id="cb2-32" title="32">    <span class="co"># Set up the pipeline for the collision computation</span></a>
+<a class="sourceLine" id="cb2-33" title="33">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
+<a class="sourceLine" id="cb2-34" title="34">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
+<a class="sourceLine" id="cb2-35" title="35"></a>
+<a class="sourceLine" id="cb2-36" title="36">    <span class="co"># Create one actuated finger</span></a>
+<a class="sourceLine" id="cb2-37" title="37">    actuatedFinger <span class="op">=</span> ActuatedFinger()</a>
+<a class="sourceLine" id="cb2-38" title="38">    scene.Modelling.addChild(actuatedFinger)</a>
+<a class="sourceLine" id="cb2-39" title="39"></a>
+<a class="sourceLine" id="cb2-40" title="40">    <span class="co"># Install an obstacle in the scene/object to grasp</span></a>
+<a class="sourceLine" id="cb2-41" title="41">    scene.Modelling.addChild(<span class="st">&#39;Obstacle&#39;</span>)</a>
+<a class="sourceLine" id="cb2-42" title="42"></a>
+<a class="sourceLine" id="cb2-43" title="43">    cylObst <span class="op">=</span> Cylinder(parent<span class="op">=</span>scene.Modelling.Obstacle, translation<span class="op">=</span>[<span class="fl">30.0e-3</span>, <span class="fl">0.0</span>, <span class="fl">50.0e-3</span>],</a>
+<a class="sourceLine" id="cb2-44" title="44">                        surfaceMeshFileName<span class="op">=</span><span class="st">&#39;Data/cylinder.stl&#39;</span>,</a>
+<a class="sourceLine" id="cb2-45" title="45">                        MOscale<span class="op">=</span><span class="fl">10e-3</span>,</a>
+<a class="sourceLine" id="cb2-46" title="46">                        uniformScale<span class="op">=</span><span class="fl">0.5</span>,</a>
+<a class="sourceLine" id="cb2-47" title="47">                        totalMass<span class="op">=</span><span class="fl">0.032</span>,</a>
+<a class="sourceLine" id="cb2-48" title="48">                        isAStaticObject<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb2-49" title="49">    cylObst.mass.showAxisSizeFactor <span class="op">=</span> <span class="fl">1e-2</span></a>
+<a class="sourceLine" id="cb2-50" title="50">    cylObst.mstate.name <span class="op">=</span> <span class="st">&#39;dofs&#39;</span></a>
+<a class="sourceLine" id="cb2-51" title="51"></a>
+<a class="sourceLine" id="cb2-52" title="52">    <span class="co"># Fix the object in space</span></a>
+<a class="sourceLine" id="cb2-53" title="53">    FixingBox(scene.Modelling.Obstacle, cylObst, translation<span class="op">=</span>[<span class="fl">30.0e-3</span>, <span class="fl">0.0</span>, <span class="fl">70.0e-3</span>],</a>
+<a class="sourceLine" id="cb2-54" title="54">                          scale<span class="op">=</span>[<span class="fl">10e-3</span>, <span class="fl">10e-3</span>, <span class="fl">10e-3</span>])</a>
+<a class="sourceLine" id="cb2-55" title="55">    scene.Modelling.Obstacle.FixingBox.BoxROI.drawBoxes <span class="op">=</span> <span class="va">True</span></a>
+<a class="sourceLine" id="cb2-56" title="56"></a>
+<a class="sourceLine" id="cb2-57" title="57">    <span class="co"># Add the simulated elements to the Simulation node</span></a>
+<a class="sourceLine" id="cb2-58" title="58">    scene.Simulation.addChild(actuatedFinger.RigidifiedStructure.DeformableParts)</a>
+<a class="sourceLine" id="cb2-59" title="59">    scene.Simulation.addChild(actuatedFinger.ActuatedArm)</a>
+<a class="sourceLine" id="cb2-60" title="60"></a>
+<a class="sourceLine" id="cb2-61" title="61">    <span class="co"># Add a controller to output some performance metric during the simulation</span></a>
+<a class="sourceLine" id="cb2-62" title="62">    scene.addObject(FingerController(name<span class="op">=</span><span class="st">&#39;FingerController&#39;</span>, objectDof<span class="op">=</span>cylObst.collision.MechanicalObject,</a>
+<a class="sourceLine" id="cb2-63" title="63">                                     actuator<span class="op">=</span>scene.Modelling.ActuatedFinger.ActuatedArm, node<span class="op">=</span>rootNode))</a>
+<a class="sourceLine" id="cb2-64" title="64"></a>
+<a class="sourceLine" id="cb2-65" title="65">    <span class="co"># Temporary addition to have the system correctly built in SOFA</span></a>
+<a class="sourceLine" id="cb2-66" title="66">    <span class="co"># Will no longer be required in SOFA v22.12</span></a>
+<a class="sourceLine" id="cb2-67" title="67">    scene.Simulation.addObject(<span class="st">&#39;MechanicalMatrixMapper&#39;</span>,</a>
+<a class="sourceLine" id="cb2-68" title="68">                               name<span class="op">=</span><span class="st">&quot;deformableAndFreeCenterCoupling&quot;</span>,</a>
+<a class="sourceLine" id="cb2-69" title="69">                               template<span class="op">=</span><span class="st">&#39;Vec1,Vec3&#39;</span>,</a>
+<a class="sourceLine" id="cb2-70" title="70">                               object1<span class="op">=</span>actuatedFinger.ActuatedArm.ServoMotor.Articulation.dofs.getLinkPath(),</a>
+<a class="sourceLine" id="cb2-71" title="71">                               object2<span class="op">=</span>actuatedFinger.RigidifiedStructure.DeformableParts.dofs.getLinkPath(),</a>
+<a class="sourceLine" id="cb2-72" title="72">                               nodeToParse<span class="op">=</span>actuatedFinger.RigidifiedStructure.DeformableParts.ElasticMaterialObject.getLinkPath())</a>
+<a class="sourceLine" id="cb2-73" title="73"></a>
+<a class="sourceLine" id="cb2-74" title="74">    <span class="cf">return</span> rootNode</a></code></pre></div>
+</div>
+</div>
+<p>Don’t hesitate to go through the commented code of the SOFA scene for further details. To simulate the finger behavior and determine the final contact force, you must:</p>
+<ul>
+<li>Launch the scene, by typing the following command in the terminal (for windows users, this command works if runsofa.exe was previously included in the PATH environment variable) <code>gripper_simulation.py</code></li>
+<li>Press the Animate button. The servomotor is controlled to reach the angular displacement in 3s.</li>
+</ul>
+<p>To restart the simulation, press “Ctrl-R” (reload the scene) and then “Animate”. Note that, in theory, only the final shape of the finger is important to us to evaluate the final contact force. However, as the soft finger constitutes a non-linear elastic system, numerical solvers are likely to diverge if the initial guess the user provides is too far from the actual solution. Therefore, computing intermediate shapes of the finger during actuation improves numerical convergence.</p>
+<h2 id="step-4-evaluation-of-the-finger-performances">STEP 4: Evaluation of the finger performances</h2>
+<p>The SOFA scene is also equipped with controller that allows to get simulated data at each step of the simulation and to read user keyboards input. In our case, we use it to display the total contact force between the finger and the object, which is our main performance criterion. To evaluate and display the contact force: - In the simulation, wait for the finger to reach an equilibrium configuration, i.e. the servo-motor and the finger stop moving. - Print the contact force in the terminal by pressing on the keys “Ctrl+P”. Make sure you activated the visualization window of SOFA by clinking on it when you want to interact with the simulation.</p>
+<p>The value displayed in the terminal is the sum of the normal component of the contact forces applied on the object. Just considering the normal component magnitude will be enough for this hands-on session, but considering the force direction and the localization of the contact might also be of interest for a gripper design.</p>
+<h2 id="step-5-iterate-on-the-finger-design-to-meet-the-specifications">STEP 5: Iterate on the finger design to meet the specifications</h2>
+<p>So far, we performed only one design iteration through steps 1 to 4. Model-based design processes are generally iterative. The performances obtained for a given design are compared to the desired ones, and the design parameters are changed by the user to reduce the error (similarly to a closed-loop control scheme). This iteration process can be partly to fully automated using off-the-shelf numerical optimization methods such as gradient-descent. Note that using these tools may require additional work, such as reformulating the soft robot model and the optimization problem to obtain a mathematical form suitable for optimization (quadratic cost function to ensure convexity for example). Other methods like evolutionary algorithms can also be used to search the design space of parametric designs efficiently. Instead of optimizing a single candidate, these methods evaluate populations of candidates which evolve over generations. In our case, to avoid going deep on the problem formulation and to get intuition on how the design parameters affect the finger performances, we will iterate manually on the design parameters. Therefore, you need to:</p>
+<ul>
+<li>Repeat steps 1 to 4 until the design specifications are met</li>
+</ul>
+<p>Some advices: - Try to vary one parameter at a time (at least at the beginning), to learn its influence on the finger behavior - Keep notes of what designs you already tried - Be careful when choosing high values of the walls’ thickness, as you might in fine go over the limit of material quantity for the fabrication - Be careful also when choosing low values of the walls’ thickness, as it may conflict with the filament diameter.</p>
+<h2 id="step-6-preparation-for-3d-printing-and-verification">STEP 6: Preparation for 3D printing and verification</h2>
+<p><img src="images/printing_building_plate.PNG" width="600"/></p>
+<p>When an optimal design is found, the last step is to check if the part can actually be fabricated, and if so to create the fabrication program. Here we consider 3D printing to fabricate the finger. This process requires before-hands to create the printing program using a slicer software, here CURA. In this software, the part to print must be included, positioned and oriented with respect to the printer building plate, and sliced to generate the path the extruder must follow. - Open <code>finger_cura.3mf</code> using CURA. The software displays a 3D view of the printer and the building plate. We already specified the type of printer and the fabrication settings related to the flexible filament in the file. - Click Open (foler icon on the top left) and select the surface mesh <code>finger.stl</code> in the Data folder. The finger should now appear on the building plate. - Check the orientation of the finger. This information is critical in 3D printing in general, as it will dictate the mechanical properties and geometrical tolerances of the final part. As the finger is an extruded planar shape, and as we mainly need it to bend, the most natural orientation is with the planar shape coplanar with the building plane. (as depicted on the Figure). If CURA did not already place the finger in this configuration, rectify this by selecting the part and using the buttons on the left. - Click on “Slice” on the bottom right - Preview the 3D printing. Most slicer software propose this option. By clicking “Preview” on the bottom right (or the top center), and playing with the cursor on the right, you can visualize the different layers the printer will do. - Check if the finger will be printed as intended. - Check the quantity of material required for the fabrication on the bottom right. If the filament mass goes beyond the maximum value of 15g (see specifications), you must go back to step 5 and adjust your design. You can leave CURA open and modify your design, the software will propose you to reload the file while keeping the same orientation.</p>
+<h2 id="step-7-description-brief-of-the-soft-finger-design">STEP 7: Description brief of the soft finger design</h2>
+<h3 id="for-participants-using-the-base-design">For participants using the base design</h3>
+<ol type="1">
+<li>What design parameters did you finally select? What is the final contact force you obtain?</li>
+<li>How did you choose the number of intermediate points on the right wall and the inter-wall distances between those points?</li>
+<li>How did you choose the left, upper and right walls thickness?</li>
+<li>How do these thickness values comply with the fabrication constraints?</li>
+<li>What challenges did you face during the design process? Think in particular to the minimal wall thickness that can be fabricated.</li>
+</ol>
+<h3 id="for-participants-proposing-their-own-design">For participants proposing their own design</h3>
+<ol type="1">
+<li>Add a 3D view and/or planar schematics (in different planes) of your finger. What is the final contact force you obtain?</li>
+<li>How did you choose the finger global geometry?</li>
+<li>How did you choose the finger dimensions?</li>
+<li>How does the design comply with the fabrication constraints?</li>
+<li>What challenges did you face during the design process? Think in particular to the minimal wall thickness that can be fabricated and the layer thickness.</li>
+</ol>
+</body>
+</html>
