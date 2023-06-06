@@ -5,6 +5,8 @@
 [![SOFA](https://img.shields.io/badge/SOFA-on_github-orange.svg)](https://github.com/SofaDefrost/sofa) 
 [![Nightly-build](https://github.com/SofaDefrost/SoftRobots/actions/workflows/nighly-build.yml/badge.svg?branch=master)](https://github.com/SofaDefrost/SoftRobots/actions/workflows/nighly-build.yml)
 
+![](docs/images/trunkSimuReal.png)
+
 This plugin for SOFA contains components dedicated to soft robotics. You can find for example, models for cable and pneumatic actuations, tools to define trajectories for the robot's end effector, or tools to communicate with microcontroller boards.
 Please refer to the dedicated [documentation](https://project.inria.fr/softrobot/install-get-started-2/) for installation and build. You can explore the *examples* directory in this repository to find examples and tutorials.
 
