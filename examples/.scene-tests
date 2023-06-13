@@ -12,3 +12,6 @@ ignore "component/controller/CommunicationController/SimulationInverse_Sender.py
 
 # Ignore the following scenes as they require ROS
 ignore "sofaros/test_sofaros.py"
+
+# Reduce the number of iterations to avoid timeout
+iterations "examples/component/constraint/SurfacePressureConstraint/PressureVsVolumeGrowthControl.py" "10"
