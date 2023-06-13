@@ -1,0 +1,11 @@
+# This file is used to setup the SOFA continuous integration
+
+# Ignore the following scenes as they require the SoftRobots.Inverse plugin
+ignore "thematicalDocs/T5-OpenLoopControl/InverseSimulation/simuInverse.py"
+ignore "tutorials/CircularRobot/circularrobot.py"
+ignore "tutorials/Tripod/myproject/step8-maze.py"
+ignore "tutorials/Tripod/myproject/step8.py"
+
+# Ignore the following scenes as they require the option SOFTROBOTS_COMMUNICATIONCONTROLLER
+ignore "component/controller/CommunicationController/SimulationDirect_Receiver.py"
+ignore "component/controller/CommunicationController/SimulationInverse_Sender.py"
