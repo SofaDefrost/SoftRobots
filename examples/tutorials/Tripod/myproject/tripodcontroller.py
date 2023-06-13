@@ -255,7 +255,7 @@ def createScene(rootNode):
     scene.addObject('DefaultVisualManagerLoop')
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    tripod = Tripod(scene.Modelling)
+    tripod = scene.Modelling.addChild(Tripod())
 
     scene.addObject(TripodController(scene, actuators=[tripod.ActuatedArm0,
                                                         tripod.ActuatedArm1,

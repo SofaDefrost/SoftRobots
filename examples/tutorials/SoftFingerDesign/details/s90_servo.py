@@ -55,7 +55,6 @@ class ServoMotor(Sofa.Prefab):
 
     def init(self):
         SofaRuntime.importPlugin("ArticulatedSystemPlugin")
-
         # Servo body
         servoBody = self.addChild('ServoBody')
         servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[[0., 0., 0., 0., 0., 0., 1.]],
