@@ -9,3 +9,6 @@ ignore "tutorials/Tripod/myproject/step8.py"
 # Ignore the following scenes as they require the option SOFTROBOTS_COMMUNICATIONCONTROLLER
 ignore "component/controller/CommunicationController/SimulationDirect_Receiver.py"
 ignore "component/controller/CommunicationController/SimulationInverse_Sender.py"
+
+# Ignore the following scenes as they require ROS
+ignore "sofaros/test_sofaros.py"
