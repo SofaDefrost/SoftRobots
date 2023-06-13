@@ -110,7 +110,7 @@ def createScene(rootNode):
     from stlib3.scene import MainHeader
 
     MainHeader(rootNode, gravity=[0, 0, 0])
-    rootNode.addChild(ElasticMaterialObject(name='ElasticMaterialObject1', volumeMeshFileName="Data/liver.msh",
+    rootNode.addChild(ElasticMaterialObject(name='ElasticMaterialObject1', volumeMeshFileName="mesh/liver.msh",
                                             translation=[3.0, 0.0, 0.0]))
     rootNode.addChild(ElasticMaterialObject(name='ElasticMaterialObject2', volumeMeshFileName="mesh/liver.msh",
                                             translation=[-3, 0, 0], surfaceMeshFileName="mesh/liver.obj",
