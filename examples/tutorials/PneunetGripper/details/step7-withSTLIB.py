@@ -34,18 +34,18 @@ def createScene(rootNode):
     cube.addObject('UncoupledConstraintCorrection')
 
     for i in range(len(fingersParameters)):
-        finger = ElasticMaterialObject(attachedTo= rootNode,
-                                        volumeMeshFileNae=	fingersVolumeMesh,
-                                        nae =					fingersParameters[i]['name'],
-                                        rotatin =				fingersParameters[i]['rotation'],
-                                        translatin =			fingersParameters[i]['translation'],
-                                        surfaceMeshFileNae=	fingersSurfaceAndCollisionMesh,
-                                        collisionMeh =			fingersSurfaceAndCollisionMesh,
-                                        withConstran =			True,
-                                        surfaceColr =			fingersColor,
-                                        poissonRato =			poissonRatioFingers,
-                                        youngModuls =			youngModulusFingers,
-                                        totalMas =				fingersMass)
+        finger = ElasticMaterialObject(attachedTo=rootNode,
+                                       volumeMeshFileName=fingersVolumeMesh,
+                                       name=fingersParameters[i]['name'],
+                                       rotation=fingersParameters[i]['rotation'],
+                                       translation=fingersParameters[i]['translation'],
+                                       surfaceMeshFileName=fingersSurfaceAndCollisionMesh,
+                                       collisionMesh=fingersSurfaceAndCollisionMesh,
+                                       withConstrain=True,
+                                       surfaceColor=fingersColor,
+                                       poissonRatio=poissonRatioFingers,
+                                       youngModulus=youngModulusFingers,
+                                       totalMass=fingersMass)
 
         finger.dofs.name ='tetras'
         rootNode.addChild(finger)
@@ -57,12 +57,12 @@ def createScene(rootNode):
         finger.addObject('RestShapeSpringsForceField', points='@../finger1/boxROI.indices', stiffness=1e12
                          , angularStiffness=1e12)
 
-        PneumaticCavity(				surfaceMeshFileNme =	fingersCavitySurfaceMesh,
-                                        attachedAsAChilOf =	finger,
-                                        nme =					'cavity',
-                                        rotaton =				fingersParameters[i]['rotation'],
-                                        translaton =			fingersParameters[i]['translation'],
-                                        initialVaue =			cavitiesInitialValue,
-                                        valueType=				'pressure')
+        PneumaticCavity(surfaceMeshFileName=fingersCavitySurfaceMesh,
+                        attachedAsAChildOf=finger,
+                        name='cavity',
+                        rotation=fingersParameters[i]['rotation'],
+                        translation=fingersParameters[i]['translation'],
+                        initialValue=cavitiesInitialValue,
+                        valueType='pressure')
 
     rootNode.addObject(WholeGripperController(node=rootNode))
