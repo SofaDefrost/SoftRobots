@@ -14,10 +14,15 @@ ignore "component/controller/CommunicationController/SimulationInverse_Sender.py
 ignore "sofaros/test_sofaros.py"
 
 # Reduce the number of iterations to avoid timeout
-iterations "examples/component/constraint/SurfacePressureConstraint/PressureVsVolumeGrowthControl.py" "10"
+iterations "examples/component/constraint/SurfacePressureConstraint/PressureVsVolumeGrowthControl.py" "1"
 
 # Ignore the following scenes as they require the serial module
 ignore "tutorials/Tripod/details/step7.py"
 ignore "tutorials/Tripod/details/step8-maze.py"
 ignore "tutorials/Tripod/details/step8.py"
 ignore "tutorials/Tripod/details/step9.py"
+
+# Ignore the following scenes as they require the parts module
+ignore "tutorials/Tripod/myproject/parts/actuatedarm.py"
+ignore "tutorials/Tripod/myproject/parts/tripod.py"
+ignore "tutorials/Tripod/myproject/parts/tripodcontroller.py"

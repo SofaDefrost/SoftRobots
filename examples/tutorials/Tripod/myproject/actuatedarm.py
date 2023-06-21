@@ -94,7 +94,7 @@ def createScene(rootNode):
     from stlib3.scene import Scene
     import math
 
-    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaRigid'], iterative=False)
+    scene = Scene(rootNode, iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')

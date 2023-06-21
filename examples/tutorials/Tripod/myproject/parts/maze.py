@@ -60,7 +60,7 @@ def createScene(rootNode):
     effector.addObject('UncoupledConstraintCorrection', compliance='1e-10  1e-10  0 0 1e-10  0 1e-10 ')
 
     # Open maze planning from JSON file
-    data = json.load(open('mazeplanning.json'))
+    data = json.load(open('../mazeplanning.json'))
     effector.addObject(MazeController(effector, data["anglePlanningTable"], True))
 
     maze = effector.addChild(Maze())

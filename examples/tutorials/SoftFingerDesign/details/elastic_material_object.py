@@ -46,14 +46,7 @@ class ElasticMaterialObject(Sofa.Prefab):
                                          rotation=list(self.rotation.value), translation=list(self.translation.value),
                                          scale3d=list(self.scale.value))
 
-        if self.topoMesh.value == "tetrahedron":
-            self.container = self.addObject('TetrahedronSetTopologyContainer', src=self.loader.getLinkPath(),
-                                            name='container')
-            # Sofa.msg_error(self,"tetra") #print("Tetra")
-        else:
-            self.container = self.addObject('HexahedronSetTopologyContainer', src=self.loader.getLinkPath(),
-                                            name='container')
-            # Sofa.msg_error(self,"hexa") #print("hexa")
+        self.container = self.addObject('MeshTopology', src=self.loader.getLinkPath(), name='container')
         self.dofs = self.addObject('MechanicalObject', template='Vec3', name='dofs')
 
         # To be properly simulated and to interact with gravity or inertia forces, an elasticobject
