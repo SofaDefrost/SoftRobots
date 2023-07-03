@@ -122,12 +122,20 @@ public:
 
     virtual void storeResults(sofa::type::vector<double> &delta);
 
+    virtual sofa::type::vector<std::string> getBaseConstraintIdentifiers() override final
+    {
+        sofa::type::vector<std::string> ids = getSoftRobotsConstraintIdentifiers();
+        ids.push_back("SoftRobots");
+        return ids;
+    }
 
 protected:
 
     SoftRobotsBaseConstraint();
 
     ~SoftRobotsBaseConstraint() override {}
+
+    virtual sofa::type::vector<std::string> getSoftRobotsConstraintIdentifiers(){ return {}; }
 
     bool m_hasDeltaMax;
     bool m_hasDeltaMin;
