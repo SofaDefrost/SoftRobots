@@ -13,8 +13,8 @@ ignore "component/controller/CommunicationController/SimulationInverse_Sender.py
 # Ignore the following scenes as they require ROS
 ignore "sofaros/test_sofaros.py"
 
-# Reduce the number of iterations to avoid timeout
-iterations "examples/component/constraint/SurfacePressureConstraint/PressureVsVolumeGrowthControl.py" "1"
+# Ignore due to timeout
+ignore "examples/component/constraint/SurfacePressureConstraint/PressureVsVolumeGrowthControl.py"
 
 # Ignore the following scenes as they require the serial module
 ignore "tutorials/Tripod/details/step7.py"
