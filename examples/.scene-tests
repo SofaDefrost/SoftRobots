@@ -14,7 +14,7 @@ ignore "component/controller/CommunicationController/SimulationInverse_Sender.py
 ignore "sofaros/test_sofaros.py"
 
 # Ignore due to timeout
-ignore "examples/component/constraint/SurfacePressureConstraint/PressureVsVolumeGrowthControl.py"
+ignore "component/constraint/SurfacePressureConstraint/PressureVsVolumeGrowthControl.py"
 
 # Ignore the following scenes as they require the serial module
 ignore "tutorials/Tripod/details/step7.py"
