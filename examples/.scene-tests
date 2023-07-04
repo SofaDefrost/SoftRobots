@@ -27,3 +27,7 @@ ignore "tutorials/Tripod/myproject/step9.py"
 ignore "tutorials/Tripod/myproject/parts/actuatedarm.py"
 ignore "tutorials/Tripod/myproject/parts/tripod.py"
 ignore "tutorials/Tripod/myproject/parts/tripodcontroller.py"
+
+# Ignore because CI finds a createScene function, so it is considered as a functional scene. But it is in the comments,
+# so it should be ignored
+ignore "component/controller/AnimationEditor/__init__.py"
