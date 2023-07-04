@@ -16,7 +16,7 @@ class Maze(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
-        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze.stl",
+        self.addObject("MeshSTLLoader", name="loader", filename="../data/mesh/maze/maze.stl",
                        translation=self.translation.value, rotation=self.rotation.value)
         self.addObject("MeshTopology", src='@loader')
         self.addObject("MechanicalObject")
