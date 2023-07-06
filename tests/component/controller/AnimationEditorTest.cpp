@@ -86,16 +86,13 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, controller::Animati
     ///////////////////////////////////////////////////////////////////////
 
 
-    Simulation* m_simu;
     Node::SPtr m_node;
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
 
 
     void SetUp()
     {
-        setSimulation(m_simu = new sofa::simulation::graph::DAGSimulation());
-
-        m_node = m_simu->createNewGraph("root");
+        m_node = sofa::simulation::getSimulation()->createNewGraph("root");
         m_mecaobject = New<MechanicalObject<DataTypes> >() ;
         m_mecaobject->init() ;
         m_node->addObject(m_mecaobject) ;
@@ -259,7 +256,7 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, controller::Animati
         m_node->addObject(thisobject) ;
         thisobject->init();
 
-        m_simu->animate(m_node.get());
+        sofa::simulation::node::animate(m_node.get());
         double time = thisobject->getTime();
         double dt = m_node->getDt();
 

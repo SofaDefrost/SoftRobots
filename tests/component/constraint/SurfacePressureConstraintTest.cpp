@@ -90,7 +90,7 @@ namespace softrobots {
 
             string fileName  = string(SOFTROBOTS_TEST_DIR) + "/component/constraint/scenes/" + sceneName;
 
-            m_root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+            m_root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::node::load(fileName.c_str()));
 
             /// Test if load has succeededls
             sofa::simulation::SceneLoaderXML scene;
@@ -107,7 +107,7 @@ namespace softrobots {
 
             SetUp();
 
-            m_simulation->init(m_root.get());
+            sofa::simulation::node::initRoot(m_root.get());
 
             int nbTimeStep = 15;
             string deltaString;
@@ -119,7 +119,7 @@ namespace softrobots {
             string initialVolume = m_root->getChild("bunny")->getChild("cavity")->getObject("SurfacePressureConstraint")->findData("initialCavityVolume")->getValueString();
 
             for(int i=0; i<nbTimeStep; i++)
-                m_simulation->animate(m_root.get());
+                sofa::simulation::node::animate(m_root.get());
 
             m_root->getChild("bunny")->getChild("cavity")->getObject("VolumeFromTriangles")->findData("update")->read("1");
             deltaString = m_root->getChild("bunny")->getChild("cavity")->getObject("VolumeFromTriangles")->findData("volume")->getValueString();
