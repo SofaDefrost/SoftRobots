@@ -16,8 +16,8 @@ def ElasticBody(name="ElasticBody", rotation=[0,0,0], translation=[0,0,0], color
                           name='loader',
                           rotation=rotation,
                           translation=translation,
-                          filename='data/mesh/tripod_low.gidmsh')
-    mechanicalmodel.addObject('TetrahedronSetTopologyContainer',
+                          filename='../data/mesh/tripod_low.gidmsh')
+    mechanicalmodel.addObject('MeshTopology',
                           src='@loader',
                           name='container')
                        
@@ -41,7 +41,7 @@ def ElasticBody(name="ElasticBody", rotation=[0,0,0], translation=[0,0,0], color
     # Specific loader for the visual model
     visualmodel.addObject('MeshSTLLoader',
                      name='loader',
-                     filename='data/mesh/tripod_mid.stl',
+                     filename='../data/mesh/tripod_mid.stl',
                      rotation=rotation,
                      translation=translation)
     visualmodel.addObject('OglModel',
@@ -57,7 +57,7 @@ def ElasticBody(name="ElasticBody", rotation=[0,0,0], translation=[0,0,0], color
    
 def createScene(rootNode):
     from stlib3.scene import Scene
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual'], iterative=False)
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')

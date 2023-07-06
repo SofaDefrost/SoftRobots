@@ -74,10 +74,7 @@ def createScene(rootNode):
     from fixingbox import FixingBox
     import math
 
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False,
-                  plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine',
-                           'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition',
-                           'SofaGeneralAnimationLoop', 'SofaConstraint'])
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')

@@ -17,7 +17,7 @@ def ElasticBody(name="ElasticBody", rotation=[0,0,0], translation=[0,0,0], color
                           rotation=rotation,
                           translation=translation,
                           filename='data/mesh/tripod_low.gidmsh')
-    mechanicalmodel.addObject('TetrahedronSetTopologyContainer',
+    mechanicalmodel.addObject('MeshTopology',
                           src='@loader',
                           name='container')
                        

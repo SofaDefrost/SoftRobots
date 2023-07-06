@@ -35,7 +35,7 @@ def createScene(rootNode):
     elasticbody.addObject('GIDMeshLoader',
                           name='loader',
                           filename='data/mesh/tripod_low.gidmsh')
-    elasticbody.addObject('TetrahedronSetTopologyContainer',
+    elasticbody.addObject('MeshTopology',
                           src='@loader',
                           name='tetras')
                           

@@ -1,5 +1,6 @@
 import os
 import Sofa
+import SofaRuntime
 from stlib3.scene import Scene
 
 dirPath = os.path.dirname(os.path.abspath(__file__)) + '/'
@@ -52,6 +53,8 @@ class ServoMotor(Sofa.Prefab):
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
+        SofaRuntime.importPlugin("ArticulatedSystemPlugin")
+
         # Servo body
         servoBody = self.addChild('ServoBody')
         servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3',
@@ -103,15 +106,7 @@ def createScene(rootNode):
     def animation(target, factor):
         target.angleIn.value = math.cos(factor * 2 * math.pi)
 
-    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaOpenglVisual', 'SofaRigid',
-                                     "ArticulatedSystemPlugin", "Sofa.Component.AnimationLoop",
-                                     "Sofa.Component.Constraint.Lagrangian.Correction",
-                                     "Sofa.Component.Constraint.Lagrangian.Solver",
-                                     "Sofa.Component.Constraint.Projective", "Sofa.Component.IO.Mesh",
-                                     "Sofa.Component.LinearSolver.Direct", "Sofa.Component.Mass",
-                                     "Sofa.Component.ODESolver.Backward", "Sofa.Component.SolidMechanics.Spring",
-                                     "Sofa.Component.Topology.Container.Constant", "Sofa.Component.Visual",
-                                     "Sofa.GL.Component.Rendering3D", "Sofa.GUI.Component", ], iterative=False)
+    scene = Scene(rootNode, iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
