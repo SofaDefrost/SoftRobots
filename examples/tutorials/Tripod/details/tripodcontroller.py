@@ -50,6 +50,7 @@ class TripodController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
         # These are needed (and the normal way to override from a python class)
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
+        self.name = "TripodController"
 
         self.stepsize = 0.1
         self.actuators = kwargs["actuators"]
@@ -94,6 +95,7 @@ class TripodControllerWithCom(TripodController):
 
     def __init__(self, node, actuators, serialportctrl):
         TripodController.__init__(self, node, actuators=actuators)
+        self.name = "TripodControllerWithCom"
         self.serialportctrl = serialportctrl
 
     def initTripod(self, key):
@@ -236,7 +238,7 @@ class DirectController(Sofa.Core.Controller):
 
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        self.name = "TripodController"
+        self.name = "DirectController"
         self.stepsize = 0.1
         self.actuators = args[1]
         self.serialportctrl = args[2]

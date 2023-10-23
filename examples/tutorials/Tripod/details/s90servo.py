@@ -103,10 +103,30 @@ def createScene(rootNode):
     import math
     from splib3.animation import animate
 
+    pluginsList = [
+        'ArticulatedSystemPlugin',
+        # Needed to use components [ArticulatedHierarchyContainer,
+        # ArticulatedSystemMapping,Articulation,ArticulationCenter]
+        'Sofa.Component.AnimationLoop',  # Needed to use components [FreeMotionAnimationLoop]
+        'Sofa.Component.Constraint.Lagrangian.Correction',  # Needed to use components [GenericConstraintCorrection]
+        'Sofa.Component.Constraint.Lagrangian.Solver',  # Needed to use components [GenericConstraintSolver]
+        'Sofa.Component.Constraint.Projective',  # Needed to use components [FixedConstraint]
+        'Sofa.Component.IO.Mesh',  # Needed to use components [MeshSTLLoader]
+        'Sofa.Component.LinearSolver.Direct',  # Needed to use components [SparseLDLSolver]
+        'Sofa.Component.Mapping.NonLinear',  # Needed to use components [RigidMapping]
+        'Sofa.Component.Mass',  # Needed to use components [UniformMass]
+        'Sofa.Component.SolidMechanics.Spring',  # Needed to use components [RestShapeSpringsForceField]
+        'Sofa.Component.StateContainer',  # Needed to use components [MechanicalObject]
+        'Sofa.Component.Topology.Container.Constant',  # Needed to use components [MeshTopology]
+        'Sofa.Component.Visual',  # Needed to use components [VisualStyle]
+        'Sofa.GL.Component.Rendering3D',  # Needed to use components [OglModel,OglSceneFrame]
+        'Sofa.GUI.Component',  # Needed to use components [AttachBodyButtonSetting]
+    ]
+
     def animation(target, factor):
         target.angleIn.value = math.cos(factor * 2 * math.pi)
 
-    scene = Scene(rootNode, iterative=False)
+    scene = Scene(rootNode, plugins=pluginsList, iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')

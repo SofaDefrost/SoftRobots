@@ -64,7 +64,8 @@ def createScene(rootNode):
                   "Sofa.Component.SolidMechanics.Spring",
                   "Sofa.Component.StateContainer",
                   "Sofa.Component.Topology.Container.Constant",
-                  "Sofa.Component.Visual"]
+                  "Sofa.Component.Visual",
+                  "Sofa.Component.Mapping.NonLinear"]
 
     rootNode.addObject('RequiredPlugin', pluginName=pluginList)
 

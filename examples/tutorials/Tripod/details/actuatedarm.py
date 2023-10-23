@@ -106,7 +106,9 @@ def createScene(rootNode):
                                      "Sofa.Component.Constraint.Projective", "Sofa.Component.IO.Mesh",
                                      "Sofa.Component.LinearSolver.Direct", "Sofa.Component.Mass", "Sofa.Component.SolidMechanics.Spring",
                                      "Sofa.Component.Topology.Container.Constant", "Sofa.Component.Visual",
-                                     "Sofa.GL.Component.Rendering3D", "Sofa.GUI.Component", ], iterative=False)
+                                     "Sofa.GL.Component.Rendering3D", "Sofa.GUI.Component",
+                                     "Sofa.Component.Mapping.NonLinear",
+                                     "Sofa.Component.StateContainer"], iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')

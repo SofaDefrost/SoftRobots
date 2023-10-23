@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Step 8: Here we are showing how to setup the inverse control
+Step 8-maze: Here we are showing how to use the inverse control to solve a maze
 """
 import Sofa
 from tutorial import *
@@ -114,7 +114,9 @@ def createScene(rootNode):
                   "Sofa.GL.Component.Rendering3D",
                   "Sofa.GUI.Component",
                   "SoftRobots",
-                  "SoftRobots.Inverse"]
+                  "SoftRobots.Inverse",
+                  "Sofa.Component.Mapping.Linear",
+                  "Sofa.Component.Mapping.NonLinear"]
 
     scene = Scene(rootNode, gravity=[0., -9810, 0.], dt=0.01, iterative=False, plugins=pluginList)
     ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0)

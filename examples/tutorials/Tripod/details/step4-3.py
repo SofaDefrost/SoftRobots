@@ -25,7 +25,7 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
 
     def __rigidify(self, radius=60, numMotors=3, angleShift=180.0):
         deformableObject = self.ElasticBody.MechanicalModel
-        self.ElasticBody.init()
+        deformableObject.dofs.init()
         dist = radius
         numstep = numMotors
         groupIndices = []
@@ -93,7 +93,6 @@ def createScene(rootNode):
                   "Sofa.Component.LinearSolver.Direct",
                   "Sofa.Component.Mapping.MappedMatrix",
                   "Sofa.Component.Mass",
-                  "Sofa.Component.ODESolver.Backward",
                   "Sofa.Component.SolidMechanics.FEM.Elastic",
                   "Sofa.Component.SolidMechanics.Spring",
                   "Sofa.Component.StateContainer",
@@ -101,7 +100,7 @@ def createScene(rootNode):
                   "Sofa.Component.Topology.Container.Dynamic",
                   "Sofa.Component.Visual",
                   "Sofa.GL.Component.Rendering3D",
-                  "Sofa.GUI.Component"]
+                  "Sofa.GUI.Component", "Sofa.Component.Mapping.Linear", "Sofa.Component.Mapping.NonLinear"]
 
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False,
                   plugins=pluginList)
