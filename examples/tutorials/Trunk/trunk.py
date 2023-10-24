@@ -13,7 +13,7 @@ def effectorTarget(parentNode, position=[0., 0., 200]):
     target.addObject('EulerImplicitSolver', firstOrder=True)
     target.addObject('CGLinearSolver')
     target.addObject('MechanicalObject', name='dofs', position=position, showObject=True, showObjectScale=8, drawMode=2, showColor=[1., 1., 1., 1.])
-    target.addObject('UncoupledConstraintCorrection')
+    target.addObject('UncoupledConstraintCorrection', defaultCompliance=1e-5)
     return target
 
 
