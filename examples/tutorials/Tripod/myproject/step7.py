@@ -6,6 +6,7 @@ import Sofa
 from tutorial import *
 from splib3.animation import animate
 from splib3.constants import Key
+from splib3.interface import serialport
 from math import floor, pi
 from tripod import Tripod
 from tripodcontroller import TripodController, setupanimation
@@ -67,7 +68,7 @@ class SerialPortController(Sofa.Core.Controller):
 
         for arm in self.actuatedarms:
             # Conversion of the angle values from radians to degrees
-            angleDegree = arm.servomotor.angleOut.value * 360 / (2.0 * pi)
+            angleDegree = arm.ServoMotor.angleOut.value * 360 / (2.0 * pi)
             angleByte = int(floor(angleDegree)) + 179
 
             # Limitation of the angular position's command
@@ -84,10 +85,29 @@ class SerialPortController(Sofa.Core.Controller):
 
 def createScene(rootNode):
     from stlib3.scene import Scene
+
+    pluginList = ["ArticulatedSystemPlugin",
+                  "Sofa.Component.AnimationLoop",
+                  "Sofa.Component.Constraint.Lagrangian.Correction",
+                  "Sofa.Component.Constraint.Lagrangian.Solver",
+                  "Sofa.Component.Constraint.Projective",
+                  "Sofa.Component.Engine.Select",
+                  "Sofa.Component.IO.Mesh",
+                  "Sofa.Component.LinearSolver.Direct",
+                  "Sofa.Component.Mapping.MappedMatrix",
+                  "Sofa.Component.Mass",
+                  "Sofa.Component.SolidMechanics.FEM.Elastic",
+                  "Sofa.Component.SolidMechanics.Spring",
+                  "Sofa.Component.StateContainer",
+                  "Sofa.Component.Topology.Container.Constant",
+                  "Sofa.Component.Topology.Container.Dynamic",
+                  "Sofa.Component.Visual",
+                  "Sofa.GL.Component.Rendering3D",
+                  "Sofa.GUI.Component",
+                  "SoftRobots", "Sofa.Component.Mapping.Linear", "Sofa.Component.Mapping.NonLinear"]
+
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False,
-                  plugins=["SofaSparseSolver", "SofaOpenglVisual", "SofaSimpleFem", "SoftRobots",
-                           'SofaBoundaryCondition', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid',
-                           'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
+                  plugins=pluginList)
 
     # Adding contact handling
     scene.addMainHeader()
@@ -100,7 +120,7 @@ def createScene(rootNode):
 
     tripod = scene.Modelling.addChild(Tripod())
 
-    serial = SerialPortBridgeGeneric(scene)
+    serial = SerialPortBridgeGeneric(scene, serialport=serialport.getDevicePort('Arduino', method='manufacturer'))
 
     # The real robot receives data from the 3 actuators
     serialportctrl = scene.addObject(
@@ -113,4 +133,3 @@ def createScene(rootNode):
     controller.initTripod('A')
 
     scene.Simulation.addChild(tripod)
-

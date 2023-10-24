@@ -30,7 +30,7 @@ def createScene(rootNode):
                   'Sofa.Component.SolidMechanics.FEM.Elastic',  # Needed to use components [TetrahedronFEMForceField]
                   'Sofa.Component.SolidMechanics.Spring',  # Needed to use components [RestShapeSpringsForceField]
                   'Sofa.Component.StateContainer',  # Needed to use components [MechanicalObject]
-                  'Sofa.Component.Topology.Container.Constant', # Needed to use components [MeshTopology]
+                  'Sofa.Component.Topology.Container.Constant',  # Needed to use components [MeshTopology]
                   'Sofa.Component.Visual',  # Needed to use components [VisualStyle]
                   'Sofa.GUI.Component']  # Needed to use components [AttachBodyButtonSetting]
 
