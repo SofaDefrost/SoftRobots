@@ -76,7 +76,7 @@ def createScene(rootNode):
                        uniformScale=13.,
                        totalMass=0.032,
                        isAStaticObject=True)
-    sphere.addObject('UncoupledConstraintCorrection')
+    sphere.addObject('UncoupledConstraintCorrection', defaultCompliance="0.00001")
 
     scene.Simulation.addChild(sphere)
     scene.Simulation.addChild(tripod)
