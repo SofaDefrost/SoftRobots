@@ -268,7 +268,6 @@ if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
 
-sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 find_file(SofaPython3Tools NAMES "SofaPython3/lib/cmake/SofaPython3/SofaPython3Tools.cmake")
 if(SofaPython3Tools)
     message("-- Found SofaPython3Tools. Python3 packages will be installed.")
