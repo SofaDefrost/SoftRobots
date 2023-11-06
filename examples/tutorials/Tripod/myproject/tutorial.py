@@ -118,7 +118,7 @@ class SerialPortController(Sofa.Core.Controller):
             if angleByte > 180:
                 angleByte = 180
 
-            # Filling the list of the 3 angle values
+            # Filling the list with the 3 angle values
             angles.append(angleByte)
 
         # The controller board of the real robot receives `angles` values

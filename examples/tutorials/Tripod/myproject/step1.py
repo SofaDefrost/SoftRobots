@@ -1,15 +1,25 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Step 1:
 We are introducing basic mechanical modeling, the new components bring
 time integration and a mechanical object to the scene .
-'''
+"""
 import Sofa
 from stlib3.scene import Scene
 
+
 def createScene(rootNode):
+    pluginList = ["Sofa.Component.IO.Mesh",
+                  "Sofa.Component.LinearSolver.Direct",
+                  "Sofa.Component.Mass",
+                  "Sofa.Component.StateContainer",
+                  "Sofa.Component.Visual",
+                  "Sofa.GL.Component.Rendering3D",
+                  "Sofa.GUI.Component",
+                  "Sofa.Component.Mapping.Linear"]
+
     # Setting the gravity, assuming the length unit is in millimeters
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=['SofaSparseSolver', 'SofaOpenglVisual'], iterative=False)
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=pluginList, iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
@@ -29,22 +39,23 @@ def createScene(rootNode):
     # Basic mechanical modelling of the silicone piece
     elasticbody = scene.Modelling.addChild('MechanicalModel')
     elasticbody.addObject('MechanicalObject', name='dofs',
-                             position=scene.Modelling.loader.position.getLinkPath(),
-                             showObject=True, showObjectScale=5.0,
-                             rotation=[90.0, 0.0, 0.0])
+                          position=scene.Modelling.loader.position.getLinkPath(),
+                          showObject=True, showObjectScale=5.0,
+                          rotation=[90.0, 0.0, 0.0])
     elasticbody.addObject('UniformMass')
 
     # Visual object
     visual = scene.Modelling.addChild('VisualModel')
-    # The mesh used for the Visual object is the same as the one for the MechanicalObject, and has been introduced in the rootNode
+    # The mesh used for the Visual object is the same as the one for the MechanicalObject, and has been introduced in
+    # the rootNode
     visual.addObject('OglModel', name='renderer',
-                        src=scene.Modelling.loader.getLinkPath(),
-                        color=[1.0, 1.0, 1.0, 0.5])
+                     src=scene.Modelling.loader.getLinkPath(),
+                     color=[1.0, 1.0, 1.0, 0.5])
 
     # A mapping applies the deformations computed on the mechanical model (the input parameter)
     # to the visual model (the output parameter).
     visual.addObject('IdentityMapping',
-                             input=elasticbody.dofs.getLinkPath(),
-                             output=visual.renderer.getLinkPath())
-                             
-    scene.Simulation.addChild(scene.Modelling)                          
+                     input=elasticbody.dofs.getLinkPath(),
+                     output=visual.renderer.getLinkPath())
+
+    scene.Simulation.addChild(scene.Modelling)

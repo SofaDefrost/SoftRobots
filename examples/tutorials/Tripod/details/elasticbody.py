@@ -58,7 +58,21 @@ def ElasticBody(name="ElasticBody", rotation=[0, 0, 0], translation=[0, 0, 0], c
 
 def createScene(rootNode):
     from stlib3.scene import Scene
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0],
+
+    pluginsList = [
+        'Sofa.Component.IO.Mesh',  # Needed to use components [GIDMeshLoader,MeshSTLLoader]
+        'Sofa.Component.LinearSolver.Direct',  # Needed to use components [SparseLDLSolver]
+        'Sofa.Component.Mapping.Linear',  # Needed to use components [BarycentricMapping]
+        'Sofa.Component.Mass',  # Needed to use components [UniformMass]
+        'Sofa.Component.SolidMechanics.FEM.Elastic',  # Needed to use components [TetrahedronFEMForceField]
+        'Sofa.Component.StateContainer',  # Needed to use components [MechanicalObject]
+        'Sofa.Component.Topology.Container.Constant',  # Needed to use components [MeshTopology]
+        'Sofa.Component.Visual',  # Needed to use components [VisualStyle]
+        'Sofa.GL.Component.Rendering3D',  # Needed to use components [OglModel,OglSceneFrame]
+        'Sofa.GUI.Component',  # Needed to use components [AttachBodyButtonSetting]
+    ]
+
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=pluginsList,
                   iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')

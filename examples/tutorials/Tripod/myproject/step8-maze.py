@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Step 8: Here we are showing how to setup the inverse control
+Step 8-maze: Here we are showing how to use the inverse control to solve a maze
 """
 import Sofa
-from parts.tutorial import *
-from parts.tripod import Tripod
-from parts.tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
-from parts.maze import Maze, Sphere
-from parts.mazecontroller import MazeController
+from tutorial import *
+from tripod import Tripod
+from tripodcontroller import SerialPortController, SerialPortBridgeGeneric, InverseController, DirectController
+from maze import Maze, Sphere
+from mazecontroller import MazeController
+from splib3.interface import serialport
 
 
 def EffectorGoal(node, position):
@@ -16,7 +17,7 @@ def EffectorGoal(node, position):
     goal.addObject('CGLinearSolver', iterations=100, threshold=1e-12, tolerance=1e-10)
     goal.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
     goal.addObject('RestShapeSpringsForceField', points=0, angularStiffness=1e5, stiffness=1e5)
-    goal.addObject('UncoupledConstraintCorrection')
+    goal.addObject('UncoupledConstraintCorrection', compliance=[1e-10] * 7)
     return goal
 
 
@@ -75,7 +76,7 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
                             useDirections=[0, 1, 0, 0, 0, 0],
                             indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position',
                             limitShiftToTarget=True, maxShiftToTarget=5)
-        effector.addObject('PositionEffector', name='effectorRXRZ', template='Rigid3', 
+        effector.addObject('PositionEffector', name='effectorRXRZ', template='Rigid3',
                             useDirections=[0, 0, 0, 1, 0, 1],
                             indices=0, effectorGoal=goalNode.goalMO.getLinkPath() + '.position')
     else:
@@ -89,7 +90,35 @@ def addInverseComponents(arms, freecenter, goalNode, use_orientation):
 def createScene(rootNode):
     from stlib3.scene import Scene
     import json
-    scene = Scene(rootNode, gravity=[0., -9810, 0.], dt=0.01, iterative=False, plugins=["SofaSparseSolver", "SofaOpenglVisual", "SofaSimpleFem", "SoftRobots","SoftRobots.Inverse", 'SofaBoundaryCondition', 'SofaDeformable', 'SofaEngine', 'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaGeneralAnimationLoop', 'SofaGeneralEngine'])
+
+    pluginList = ["ArticulatedSystemPlugin",
+                  "Sofa.Component.AnimationLoop",
+                  "Sofa.Component.Collision.Detection.Algorithm",
+                  "Sofa.Component.Collision.Detection.Intersection",
+                  "Sofa.Component.Collision.Geometry",
+                  "Sofa.Component.Collision.Response.Contact",
+                  "Sofa.Component.Constraint.Lagrangian.Correction",
+                  "Sofa.Component.Constraint.Projective",
+                  "Sofa.Component.Engine.Select",
+                  "Sofa.Component.IO.Mesh",
+                  "Sofa.Component.LinearSolver.Direct",
+                  "Sofa.Component.LinearSolver.Iterative",
+                  "Sofa.Component.Mapping.MappedMatrix",
+                  "Sofa.Component.Mass",
+                  "Sofa.Component.SolidMechanics.FEM.Elastic",
+                  "Sofa.Component.SolidMechanics.Spring",
+                  "Sofa.Component.StateContainer",
+                  "Sofa.Component.Topology.Container.Constant",
+                  "Sofa.Component.Topology.Container.Dynamic",
+                  "Sofa.Component.Visual",
+                  "Sofa.GL.Component.Rendering3D",
+                  "Sofa.GUI.Component",
+                  "SoftRobots",
+                  "SoftRobots.Inverse",
+                  "Sofa.Component.Mapping.Linear",
+                  "Sofa.Component.Mapping.NonLinear"]
+
+    scene = Scene(rootNode, gravity=[0., -9810, 0.], dt=0.01, iterative=False, plugins=pluginList)
     ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0)
     scene.removeObject(scene.GenericConstraintSolver)
 
@@ -115,7 +144,7 @@ def createScene(rootNode):
     scene.Simulation.addChild(Sphere())
 
     # Serial port bridge
-    serial = SerialPortBridgeGeneric(rootNode)
+    serial = SerialPortBridgeGeneric(rootNode, serialport=serialport.getDevicePort('Arduino', method='manufacturer'))
 
     # The real robot receives data from the 3 actuators
     # serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))
@@ -127,4 +156,3 @@ def createScene(rootNode):
     scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))
 
     scene.Simulation.addChild(tripod)
-

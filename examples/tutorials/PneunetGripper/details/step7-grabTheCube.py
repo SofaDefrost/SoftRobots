@@ -49,7 +49,7 @@ def createScene(rootNode):
     cube.addObject('SparseLDLSolver', name='linearSolver')
     cube.addObject('MechanicalObject', template='Rigid3', position=[-100, 70, 0, 0, 0, 0, 1])
     cube.addObject('UniformMass', totalMass=0.001)
-    cube.addObject('UncoupledConstraintCorrection', defaultCompliance="0.00001")
+    cube.addObject('UncoupledConstraintCorrection', defaultCompliance=1e-5)
 
     # collision
     cubeCollis = cube.addChild('cubeCollis')

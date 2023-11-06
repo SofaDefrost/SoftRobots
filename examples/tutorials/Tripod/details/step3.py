@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Step 3:
 In this step, the use of code blocks using functions is introduced, as reusable elements of the code.
-'''
-import Sofa
+"""
 from stlib3.scene import Scene
 
 # A prefab to fix some part of an object at its rest position.
@@ -26,7 +25,9 @@ def createScene(rootNode):
                   "Sofa.Component.Topology.Container.Dynamic",
                   "Sofa.Component.Visual",
                   "Sofa.GL.Component.Rendering3D",
-                  "Sofa.GUI.Component"]
+                  "Sofa.GUI.Component",
+                  "Sofa.Component.Mapping.Linear",
+                  "Sofa.Component.Topology.Container.Constant"]
 
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0],
                   plugins=pluginList,

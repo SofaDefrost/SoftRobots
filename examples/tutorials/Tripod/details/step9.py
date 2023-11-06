@@ -9,13 +9,13 @@ from tripodcontroller import DirectController
 from closedLoopController import EffectorController, InverseController, CloseLoopController
 
 
-def EffectorGoal(position):
-    self = Sofa.Core.Node('Goal')
+def EffectorGoal(position, name='Goal'):
+    self = Sofa.Core.Node(name)
     self.addObject('EulerImplicitSolver', firstOrder=True)
     self.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
     self.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position + [0., 0., 0., 1.],
                    showObject=True, showObjectScale=10)
-    self.addObject('UncoupledConstraintCorrection')
+    self.addObject('UncoupledConstraintCorrection', compliance=[1e-10] * 7)
 
     spheres = self.addChild('Spheres')
     spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0], [10, 0, 0], [0, 10, 0], [0, 0, 10]])
@@ -109,7 +109,7 @@ def createScene(rootNode):
                   "Sofa.GL.Component.Rendering3D",
                   "Sofa.GUI.Component",
                   "SoftRobots",
-                  "SoftRobots.Inverse"]
+                  "SoftRobots.Inverse", "Sofa.Component.Mapping.Linear", "Sofa.Component.Mapping.NonLinear"]
 
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=pluginList)
 
@@ -130,12 +130,12 @@ def createScene(rootNode):
     orientation = True
     if orientation:
         # inverse in orientation
-        goalNode = EffectorGoal([0, 50, 50])
-        referenceNode = EffectorGoal([0, 50, 50])
+        goalNode = EffectorGoal([0, 50, 50], name='Goal')
+        referenceNode = EffectorGoal([0, 50, 50], name='Reference')
     else:
         # inverse in position
-        goalNode = EffectorGoal([0, 40, 0])
-        referenceNode = EffectorGoal([0, 40, 0])
+        goalNode = EffectorGoal([0, 40, 0], name='Goal')
+        referenceNode = EffectorGoal([0, 40, 0], name='Reference')
 
     scene.Modelling.addChild(goalNode)
     scene.Modelling.addChild(referenceNode)

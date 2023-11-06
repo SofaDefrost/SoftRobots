@@ -38,30 +38,30 @@ class ServoMotor(Sofa.Prefab):
         ## Direct access to the components
         servo.angle.value = 1.0
     """
-    prefabData = [
+    prefabParameters = [
         {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'scale3d', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}]
 
+    prefabData = [
+        {'name': 'minAngle', 'help': 'min angle of rotation (in radians)', 'type': 'float', 'default': -100},
+        {'name': 'maxAngle', 'help': 'max angle of rotation (in radians)', 'type': 'float', 'default': 100},
+        {'name': 'angleIn', 'help': 'angle of rotation (in radians)', 'type': 'float', 'default': 0},
+        {'name': 'angleOut', 'help': 'angle of rotation (in degree)', 'type': 'float', 'default': 0}
+    ]
+
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
-    def init(self):
         SofaRuntime.importPlugin("ArticulatedSystemPlugin")
-
-        # The inputs
-        self.addData(name='minAngle', group='S90Properties', help='min angle of rotation (in radians)', type='float',
-                     value=-100)
-        self.addData(name='maxAngle', group='S90Properties', help='max angle of rotation (in radians)', type='float',
-                     value=100)
-        self.addData(name='angleIn', group='S90Properties', help='angle of rotation (in radians)', type='float',
-                     value=0)
 
         # Servo body
         servoBody = self.addChild('ServoBody')
-        servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[[0., 0., 0., 0., 0., 0., 1.]],
-                            translation=list(self.translation.value), rotation=list(self.rotation.value),
-                            scale3d=list(self.scale3d.value))
+        servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3',
+                            position=[[0., 0., 0., 0., 0., 0., 1.]],
+                            translation=self.translation.value, rotation=self.rotation.value,
+                            scale3d=self.scale3d.value
+                            )
         servoBody.addObject('FixedConstraint', indices=0)
         servoBody.addObject('UniformMass', totalMass=0.01)
 
@@ -74,15 +74,16 @@ class ServoMotor(Sofa.Prefab):
         # Servo wheel
         angle = self.addChild('Articulation')
         angle.addObject('MechanicalObject', name='dofs', template='Vec1', position=[[0]],
-                        rest_position=self.getData('angleIn').getLinkPath())
+                        rest_position=self.angleIn.getLinkPath())
         angle.addObject('RestShapeSpringsForceField', points=0, stiffness=1e9)
         angle.addObject('UniformMass', totalMass=0.01)
 
         servoWheel = angle.addChild('ServoWheel')
         servoWheel.addObject('MechanicalObject', name='dofs', template='Rigid3',
                              position=[[0., 0., 0., 0., 0., 0., 1.], [0., 0., 0., 0., 0., 0., 1.]], showObjectScale=20,
-                             translation=list(self.translation.value), rotation=list(self.rotation.value),
-                             scale3d=list(self.scale3d.value))
+                             translation=self.translation.value, rotation=self.rotation.value,
+                             scale3d=self.scale3d.value
+                             )
         servoWheel.addObject('ArticulatedSystemMapping', input1="@../dofs", input2="@../../ServoBody/dofs",
                              output="@./")
 
@@ -95,19 +96,37 @@ class ServoMotor(Sofa.Prefab):
         angle.addObject('ArticulatedHierarchyContainer', printLog=False)
 
         # The output
-        self.addData(name='angleOut', group='S90Properties', help='angle of rotation (in degree)', type='float',
-                     value=angle.dofs.getData('position').getLinkPath())
+        self.angleOut.setParent(angle.dofs.position)
 
 
 def createScene(rootNode):
     import math
     from splib3.animation import animate
 
+    pluginsList = [
+        'ArticulatedSystemPlugin',
+        # Needed to use components [ArticulatedHierarchyContainer,
+        # ArticulatedSystemMapping,Articulation,ArticulationCenter]
+        'Sofa.Component.AnimationLoop',  # Needed to use components [FreeMotionAnimationLoop]
+        'Sofa.Component.Constraint.Lagrangian.Correction',  # Needed to use components [GenericConstraintCorrection]
+        'Sofa.Component.Constraint.Lagrangian.Solver',  # Needed to use components [GenericConstraintSolver]
+        'Sofa.Component.Constraint.Projective',  # Needed to use components [FixedConstraint]
+        'Sofa.Component.IO.Mesh',  # Needed to use components [MeshSTLLoader]
+        'Sofa.Component.LinearSolver.Direct',  # Needed to use components [SparseLDLSolver]
+        'Sofa.Component.Mapping.NonLinear',  # Needed to use components [RigidMapping]
+        'Sofa.Component.Mass',  # Needed to use components [UniformMass]
+        'Sofa.Component.SolidMechanics.Spring',  # Needed to use components [RestShapeSpringsForceField]
+        'Sofa.Component.StateContainer',  # Needed to use components [MechanicalObject]
+        'Sofa.Component.Topology.Container.Constant',  # Needed to use components [MeshTopology]
+        'Sofa.Component.Visual',  # Needed to use components [VisualStyle]
+        'Sofa.GL.Component.Rendering3D',  # Needed to use components [OglModel,OglSceneFrame]
+        'Sofa.GUI.Component',  # Needed to use components [AttachBodyButtonSetting]
+    ]
+
     def animation(target, factor):
         target.angleIn.value = math.cos(factor * 2 * math.pi)
 
-    scene = Scene(rootNode,
-                  iterative=False)
+    scene = Scene(rootNode, plugins=pluginsList, iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')

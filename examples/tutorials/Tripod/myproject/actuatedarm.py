@@ -39,7 +39,7 @@ class ServoArm(Sofa.Prefab):
                        template='Rigid3',
                        showObject=True,
                        showObjectScale=5,
-                       translation2=[0, 25, 0])
+                       translation=[0, 25, 0])
 
     def setRigidMapping(self, path):
         self.addObject('RigidMapping', name='mapping', input=path, index=self.indexInput.value)
@@ -64,29 +64,35 @@ class ActuatedArm(Sofa.Prefab):
                 ServoArm             // The actuation arm connected to ServoMotor.ServoWheel
             }
     """
-    prefabData = [
+    prefabParameters = [
         {'name': 'rotation', 'type': 'Vec3d', 'help': 'Rotation', 'default': [0.0, 0.0, 0.0]},
         {'name': 'translation', 'type': 'Vec3d', 'help': 'Translation', 'default': [0.0, 0.0, 0.0]},
-        {'name': 'scale', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}]
+        {'name': 'scale', 'type': 'Vec3d', 'help': 'Scale 3d', 'default': [1.0, 1.0, 1.0]}
+    ]
+
+    prefabData = [
+        {'name': 'angleIn', 'group': 'ArmProperties', 'help': 'angle of rotation (in radians) of the arm',
+         'type': 'float', 'default':0},
+        {'name': 'angleOut', 'group': 'ArmProperties', 'type': 'float', 'help': 'angle of rotation (in radians) of '
+                                                                                'the arm', 'default': 0}
+    ]
 
     def __init__(self, *args, **kwargs):
         Sofa.Prefab.__init__(self, *args, **kwargs)
+        self.servoarm = None
+        self.servomotor = None
 
     def init(self):
-        self.servomotor = self.addChild(
-            ServoMotor(name="ServoMotor", translation=self.translation.value, rotation=self.rotation.value))
+        self.servomotor = self.addChild(ServoMotor(name="ServoMotor", translation=self.translation.value,
+                                                   rotation=self.rotation.value))
         self.servoarm = self.servomotor.Articulation.ServoWheel.addChild(ServoArm(name="ServoArm"))
         self.servoarm.setRigidMapping(self.ServoMotor.Articulation.ServoWheel.dofs.getLinkPath())
 
         # add a public attribute and connect it to the private one.
-        self.addData(name='angleIn', group='ArmProperties', help='angle of rotation (in radians) of the arm',
-                     type='float', value=0)
-        self.ServoMotor.getData('angleIn').setParent(self.getData('angleIn'))
+        self.ServoMotor.angleIn.setParent(self.angleIn)
 
-        # add a public attribute and connect it to the internal one.
-        self.addData(name='angleOut', group='ArmProperties', help='angle of rotation (in radians) of the arm',
-                     type='float', value=0)
-        self.getData('angleOut').setParent(self.ServoMotor.getData('angleOut'))
+        # connect the public attribute to the internal one.
+        self.angleOut.setParent(self.ServoMotor.angleOut)
 
 
 def createScene(rootNode):
@@ -94,7 +100,15 @@ def createScene(rootNode):
     from stlib3.scene import Scene
     import math
 
-    scene = Scene(rootNode, iterative=False)
+    scene = Scene(rootNode, plugins=["ArticulatedSystemPlugin",
+                                     "Sofa.Component.AnimationLoop", "Sofa.Component.Constraint.Lagrangian.Correction",
+                                     "Sofa.Component.Constraint.Lagrangian.Solver",
+                                     "Sofa.Component.Constraint.Projective", "Sofa.Component.IO.Mesh",
+                                     "Sofa.Component.LinearSolver.Direct", "Sofa.Component.Mass", "Sofa.Component.SolidMechanics.Spring",
+                                     "Sofa.Component.Topology.Container.Constant", "Sofa.Component.Visual",
+                                     "Sofa.GL.Component.Rendering3D", "Sofa.GUI.Component",
+                                     "Sofa.Component.Mapping.NonLinear",
+                                     "Sofa.Component.StateContainer"], iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
@@ -104,9 +118,10 @@ def createScene(rootNode):
     scene.dt = 0.01
     scene.gravity = [0., -9810., 0.]
 
-    arm = scene.Simulation.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
+    arm = scene.Modelling.addChild(ActuatedArm(name='ActuatedArm', translation=[0.0, 0.0, 0.0]))
 
     def myanimate(target, factor):
         target.angleIn.value = math.cos(factor * 2 * math.pi)
 
     animate(myanimate, {'target': arm}, duration=10., mode='loop')
+    scene.Simulation.addChild(scene.Modelling)

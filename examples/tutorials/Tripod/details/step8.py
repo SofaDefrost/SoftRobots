@@ -13,11 +13,12 @@ def EffectorGoal(position):
     self = Sofa.Core.Node('Goal')
     self.addObject('EulerImplicitSolver', firstOrder=True)
     self.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
-    self.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
-    self.addObject('UncoupledConstraintCorrection')
+    self.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position + [0., 0., 0., 1.],
+                   showObject=True, showObjectScale=10)
+    self.addObject('UncoupledConstraintCorrection',  compliance=[1e-10] * 7)
 
     spheres = self.addChild('Spheres')
-    spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0],  [10, 0, 0],   [0, 10, 0],   [0, 0, 10]])
+    spheres.addObject('MechanicalObject', name='mo', position=[[0, 0, 0], [10, 0, 0], [0, 10, 0], [0, 0, 10]])
     spheres.addObject('SphereCollisionModel', radius=5, group=1)
     spheres.addObject('RigidMapping')
     return self
@@ -43,7 +44,7 @@ class GoalController(Sofa.Core.Controller):
 
     def onAnimateBeginEvent(self, e):
         if self.activated:
-            self.time = self.time+self.dt
+            self.time = self.time + self.dt
 
         if self.time >= 1:
             self.time = 0;
@@ -55,33 +56,33 @@ class GoalController(Sofa.Core.Controller):
 
 
 def addInverseComponents(arms, freecenter, goalNode, use_orientation):
-    actuators=[]
+    actuators = []
     for arm in arms:
         actuator = arm.ServoMotor.Articulation.addChild('actuator')
         actuators.append(actuator)
         actuator.activated = False
         actuator.addObject('JointActuator', name='JointActuator', template='Vec1',
-                                                index=0, applyForce=True,
-                                                minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.1)
+                           index=0, applyForce=True,
+                           minAngle=-1.5, maxAngle=1.5, maxAngleVariation=0.1)
 
     effector = freecenter.addChild("Effector")
-    freecenter.dofs.showObject=True
+    freecenter.dofs.showObject = True
     effector.activated = False
     actuators.append(effector)
     if goalNode is None:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[1, 1, 1, 0, 0, 0],
-                               indices=0, effectorGoal=[10, 40, 0], limitShiftToTarget=True,
-                               maxShiftToTarget=5)
+                           useDirections=[1, 1, 1, 0, 0, 0],
+                           indices=0, effectorGoal=[10, 40, 0], limitShiftToTarget=True,
+                           maxShiftToTarget=5)
     elif use_orientation:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[0, 1, 0, 1, 0, 1],
-                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath())
+                           useDirections=[0, 1, 0, 1, 0, 1],
+                           indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath())
     else:
         effector.addObject('PositionEffector', name='effector', template='Rigid3',
-                               useDirections=[1, 1, 1, 0, 0, 0],
-                               indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath(),
-                               limitShiftToTarget=True, maxShiftToTarget=5)
+                           useDirections=[1, 1, 1, 0, 0, 0],
+                           indices=0, effectorGoal=goalNode.goalMO.position.getLinkPath(),
+                           limitShiftToTarget=True, maxShiftToTarget=5)
     return actuators
 
 
@@ -108,7 +109,7 @@ def createScene(rootNode):
                   "Sofa.GL.Component.Rendering3D",
                   "Sofa.GUI.Component",
                   "SoftRobots",
-                  "SoftRobots.Inverse"]
+                  "SoftRobots.Inverse", "Sofa.Component.Mapping.Linear", "Sofa.Component.Mapping.NonLinear"]
 
     scene = Scene(rootNode, gravity=[0., -9810., 0.], dt=0.01, iterative=False, plugins=pluginList)
 
@@ -142,9 +143,10 @@ def createScene(rootNode):
 
     # The real robot receives data from the 3 actuators
     # serialportctrl = scene.addObject(SerialPortController(scene, inputs=tripod.actuatedarms, serialport=serial))
-    invCtr = scene.addObject(InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,
-                                                tripod, serial,
-                                                [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
+    invCtr = scene.addObject(
+        InverseController(scene, goalNode, actuators, tripod.ActuatedArm0.ServoMotor.Articulation.ServoWheel.RigidParts,
+                          tripod, serial,
+                          [tripod.ActuatedArm0, tripod.ActuatedArm1, tripod.ActuatedArm2]))
 
     # The regular controller that is being used for the last 2 steps but with small additions
     scene.addObject(DirectController(scene, tripod.actuatedarms, invCtr))

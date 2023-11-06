@@ -64,7 +64,8 @@ def createScene(rootNode):
                   "Sofa.Component.SolidMechanics.Spring",
                   "Sofa.Component.StateContainer",
                   "Sofa.Component.Topology.Container.Constant",
-                  "Sofa.Component.Visual"]
+                  "Sofa.Component.Visual",
+                  "Sofa.Component.Mapping.NonLinear"]
 
     rootNode.addObject('RequiredPlugin', pluginName=pluginList)
 
@@ -78,7 +79,7 @@ def createScene(rootNode):
     effector.addObject('MechanicalObject', template='Rigid3', name='goalMO', position=[0, 40, 0, 0, 0, 0, 1],
                        showObject=True, showObjectScale=10)
     effector.addObject('RestShapeSpringsForceField', points=0, angularStiffness=1e5, stiffness=1e5)
-    effector.addObject('UncoupledConstraintCorrection', compliance='1e-10  1e-10  1e-10 1e-10 1e-10  1e-10 1e-10 ')
+    effector.addObject('UncoupledConstraintCorrection', compliance=[1e-10] * 7)
 
     # Open maze planning from JSON file
     data = json.load(open('mazeplanning.json'))
