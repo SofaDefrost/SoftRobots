@@ -9,8 +9,8 @@ class FingerController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, args, kwargs)
         self.node = args[0]
-        self.fingerNode = self.node.getChild('finger')
-        self.pressureConstraint = self.fingerNode.cavity.getObject('SurfacePressureConstraint')
+        self.fingerNode = self.node.getChild('Finger')
+        self.pressureConstraint = self.fingerNode.Cavity.getObject('SurfacePressureConstraint')
 
     def onKeypressedEvent(self, e):
         pressureValue = self.pressureConstraint.value.value[0]
