@@ -64,7 +64,6 @@ namespace softrobots {
         using SurfacePressureConstraint<_DataTypes>::d_componentState;
 
         sofa::simulation::Node::SPtr m_root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
-        sofa::simulation::Simulation* m_simulation;          ///< created by the constructor an re-used in the tests
 
         typedef _DataTypes DataTypes;
         typedef typename DataTypes::Deriv Deriv;
@@ -82,8 +81,6 @@ namespace softrobots {
         void SetUp()
         {
             sofa::simpleapi::importPlugin("Sofa.Component");
-
-            sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
 
             /// Load the scene
             string sceneName = "SurfacePressureConstraint.scn";
