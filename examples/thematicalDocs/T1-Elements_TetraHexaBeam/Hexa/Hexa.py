@@ -33,7 +33,8 @@ def createScene(rootNode):
 
     robot.addObject('BoxROI', name='boxROI',
                     box=[[-30, 80, 70, 30, 140, 130], [-130, -100, 70, -60, -20, 130], [130, -100, 70, 60, -20, 130]],
-                    drawBoxes=True);
+                    computeEdges=False, computeTriangles=False, computeTetrahedra=False, computeHexahedra=False, computeQuad=False,
+                    drawBoxes=True)
     robot.addObject('FixedConstraint', indices="@boxROI.indices")
 
     return rootNode
