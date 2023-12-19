@@ -72,13 +72,11 @@ struct DataVariationLimiterTest : public sofa::testing::BaseTest, DataVariationL
     ///////////////////////////////////////////////////////////////
 
 
-    Simulation* m_simu;
     Node::SPtr m_node;
 
     void SetUp()
     {
-        setSimulation(m_simu = new sofa::simulation::graph::DAGSimulation());
-        m_node = m_simu->createNewGraph("root");
+        m_node = sofa::simulation::getSimulation()->createNewGraph("root");
     }
 
     void normalTests(){
