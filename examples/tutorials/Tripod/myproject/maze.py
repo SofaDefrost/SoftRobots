@@ -79,7 +79,7 @@ def createScene(rootNode):
     effector.addObject('MechanicalObject', template='Rigid3', name='goalMO', position=[0, 40, 0, 0, 0, 0, 1],
                        showObject=True, showObjectScale=10)
     effector.addObject('RestShapeSpringsForceField', points=0, angularStiffness=1e5, stiffness=1e5)
-    effector.addObject('UncoupledConstraintCorrection', compliance=[1e-10] * 7)
+    effector.addObject('UncoupledConstraintCorrection', compliance='1e-10  1e-10  0 0 1e-10  0 1e-10 ')
 
     # Open maze planning from JSON file
     data = json.load(open('mazeplanning.json'))

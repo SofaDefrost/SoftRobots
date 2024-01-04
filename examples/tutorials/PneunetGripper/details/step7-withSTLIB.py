@@ -52,7 +52,7 @@ def createScene(rootNode):
     Floor(rootNode, **floorParam)
 
     cube = Cube(rootNode, **cubeParam)
-    cube.addObject('UncoupledConstraintCorrection', defaultCompliance=1e-5)
+    cube.addObject('UncoupledConstraintCorrection')
 
     for i in range(len(fingersParameters)):
         finger = ElasticMaterialObject(attachedTo=rootNode,
