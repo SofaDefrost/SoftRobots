@@ -58,8 +58,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
             -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
-            -DSOFTROBOTS_BUILD_TESTS=True \
-            -DSOFTROBOTS_IGNORE_ERRORS=True \
+            -DSOFTROBOTS_BUILD_TESTS=True "
           if [ -e "$(command -v ccache)" ]; then
             cmake_options="$cmake_options -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
           fi
