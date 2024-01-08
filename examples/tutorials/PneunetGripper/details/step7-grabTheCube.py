@@ -78,7 +78,7 @@ def createScene(rootNode):
     cube.addObject('EulerImplicitSolver')
     cube.addObject('CGLinearSolver', threshold=1e-5, tolerance=1e-5, iterations=50)
     cube.addObject('MechanicalObject', template='Rigid3', position=[-100, 70, 0, 0, 0, 0, 1])
-    cube.addObject('UniformMass', totalMass=0.01)
+    cube.addObject('UniformMass', totalMass=0.001)
     cube.addObject('UncoupledConstraintCorrection')
 
     # collision

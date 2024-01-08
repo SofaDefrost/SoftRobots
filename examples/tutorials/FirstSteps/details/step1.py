@@ -32,6 +32,6 @@ def createScene(rootNode):
     cube = Cube(rootNode, translation=[0.0, 0.0, 0.0],
                 uniformScale=20.0)
 
-    cube.addObject('UncoupledConstraintCorrection', defaultCompliance=1e-5)
+    cube.addObject('UncoupledConstraintCorrection')
 
     return rootNode

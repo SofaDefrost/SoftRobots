@@ -24,6 +24,6 @@ def createScene(rootNode):
                 volume=20,
                 inertiaMatrix=[1000.0, 0.0, 0.0, 0.0, 1000.0, 0.0, 0.0, 0.0, 1000.0],
                 translation=[0.0, -130.0, 10.0])
-    cube.addObject('UncoupledConstraintCorrection', defaultCompliance=1e-5)
+    cube.addObject('UncoupledConstraintCorrection')
 
     return rootNode

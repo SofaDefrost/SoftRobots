@@ -40,7 +40,7 @@ def createScene(rootNode):
     cube.addObject('UniformMass', name="vertexMass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
 
     # Material behaviour when submitted to constraints
-    cube.addObject('UncoupledConstraintCorrection', defaultCompliance=1e-5)
+    cube.addObject('UncoupledConstraintCorrection')
 
     # Time integration and solver
 
