@@ -13,14 +13,13 @@ on:
 
 jobs:
   build-and-test:
-    name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }} and python ${{ matrix.python_version }}
+    name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-11, windows-2019]
         sofa_branch: [master]
-        python_version: ['3.8']
 
     steps:
       - name: (Mac) Workaround for homebrew
@@ -45,22 +44,7 @@ jobs:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'standard'
-          sofa_with_sofapython3: 'false'
-          python_version: '${{ matrix.python_version }}'
-
-      - name: Install SofaPython3
-        shell: bash
-        run: |
-          SofaPython3_ROOT="$GITHUB_WORKSPACE/SofaPython3"
-          mkdir -p "${{ runner.temp }}/sp3_tmp/zip" "${{ runner.temp }}/sp3_tmp/binaries" "$SofaPython3_ROOT"
-          url="https://github.com/sofa-framework/SofaPython3/releases/download"
-          url="${url}/release-${{ matrix.sofa_branch }}/SofaPython3_${{ matrix.sofa_branch }}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}.zip"
-          echo "Getting SofaPython3 from $url"
-          curl --output "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -L $url
-          unzip -qq "${{ runner.temp }}/sp3_tmp/SofaPython3.zip" -d "${{ runner.temp }}/sp3_tmp/binaries"
-          mv "${{ runner.temp }}"/sp3_tmp/binaries/SofaPython3_*/* "$SofaPython3_ROOT"
-          echo "SofaPython3_ROOT=$SofaPython3_ROOT" | tee -a $GITHUB_ENV
-          echo "SofaPython3_DIR=$SofaPython3_ROOT/lib/cmake/SofaPython3" | tee -a $GITHUB_ENV
+          sofa_with_sofapython3: 'true'
 
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -74,10 +58,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
             -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
-            -DSOFTROBOTS_BUILD_TESTS=True \
-            -DSOFTROBOTS_IGNORE_ERRORS=True \
-            -DPYTHON_ROOT=$PYTHON_ROOT -DPython_ROOT=$PYTHON_ROOT \
-            -DPYTHON_EXECUTABLE=$PYTHON_EXE -DPython_EXECUTABLE=$PYTHON_EXE"
+            "
           if [ -e "$(command -v ccache)" ]; then
             cmake_options="$cmake_options -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
           fi
@@ -108,13 +89,13 @@ jobs:
       - name: Create artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: SoftRobots_${{ steps.sofa.outputs.run_branch }}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
+          name: SoftRobots_${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.WORKSPACE_INSTALL_PATH }}
 
       - name: Install artifact
         uses: actions/download-artifact@v2
         with:
-          name: SoftRobots_${{ steps.sofa.outputs.run_branch }}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
+          name: SoftRobots_${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
 
       - name: Set env vars for tests
