@@ -47,7 +47,7 @@ extern "C" {
     SOFA_SOFTROBOTS_API const char* getModuleComponentList();
 }
 
-void initExternalModule()
+void init()
 {    
     static bool first = true;
     if (!first)
@@ -61,6 +61,11 @@ void initExternalModule()
     {
         PluginManager::getInstance().loadPlugin("STLIB") ;
     }
+}
+
+void initExternalModule()
+{
+    init();
 }
 
 const char* getModuleName()
