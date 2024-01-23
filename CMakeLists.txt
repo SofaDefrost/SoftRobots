@@ -305,4 +305,6 @@ if(SOFTROBOTS_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
+sofa_add_subdirectory(plugin extensions/CUDA SoftRobots.CUDA)
+
 include(cmake/packaging.cmake)
