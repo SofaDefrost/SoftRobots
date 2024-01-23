@@ -8,6 +8,10 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     src/SoftRobots.CUDA/init.cpp
+
+    src/SoftRobots.CUDA/component/forcefield/CUDAPartialRigidificationForceField.cpp
+    src/SoftRobots.CUDA/component/forcefield/CUDAPipeForceField.cpp
+    src/SoftRobots.CUDA/component/forcefield/CUDAPREquivalentStiffnessForceField.cpp
 )
 
 sofa_find_package(SoftRobots REQUIRED)
