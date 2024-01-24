@@ -25,24 +25,11 @@
 *                                                                             *
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 ******************************************************************************/
-#include <SoftRobots.CUDA/config.h>
-#include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
-#include <SoftRobots/component/forcefield/PREquivalentStiffnessForceField.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace softrobots::forcefield
+#include <SoftRobots/CUDA/config.h>
+
+namespace softrobots::cuda
 {
-template class SOFA_SOFTROBOTS_CUDA_API PREquivalentStiffnessForceField<sofa::gpu::cuda::CudaRigid3fTypes>;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_SOFTROBOTS_CUDA_API PREquivalentStiffnessForceField<sofa::gpu::cuda::CudaRigid3dTypes>;
-#endif
-}
-
-int CUDAPREquivalentStiffnessForceFieldClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
-    .add< softrobots::forcefield::PREquivalentStiffnessForceField<sofa::gpu::cuda::CudaRigid3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< softrobots::forcefield::PREquivalentStiffnessForceField<sofa::gpu::cuda::CudaRigid3dTypes> >()
-#endif
-;
-
+SOFA_SOFTROBOTS_CUDA_API void init();
+} // namespace softrobots::cuda

@@ -25,7 +25,7 @@
 *                                                                             *
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 ******************************************************************************/
-#include <SoftRobots.CUDA/config.h>
+#include <SoftRobots/CUDA/config.h>
 #include <SofaCUDA/sofa/gpu/cuda/CudaTypes.h>
 #include <SoftRobots/component/forcefield/PartialRigidificationForceField.inl>
 #include <sofa/core/ObjectFactory.h>

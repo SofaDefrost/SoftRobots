@@ -2,16 +2,16 @@ cmake_minimum_required(VERSION 3.12)
 project(SoftRobots.CUDA)
 
 set(HEADER_FILES
-    src/SoftRobots.CUDA/init.h
-    src/SoftRobots.CUDA/config.h.in
+    src/SoftRobots/CUDA/init.h
+    src/SoftRobots/CUDA/config.h.in
 )
 
 set(SOURCE_FILES
-    src/SoftRobots.CUDA/init.cpp
+    src/SoftRobots/CUDA/init.cpp
 
-    src/SoftRobots.CUDA/component/forcefield/CUDAPartialRigidificationForceField.cpp
-    src/SoftRobots.CUDA/component/forcefield/CUDAPipeForceField.cpp
-    src/SoftRobots.CUDA/component/forcefield/CUDAPREquivalentStiffnessForceField.cpp
+    src/SoftRobots/CUDA/component/forcefield/CUDAPartialRigidificationForceField.cpp
+    src/SoftRobots/CUDA/component/forcefield/CUDAPipeForceField.cpp
+    src/SoftRobots/CUDA/component/forcefield/CUDAPREquivalentStiffnessForceField.cpp
 )
 
 sofa_find_package(SoftRobots REQUIRED)

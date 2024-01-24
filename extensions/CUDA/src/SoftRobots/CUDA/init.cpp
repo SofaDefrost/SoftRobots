@@ -25,7 +25,7 @@
 *                                                                             *
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 ******************************************************************************/
-#include <SoftRobots.CUDA/init.h>
+#include <SoftRobots/CUDA/init.h>
 #include <sofa/core/ObjectFactory.h>
 namespace softrobots::cuda
 {
