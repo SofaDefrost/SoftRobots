@@ -230,7 +230,7 @@ void JointConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
     // Update joint angle
     ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
     m_currentAngle = positions[d_index.getValue()][0];
-    d_displacement.setValue(m_initAngle- m_currentAngle);
+    d_displacement.setValue(-m_initAngle+m_currentAngle);
 }
 
 
