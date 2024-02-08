@@ -26,6 +26,7 @@
 * Contact information: https://project.inria.fr/softrobot/contact/            *
 ******************************************************************************/
 #include <SoftRobots/CUDA/init.h>
+#include <SofaCUDA/init.h>
 #include <sofa/core/ObjectFactory.h>
 namespace softrobots::cuda
 {
@@ -57,6 +58,7 @@ void init()
     static bool first = true;
     if (first)
     {
+        sofa::gpu::cuda::init();
         first = false;
     }
 }
