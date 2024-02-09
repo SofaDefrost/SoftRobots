@@ -208,6 +208,7 @@ void CableModel<DataTypes>::bwdInit()
         return;
     }
             
+
     // The initial length of the cable is set or computed in bwdInit so the mapping (if there is any)
     // will be considered
 
@@ -442,6 +443,7 @@ void CableModel<DataTypes>::computePointsActionArea()
             computeBarycentric(closestTriangle, closestProjectionOnTriangle, m_alphaBarycentric[i], m_betaBarycentric[i]);
             m_closestTriangle[i] = closestTriangle;
 
+
         }
         else
         {
@@ -644,6 +646,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
     if(!m_hasSlidingPoint)
     {
+
         if ( d_hasPullPoint.getValue())
         {
             Deriv direction = DataTypes::coordDifference(d_pullPoint.getValue(),positions[d_indices.getValue()[0]]);
@@ -675,6 +678,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 for(unsigned int j=0; j<m_areaIndices[0].size(); j++)
                     rowIterator.setCol(m_areaIndices[1][j], - direction*m_ratios[0][j]);
             }
+            
         }
     }
     else
@@ -703,7 +707,6 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 directionAhead.normalize();
 
                 Deriv slidingDirection = directionBeyond - directionAhead;
-                slidingDirection.normalize();
                 if (d_hasPullPoint.getValue())
                 {
                     if (id_method == 0)
@@ -746,7 +749,6 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 directionAhead.normalize();
 
                 Deriv slidingDirection = directionBeyond - directionAhead;
-                slidingDirection.normalize();
 
                 if (id_method == 0)
                     rowIterator.setCol(currentIndex, slidingDirection);
@@ -754,7 +756,9 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 {
                     for(unsigned int j=0; j<m_areaIndices[i].size(); j++)
                         rowIterator.setCol(m_areaIndices[i][j], slidingDirection*m_ratios[i][j]);
-                }                
+                }
+
+                
             }
             else // end point of the cable
             {
