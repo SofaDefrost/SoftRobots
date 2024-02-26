@@ -40,7 +40,7 @@ using softrobots::constraint::SurfacePressureConstraint;
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
