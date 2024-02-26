@@ -34,7 +34,7 @@ namespace softrobots::constraint
 
 using sofa::defaulttype::Vec2Types;
 using sofa::defaulttype::Vec3Types;
-using sofa::type::Vector2;
+using sofa::type::Vec2;
 
 using namespace sofa::defaulttype;
 template class SOFA_SOFTROBOTS_API CableModel<Vec3Types>;
