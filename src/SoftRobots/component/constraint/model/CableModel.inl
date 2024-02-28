@@ -561,6 +561,7 @@ SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const 
     Vec3 projection { sofa::type::NOINIT };
     const bool r = sofa::geometry::proximity::computeClosestPointOnTriangleToPoint(Vec3(p0), Vec3(p1), Vec3(p2), Vec3(position), projection);
     assert(r);
+    SOFA_UNUSED(r);
     projectionOnTriangle = projection;
     const Real distanceToTriangle = (projectionOnTriangle - position).norm();
     return distanceToTriangle;
