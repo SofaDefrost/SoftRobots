@@ -116,7 +116,9 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
 
             } else {
 
-                m_CInv[n].invert(m_complianceMat[n]);
+                bool invert = m_CInv[n].invert(m_complianceMat[n]);
+                if(!invert)
+                    msg_error() << "Unable to invert compliance matrix at init";
             }
         }
         filebuffer.close();
