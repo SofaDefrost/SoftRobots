@@ -18,28 +18,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-11, windows-2019]
-        sofa_branch: [v23.12, master]
+        os: [ubuntu-22.04, macos-13, windows-2022]
+        sofa_branch: [v23.12]
 
     steps:
-      - name: (Mac) Workaround for homebrew
-        shell: bash
-        if: runner.os == 'macOS'
-        run: |
-            rm -f /usr/local/bin/2to3
-            rm -f /usr/local/bin/idle3
-            rm -f /usr/local/bin/pydoc3
-            rm -f /usr/local/bin/python3
-            rm -f /usr/local/bin/python3-config
-            rm -f /usr/local/bin/2to3-3.11
-            rm -f /usr/local/bin/idle3.11
-            rm -f /usr/local/bin/pydoc3.11
-            rm -f /usr/local/bin/python3.11
-            rm -f /usr/local/bin/python3.11-config
             
       - name: Setup SOFA and environment
         id: sofa
-        uses: sofa-framework/sofa-setup-action@v4
+        uses: sofa-framework/sofa-setup-action@v5
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
