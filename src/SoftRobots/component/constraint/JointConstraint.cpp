@@ -108,7 +108,7 @@ void JointForceConstraintResolution::resolution(int line, double** w, double* d,
 
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
-int JointConstraintClass = RegisterObject("Simulate a Force Applied on a Joint (Vec1)")
+int JointConstraintClass = RegisterObject("Lagrange multiplier approach to apply a force/angle on a Joint (Vec1)")
 .add< JointConstraint<Vec1Types> >(true)
 ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

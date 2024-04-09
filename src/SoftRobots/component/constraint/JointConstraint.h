@@ -177,9 +177,9 @@ private:
     void setUpForceLimits(double& imposedValue, double& minDisplacement, double& maxDisplacement);
 };
 
-// #if !defined(SOFTROBOTS_JOINTCONSTRAINT_CPP)
-// extern template class SOFA_SOFTROBOTS_API JointConstraint<sofa::defaulttype::Vec1Types>;
-// #endif
+#if !defined(SOFTROBOTS_JOINTCONSTRAINT_CPP)
+extern template class SOFA_SOFTROBOTS_API JointConstraint<sofa::defaulttype::Vec1Types>;
+#endif
 
 
 } // namespace
