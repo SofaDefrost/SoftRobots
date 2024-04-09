@@ -17,7 +17,7 @@ class EffectorController(Sofa.Core.Controller):
 
     def __init__(self, *args, serialport=None, servomotors=None, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        self.name = "InverseController"
+        self.name = "EffectorController"
         self.referenceNode = args[1]
 
     def onKeypressedEvent(self, event):
@@ -56,7 +56,7 @@ class CloseLoopController(Sofa.Core.Controller):
 
     def __init__(self, *args, serialport=None, servomotors=None, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        self.name = "InverseController"
+        self.name = "CloseLoopController"
         self.nodeGoal = args[1]
         self.referenceNode = args[2]
         self.arduino = args[3]

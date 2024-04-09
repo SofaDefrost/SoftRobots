@@ -1,5 +1,6 @@
 import os
 import Sofa
+import SofaRuntime
 from stlib3.scene import Scene
 
 dirPath = os.path.dirname(os.path.abspath(__file__)) + '/'
@@ -46,6 +47,8 @@ class ServoMotor(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
+        SofaRuntime.importPlugin("ArticulatedSystemPlugin")
+
         # The inputs
         self.addData(name='minAngle', group='S90Properties', help='min angle of rotation (in radians)', type='float',
                      value=-100)
@@ -63,7 +66,7 @@ class ServoMotor(Sofa.Prefab):
         servoBody.addObject('UniformMass', totalMass=0.01)
 
         visual = servoBody.addChild('VisualModel')
-        visual.addObject('MeshSTLLoader', name='loader', filename=dirPath + 'data/mesh/SG90_servomotor.stl')
+        visual.addObject('MeshSTLLoader', name='loader', filename=dirPath + '../data/mesh/SG90_servomotor.stl')
         visual.addObject('MeshTopology', src='@loader')
         visual.addObject('OglModel', color=[0.15, 0.45, 0.75, 0.7], writeZTransparent=True)
         visual.addObject('RigidMapping', index=0)
@@ -103,7 +106,7 @@ def createScene(rootNode):
     def animation(target, factor):
         target.angleIn.value = math.cos(factor * 2 * math.pi)
 
-    scene = Scene(rootNode, plugins=['SofaConstraint', 'SofaGeneralRigid', 'SofaOpenglVisual', 'SofaRigid'],
+    scene = Scene(rootNode,
                   iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')

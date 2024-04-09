@@ -116,7 +116,9 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
 
             } else {
 
-                m_CInv[n].invert(m_complianceMat[n]);
+                bool invert = m_CInv[n].invert(m_complianceMat[n]);
+                if(!invert)
+                    msg_error() << "Unable to invert compliance matrix at init";
             }
         }
         filebuffer.close();
@@ -343,16 +345,16 @@ void PREquivalentStiffnessForceField<DataTypes>::addKToMatrix(BaseMatrix* matrix
             Mat66 block;
 
             K.getsub(0, 0, block);
-            *csrMat->wbloc(n, n, true) += block * kFact;
+            *csrMat->wblock(n, n, true) += block * kFact;
 
             K.getsub(0, 6, block);
-            *csrMat->wbloc(n, n + 1, true) += block * kFact;
+            *csrMat->wblock(n, n + 1, true) += block * kFact;
 
             K.getsub(6, 0, block);
-            *csrMat->wbloc(n + 1, n, true) += block * kFact;
+            *csrMat->wblock(n + 1, n, true) += block * kFact;
 
             K.getsub(6, 6, block);
-            *csrMat->wbloc(n + 1, n + 1, true) += block * kFact;
+            *csrMat->wblock(n + 1, n + 1, true) += block * kFact;
         }
     } else {
         unsigned int kOffset = offset;

@@ -35,6 +35,7 @@
 #include <fstream>
 
 #include <SoftRobots/component/forcefield/PartialRigidificationForceField.h>
+#include <sofa/core/behavior/MixedInteractionForceField.inl>
 
 namespace softrobots::forcefield
 {

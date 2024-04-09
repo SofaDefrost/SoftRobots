@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Step 3:
 Make re-usable element out of a blueprint
-'''
+"""
 import Sofa
 
 

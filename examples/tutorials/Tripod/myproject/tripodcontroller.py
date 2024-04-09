@@ -6,6 +6,7 @@ from stlib3.scene import Scene
 from tripod import Tripod
 import math
 
+
 def dumpPosition(fields, filename):
     import json
     data = {}
@@ -30,12 +31,12 @@ def setupanimation(actuators, step, angularstep, factor):
 
 
 def saveTripodPosition(actuators, step, angularstep, factor):
-        t = []
-        for actuator in actuators:
-                t.append(actuator.ServoMotor.ServoBody.dofs.getData("position"))
-                t.append(actuator.ServoMotor.getData("angleIn"))
+    t = []
+    for actuator in actuators:
+        t.append(actuator.ServoMotor.ServoBody.dofs.position)
+        t.append(actuator.ServoMotor.angleIn)
 
-        dumpPosition(t, "tripodRestPosition.json")
+    dumpPosition(t, "tripodRestPosition.json")
 
 
 class TripodController(Sofa.Core.Controller):
@@ -45,9 +46,11 @@ class TripodController(Sofa.Core.Controller):
        - if thr user presses A, an animation is started to move the servomotor to the initial position
          of the real robot.
     """
+
     def __init__(self, *args, **kwargs):
         # These are needed (and the normal way to override from a python class)
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
+        self.name = "TripodController"
 
         self.stepsize = 0.1
         self.actuators = kwargs["actuators"]
@@ -92,6 +95,7 @@ class TripodControllerWithCom(TripodController):
 
     def __init__(self, node, actuators, serialportctrl):
         TripodController.__init__(self, node, actuators=actuators)
+        self.name = "TripodControllerWithCom"
         self.serialportctrl = serialportctrl
 
     def initTripod(self, key):
@@ -108,8 +112,10 @@ class TripodControllerWithCom(TripodController):
 # CHANGE HERE the serialport that correspond to your computer
 # def SerialPortBridgeGeneric(rootNode, serialport='/dev/cu.usbserial-1420'):
 # def SerialPortBridgeGeneric(rootNode, serialport='COM3'):
+# def SerialPortBridgeGeneric(rootNode, serialport='/dev/ttyACM0'):
 def SerialPortBridgeGeneric(rootNode, serialport="/dev/ttyUSB0"):
-    return rootNode.addObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True, header=255)
+    return rootNode.addObject("SerialPortBridgeGeneric", port=serialport, baudRate=115200, size=3, listening=True,
+                              header=255)
 
 
 # Data sending controller
@@ -136,7 +142,7 @@ class SerialPortController(Sofa.Core.Controller):
 
         for arm in self.actuatedarms:
             # Conversion of the angle values from radians to degrees
-            angleDegree = arm.ServoMotor.angleOut*360/(2.0*math.pi)
+            angleDegree = arm.ServoMotor.angleOut * 360 / (2.0 * math.pi)
             angleByte = int(math.floor(angleDegree)) + 179
 
             # Limitation of the angular position's command
@@ -177,13 +183,14 @@ class InverseController(Sofa.Core.Controller):
         key = event['key']
         if key == Key.I:
             for i in range(3):
-                self.nodeTripod.actuatedarms[i].ServoMotor.Articulation.RestShapeSpringsForceField.stiffness.value = [0.]
+                self.nodeTripod.actuatedarms[i].ServoMotor.Articulation.RestShapeSpringsForceField.stiffness.value = [
+                    0.]
             self.activate = True
             for node in self.nodesInverseComponents:
                 node.activated = bool(self.activate)
                 node.init()
 
-    def onAnimateBeginEvent(self,e):
+    def onAnimateBeginEvent(self, e):
 
         if self.state == "init":
             return
@@ -191,19 +198,19 @@ class InverseController(Sofa.Core.Controller):
         if self.state == "no-comm":
             return
 
-        if(self.activate):
-            #W_R_Dof = [0]*4;
-            #W_R_Ref = [0]*4;
-            #Ndir = [[ ]]*3;
-            Angles = [0]*3;
+        if (self.activate):
+            # W_R_Dof = [0]*4;
+            # W_R_Ref = [0]*4;
+            # Ndir = [[ ]]*3;
+            Angles = [0] * 3;
 
             Angles[0] = self.nodeTripod.actuatedarms[0].ServoMotor.Articulation.dofs.position[0][0];
             Angles[1] = self.nodeTripod.actuatedarms[1].ServoMotor.Articulation.dofs.position[0][0];
-            Angles[2] = self.nodeTripod.actuatedarms[2].ServoMotor.Articulation.dofs.position[0][0];            
+            Angles[2] = self.nodeTripod.actuatedarms[2].ServoMotor.Articulation.dofs.position[0][0];
             AnglesOut = [];
             for i in range(3):
                 # Conversion of the angle values from radians to degrees
-                angleDegree = Angles[i]*360/(2.0*math.pi)
+                angleDegree = Angles[i] * 360 / (2.0 * math.pi)
                 angleByte = int(math.floor(angleDegree)) + 179
 
                 # Limitation of the angular position's command
@@ -214,11 +221,11 @@ class InverseController(Sofa.Core.Controller):
 
                 # Filling the list of the 3 angle values
                 AnglesOut.append(angleByte)
-                
+
             # The controller board of the real robot receives `AnglesOut` values
-            if(self.serialport):
-                self.serialport.packetOut = [AnglesOut[0], AnglesOut[1],  AnglesOut[2]]
-                #self.serialport.packetOut = [int(AnglesDeg[0]+0), int(AnglesDeg[1]-0), int(AnglesDeg[2])]
+            if (self.serialport):
+                self.serialport.packetOut = [AnglesOut[0], AnglesOut[1], AnglesOut[2]]
+                # self.serialport.packetOut = [int(AnglesDeg[0]+0), int(AnglesDeg[1]-0), int(AnglesDeg[2])]
 
 
 class DirectController(Sofa.Core.Controller):
@@ -231,14 +238,14 @@ class DirectController(Sofa.Core.Controller):
 
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        self.name = "TripodController"
+        self.name = "DirectController"
         self.stepsize = 0.1
         self.actuators = args[1]
         self.serialportctrl = args[2]
 
     def onKeypressedEvent(self, event):
         key = event['key']
-        if key == Key.A :#and self.serialportctrl.state == "init":
+        if key == Key.A:  # and self.serialportctrl.state == "init":
             self.serialportctrl.state = "no-comm"
             animate(setupanimation, {"actuators": self.actuators, "step": 35.0, "angularstep": -1.4965}, duration=0.2)
 
@@ -248,18 +255,17 @@ class DirectController(Sofa.Core.Controller):
 
 
 def createScene(rootNode):
-
     scene = Scene(rootNode, iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultAnimationLoop')
     scene.addObject('DefaultVisualManagerLoop')
     scene.VisualStyle.displayFlags = "showBehavior"
 
-    tripod = Tripod(scene.Modelling)
+    tripod = scene.Modelling.addChild(Tripod())
 
     scene.addObject(TripodController(scene, actuators=[tripod.ActuatedArm0,
-                                                        tripod.ActuatedArm1,
-                                                        tripod.ActuatedArm2]))
+                                                       tripod.ActuatedArm1,
+                                                       tripod.ActuatedArm2]))
 
     scene.Simulation.addChild(tripod.RigidifiedStructure)
     motors = scene.Simulation.addChild("Motors")

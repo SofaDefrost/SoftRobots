@@ -1,5 +1,6 @@
 import os
 import Sofa
+import SofaRuntime
 from stlib3.scene import Scene
 
 dirPath = os.path.dirname(os.path.abspath(__file__)) + '/'
@@ -53,6 +54,7 @@ class ServoMotor(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
+        SofaRuntime.importPlugin("ArticulatedSystemPlugin")
         # Servo body
         servoBody = self.addChild('ServoBody')
         servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[[0., 0., 0., 0., 0., 0., 1.]],

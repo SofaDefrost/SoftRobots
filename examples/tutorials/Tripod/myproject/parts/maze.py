@@ -16,7 +16,7 @@ class Maze(Sofa.Prefab):
         Sofa.Prefab.__init__(self, *args, **kwargs)
 
     def init(self):
-        self.addObject("MeshSTLLoader", name="loader", filename="data/mesh/maze/maze.stl",
+        self.addObject("MeshSTLLoader", name="loader", filename="../data/mesh/maze/maze.stl",
                        translation=self.translation.value, rotation=self.rotation.value)
         self.addObject("MeshTopology", src='@loader')
         self.addObject("MechanicalObject")
@@ -60,7 +60,7 @@ def createScene(rootNode):
     effector.addObject('UncoupledConstraintCorrection', compliance='1e-10  1e-10  0 0 1e-10  0 1e-10 ')
 
     # Open maze planning from JSON file
-    data = json.load(open('mazeplanning.json'))
+    data = json.load(open('../mazeplanning.json'))
     effector.addObject(MazeController(effector, data["anglePlanningTable"], True))
 
     maze = effector.addChild(Maze())

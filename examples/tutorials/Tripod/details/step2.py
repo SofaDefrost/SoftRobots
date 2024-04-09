@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Step 2: Introducing elastic material modelling
-'''
+"""
 import Sofa
 from stlib3.scene import Scene
 
@@ -15,7 +15,8 @@ def createScene(rootNode):
                   "Sofa.Component.Topology.Container.Dynamic",
                   "Sofa.Component.Visual",
                   "Sofa.GL.Component.Rendering3D",
-                  "Sofa.GUI.Component"]
+                  "Sofa.GUI.Component",
+                  "Sofa.Component.Mapping.Linear"]
 
     scene = Scene(rootNode, gravity=[0.0, -9810, 0.0],
                   plugins=pluginList, iterative=False)

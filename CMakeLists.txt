@@ -272,7 +272,6 @@ if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
 
-sofa_install_pythonscripts(PLUGIN_NAME ${PROJECT_NAME} PYTHONSCRIPTS_SOURCE_DIR "python")
 find_file(SofaPython3Tools NAMES "SofaPython3/lib/cmake/SofaPython3/SofaPython3Tools.cmake")
 if(SofaPython3Tools)
     message("-- Found SofaPython3Tools. Python3 packages will be installed.")
@@ -302,9 +301,14 @@ sofa_create_package_with_targets(
 install(DIRECTORY docs DESTINATION .)
 install(FILES "README.md" "LICENSE" "CHANGELOG" DESTINATION .)
 
-option(SOFTROBOTS_BUILD_TESTS "Build unit tests" ON)
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFTROBOTS_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 if(SOFTROBOTS_BUILD_TESTS)
+    enable_testing()
     add_subdirectory(tests)
 endif()
+
+sofa_add_subdirectory(plugin extensions/CUDA SoftRobots.CUDA)
 
 include(cmake/packaging.cmake)

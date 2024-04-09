@@ -40,7 +40,7 @@ using softrobots::constraint::SurfacePressureConstraint;
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -64,7 +64,6 @@ namespace softrobots {
         using SurfacePressureConstraint<_DataTypes>::d_componentState;
 
         sofa::simulation::Node::SPtr m_root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
-        sofa::simulation::Simulation* m_simulation;          ///< created by the constructor an re-used in the tests
 
         typedef _DataTypes DataTypes;
         typedef typename DataTypes::Deriv Deriv;
@@ -83,14 +82,12 @@ namespace softrobots {
         {
             sofa::simpleapi::importPlugin("Sofa.Component");
 
-            sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
-
             /// Load the scene
             string sceneName = "SurfacePressureConstraint.scn";
 
             string fileName  = string(SOFTROBOTS_TEST_DIR) + "/component/constraint/scenes/" + sceneName;
 
-            m_root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+            m_root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::node::load(fileName.c_str()));
 
             /// Test if load has succeededls
             sofa::simulation::SceneLoaderXML scene;
@@ -107,7 +104,7 @@ namespace softrobots {
 
             SetUp();
 
-            m_simulation->init(m_root.get());
+            sofa::simulation::node::initRoot(m_root.get());
 
             int nbTimeStep = 15;
             string deltaString;
@@ -119,7 +116,7 @@ namespace softrobots {
             string initialVolume = m_root->getChild("bunny")->getChild("cavity")->getObject("SurfacePressureConstraint")->findData("initialCavityVolume")->getValueString();
 
             for(int i=0; i<nbTimeStep; i++)
-                m_simulation->animate(m_root.get());
+                sofa::simulation::node::animate(m_root.get());
 
             m_root->getChild("bunny")->getChild("cavity")->getObject("VolumeFromTriangles")->findData("update")->read("1");
             deltaString = m_root->getChild("bunny")->getChild("cavity")->getObject("VolumeFromTriangles")->findData("volume")->getValueString();

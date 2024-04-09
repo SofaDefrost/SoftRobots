@@ -26,7 +26,7 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
 
     def __rigidify(self, radius=60, numMotors=3, angleShift=180.0):
         deformableObject = self.ElasticBody.MechanicalModel
-        self.ElasticBody.init()
+        deformableObject.dofs.init()
         dist = radius
         numstep = numMotors
         groupIndices = []
@@ -47,7 +47,7 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
 
         effectorPos = [0, 30, 0]
         o = deformableObject.addObject('SphereROI', name='roi', template='Rigid3',
-                                                    centers=effectorPos, radii=[7.5], drawSphere=True)
+                                       centers=effectorPos, radii=[7.5], drawSphere=False)
         o.init()
         groupIndices.append(list(o.indices.value))
 
@@ -60,21 +60,22 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
 
     def __attachToActuatedArms(self, numstep):
 
-         rigidParts = self.RigidifiedStructure.RigidParts
-         for arm in self.actuatedarms:
+        rigidParts = self.RigidifiedStructure.RigidParts
+        for arm in self.actuatedarms:
             arm.ServoMotor.Articulation.ServoWheel.addChild(rigidParts)
 
-         freeCenter = self.RigidifiedStructure.addChild('FreeCenter')
-         freeCenter.addObject('MechanicalObject', name="dofs", template="Rigid3", position=[0, 30, 0, 0, 0, 0, 1], showObject=False, showObjectScale=10)
-         freeCenter.addChild(rigidParts)
+        freeCenter = self.RigidifiedStructure.addChild('FreeCenter')
+        freeCenter.addObject('MechanicalObject', name="dofs", template="Rigid3", position=[0, 30, 0, 0, 0, 0, 1],
+                             showObject=False, showObjectScale=10)
+        freeCenter.addChild(rigidParts)
 
-         rigidParts.addObject('SubsetMultiMapping',
-                              name="mapping",
-                              input=[self.actuatedarms[0].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                     self.actuatedarms[1].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                     self.actuatedarms[2].ServoMotor.Articulation.ServoWheel.getLinkPath(),
-                                     freeCenter.getLinkPath()],
-                              output='@./', indexPairs=[0, 1, 1, 1, 2, 1,3,0])
+        rigidParts.addObject('SubsetMultiMapping',
+                             name="mapping",
+                             input=[self.actuatedarms[0].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                    self.actuatedarms[1].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                    self.actuatedarms[2].ServoMotor.Articulation.ServoWheel.getLinkPath(),
+                                    freeCenter.getLinkPath()],
+                             output='@./', indexPairs=[0, 1, 1, 1, 2, 1, 3, 0])
 
     self = Sofa.Core.Node(name)
     self.actuatedarms = []
@@ -89,14 +90,14 @@ def Tripod(name="Tripod", radius=60, numMotors=3, angleShift=180.0):
         self.actuatedarms.append(arm)
         self.addChild(arm)
 
-    self.addChild(ElasticBody(translation=[0.0, 30, 0.0], rotation=[90,0,0], color=[1.0,1.0,1.0,0.5]))
+    self.addChild(ElasticBody(translation=[0.0, 30, 0.0], rotation=[90, 0, 0], color=[1.0, 1.0, 1.0, 0.5]))
     __rigidify(self, radius, numMotors, angleShift)
     __attachToActuatedArms(self, numMotors)
 
     def addCollision():
-            CollisionMesh(self.ElasticBody.MechanicalModel,
-                        surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionModel",
-                        translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
+        CollisionMesh(self.ElasticBody.MechanicalModel,
+                      surfaceMeshFileName="data/mesh/tripod_low.stl", name="CollisionModel",
+                      translation=[0.0, 30, 0.0], rotation=[90, 0, 0], collisionGroup=1)
 
     self.addCollision = addCollision
 
@@ -108,10 +109,29 @@ def createScene(rootNode):
     from stlib3.scene import Scene
     import math
 
-    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], iterative=False,
-                  plugins=['SofaSparseSolver', 'SofaOpenglVisual', 'SofaSimpleFem', 'SofaDeformable', 'SofaEngine',
-                           'SofaGeneralRigid', 'SofaMiscMapping', 'SofaRigid', 'SofaGraphComponent', 'SofaBoundaryCondition',
-                           'SofaGeneralAnimationLoop', 'SofaConstraint'])
+    pluginsList = [
+        'ArticulatedSystemPlugin',  # Needed to use components [ArticulatedHierarchyContainer,
+        # ArticulatedSystemMapping,Articulation,ArticulationCenter]
+        'Sofa.Component.AnimationLoop',  # Needed to use components [FreeMotionAnimationLoop]
+        'Sofa.Component.Constraint.Lagrangian.Correction',  # Needed to use components [GenericConstraintCorrection]
+        'Sofa.Component.Constraint.Lagrangian.Solver',  # Needed to use components [GenericConstraintSolver]
+        'Sofa.Component.Constraint.Projective',  # Needed to use components [FixedConstraint]
+        'Sofa.Component.IO.Mesh',  # Needed to use components [MeshSTLLoader]
+        'Sofa.Component.LinearSolver.Direct',  # Needed to use components [SparseLDLSolver]
+        'Sofa.Component.Mapping.NonLinear',  # Needed to use components [RigidMapping]
+        'Sofa.Component.Mass',  # Needed to use components [UniformMass]
+        'Sofa.Component.SolidMechanics.Spring',  # Needed to use components [RestShapeSpringsForceField]
+        'Sofa.Component.StateContainer',  # Needed to use components [MechanicalObject]
+        'Sofa.Component.Topology.Container.Constant',  # Needed to use components [MeshTopology]
+        'Sofa.Component.Visual',  # Needed to use components [VisualStyle]
+        'Sofa.GL.Component.Rendering3D',  # Needed to use components [OglModel,OglSceneFrame]
+        'Sofa.GUI.Component',  # Needed to use components [AttachBodyButtonSetting]
+        'Sofa.Component.Engine.Select',  # Needed to use components [BoxROI,SphereROI]
+        'Sofa.Component.Mapping.Linear',  # Needed to use components [BarycentricMapping,SubsetMultiMapping]
+        'Sofa.Component.SolidMechanics.FEM.Elastic',  # Needed to use components [TetrahedronFEMForceField]
+    ]
+
+    scene = Scene(rootNode, gravity=[0.0, -9810, 0.0], plugins=pluginsList, iterative=False)
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')

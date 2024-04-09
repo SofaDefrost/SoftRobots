@@ -45,11 +45,9 @@ using sofa::linearalgebra::BaseVector ;
 using sofa::core::ConstraintParams ;
 using sofa::helper::ReadAccessor ;
 using sofa::core::VecCoordId ;
-using sofa::type::Vector3;
-
+using sofa::type::Vec3;
 
 using sofa::core::topology::BaseMeshTopology;
-
 using sofa::linearalgebra::BaseVector;
 
 /**

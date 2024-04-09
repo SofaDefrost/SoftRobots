@@ -45,6 +45,7 @@ def createScene(rootNode):
                     translation=[-210 + c * 70, 0.0, 0.0],
                     color=[c / 10.0, c * 0.7 / 10.0, 0.9, 1.0],
                     uniformScale=20.0)
+
         cube.addObject('UncoupledConstraintCorrection')
 
     return rootNode

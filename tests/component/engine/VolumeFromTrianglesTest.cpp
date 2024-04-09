@@ -92,10 +92,7 @@ struct VolumeFromTrianglesTest : public sofa::testing::BaseTest, VolumeFromTrian
 
     void normalTests()
     {
-        Simulation* simu;
-        setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
-
-        Node::SPtr node = simu->createNewGraph("root");
+        Node::SPtr node = sofa::simulation::getSimulation()->createNewGraph("root");
         typename MechanicalObject<DataTypes>::SPtr mecaobject = New<MechanicalObject<DataTypes> >() ;
         typename ThisClass::SPtr thisobject = New<ThisClass >() ;
         mecaobject->init() ;
@@ -129,10 +126,7 @@ struct VolumeFromTrianglesTest : public sofa::testing::BaseTest, VolumeFromTrian
     {
         DataRepository.addFirstPath(SOFTROBOTS_TEST_DIR);
 
-        Simulation* simu;
-        setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
-
-        Node::SPtr node = simu->createNewGraph("root");
+        Node::SPtr node = sofa::simulation::getSimulation()->createNewGraph("root");
 
         typename MeshTopology::SPtr                mesh       = New< MeshTopology >() ;
         typename MechanicalObject<DataTypes>::SPtr mecaobject = New< MechanicalObject<DataTypes> >() ;

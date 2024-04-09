@@ -55,6 +55,7 @@
 
 namespace softrobots
 {
+    SOFA_SOFTROBOTS_API void init();
     constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
     constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 }

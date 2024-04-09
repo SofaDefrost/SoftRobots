@@ -88,11 +88,9 @@ struct UnilateralPlaneConstraintTest : public sofa::testing::BaseTest,
     /////////////////////////////////////////////////////////////////////
 
 
-    void normalTests(){
-        Simulation* simu;
-        setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
-
-        Node::SPtr node = simu->createNewGraph("root");
+    void normalTests()
+    {
+        const Node::SPtr node = sofa::simulation::getSimulation()->createNewGraph("root");
         typename MechanicalObject<DataTypes>::SPtr mecaobject = New<MechanicalObject<DataTypes> >() ;
         typename ThisClass::SPtr thisobject = New<ThisClass >() ;
 

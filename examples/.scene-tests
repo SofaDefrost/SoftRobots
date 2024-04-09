@@ -1,0 +1,36 @@
+# This file is used to setup the SOFA continuous integration
+
+# Ignore the following scenes as they require the SoftRobots.Inverse plugin
+ignore "thematicalDocs/T5-OpenLoopControl/InverseSimulation/simuInverse.py"
+ignore "tutorials/CircularRobot/circularrobot.py"
+ignore "tutorials/Tripod/myproject/step8-maze.py"
+ignore "tutorials/Tripod/myproject/step8.py"
+
+# Ignore because it requires the 'serial' module
+ignore "tutorials/Tripod/myproject/step7.py"
+
+# Ignore the following scenes as they require the option SOFTROBOTS_COMMUNICATIONCONTROLLER
+ignore "component/controller/CommunicationController/SimulationDirect_Receiver.py"
+ignore "component/controller/CommunicationController/SimulationInverse_Sender.py"
+
+# Ignore the following scenes as they require ROS
+ignore "sofaros/test_sofaros.py"
+
+# Ignore due to timeout
+ignore "component/constraint/SurfacePressureConstraint/PressureVsVolumeGrowthControl.py"
+
+# Ignore the following scenes as they require the serial module
+ignore "tutorials/Tripod/details/step7.py"
+ignore "tutorials/Tripod/details/step8-maze.py"
+ignore "tutorials/Tripod/details/step8.py"
+ignore "tutorials/Tripod/details/step9.py"
+ignore "tutorials/Tripod/myproject/step9.py"
+
+# Ignore the following scenes as they require the parts module
+ignore "tutorials/Tripod/myproject/parts/actuatedarm.py"
+ignore "tutorials/Tripod/myproject/parts/tripod.py"
+ignore "tutorials/Tripod/myproject/parts/tripodcontroller.py"
+
+# Ignore because CI finds a createScene function, so it is considered as a functional scene. But it is in the comments,
+# so it should be ignored
+ignore "component/controller/AnimationEditor/__init__.py"

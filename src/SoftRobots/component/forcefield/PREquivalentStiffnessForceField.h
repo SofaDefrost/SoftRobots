@@ -61,8 +61,8 @@ public :
     typedef typename DataTypes::Deriv   Deriv;
     typedef typename Coord::Pos         Pos;
     typedef typename Coord::Quat        Quaternion;
-    typedef sofa::type::vector<Coord>       VecCoord;
-    typedef sofa::type::vector<Deriv>       VecDeriv;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef sofa::Data<VecCoord>              DataVecCoord;
     typedef sofa::Data<VecDeriv>              DataVecDeriv;
 

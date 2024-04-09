@@ -48,7 +48,7 @@ class RosReceiver(Sofa.Core.Controller):
         self.data = data.data
 
     def onAnimateBeginEvent(self, event):
-        rclpy.spin_once(self.node, timeout_sec=0.001)  # Something must be hidden in this spin_once(), without it the callback() is never called
+        rclpy.spin_once(self.node, timeout_sec=0.001)  # Enables callbacks
         if self.data is not None:
             self.recvcb(self.data, self.datafield)
             self.data = None
