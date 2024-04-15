@@ -49,8 +49,8 @@ SurfacePressureConstraint<DataTypes>::SurfacePressureConstraint(MechanicalState*
                                   "If unspecified the default value is {0}"))
 
     , d_valueType(initData(&d_valueType, {"pressure","volumeGrowth"}, "valueType",
-                                          "volumeGrowth = the contstraint will impose the volume growth provided in data value[valueIndex] \n"
-                                          "pressure = the contstraint will impose the pressure provided in data value[valueIndex] \n"
+                                          "volumeGrowth = the constraint will impose the volume growth provided in data value[valueIndex] \n"
+                                          "pressure = the constraint will impose the pressure provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is pressure"))
 {
     d_eqVolumeGrowth.setDisplayed(false);
@@ -93,14 +93,14 @@ void SurfacePressureConstraint<DataTypes>::reset()
 template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::initData()
 {
-    if(d_value.getValue().size()==0)
+    if (d_value.getValue().empty())
     {
         WriteAccessor<Data<vector<Real>>> value = d_value;
         value.resize(1);
     }
 
     // check for errors in the initialization
-    if(d_value.getValue().size()<d_valueIndex.getValue())
+    if (d_value.getValue().size() < d_valueIndex.getValue())
     {
         msg_warning() <<"Bad size for data value (size="<< d_value.getValue().size()<<"), or wrong value for data valueIndex (valueIndex="<<d_valueIndex.getValue()<<"). Set default valueIndex=0.";
         d_valueIndex.setValue(0);
@@ -112,24 +112,26 @@ template<class DataTypes>
 void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<ConstraintResolution*>& resTab,
                                                                    unsigned int& offset)
 {
-    if(d_componentState.getValue() != ComponentState::Valid)
-            return ;
-
-    double imposedValue = d_value.getValue()[d_valueIndex.getValue()];
-
-    if(d_valueType.getValue().getSelectedItem() == "volumeGrowth")
+    if (!this->isComponentStateValid())
     {
-        double maxPressure = std::numeric_limits<double>::max();
-        double minPressure = -maxPressure;
-        setUpVolumeLimits(imposedValue,minPressure,maxPressure);
+        return;
+    }
+
+    Real imposedValue = d_value.getValue()[d_valueIndex.getValue()];
+
+    if (d_valueType.getValue().getSelectedItem() == "volumeGrowth")
+    {
+        Real maxPressure = std::numeric_limits<Real>::max();
+        Real minPressure = -maxPressure;
+        setUpVolumeLimits(imposedValue, minPressure, maxPressure);
 
         VolumeGrowthConstraintResolution *cr=  new VolumeGrowthConstraintResolution(imposedValue, minPressure, maxPressure);
-        resTab[offset++] =cr;
+        resTab[offset++] = cr;
     }
     else // pressure
     {
-        double maxVolumeGrowth = std::numeric_limits<double>::max();
-        double minVolumeGrowth = -maxVolumeGrowth;
+        Real maxVolumeGrowth = std::numeric_limits<Real>::max();
+        Real minVolumeGrowth = -maxVolumeGrowth;
         setUpPressureLimits(imposedValue,minVolumeGrowth,maxVolumeGrowth);
 
         SurfacePressureConstraintResolution *cr=  new SurfacePressureConstraintResolution(imposedValue, minVolumeGrowth, maxVolumeGrowth);
@@ -139,7 +141,7 @@ void SurfacePressureConstraint<DataTypes>::getConstraintResolution(std::vector<C
 
 
 template<class DataTypes>
-void SurfacePressureConstraint<DataTypes>::setUpVolumeLimits(double& imposedValue, double& minPressure, double& maxPressure)
+void SurfacePressureConstraint<DataTypes>::setUpVolumeLimits(Real& imposedValue, Real& minPressure, Real& maxPressure)
 {
     if(d_maxVolumeGrowthVariation.isSet())
     {
@@ -166,7 +168,7 @@ void SurfacePressureConstraint<DataTypes>::setUpVolumeLimits(double& imposedValu
 
 
 template<class DataTypes>
-void SurfacePressureConstraint<DataTypes>::setUpPressureLimits(double& imposedValue, double& minVolumeGrowth, double& maxVolumeGrowth)
+void SurfacePressureConstraint<DataTypes>::setUpPressureLimits(Real& imposedValue, Real& minVolumeGrowth, Real& maxVolumeGrowth)
 {
     if (d_maxPressureVariation.isSet())
     {

@@ -143,8 +143,8 @@ protected:
 
 private:
     void initData();
-    void setUpVolumeLimits(double& imposedValue, double& minPressure, double& maxPressure);
-    void setUpPressureLimits(double& imposedValue, double& minVolumeGrowth, double& maxVolumeGrowth);
+    void setUpVolumeLimits(Real& imposedValue, Real& minPressure, Real& maxPressure);
+    void setUpPressureLimits(Real& imposedValue, Real& minVolumeGrowth, Real& maxVolumeGrowth);
 
 };
 
