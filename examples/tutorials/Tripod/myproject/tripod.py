@@ -115,7 +115,7 @@ def createScene(rootNode):
         'Sofa.Component.AnimationLoop',  # Needed to use components [FreeMotionAnimationLoop]
         'Sofa.Component.Constraint.Lagrangian.Correction',  # Needed to use components [GenericConstraintCorrection]
         'Sofa.Component.Constraint.Lagrangian.Solver',  # Needed to use components [GenericConstraintSolver]
-        'Sofa.Component.Constraint.Projective',  # Needed to use components [FixedConstraint]
+        'Sofa.Component.Constraint.Projective',  # Needed to use components [FixedProjectiveConstraint]
         'Sofa.Component.IO.Mesh',  # Needed to use components [MeshSTLLoader]
         'Sofa.Component.LinearSolver.Direct',  # Needed to use components [SparseLDLSolver]
         'Sofa.Component.Mapping.NonLinear',  # Needed to use components [RigidMapping]

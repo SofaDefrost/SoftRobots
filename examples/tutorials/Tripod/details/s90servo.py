@@ -62,7 +62,7 @@ class ServoMotor(Sofa.Prefab):
                             translation=self.translation.value, rotation=self.rotation.value,
                             scale3d=self.scale3d.value
                             )
-        servoBody.addObject('FixedConstraint', indices=0)
+        servoBody.addObject('FixedProjectiveConstraint', indices=0)
         servoBody.addObject('UniformMass', totalMass=0.01)
 
         visual = servoBody.addChild('VisualModel')
@@ -110,7 +110,7 @@ def createScene(rootNode):
         'Sofa.Component.AnimationLoop',  # Needed to use components [FreeMotionAnimationLoop]
         'Sofa.Component.Constraint.Lagrangian.Correction',  # Needed to use components [GenericConstraintCorrection]
         'Sofa.Component.Constraint.Lagrangian.Solver',  # Needed to use components [GenericConstraintSolver]
-        'Sofa.Component.Constraint.Projective',  # Needed to use components [FixedConstraint]
+        'Sofa.Component.Constraint.Projective',  # Needed to use components [FixedProjectiveConstraint]
         'Sofa.Component.IO.Mesh',  # Needed to use components [MeshSTLLoader]
         'Sofa.Component.LinearSolver.Direct',  # Needed to use components [SparseLDLSolver]
         'Sofa.Component.Mapping.NonLinear',  # Needed to use components [RigidMapping]

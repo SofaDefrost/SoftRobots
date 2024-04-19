@@ -17,8 +17,8 @@ def createScene(rootnode):
     body.addObject('GenericConstraintCorrection')
     body.addObject('BoxROI', name="boxToFixed", box=[0, 0, 0, 0.5, 0.1, 0.1], drawBoxes=True)
     body.addObject('BoxROI', name="boxToPull", box=[0, 0.9, 0, 0.5, 1, 0.1], drawBoxes=True)
-    body.addObject('FixedConstraint', indices=body.boxToFixed.indices.linkpath)
-    body.addObject('PartialFixedConstraint', indices=body.boxToPull.indices.linkpath, fixedDirections=[1, 0, 1])
+    body.addObject('FixedProjectiveConstraint', indices=body.boxToFixed.indices.linkpath)
+    body.addObject('PartialFixedProjectiveConstraint', indices=body.boxToPull.indices.linkpath, fixedDirections=[1, 0, 1])
     body.addObject('PositionConstraint', indices=body.boxToPull.indices.linkpath,
                    valueType="displacement", value=0.5, useDirections=[0, 1, 0])
 
