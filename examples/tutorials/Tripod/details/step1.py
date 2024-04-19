@@ -42,7 +42,7 @@ def createScene(rootNode):
                           position=scene.Modelling.loader.position.getLinkPath(),
                           showObject=True, showObjectScale=5.0,
                           rotation=[90.0, 0.0, 0.0])
-    elasticbody.addObject('UniformMass')
+    elasticbody.addObject('UniformMass', totalMass='1.0')
 
     # Visual object
     visual = scene.Modelling.addChild('VisualModel')
