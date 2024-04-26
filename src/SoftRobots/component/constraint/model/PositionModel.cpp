@@ -53,6 +53,11 @@ void PositionModel<Rigid3Types>::normalizeDirections()
     d_directions.setValue(directions);
 }
 
+
+template<>
+void PositionModel<Vec1Types>::drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  RGBAColor& color) {
+}
+
 template<>
 void PositionModel<Vec3Types>::drawPoints(const VisualParams* vparams, const std::vector<Coord> &points, float size,  const  RGBAColor& color) {
     vparams->drawTool()->drawPoints(points, size, color);
@@ -75,8 +80,9 @@ void PositionModel<Rigid3Types>::drawPoints(const VisualParams* vparams, const s
 }
 
 using namespace sofa::defaulttype;
+template class SOFA_SOFTROBOTS_API PositionModel<Vec1Types>;
+template class SOFA_SOFTROBOTS_API PositionModel<Vec2Types>;
 template class SOFA_SOFTROBOTS_API PositionModel<Vec3Types>;
 template class SOFA_SOFTROBOTS_API PositionModel<Rigid3Types>;
-template class SOFA_SOFTROBOTS_API PositionModel<Vec2Types>;
 
 } // namespace

@@ -149,7 +149,7 @@ void PositionConstraint<DataTypes>::getConstraintViolation(const ConstraintParam
         for(sofa::Size j=0; j<DataTypes::Deriv::total_size; j++)
             if(useDirections[j])
             {
-                Real dfree = Jdx->element(index) + d*directions[j]*weight;
+                Real dfree = Jdx->element(index) + d*directions[j]*weight[j];
                 resV->set(m_constraintId+index, dfree);
                 index++;
             }
