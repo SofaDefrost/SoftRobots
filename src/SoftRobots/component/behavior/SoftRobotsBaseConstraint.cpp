@@ -42,6 +42,7 @@ SoftRobotsBaseConstraint::SoftRobotsBaseConstraint()
     , m_hasLambdaInit(false)
     , m_hasEpsilon(false)
 {
+    m_constraintIndex.setReadOnly(true);
 }
 
 bool SoftRobotsBaseConstraint::hasDeltaMax() const

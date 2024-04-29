@@ -137,6 +137,8 @@ protected:
 
     virtual sofa::type::vector<std::string> getSoftRobotsConstraintIdentifiers(){ return {}; }
 
+    unsigned int m_nbLines; ///< Constraint nbLines in the constraints matrix
+
     bool m_hasDeltaMax;
     bool m_hasDeltaMin;
     bool m_hasDeltaEqual;
@@ -158,10 +160,6 @@ protected:
     vector<double> m_lambdaInit;
 
     double m_epsilon;
-
-    unsigned int m_constraintId; ///< Constraint index in the constraints matrix
-    unsigned int m_nbLines; ///< Constraint nbLines in the constraints matrix
-
 };
 
 } // namespace

@@ -115,11 +115,12 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 
     SOFA_UNUSED(cParams);
 
-    m_constraintId = cIndex;
+    m_constraintIndex.setValue(cIndex);
+    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
 
     MatrixDeriv& column = *cMatrix.beginEdit();
 
-    MatrixDerivRowIterator rowIterator = column.writeLine(m_constraintId);
+    MatrixDerivRowIterator rowIterator = column.writeLine(constraintIndex);
 
     ReadAccessor<sofa::Data<VecCoord>> positions = x;
     Coord p1 = positions[d_indices.getValue()[1]];
@@ -136,7 +137,7 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const Constrain
     rowIterator.setCol(d_indices.getValue()[3],  -normal/3.);
 
     cIndex++;
-    m_nbLines = cIndex - m_constraintId;
+    m_nbLines = cIndex - constraintIndex;
     cMatrix.endEdit();
 }
 
@@ -163,7 +164,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintViolation(const Constrai
         normal = -normal;
 
     Real dfree = Jdx->element(0) + (p0-p1)*normal/normal.norm();
-    resV->set(m_constraintId, dfree );
+    resV->set(m_constraintIndex.getValue(), dfree );
 }
 
 
