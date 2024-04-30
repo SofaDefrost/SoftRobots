@@ -50,7 +50,7 @@ JointConstraint<DataTypes>::JointConstraint(MechanicalState* object)
                                          "Output force. Warning: to get the actual force you should divide this value by dt."))
 
     , d_displacement(initData(&d_displacement,double(0.0), "displacement",
-                          "Output angle displacement (in radian) compared to the initial position."))
+                          "Output displacement compared to the initial position."))
 
     , d_maxForce(initData(&d_maxForce, "maxForce",
                           "Maximum force allowed. \n"
@@ -60,15 +60,15 @@ JointConstraint<DataTypes>::JointConstraint(MechanicalState* object)
                           "Minimum force allowed. \n"
                           "If unspecified no minimum value will be considered."))
 
-    , d_maxPositiveDisplacement(initData(&d_maxPositiveDisplacement,"maxPositiveDisp",
-                                         "Maximum displacement (in radian) in the positive direction. \n"
-                                         "If unspecified no maximum value will be considered."))
+    , d_maxDisplacement(initData(&d_maxDisplacement,"maxDisplacement",
+                                 "Maximum displacement. \n"
+                                 "If unspecified no maximum value will be considered."))
 
-    , d_maxNegativeDisplacement(initData(&d_maxNegativeDisplacement,"maxNegativeDisp",
-                                         "Maximum displacement (in radian) in the negative direction. \n"
-                                         "If unspecified no maximum value will be considered."))
+    , d_minDisplacement(initData(&d_minDisplacement,"minDisplacement",
+                                 "Minimum displacement. \n"
+                                 "If unspecified no minimum value will be considered."))
 
-    , d_value(initData(&d_value, "imposedValue",
+    , d_value(initData(&d_value, "value",
                                 "Displacement or force to impose.\n"))
 
     , d_valueType(initData(&d_valueType, {"displacement","force"}, "valueType",
@@ -76,7 +76,6 @@ JointConstraint<DataTypes>::JointConstraint(MechanicalState* object)
                                           "force = the constraint will impose the force provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
-    d_index.setGroup("Input");
     d_force.setReadOnly(true);
     d_displacement.setReadOnly(true);
 }
@@ -122,9 +121,8 @@ void JointConstraint<DataTypes>::reinit()
 template<class DataTypes>
 void JointConstraint<DataTypes>::internalInit()
 {
-    // Init angles
     ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
-    m_initAngle = positions[d_index.getValue()][0];
+    m_initDisplacement = positions[d_index.getValue()][0];
     d_displacement.setValue(0);
     d_force.setValue(0);
 
@@ -175,7 +173,7 @@ void JointConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* 
 
     SOFA_UNUSED(cParams);
 
-    Real dFree = Jdx->element(0) - m_initAngle + m_currentAngle;
+    Real dFree = Jdx->element(0) - m_initDisplacement + m_currentDisplacement;
     resV->set(m_constraintId, dFree);
 }
 
@@ -195,7 +193,7 @@ void JointConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
     {
         double maxForce = std::numeric_limits<double>::max();
         double minForce = -maxForce;
-        setUpDisplacementLimits(imposedValue,minForce,maxForce);
+        setUpDisplacementLimits(imposedValue, minForce, maxForce);
 
         JointDisplacementConstraintResolution *cr=  new JointDisplacementConstraintResolution(imposedValue, minForce, maxForce);
         resTab[offset++] = cr;
@@ -205,7 +203,7 @@ void JointConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
     {
         double maxDisplacement = std::numeric_limits<double>::max();
         double minDisplacement = -maxDisplacement;
-        setUpForceLimits(imposedValue,minDisplacement,maxDisplacement);
+        setUpForceLimits(imposedValue, minDisplacement, maxDisplacement);
 
         JointForceConstraintResolution *cr=  new JointForceConstraintResolution(imposedValue, minDisplacement, maxDisplacement);
         resTab[offset++] = cr;
@@ -227,21 +225,21 @@ void JointConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
     // Update joint effort
     d_force.setValue(lambda->element(m_constraintId));
 
-    // Update joint angle
-    ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
-    m_currentAngle = positions[d_index.getValue()][0];
-    d_displacement.setValue(-m_initAngle+m_currentAngle);
+    // Update joint displacement
+    ReadAccessor<sofa::Data<VecCoord>> positions = m_state->readPositions();
+    m_currentDisplacement = positions[d_index.getValue()][0];
+    d_displacement.setValue(- m_initDisplacement + m_currentDisplacement);
 }
 
 
 template<class DataTypes>
 void JointConstraint<DataTypes>::setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce)
 {
-    if(d_maxPositiveDisplacement.isSet() && imposedValue>d_maxPositiveDisplacement.getValue())
-        imposedValue = d_maxPositiveDisplacement.getValue();
+    if(d_maxDisplacement.isSet() && imposedValue>d_maxDisplacement.getValue())
+        imposedValue = d_maxDisplacement.getValue();
 
-    if(d_maxNegativeDisplacement.isSet() && imposedValue<-d_maxNegativeDisplacement.getValue())
-        imposedValue = -d_maxNegativeDisplacement.getValue();
+    if(d_minDisplacement.isSet() && imposedValue<d_minDisplacement.getValue())
+        imposedValue = d_minDisplacement.getValue();
 
     if(d_minForce.isSet())
         minForce=d_minForce.getValue();
@@ -258,10 +256,10 @@ void JointConstraint<DataTypes>::setUpForceLimits(double& imposedValue, double& 
     if(d_minForce.isSet() && imposedValue<d_minForce.getValue())
         imposedValue = d_minForce.getValue();
 
-    if(d_maxNegativeDisplacement.isSet())
-        minDisplacement=-d_maxNegativeDisplacement.getValue();
-    if(d_maxPositiveDisplacement.isSet())
-        maxDisplacement=d_maxPositiveDisplacement.getValue();
+    if(d_minDisplacement.isSet())
+        minDisplacement=d_minDisplacement.getValue();
+    if(d_maxDisplacement.isSet())
+        maxDisplacement=d_maxDisplacement.getValue();
 }
 
 

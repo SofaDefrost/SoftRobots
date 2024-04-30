@@ -62,8 +62,7 @@ void JointDisplacementConstraintResolution::resolution(int line, double** w, dou
 
     // da=Waa*(lambda_a) + Sum Wai * lambda_i  = m_imposedDisplacement
     lambda[line] -= (d[line]-m_imposedDisplacement) / m_wActuatorActuator;
-
-    std::clamp(lambda[line], m_minForce, m_maxForce);
+    lambda[line] = std::clamp(lambda[line], m_minForce, m_maxForce);
 }
 
 
@@ -89,14 +88,14 @@ void JointForceConstraintResolution::resolution(int line, double** w, double* d,
 
     double displacement = m_wActuatorActuator*m_imposedForce + d[line];
 
-    if (displacement<m_minDisplacement)
+    if (displacement < m_minDisplacement)
     {
-        displacement=m_minDisplacement;
+        displacement = m_minDisplacement;
         lambda[line] -= (d[line]-displacement) / m_wActuatorActuator;
     }
-    else if (displacement>m_maxDisplacement)
+    else if (displacement > m_maxDisplacement)
     {
-        displacement=m_maxDisplacement;
+        displacement = m_maxDisplacement;
         lambda[line] -= (d[line]-displacement) / m_wActuatorActuator;
     }
     else
@@ -108,7 +107,7 @@ void JointForceConstraintResolution::resolution(int line, double** w, double* d,
 
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
-int JointConstraintClass = RegisterObject("Lagrange multiplier approach to apply a force/angle on a Joint (Vec1)")
+int JointConstraintClass = RegisterObject("Lagrange multiplier approach to apply a force/displacement on a Joint (Vec1)")
 .add< JointConstraint<Vec1Types> >(true)
 ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

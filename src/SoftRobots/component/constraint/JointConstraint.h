@@ -149,7 +149,6 @@ protected:
     using SoftRobotsConstraint<DataTypes>::d_componentState ;
     ////////////////////////////////////////////////////////////////////////////
 
-
     //Input data
     sofa::Data<unsigned int>       d_index; ///< indice of considered node
 
@@ -158,9 +157,9 @@ protected:
 
     sofa::Data<double>                  d_maxForce; ///< maximum force applied on the points
     sofa::Data<double>                  d_minForce; ///< minimum force applied on the points
-
-    sofa::Data<double>                  d_maxPositiveDisplacement; ///< maximum displacement of the points in the positive direction
-    sofa::Data<double>                  d_maxNegativeDisplacement; ///< maximum displacement of the points in the negative direction
+    
+    sofa::Data<double>                  d_maxDisplacement; ///< maximum displacement of the points
+    sofa::Data<double>                  d_minDisplacement; ///< minimum displacement of the points
 
     sofa::Data<double> d_value;
     sofa::Data<sofa::helper::OptionsGroup>  d_valueType;
@@ -169,8 +168,8 @@ protected:
     void internalInit();
     void checkIndicesRegardingState();
 
-    double m_initAngle;
-    double m_currentAngle;
+    double m_initDisplacement;
+    double m_currentDisplacement;
 
 private:
     void setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce);
