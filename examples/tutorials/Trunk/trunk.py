@@ -129,7 +129,7 @@ class Trunk:
 
     def fixExtremity(self):
         self.node.addObject('BoxROI', name='boxROI', box=[[-20, -20, 0], [20, 20, 20]], drawBoxes=False)
-        self.node.addObject('PartialFixedConstraint', fixedDirections=[1, 1, 1], indices='@boxROI.indices')
+        self.node.addObject('PartialFixedProjectiveConstraint', fixedDirections=[1, 1, 1], indices='@boxROI.indices')
 
     def addEffectors(self, target, position=[0., 0., 195.]):
         effectors = self.node.addChild('Effectors')
@@ -151,7 +151,7 @@ def createScene(rootNode):
                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                             "Sofa.Component.Constraint.Lagrangian.Correction",  # Needed to use components GenericConstraintCorrection
                             "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
-                            "Sofa.Component.Constraint.Projective",  # Needed to use components PartialFixedConstraint
+                            "Sofa.Component.Constraint.Projective",  # Needed to use components PartialFixedProjectiveConstraint
                             "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver

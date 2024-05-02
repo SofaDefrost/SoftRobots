@@ -54,11 +54,11 @@ def createScene(rootNode):
                     youngModulus=600)  # 600kPa
 
     robot.addObject('BoxROI', name='boxROI1', box=[-30, 80, 70, 30, 140, 130], drawBoxes=True)
-    robot.addObject('PartialFixedConstraint', name="pfc1", fixedDirections=[1, 1, 0], indices="@boxROI1.indices")
+    robot.addObject('PartialFixedProjectiveConstraint', name="pfc1", fixedDirections=[1, 1, 0], indices="@boxROI1.indices")
     robot.addObject('BoxROI', name='boxROI2', box=[-130, -100, 70, -60, -20, 130], drawBoxes=True)
-    robot.addObject('PartialFixedConstraint', name="pfc2", fixedDirections=[1, 1, 0], indices="@boxROI2.indices")
+    robot.addObject('PartialFixedProjectiveConstraint', name="pfc2", fixedDirections=[1, 1, 0], indices="@boxROI2.indices")
     robot.addObject('BoxROI', name='boxROI3', box=[130, -100, 70, 60, -20, 130], drawBoxes=True)
-    robot.addObject('PartialFixedConstraint', name="pfc3", fixedDirections=[1, 1, 0], indices="@boxROI3.indices")
+    robot.addObject('PartialFixedProjectiveConstraint', name="pfc3", fixedDirections=[1, 1, 0], indices="@boxROI3.indices")
 
     robot.addObject('LinearSolverConstraintCorrection')
 
