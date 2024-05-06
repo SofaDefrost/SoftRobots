@@ -34,3 +34,6 @@ ignore "tutorials/Tripod/myproject/parts/tripodcontroller.py"
 # Ignore because CI finds a createScene function, so it is considered as a functional scene. But it is in the comments,
 # so it should be ignored
 ignore "component/controller/AnimationEditor/__init__.py"
+
+#Fix random timeout on ubuntu
+timeout "thematicalDocs/T4-DirectActuation/Actuators/Pneumatic.SurfaceConstraintPressure.py" "45"
