@@ -41,11 +41,11 @@ Node : { name : "root"
         UniformMass : {totalMass : "0.4"}
         TetrahedronFEMForceField : {name : "FEM" poissonRatio : "0.45" youngModulus : "600"}
         BoxROI : {name : "boxROI1" box : "-30 80 70 30 140 130"}
-        PartialFixedConstraint : {name : "pfc1" indices : "@boxROI1.indices" fixedDirections : "1 1 0"}
+        PartialFixedProjectiveConstraint : {name : "pfc1" indices : "@boxROI1.indices" fixedDirections : "1 1 0"}
         BoxROI : {name : "boxROI2" box : "-30 80 70 30 140 130"}
-        PartialFixedConstraint : {name : "pfc2" indices : "@boxROI2.indices" fixedDirections : "1 1 0"}
+        PartialFixedProjectiveConstraint : {name : "pfc2" indices : "@boxROI2.indices" fixedDirections : "1 1 0"}
         BoxROI : {name : "boxROI3" box : "-30 80 70 30 140 130"}
-        PartialFixedConstraint : {name : "pfc3" indices : "@boxROI3.indices" fixedDirections : "1 1 0"}
+        PartialFixedProjectiveConstraint : {name : "pfc3" indices : "@boxROI3.indices" fixedDirections : "1 1 0"}
         LinearSolverConstraintCorrection : {name : "LinearSolverConstraintCorrection" solverName : "preconditioner"}
 
         ###robot/effector

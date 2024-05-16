@@ -21,7 +21,7 @@ def createScene(rootNode):
                             "Sofa.Component.Constraint.Lagrangian.Correction",
                             # Needed to use components LinearSolverConstraintCorrection
                             "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
-                            "Sofa.Component.Constraint.Projective",  # Needed to use components FixedConstraint
+                            "Sofa.Component.Constraint.Projective",  # Needed to use components FixedProjectiveConstraint
                             "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshVTKLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
@@ -52,7 +52,7 @@ def createScene(rootNode):
     robot.addObject('TetrahedronFEMForceField', youngModulus=180, poissonRatio=0.45)
     # Fix a part of the model
     robot.addObject('BoxROI', name="boxROI", box=[-15, -15, -40, 15, 15, 10], drawBoxes=True)
-    robot.addObject('FixedConstraint', indices="@boxROI.indices")
+    robot.addObject('FixedProjectiveConstraint', indices="@boxROI.indices")
     robot.addObject('LinearSolverConstraintCorrection')
 
     # Actuators

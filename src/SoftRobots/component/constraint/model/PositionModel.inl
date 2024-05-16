@@ -52,7 +52,7 @@ PositionModel<DataTypes>::PositionModel(MechanicalState* object)
                                  "If indices size is lower than target size, \n"
                                  "some target will not be considered"))
 
-    , d_weight(initData(&d_weight, 1., "weight",
+    , d_weight(initData(&d_weight, sofa::type::vector<Real>(Deriv::total_size, 1.), "weight",
                           "The parameter sets a weight to the minimization."))
 
     , d_directions(initData(&d_directions,"directions",
@@ -67,8 +67,21 @@ PositionModel<DataTypes>::PositionModel(MechanicalState* object)
     , d_delta(initData(&d_delta, "delta","Distance to target"))
 {
     d_delta.setReadOnly(true);
-}
 
+    this->addUpdateCallback("updateWeight", {&d_weight}, [this](const sofa::core::DataTracker& t)
+                            {
+                                SOFA_UNUSED(t);
+                                auto weight = sofa::helper::getWriteAccessor(d_weight);
+                                if (weight.size() != Deriv::total_size)
+                                {
+                                    msg_info() << "Wrong size for the data field weight, " << weight.size() <<
+                                        " instead of " << Deriv::total_size << ". Resizing, with weight[0] as the default value.";
+                                    Real w = weight.empty()? 1.: weight[0];
+                                    d_weight.setValue(sofa::type::vector<Real>(Deriv::total_size, w));
+                                }
+                                return sofa::core::objectmodel::ComponentState::Valid;
+                            }, {});
+}
 
 
 template<class DataTypes>
@@ -221,7 +234,7 @@ void PositionModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cPa
             if(useDirections[j])
             {
                 MatrixDerivRowIterator rowIterator = column.writeLine(constraintIndex+index);
-                rowIterator.setCol(indices[i], directions[j]*weight);
+                rowIterator.setCol(indices[i], directions[j]*weight[j]);
                 index++;
             }
         }

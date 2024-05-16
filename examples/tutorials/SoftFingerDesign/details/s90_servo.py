@@ -60,7 +60,7 @@ class ServoMotor(Sofa.Prefab):
         servoBody.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[[0., 0., 0., 0., 0., 0., 1.]],
                             translation=list(self.translation.value), rotation=list(self.rotation.value),
                             scale3d=list(self.scale3d.value))
-        servoBody.addObject('FixedConstraint', indices=0)
+        servoBody.addObject('FixedProjectiveConstraint', indices=0)
         servoBody.addObject('UniformMass', totalMass=0.01)
 
         visual = servoBody.addChild('VisualModel')
