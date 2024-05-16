@@ -27,11 +27,12 @@
 ******************************************************************************/
 #define SOFA_CONTROLLER_ANIMATIONEDITOR_CPP
 
+#include <SoftRobots/component/controller/AnimationEditor.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/Quat.h>
 
-#include <SoftRobots/component/controller/AnimationEditor.inl>
+
 
 namespace softrobots::controller
 {
