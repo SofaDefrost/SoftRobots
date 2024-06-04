@@ -43,6 +43,8 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.inl
+    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/JointConstraint.h
+    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/JointConstraint.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.h
@@ -51,6 +53,7 @@ set(HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/PositionModel.inl
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.h
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/SurfacePressureModel.inl
+    
 
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/AnimationEditor.h
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/AnimationEditor.inl
@@ -84,6 +87,7 @@ set(SOURCE_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/PositionConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/SurfacePressureConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/UnilateralPlaneConstraint.cpp
+    ${SOFTROBOTS_SOURCE_DIR}/component/constraint/JointConstraint.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/AffineFunctionModel.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/CableModel.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/constraint/model/PositionModel.cpp
