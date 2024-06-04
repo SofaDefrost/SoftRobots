@@ -92,7 +92,7 @@ protected:
 
     ////////////////////////// Inherited attributes ////////////////////////////
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
-    using SoftRobotsConstraint<DataTypes>::m_constraintId ;
+    using SoftRobotsConstraint<DataTypes>::m_constraintIndex ;
     using SoftRobotsConstraint<DataTypes>::d_componentState ;
     using SoftRobotsConstraint<DataTypes>::m_state ;
     ////////////////////////////////////////////////////////////////////////////

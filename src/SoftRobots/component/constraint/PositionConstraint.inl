@@ -137,6 +137,7 @@ void PositionConstraint<DataTypes>::getConstraintViolation(const ConstraintParam
     const auto& weight = sofa::helper::getReadAccessor(d_weight);
     const auto& indices = sofa::helper::getReadAccessor(d_indices);
     sofa::Index sizeIndices = indices.size();
+    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
 
     int index = 0;
     for (unsigned int i=0; i<sizeIndices; i++)
@@ -150,7 +151,7 @@ void PositionConstraint<DataTypes>::getConstraintViolation(const ConstraintParam
             if(useDirections[j])
             {
                 Real dfree = Jdx->element(index) + d*directions[j]*weight[j];
-                resV->set(m_constraintId+index, dfree);
+                resV->set(constraintIndex+index, dfree);
                 index++;
             }
     }
@@ -204,7 +205,7 @@ void PositionConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    d_force.setValue(lambda->element(m_constraintId));
+    d_force.setValue(lambda->element(m_constraintIndex.getValue()));
 }
 
 

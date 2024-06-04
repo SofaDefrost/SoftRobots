@@ -134,7 +134,7 @@ public:
     using PositionModel<DataTypes>::d_useDirections ;
     using PositionModel<DataTypes>::d_directions ;
     using PositionModel<DataTypes>::d_weight ;
-    using PositionModel<DataTypes>::m_constraintId ;
+    using PositionModel<DataTypes>::m_constraintIndex ;
     using PositionModel<DataTypes>::m_state ;
     ///////////////////////////////////////////////////////////////////////////
 

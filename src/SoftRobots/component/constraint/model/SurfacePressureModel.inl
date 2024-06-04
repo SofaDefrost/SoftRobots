@@ -309,7 +309,7 @@ SReal SurfacePressureModel<DataTypes>::getCavityVolume(const VecCoord& positions
 template<class DataTypes>
 void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams,
                                                             DataMatrixDeriv &cMatrix,
-                                                            unsigned int &constraintIndex,
+                                                            unsigned int &cIndex,
                                                             const DataVecCoord &x)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
@@ -317,16 +317,17 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
 
     SOFA_UNUSED(cParams);
 
-    m_constraintId = constraintIndex;
+    m_constraintIndex.setValue(cIndex);
+    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
 
     ReadAccessor<Data<vector<Quad>>>     quadList = d_quads;
     ReadAccessor<Data<vector<Triangle>>> triList  = d_triangles;
 
     MatrixDeriv& matrix = *cMatrix.beginEdit();
     matrix.begin();
-    MatrixDerivRowIterator rowIterator = matrix.writeLine(m_constraintId);
+    MatrixDerivRowIterator rowIterator = matrix.writeLine(constraintIndex);
 
-    constraintIndex++;
+    cIndex++;
 
     VecCoord positions = x.getValue();
     for (Quad quad :  quadList)
@@ -356,7 +357,7 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
     }
 
     cMatrix.endEdit();
-    m_nbLines = constraintIndex - m_constraintId;
+    m_nbLines = cIndex - constraintIndex;
 }
 
 
@@ -372,7 +373,7 @@ void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintPar
 
     d_cavityVolume.setValue(getCavityVolume(m_state->readPositions().ref()));
     Real dfree = Jdx->element(0) + d_cavityVolume.getValue() - d_initialCavityVolume.getValue();
-    resV->set(m_constraintId, dfree);
+    resV->set(m_constraintIndex.getValue(), dfree);
 }
 
 
@@ -386,8 +387,8 @@ void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParam
 
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
-
-    d_pressure.setValue(lambda->element(m_constraintId));
+    
+    d_pressure.setValue(lambda->element(m_constraintIndex.getValue()));
 
     // Compute actual cavity volume and volume growth from updated positions of mechanical
     // Eulalie.C: For now the position of the mechanical state is not up to date when storeLambda() is called

@@ -635,11 +635,12 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
     SOFA_UNUSED(cParams);
 
-    m_constraintId = cIndex;
+    m_constraintIndex.setValue(cIndex);
+    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
 
     MatrixDeriv& matrix = *cMatrix.beginEdit();
 
-    MatrixDerivRowIterator rowIterator = matrix.writeLine(m_constraintId);
+    MatrixDerivRowIterator rowIterator = matrix.writeLine(constraintIndex);
 
     VecCoord positions = x.getValue();
 
@@ -784,7 +785,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
     }
     cIndex++;
     cMatrix.endEdit();
-    m_nbLines = cIndex - m_constraintId;
+    m_nbLines = cIndex - constraintIndex;
 }
 
 
@@ -802,7 +803,7 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 
     d_cableLength.setValue(getCableLength(m_state->readPositions().ref()));
     Real dfree = Jdx->element(0) + d_cableInitialLength.getValue() - d_cableLength.getValue();
-    resV->set(m_constraintId, dfree);
+    resV->set(m_constraintIndex.getValue(), dfree);
 }
 
 
@@ -819,7 +820,7 @@ void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
             return ;
     }
 
-    d_force.setValue(lambda->element(m_constraintId));
+    d_force.setValue(lambda->element(m_constraintIndex.getValue()));
 
     // Compute actual cable length and displacement from updated positions of mechanical
     // Eulalie.C: For now the position of the mechanical state is not up to date when storeLambda() is called

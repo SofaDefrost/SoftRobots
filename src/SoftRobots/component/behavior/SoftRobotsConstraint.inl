@@ -83,6 +83,7 @@ void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const sofa::core::C
     {
         const DataVecCoord& xfree = *cParams->readX(m_state);
         ReadAccessor<sofa::Data<VecCoord>> x = m_state->readPositions();
+        const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
 
         VecDeriv dx;
         dx.resize(m_state->getSize());
@@ -95,7 +96,7 @@ void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const sofa::core::C
         Jdx.clear();
         for(unsigned int i=0; i<m_nbLines; i++)
         {
-            MatrixDerivRowConstIterator rowIt = J->getValue().readLine(m_constraintId+i);
+            MatrixDerivRowConstIterator rowIt = J->getValue().readLine(constraintIndex + i);
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
                 Jdx.add(i, colIt.val() * dx[colIt.index()]);
         }

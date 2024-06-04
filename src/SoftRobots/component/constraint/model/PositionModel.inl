@@ -217,7 +217,8 @@ void PositionModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cPa
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(x);
 
-    m_constraintId = cIndex;
+    m_constraintIndex.setValue(cIndex);
+    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
     MatrixDeriv& column = *cMatrix.beginEdit();
     const auto& indices = sofa::helper::getReadAccessor(d_indices);
     sofa::Index sizeIndices = indices.size();
@@ -232,7 +233,7 @@ void PositionModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cPa
         {
             if(useDirections[j])
             {
-                MatrixDerivRowIterator rowIterator = column.writeLine(m_constraintId+index);
+                MatrixDerivRowIterator rowIterator = column.writeLine(constraintIndex+index);
                 rowIterator.setCol(indices[i], directions[j]*weight[j]);
                 index++;
             }
@@ -241,8 +242,8 @@ void PositionModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cPa
 
     cIndex += index;
     cMatrix.endEdit();
-
-    m_nbLines = cIndex - m_constraintId;
+    
+    m_nbLines = cIndex - constraintIndex;
 }
 
 

@@ -159,7 +159,7 @@ protected:
     /// otherwise any access to the base::attribute would require
     /// using the "this->" approach.
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
-    using SoftRobotsConstraint<DataTypes>::m_constraintId ;
+    using SoftRobotsConstraint<DataTypes>::m_constraintIndex ;
     using SoftRobotsConstraint<DataTypes>::m_state ;
     using SoftRobotsConstraint<DataTypes>::d_componentState ;
     ////////////////////////////////////////////////////////////////////////////
