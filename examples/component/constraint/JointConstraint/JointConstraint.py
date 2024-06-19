@@ -6,7 +6,6 @@ dirPath = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='SoftRobots')
-    rootNode.addObject('RequiredPlugin', name='SoftRobots.Inverse')
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')  # Needed to use components [SparseLDLSolver]
     rootNode.addObject('RequiredPlugin', name='ArticulatedSystemPlugin')  # Needed to use components [ArticulatedHierarchyContainer,ArticulatedSystemMapping,Articulation,ArticulationCenter]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.AnimationLoop')  # Needed to use components [FreeMotionAnimationLoop]
