@@ -163,9 +163,3 @@ protected:
 };
 
 } // namespace
-
-namespace sofa::core::behavior
-{
-    using SoftRobotsBaseConstraint SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::behavior::SoftRobotsBaseConstraint;
-}

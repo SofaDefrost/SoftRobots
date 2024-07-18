@@ -101,9 +101,4 @@ protected:
 
 }   // namespace
 
-namespace sofa::component::controller
-{
-    using SerialPortBridgeGeneric SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::controller::SerialPortBridgeGeneric;
-}
 

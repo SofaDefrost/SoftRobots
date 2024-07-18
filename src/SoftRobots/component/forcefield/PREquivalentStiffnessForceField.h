@@ -141,9 +141,3 @@ extern template class SOFA_SOFTROBOTS_API PREquivalentStiffnessForceField<sofa::
 
 } // namespace
 
-namespace sofa::component::forcefield
-{
-    template <class DataTypes>
-    using PREquivalentStiffnessForceField SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::forcefield::PREquivalentStiffnessForceField<DataTypes>;
-}

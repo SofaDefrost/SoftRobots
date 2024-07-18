@@ -139,10 +139,3 @@ extern template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaul
 
 } // namespace
 
-namespace sofa::component::constraintset
-{
-    template <class DataTypes>
-    using UnilateralPlaneConstraint SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::constraint::UnilateralPlaneConstraint<DataTypes>;
-}
-

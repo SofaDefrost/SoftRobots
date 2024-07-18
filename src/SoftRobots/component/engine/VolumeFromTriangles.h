@@ -103,10 +103,3 @@ extern template class SOFA_SOFTROBOTS_API VolumeFromTriangles<sofa::defaulttype:
 
 } // namespace
 
-namespace sofa::component::engine
-{
-    template <class DataTypes>
-    using VolumeFromTriangles SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::engine::VolumeFromTriangles<DataTypes>;
-}
-

@@ -39,8 +39,8 @@ using sofa::core::ConstraintParams;
 using sofa::type::Vec;
 using sofa::core::visual::VisualParams ;
 using sofa::core::behavior::ConstraintResolution;
-using sofa::core::behavior::SoftRobotsConstraint;
-using sofa::core::behavior::SoftRobotsBaseConstraint;
+using softrobots::behavior::SoftRobotsConstraint;
+using softrobots::behavior::SoftRobotsBaseConstraint;
 
 
 class JointDisplacementConstraintResolution : public ConstraintResolution

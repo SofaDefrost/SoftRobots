@@ -192,10 +192,3 @@ extern template class SOFA_SOFTROBOTS_API PartialRigidificationForceField<sofa::
 
 } // namespace
 
-namespace sofa::component::forcefield
-{
-    template <class DataTypes1, class DataTypes2>
-    using PartialRigidificationForceField SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::forcefield::PartialRigidificationForceField<DataTypes1, DataTypes2>;
-}
-

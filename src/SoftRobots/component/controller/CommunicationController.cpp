@@ -162,6 +162,9 @@ template<>
 std::string CommunicationController<vector<Vec<2,int>>>::GetCustomTemplateName(){return "Vec2i";}
 
 template<>
+std::string CommunicationController<vector<Vec<1,unsigned int>>>::GetCustomTemplateName(){return "Vec1ui";}
+
+template<>
 std::string CommunicationController<vector<Vec<2,unsigned int>>>::GetCustomTemplateName(){return "Vec2ui";}
 
 template<>
@@ -187,6 +190,7 @@ int CommunicationControllerClass = RegisterObject("This component is used to bui
 .add< CommunicationController<int> >()
 .add< CommunicationController<unsigned int> >()
 .add< CommunicationController<vector<Vec<2,int>>> >()
+.add< CommunicationController<vector<Vec<1,unsigned int>>> >()
 .add< CommunicationController<vector<Vec<2,unsigned int>>> >()
 ;
 
@@ -198,6 +202,7 @@ template class CommunicationController<vector<Rigid3Types::Coord>>;
 template class CommunicationController<int>;
 template class CommunicationController<unsigned int>;
 template class CommunicationController<vector<Vec<2,int>> >;
+template class CommunicationController<vector<Vec<1,unsigned>> >;
 template class CommunicationController<vector<Vec<2,unsigned>> >;
 
 

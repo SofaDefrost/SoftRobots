@@ -113,10 +113,3 @@ protected:
 
 }   //namespace
 
-namespace sofa::component::controller
-{
-    template <class DataTypes>
-    using CommunicationController SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::controller::CommunicationController<DataTypes>;
-}
-

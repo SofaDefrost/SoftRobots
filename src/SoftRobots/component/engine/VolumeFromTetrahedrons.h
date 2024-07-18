@@ -104,10 +104,4 @@ extern template class VolumeFromTetrahedrons<sofa::defaulttype::Vec3Types>;
 
 } // namespace
 
-namespace sofa::component::engine
-{
-    template <class DataTypes>
-    using VolumeFromTetrahedrons SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::engine::VolumeFromTetrahedrons<DataTypes>;
-}
 

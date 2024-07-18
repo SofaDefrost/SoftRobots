@@ -92,10 +92,3 @@ extern template class SOFA_SOFTROBOTS_API CenterOfMass<sofa::defaulttype::Vec3Ty
 
 } // namespace
 
-namespace sofa::component::engine
-{
-    template <class DataTypes>
-    using CenterOfMass SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::engine::CenterOfMass<DataTypes>;
-}
-
