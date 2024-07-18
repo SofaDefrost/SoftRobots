@@ -140,7 +140,7 @@ protected:
     using SoftRobotsConstraint<DataTypes>::m_state ;
     using SoftRobotsConstraint<DataTypes>::getContext ;
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
-    using SoftRobotsConstraint<DataTypes>::m_constraintIndex ;
+    using SoftRobotsConstraint<DataTypes>::d_constraintIndex ;
     using SoftRobotsConstraint<DataTypes>::d_componentState ;
     ////////////////////////////////////////////////////////////////////////////
 

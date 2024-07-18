@@ -191,8 +191,8 @@ void AffineFunctionModel<DataTypes>::buildConstraintMatrix(const ConstraintParam
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(x);
 
-    m_constraintIndex.setValue(cIndex);
-    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
+    d_constraintIndex.setValue(cIndex);
+    const auto& constraintIndex = sofa::helper::getReadAccessor(d_constraintIndex);
 
     MatrixDeriv& matrix = *cMatrix.beginEdit();
     
@@ -224,7 +224,7 @@ void AffineFunctionModel<DataTypes>::getConstraintViolation(const ConstraintPara
 
 	d_functionValue.setValue(getAffineFunctionValue(m_state->readPositions().ref()));
     Real dfree = Jdx->element(0) + d_functionValue.getValue();
-    resV->set(m_constraintIndex.getValue(), dfree);
+    resV->set(d_constraintIndex.getValue(), dfree);
 }
 
 
@@ -240,7 +240,7 @@ void AffineFunctionModel<DataTypes>::storeLambda(const ConstraintParams* cParams
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
     
-    d_force.setValue(lambda->element(m_constraintIndex.getValue()));
+    d_force.setValue(lambda->element(d_constraintIndex.getValue()));
 
     //Note: this is one step behind
     d_displacement.setValue(d_functionValue.getValue());

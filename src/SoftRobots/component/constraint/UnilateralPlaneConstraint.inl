@@ -115,8 +115,8 @@ void UnilateralPlaneConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 
     SOFA_UNUSED(cParams);
 
-    m_constraintIndex.setValue(cIndex);
-    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
+    d_constraintIndex.setValue(cIndex);
+    const auto& constraintIndex = sofa::helper::getReadAccessor(d_constraintIndex);
 
     MatrixDeriv& column = *cMatrix.beginEdit();
 
@@ -164,7 +164,7 @@ void UnilateralPlaneConstraint<DataTypes>::getConstraintViolation(const Constrai
         normal = -normal;
 
     Real dfree = Jdx->element(0) + (p0-p1)*normal/normal.norm();
-    resV->set(m_constraintIndex.getValue(), dfree );
+    resV->set(d_constraintIndex.getValue(), dfree );
 }
 
 

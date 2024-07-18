@@ -150,7 +150,7 @@ void JointConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* c
     if(!this->isComponentStateValid())
         return ;
 
-    auto constraintIndex = sofa::helper::getWriteAccessor(m_constraintIndex);
+    auto constraintIndex = sofa::helper::getWriteAccessor(d_constraintIndex);
     constraintIndex.wref() = cIndex;
 
     MatrixDeriv& matrix = *cMatrix.beginEdit();
@@ -175,7 +175,7 @@ void JointConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* 
     SOFA_UNUSED(cParams);
 
     Real dFree = Jdx->element(0) - m_initDisplacement + m_currentDisplacement;
-    resV->set(m_constraintIndex.getValue(), dFree);
+    resV->set(d_constraintIndex.getValue(), dFree);
 }
 
 template<class DataTypes>
@@ -224,7 +224,7 @@ void JointConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
         return ;
 
     // Update joint effort
-    d_force.setValue(lambda->element(m_constraintIndex.getValue()));
+    d_force.setValue(lambda->element(d_constraintIndex.getValue()));
 
     // Update joint displacement
     ReadAccessor<sofa::Data<VecCoord>> positions = m_state->readPositions();

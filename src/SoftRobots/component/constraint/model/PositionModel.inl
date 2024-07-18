@@ -217,8 +217,8 @@ void PositionModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cPa
     SOFA_UNUSED(cParams);
     SOFA_UNUSED(x);
 
-    m_constraintIndex.setValue(cIndex);
-    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
+    d_constraintIndex.setValue(cIndex);
+    const auto& constraintIndex = sofa::helper::getReadAccessor(d_constraintIndex);
     MatrixDeriv& column = *cMatrix.beginEdit();
     const auto& indices = sofa::helper::getReadAccessor(d_indices);
     sofa::Index sizeIndices = indices.size();
