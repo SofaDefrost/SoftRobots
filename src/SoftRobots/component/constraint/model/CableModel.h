@@ -192,11 +192,3 @@ extern template class SOFA_SOFTROBOTS_API CableModel<sofa::defaulttype::Vec2Type
 
 
 } // namespace
-
-namespace sofa::component::constraintset
-{
-    template <class DataTypes>
-    using CableModel SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::constraint::CableModel<DataTypes>;
-}
-

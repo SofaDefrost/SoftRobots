@@ -130,10 +130,3 @@ extern template class AffineFunctionModel<sofa::defaulttype::Vec3Types>;
 extern template class AffineFunctionModel<sofa::defaulttype::Rigid3Types>;
 
 } // namespace
-
-namespace sofa::component::constraintset
-{
-    template <class DataTypes>
-    using AffineFunctionModel SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::constraint::AffineFunctionModel<DataTypes>;
-}

@@ -157,9 +157,3 @@ extern template class SurfacePressureModel<sofa::defaulttype::Vec3Types>;
 
 } // namespace
 
-namespace sofa::component::constraintset
-{
-    template <class DataTypes>
-    using SurfacePressureModel SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::constraint::SurfacePressureModel<DataTypes>;
-}
