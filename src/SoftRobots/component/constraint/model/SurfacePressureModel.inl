@@ -317,8 +317,8 @@ void SurfacePressureModel<DataTypes>::buildConstraintMatrix(const ConstraintPara
 
     SOFA_UNUSED(cParams);
 
-    m_constraintIndex.setValue(cIndex);
-    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
+    d_constraintIndex.setValue(cIndex);
+    const auto& constraintIndex = sofa::helper::getReadAccessor(d_constraintIndex);
 
     ReadAccessor<Data<vector<Quad>>>     quadList = d_quads;
     ReadAccessor<Data<vector<Triangle>>> triList  = d_triangles;
@@ -373,7 +373,7 @@ void SurfacePressureModel<DataTypes>::getConstraintViolation(const ConstraintPar
 
     d_cavityVolume.setValue(getCavityVolume(m_state->readPositions().ref()));
     Real dfree = Jdx->element(0) + d_cavityVolume.getValue() - d_initialCavityVolume.getValue();
-    resV->set(m_constraintIndex.getValue(), dfree);
+    resV->set(d_constraintIndex.getValue(), dfree);
 }
 
 
@@ -388,7 +388,7 @@ void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParam
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
     
-    d_pressure.setValue(lambda->element(m_constraintIndex.getValue()));
+    d_pressure.setValue(lambda->element(d_constraintIndex.getValue()));
 
     // Compute actual cavity volume and volume growth from updated positions of mechanical
     // Eulalie.C: For now the position of the mechanical state is not up to date when storeLambda() is called

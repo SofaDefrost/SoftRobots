@@ -137,7 +137,7 @@ void PositionConstraint<DataTypes>::getConstraintViolation(const ConstraintParam
     const auto& weight = sofa::helper::getReadAccessor(d_weight);
     const auto& indices = sofa::helper::getReadAccessor(d_indices);
     sofa::Index sizeIndices = indices.size();
-    const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
+    const auto& constraintIndex = sofa::helper::getReadAccessor(d_constraintIndex);
 
     int index = 0;
     for (unsigned int i=0; i<sizeIndices; i++)
@@ -205,7 +205,7 @@ void PositionConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    d_force.setValue(lambda->element(m_constraintIndex.getValue()));
+    d_force.setValue(lambda->element(d_constraintIndex.getValue()));
 }
 
 

@@ -83,7 +83,7 @@ void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const sofa::core::C
     {
         const DataVecCoord& xfree = *cParams->readX(m_state);
         ReadAccessor<sofa::Data<VecCoord>> x = m_state->readPositions();
-        const auto& constraintIndex = sofa::helper::getReadAccessor(m_constraintIndex);
+        const auto& constraintIndex = sofa::helper::getReadAccessor(d_constraintIndex);
 
         VecDeriv dx;
         dx.resize(m_state->getSize());
