@@ -36,4 +36,4 @@ ignore "tutorials/Tripod/myproject/parts/tripodcontroller.py"
 ignore "component/controller/AnimationEditor/__init__.py"
 
 #Fix random timeout on ubuntu
-timeout "thematicalDocs/T4-DirectActuation/Actuators/Pneumatic.SurfaceConstraintPressure.py" "45"
+timeout "thematicalDocs/T4-DirectActuation/Actuators/Pneumatic/SurfaceConstraintPressure.py" "45"
