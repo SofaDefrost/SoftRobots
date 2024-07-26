@@ -105,10 +105,3 @@ extern template class SOFA_SOFTROBOTS_API DataVariationLimiter<sofa::type::Vec3i
 
 } // namespace
 
-namespace sofa::component::controller
-{
-    template <class DataTypes>
-    using DataVariationLimiter SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::controller::DataVariationLimiter<DataTypes>;
-}
-

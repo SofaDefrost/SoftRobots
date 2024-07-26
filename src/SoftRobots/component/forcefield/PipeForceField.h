@@ -177,9 +177,3 @@ extern template class SOFA_SOFTROBOTS_API PipeForceField<sofa::defaulttype::Vec3
 
 } // namespace
 
-namespace sofa::component::forcefield
-{
-    template <class DataTypes>
-    using PipeForceField SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::forcefield::PipeForceField<DataTypes>;
-}

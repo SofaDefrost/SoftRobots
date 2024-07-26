@@ -140,10 +140,3 @@ extern template class SOFA_SOFTROBOTS_API SoftRobotsConstraint<sofa::defaulttype
 
 } // namespace softrobots::behavior
 
-namespace sofa::core::behavior
-{
-    template <class DataTypes>
-    using SoftRobotsConstraint SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::behavior::SoftRobotsConstraint<DataTypes>;
-}
-

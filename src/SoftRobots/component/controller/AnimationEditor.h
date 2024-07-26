@@ -147,9 +147,3 @@ extern template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3Types>;
 
 }   //namespace
 
-namespace sofa::component::controller
-{
-    template <class DataTypes>
-    using AnimationEditor SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::controller::AnimationEditor<DataTypes>;
-}

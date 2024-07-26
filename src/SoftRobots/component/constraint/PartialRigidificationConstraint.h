@@ -107,10 +107,3 @@ extern template class SOFA_SOFTROBOTS_API PartialRigidificationConstraint<sofa::
 #endif
 } // namespace
 
-namespace sofa::component::constraintset
-{
-    template <class DataTypes>
-    using PartialRigidificationConstraint SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::constraint::PartialRigidificationConstraint<DataTypes>;
-}
-
