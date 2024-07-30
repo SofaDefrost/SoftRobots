@@ -3,9 +3,10 @@
 
         <VisualStyle displayFlags='showCollision showVisualModels showForceFields showInteractionForceFields hideCollisionModels hideBoundingCollisionModels hideWireframe'/>
 
+        <RequiredPlugin pluginName='Sofa.Component.AnimationLoop'/>
         <RequiredPlugin pluginName='Sofa.Component.LinearSolver.Direct'/>
 
-        <FreeMotionMasterSolver/>
+        <FreeMotionAnimationLoop/>
         <CollisionPipeline verbose='0'/>
         <BruteForceBroadPhase name="N2" />
         <BVHNarrowPhase />
