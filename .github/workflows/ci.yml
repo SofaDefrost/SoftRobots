@@ -79,7 +79,7 @@ jobs:
           path: ${{ env.WORKSPACE_INSTALL_PATH }}
 
       - name: Install artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: SoftRobots_${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
@@ -129,7 +129,7 @@ jobs:
     continue-on-error: true
     steps:
       - name: Get artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           path: artifacts
 
