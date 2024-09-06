@@ -36,7 +36,7 @@ def createScene(rootNode):
 
     # bunny/cavity
     cavity = bunny.addChild('cavity')
-    cavity.addObject('MeshObjLoader', name='loader', filename=path + 'Hollow_Bunny_Body_Cavity.obj')
+    cavity.addObject('MeshOBJLoader', name='loader', filename=path + 'Hollow_Bunny_Body_Cavity.obj')
     cavity.addObject('MeshTopology', src='@loader', name='topo')
     cavity.addObject('MechanicalObject', name='cavity')
     cavity.addObject('SurfacePressureConstraint', name='surfaceConstraint', triangles='@topo.triangles', value=0,
