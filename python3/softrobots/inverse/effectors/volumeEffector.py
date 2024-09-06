@@ -64,7 +64,7 @@ def VolumeEffector(surfaceMeshFileName=None,
     if surfaceMeshFileName.endswith(".stl"):
         veffector.addObject('MeshSTLLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
     elif surfaceMeshFileName.endswith(".obj"):
-        veffector.addObject('MeshObjLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
+        veffector.addObject('MeshOBJLoader', name='MeshLoader', filename=surfaceMeshFileName, rotation=rotation, translation=translation, scale=uniformScale)
     else :
         Sofa.msg_error("Your surfaceMeshFileName extension is not the right one, you have to give a surfacic mesh with .stl or .obj extension")
         return None
