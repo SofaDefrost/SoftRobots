@@ -60,7 +60,7 @@ jobs:
           fi
 
       - name: Create artifact
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: SoftRobots_master_nightly_${{ runner.os }}
           path: ${{ env.WORKSPACE_INSTALL_PATH }}
