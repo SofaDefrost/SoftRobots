@@ -30,7 +30,7 @@
                 <LinearSolverConstraintCorrection/>
 
                 <Node name="cavity">
-                        <MeshObjLoader name="loader" filename='mesh/Hollow_Bunny_Body_Cavity.obj'/>
+                        <MeshOBJLoader name="loader" filename='mesh/Hollow_Bunny_Body_Cavity.obj'/>
                         <Mesh name="topo" src='@loader'/>
                         <MechanicalObject name="cavity" />
 
