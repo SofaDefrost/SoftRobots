@@ -63,6 +63,7 @@ using softrobots::engine::VolumeFromTetrahedrons ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository;
 
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace softrobots
 {
@@ -110,7 +111,11 @@ struct VolumeFromTetrahedronsTest : public sofa::testing::BaseTest, VolumeFromTe
         return ;
     }
 
-    void simpleSceneTest(){
+    void simpleSceneTest()
+    {
+
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        
         string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'> "
