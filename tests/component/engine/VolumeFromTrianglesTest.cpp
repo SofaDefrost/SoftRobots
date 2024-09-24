@@ -63,6 +63,7 @@ using softrobots::engine::VolumeFromTriangles ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository;
 
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace softrobots
 {
@@ -113,6 +114,8 @@ struct VolumeFromTrianglesTest : public sofa::testing::BaseTest, VolumeFromTrian
 
     void simpleSceneTest()
     {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        
         string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'>"

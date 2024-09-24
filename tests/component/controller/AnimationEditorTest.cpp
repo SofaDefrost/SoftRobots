@@ -59,6 +59,7 @@ using softrobots::controller::AnimationEditor ;
 #include <sofa/core/behavior/MechanicalState.h>
 using sofa::core::behavior::MechanicalState;
 
+#include <sofa/simpleapi/SimpleApi.h>
 
 namespace softrobots
 {
@@ -122,6 +123,8 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, controller::Animati
 
     void simpleSceneTest()
     {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+
         string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
