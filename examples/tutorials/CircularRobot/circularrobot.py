@@ -112,7 +112,7 @@ def createScene(rootNode):
                                                      "Sofa.Component.AnimationLoop",
                                                      # Needed to use components FreeMotionAnimationLoop
                                                      "Sofa.Component.Collision.Detection.Algorithm",
-                                                     # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                                                     # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, CollisionPipeline
                                                      "Sofa.Component.Collision.Detection.Intersection",
                                                      # Needed to use components LocalMinDistance
                                                      "Sofa.Component.Collision.Geometry",
@@ -163,7 +163,7 @@ def createScene(rootNode):
         rootNode.addObject('GenericConstraintSolver', maxIterations=500, tolerance=1e-5)
 
     # Contact detection methods
-    rootNode.addObject('DefaultPipeline')
+    rootNode.addObject('CollisionPipeline')
     rootNode.addObject('BruteForceBroadPhase')
     rootNode.addObject('BVHNarrowPhase')
     rootNode.addObject('CollisionResponse', response="FrictionContactConstraint", responseParams="mu=0.8")

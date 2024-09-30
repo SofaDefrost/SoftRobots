@@ -13,7 +13,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName=[
                                 "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                                 "Sofa.Component.Collision.Detection.Algorithm",
-                                # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                                # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, CollisionPipeline
                                 "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
                                 "Sofa.Component.Collision.Response.Contact",  # Needed to use components CollisionResponse
                                 "Sofa.Component.Constraint.Lagrangian.Correction",
@@ -37,7 +37,7 @@ def createScene(rootNode):
     rootNode.addObject('DefaultVisualManagerLoop')
     rootNode.addObject('GenericConstraintSolver', maxIterations=1000, tolerance=1e-3)
 
-    rootNode.addObject('DefaultPipeline')
+    rootNode.addObject('CollisionPipeline')
     rootNode.addObject('BruteForceBroadPhase', name="N2")
     rootNode.addObject('BVHNarrowPhase')
     rootNode.addObject('CollisionResponse', response="FrictionContactConstraint", responseParams="mu=0")

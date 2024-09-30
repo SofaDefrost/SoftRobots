@@ -8,7 +8,7 @@ def addHeader(node):
     node.addObject('RequiredPlugin', pluginName=[
                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                             "Sofa.Component.Collision.Detection.Algorithm",
-                            # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                            # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, CollisionPipeline
                             "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
                             "Sofa.Component.Collision.Response.Contact",  # Needed to use components CollisionResponse
                             "Sofa.Component.Constraint.Lagrangian.Correction",  # Needed to use components GenericConstraintCorrection
@@ -37,7 +37,7 @@ def addHeader(node):
         node.addObject('QPInverseProblemSolver')
     else:
         node.addObject('GenericConstraintSolver', maxIterations=100, tolerance=0.001)
-    node.addObject('DefaultPipeline')
+    node.addObject('CollisionPipeline')
     node.addObject('BruteForceBroadPhase')
     node.addObject('BVHNarrowPhase')
     node.addObject('CollisionResponse', response="FrictionContactConstraint")

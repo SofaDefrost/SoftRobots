@@ -10,7 +10,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName=[
                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                             "Sofa.Component.Collision.Detection.Algorithm",
-                            # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                            # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, CollisionPipeline
                             "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
                             "Sofa.Component.Collision.Geometry",
                             # Needed to use components LineCollisionModel, PointCollisionModel, TriangleCollisionModel
