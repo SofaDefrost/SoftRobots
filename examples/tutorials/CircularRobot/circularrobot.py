@@ -112,13 +112,13 @@ def createScene(rootNode):
                                                      "Sofa.Component.AnimationLoop",
                                                      # Needed to use components FreeMotionAnimationLoop
                                                      "Sofa.Component.Collision.Detection.Algorithm",
-                                                     # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                                                     # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, CollisionPipeline
                                                      "Sofa.Component.Collision.Detection.Intersection",
                                                      # Needed to use components LocalMinDistance
                                                      "Sofa.Component.Collision.Geometry",
                                                      # Needed to use components LineCollisionModel, PointCollisionModel, TriangleCollisionModel
                                                      "Sofa.Component.Collision.Response.Contact",
-                                                     # Needed to use components DefaultContactManager
+                                                     # Needed to use components CollisionResponse
                                                      "Sofa.Component.Constraint.Lagrangian.Correction",
                                                      # Needed to use components GenericConstraintCorrection, UncoupledConstraintCorrection
                                                      "Sofa.Component.Constraint.Lagrangian.Solver",
@@ -163,10 +163,10 @@ def createScene(rootNode):
         rootNode.addObject('GenericConstraintSolver', maxIterations=500, tolerance=1e-5)
 
     # Contact detection methods
-    rootNode.addObject('DefaultPipeline')
+    rootNode.addObject('CollisionPipeline')
     rootNode.addObject('BruteForceBroadPhase')
     rootNode.addObject('BVHNarrowPhase')
-    rootNode.addObject('DefaultContactManager', response="FrictionContactConstraint", responseParams="mu=0.8")
+    rootNode.addObject('CollisionResponse', response="FrictionContactConstraint", responseParams="mu=0.8")
     rootNode.addObject('LocalMinDistance', alarmDistance=5, contactDistance=1, angleCone=0.0)
 
     Floor(rootNode)

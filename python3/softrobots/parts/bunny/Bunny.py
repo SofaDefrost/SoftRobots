@@ -65,7 +65,7 @@ def createScene(rootNode):
                             "Sofa.GL.Component.Rendering3D",  # Needed to use components OglModel
                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                             "Sofa.Component.Collision.Detection.Algorithm",
-                            # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                            # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, CollisionPipeline
                             "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
                             "Sofa.Component.Collision.Response.Contact",  # Needed to use components RuleBasedContactManager
                             "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver

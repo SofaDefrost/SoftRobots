@@ -8,9 +8,9 @@ def addHeader(node):
     node.addObject('RequiredPlugin', pluginName=[
                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                             "Sofa.Component.Collision.Detection.Algorithm",
-                            # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
+                            # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, CollisionPipeline
                             "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
-                            "Sofa.Component.Collision.Response.Contact",  # Needed to use components DefaultContactManager
+                            "Sofa.Component.Collision.Response.Contact",  # Needed to use components CollisionResponse
                             "Sofa.Component.Constraint.Lagrangian.Correction",  # Needed to use components GenericConstraintCorrection
                             "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader
@@ -37,9 +37,9 @@ def addHeader(node):
         node.addObject('QPInverseProblemSolver')
     else:
         node.addObject('GenericConstraintSolver', maxIterations=100, tolerance=0.001)
-    node.addObject('DefaultPipeline')
+    node.addObject('CollisionPipeline')
     node.addObject('BruteForceBroadPhase')
     node.addObject('BVHNarrowPhase')
-    node.addObject('DefaultContactManager', response="FrictionContactConstraint")
+    node.addObject('CollisionResponse', response="FrictionContactConstraint")
     node.addObject('LocalMinDistance', alarmDistance=5, contactDistance=1)
     node.addObject('BackgroundSetting', color=[0, 0, 0, 1])

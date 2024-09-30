@@ -227,9 +227,9 @@ def createScene(rootNode):
 	rootNode.findData('gravity').value=[-9810, 0, 0];
 	rootNode.addObject('FreeMotionAnimationLoop')
 	rootNode.addObject('GenericConstraintSolver', tolerance=1e-12, maxIterations=10000)
-	rootNode.addObject('DefaultPipeline')
+	rootNode.addObject('CollisionPipeline')
 	rootNode.addObject('BruteForceDetection')
-        rootNode.addObject('DefaultContactManager', response='FrictionContactConstraint', responseParams='mu=0.6')
+        rootNode.addObject('CollisionResponse', response='FrictionContactConstraint', responseParams='mu=0.6')
 	rootNode.addObject('LocalMinDistance', name='Proximity', alarmDistance=5, contactDistance=1, angleCone=0.0)
 
 	rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765])
