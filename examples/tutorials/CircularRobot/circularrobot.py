@@ -118,7 +118,7 @@ def createScene(rootNode):
                                                      "Sofa.Component.Collision.Geometry",
                                                      # Needed to use components LineCollisionModel, PointCollisionModel, TriangleCollisionModel
                                                      "Sofa.Component.Collision.Response.Contact",
-                                                     # Needed to use components DefaultContactManager
+                                                     # Needed to use components CollisionResponse
                                                      "Sofa.Component.Constraint.Lagrangian.Correction",
                                                      # Needed to use components GenericConstraintCorrection, UncoupledConstraintCorrection
                                                      "Sofa.Component.Constraint.Lagrangian.Solver",
@@ -166,7 +166,7 @@ def createScene(rootNode):
     rootNode.addObject('DefaultPipeline')
     rootNode.addObject('BruteForceBroadPhase')
     rootNode.addObject('BVHNarrowPhase')
-    rootNode.addObject('DefaultContactManager', response="FrictionContactConstraint", responseParams="mu=0.8")
+    rootNode.addObject('CollisionResponse', response="FrictionContactConstraint", responseParams="mu=0.8")
     rootNode.addObject('LocalMinDistance', alarmDistance=5, contactDistance=1, angleCone=0.0)
 
     Floor(rootNode)

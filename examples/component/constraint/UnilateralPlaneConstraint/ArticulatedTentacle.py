@@ -15,7 +15,7 @@ def createScene(rootNode):
                                 "Sofa.Component.Collision.Detection.Algorithm",
                                 # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
                                 "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
-                                "Sofa.Component.Collision.Response.Contact",  # Needed to use components DefaultContactManager
+                                "Sofa.Component.Collision.Response.Contact",  # Needed to use components CollisionResponse
                                 "Sofa.Component.Constraint.Lagrangian.Correction",
                                 # Needed to use components LinearSolverConstraintCorrection
                                 "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
@@ -40,7 +40,7 @@ def createScene(rootNode):
     rootNode.addObject('DefaultPipeline')
     rootNode.addObject('BruteForceBroadPhase', name="N2")
     rootNode.addObject('BVHNarrowPhase')
-    rootNode.addObject('DefaultContactManager', response="FrictionContactConstraint", responseParams="mu=0")
+    rootNode.addObject('CollisionResponse', response="FrictionContactConstraint", responseParams="mu=0")
     rootNode.addObject('LocalMinDistance', name="Proximity", alarmDistance=1, contactDistance=0.1)
 
     rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])

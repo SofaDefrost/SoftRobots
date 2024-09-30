@@ -10,7 +10,7 @@ def addHeader(node):
                             "Sofa.Component.Collision.Detection.Algorithm",
                             # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, DefaultPipeline
                             "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
-                            "Sofa.Component.Collision.Response.Contact",  # Needed to use components DefaultContactManager
+                            "Sofa.Component.Collision.Response.Contact",  # Needed to use components CollisionResponse
                             "Sofa.Component.Constraint.Lagrangian.Correction",  # Needed to use components GenericConstraintCorrection
                             "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader
@@ -40,6 +40,6 @@ def addHeader(node):
     node.addObject('DefaultPipeline')
     node.addObject('BruteForceBroadPhase')
     node.addObject('BVHNarrowPhase')
-    node.addObject('DefaultContactManager', response="FrictionContactConstraint")
+    node.addObject('CollisionResponse', response="FrictionContactConstraint")
     node.addObject('LocalMinDistance', alarmDistance=5, contactDistance=1)
     node.addObject('BackgroundSetting', color=[0, 0, 0, 1])
