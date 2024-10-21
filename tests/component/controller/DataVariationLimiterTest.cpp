@@ -29,6 +29,7 @@
 ******************************************************************************/
 
 #include <string>
+#include <sofa/simpleapi/SimpleApi.h>
 using std::string ;
 
 #include <sofa/testing/BaseTest.h>
@@ -99,6 +100,8 @@ struct DataVariationLimiterTest : public sofa::testing::BaseTest, DataVariationL
 
 
     void simpleSceneTest(){
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+
         string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
