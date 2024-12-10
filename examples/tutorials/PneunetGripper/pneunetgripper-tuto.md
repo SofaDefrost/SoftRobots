@@ -62,7 +62,7 @@ To easily define the indices of the points which will be fixed, we use the boxRO
 
 ```python
 finger.addObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20])
-finger.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
+finger.addObject('RestShapeSpringsForceField', indices='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
 ```
 
 [Step4](details/step4-boundaryConditions.py)
@@ -286,9 +286,9 @@ def createScene(rootNode):
 		finger.addObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20])
 		finger.addObject('BoxROI', name='boxROISubTopo', box=[-100, 22.5, -8, -19, 28, 8], strict=False)
 		if i == 0:
-			finger.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
+			finger.addObject('RestShapeSpringsForceField', indices='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
 		else:
-			finger.addObject('RestShapeSpringsForceField', points='@../finger1/boxROI.indices', stiffness=1e12, angularStiffness=1e12)
+			finger.addObject('RestShapeSpringsForceField', indices='@../finger1/boxROI.indices', stiffness=1e12, angularStiffness=1e12)
 
 		finger.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
 

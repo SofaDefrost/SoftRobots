@@ -75,7 +75,7 @@ def createScene(rootNode):
         finger.integration.rayleighMass = 0.1
 
         finger.addObject('BoxROI', name='boxROI', box=fingersParameters[i]['ROIBox'], drawBoxes=True, doUpdate=False)
-        finger.addObject('RestShapeSpringsForceField', points='@../Finger1/boxROI.indices', stiffness=1e12,
+        finger.addObject('RestShapeSpringsForceField', indices='@../Finger1/boxROI.indices', stiffness=1e12,
                          angularStiffness=1e12)
 
         PneumaticCavity(surfaceMeshFileName=fingersCavitySurfaceMesh,
