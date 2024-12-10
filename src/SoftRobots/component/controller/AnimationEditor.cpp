@@ -116,8 +116,9 @@ void AnimationEditor<Rigid3Types>::drawTrajectory(const VisualParams* vparams)
 
 
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
-using sofa::core::RegisterObject ;
-int AnimationEditorClass = RegisterObject("Build an animation from key points motion: \n"
+void registerAnimationEditor(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Build an animation from key points motion: \n"
                                    "ctrl+a: add keyframe \n"
                                    "ctrl+d: delete keyframe \n"
                                    "ctrl+c: copy keyframe \n"
@@ -127,12 +128,9 @@ int AnimationEditorClass = RegisterObject("Build an animation from key points mo
                                    "ctrl+m: play/pause animation \n"
                                    "ctrl+(left/right)arrow: move the cursor along the timeline \n"
                                    "ctrl+(pgDn/pgUp): move the cursor to the next/previous keyframe")
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        .add< AnimationEditor<Vec3Types> >(true)
-        .add< AnimationEditor<Rigid3Types> >()
-
-        ;
+    .add< AnimationEditor<Vec3Types> >(true)
+    .add< AnimationEditor<Rigid3Types> >());
+}
 
 template class SOFA_SOFTROBOTS_API AnimationEditor<Vec3Types>;
 template class SOFA_SOFTROBOTS_API AnimationEditor<Rigid3Types>;

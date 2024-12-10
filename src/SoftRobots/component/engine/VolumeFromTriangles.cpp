@@ -33,12 +33,12 @@ namespace softrobots::engine
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
-using sofa::core::RegisterObject;
 
-int VolumeFromTrianglesClass = RegisterObject("This class computes the volume of a given closed surfacic mesh.")
-        .add< VolumeFromTriangles<Vec3Types> >(true)
-
-        ;
+void registerVolumeFromTriangles(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This class computes the volume of a given closed surfacic mesh.")
+    .add<  VolumeFromTriangles<Vec3Types> >(true));
+}
 
 template class SOFA_SOFTROBOTS_API VolumeFromTriangles<Vec3Types>;
 
