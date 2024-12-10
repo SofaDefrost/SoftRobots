@@ -20,6 +20,6 @@ def FixingBox(parent, target, name='FixingBox',
         target.addChild(c)
 
         c.addObject('RestShapeSpringsForceField',
-                       points=self.BoxROI.getData('indices').getLinkPath(),
+                       indices=self.BoxROI.getData('indices').getLinkPath(),
                        stiffness=1e12)
         return self

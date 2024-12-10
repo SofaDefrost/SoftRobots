@@ -21,5 +21,5 @@ class FixingBox(SofaPrefab):
         target.addChild(c)
 
         c.addObject('RestShapeSpringsForceField',
-                       points=self.node.BoxROI.getData('indices').getLinkPath(),
+                       indices=self.node.BoxROI.getData('indices').getLinkPath(),
                        stiffness=1e12)

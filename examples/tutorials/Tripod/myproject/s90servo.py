@@ -75,7 +75,7 @@ class ServoMotor(Sofa.Prefab):
         angle = self.addChild('Articulation')
         angle.addObject('MechanicalObject', name='dofs', template='Vec1', position=[[0]],
                         rest_position=self.angleIn.getLinkPath())
-        angle.addObject('RestShapeSpringsForceField', points=0, stiffness=1e9)
+        angle.addObject('RestShapeSpringsForceField', indices=0, stiffness=1e9)
         angle.addObject('UniformMass', totalMass=0.01)
 
         servoWheel = angle.addChild('ServoWheel')

@@ -29,7 +29,7 @@ def createScene(rootNode):
 
     bunny.addObject('BoxROI', name='boxROI', box=[-5, -15, -5, 5, -4.5, 5], drawBoxes=True,
                     position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
-    bunny.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12)
+    bunny.addObject('RestShapeSpringsForceField', indices='@boxROI.indices', stiffness=1e12)
     bunny.addObject('LinearSolverConstraintCorrection')
 
     # bunny/cavity
