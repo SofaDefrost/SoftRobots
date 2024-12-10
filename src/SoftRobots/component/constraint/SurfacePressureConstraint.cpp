@@ -116,11 +116,13 @@ void VolumeGrowthConstraintResolution::resolution(int line, SReal** w, SReal* d,
 
 
 ///////////////////////////////////////// FACTORY //////////////////////////////////////////////////
-int SurfacePressureConstraintClass = sofa::core::RegisterObject("This component constrains a model by applying "
-                                                          "pressure on surfaces (for exemple cavities)")
-.add< SurfacePressureConstraint<Vec3Types> >(true)//Set Vec3d to default template
+void registerSurfacePressureConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This component constrains a model by applying "
+                                                          "pressure on surfaces (for example cavities)")
+    .add< SurfacePressureConstraint<Vec3Types> >(true));
+}
 
-;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 template class SOFA_SOFTROBOTS_API SurfacePressureConstraint<Vec3Types>;
 

@@ -175,24 +175,24 @@ std::string CommunicationController<vector<Rigid3fTypes::Coord>>::GetCustomTempl
 
 
 ////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
-using sofa::core::RegisterObject ;
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Vec3Types;
 using sofa::defaulttype::Vec1Types;
 
-int CommunicationControllerClass = RegisterObject("This component is used to build a communication between two simulations")
+void registerCommunicationController(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This component is used to build a communication between two simulations")
+    .add< CommunicationController<double> >(true)
+    .add< CommunicationController<vector<Vec3Types::Coord>> >()
+    .add< CommunicationController<vector<Vec1Types::Coord>> >()
+    .add< CommunicationController<vector<Rigid3Types::Coord>> >()
 
-.add< CommunicationController<double> >(true)
-.add< CommunicationController<vector<Vec3Types::Coord>> >()
-.add< CommunicationController<vector<Vec1Types::Coord>> >()
-.add< CommunicationController<vector<Rigid3Types::Coord>> >()
-
-.add< CommunicationController<int> >()
-.add< CommunicationController<unsigned int> >()
-.add< CommunicationController<vector<Vec<2,int>>> >()
-.add< CommunicationController<vector<Vec<1,unsigned int>>> >()
-.add< CommunicationController<vector<Vec<2,unsigned int>>> >()
-;
+    .add< CommunicationController<int> >()
+    .add< CommunicationController<unsigned int> >()
+    .add< CommunicationController<vector<Vec<2,int>>> >()
+    .add< CommunicationController<vector<Vec<1,unsigned int>>> >()
+    .add< CommunicationController<vector<Vec<2,unsigned int>>> >());
+}
 
 template class CommunicationController<double>;
 template class CommunicationController<vector<Vec3Types::Coord>>;

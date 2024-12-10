@@ -37,6 +37,56 @@ using sofa::helper::system::PluginManager;
 
 namespace softrobots
 {
+namespace constraint
+{
+    void registerCableConstraint(sofa::core::ObjectFactory* factory);
+    void registerJointConstraint(sofa::core::ObjectFactory* factory);
+    void registerPartialRigidificationConstraint(sofa::core::ObjectFactory* factory);
+    void registerPositionConstraint(sofa::core::ObjectFactory* factory);
+    void registerSurfacePressureConstraint(sofa::core::ObjectFactory* factory);
+    void registerUnilateralPlaneConstraint(sofa::core::ObjectFactory* factory);
+}
+
+namespace controller
+{
+    void registerAnimationEditor(sofa::core::ObjectFactory* factory);
+    void registerDataVariationLimiter(sofa::core::ObjectFactory* factory);
+    void registerSerialPortBridgeGeneric(sofa::core::ObjectFactory* factory);
+
+    #ifdef SOFTROBOTS_USES_COMMUNICATIONCONTROLLER
+    void registerCommunicationController(sofa::core::ObjectFactory* factory);
+    #endif
+
+    #ifdef SOFTROBOTS_USES_ROBOTINOCONTROLLER
+    void registerDataControllerRobot(sofa::core::ObjectFactory* factory);
+    #endif
+
+    #ifdef SOFTROBOTS_USES_GAMETRAKCONTROLLER
+    void registerGameTrackController(sofa::core::ObjectFactory* factory);
+    #endif
+
+    #ifdef SOFTROBOTS_USES_INTERACTIVECONTROL
+    void registerInteractiveControl(sofa::core::ObjectFactory* factory);
+    #endif
+
+    #ifdef SOFTROBOTS_USES_WITH_CAMERA
+    void registerPointCloudProcessing(sofa::core::ObjectFactory* factory);
+    #endif
+}
+
+namespace engine
+{
+    void registerCenterOfMass(sofa::core::ObjectFactory* factory);
+    void registerVolumeFromTetrahedrons(sofa::core::ObjectFactory* factory);
+    void registerVolumeFromTriangles(sofa::core::ObjectFactory* factory);
+}
+
+namespace forcefield
+{
+    void registerPREquivalentStiffnessForceField(sofa::core::ObjectFactory* factory);
+    void registerPartialRigidificationForceField(sofa::core::ObjectFactory* factory);
+    void registerPipeForceField(sofa::core::ObjectFactory* factory);
+}
 
 extern "C" {
     SOFA_SOFTROBOTS_API void initExternalModule();
@@ -45,6 +95,7 @@ extern "C" {
     SOFA_SOFTROBOTS_API const char* getModuleLicense();
     SOFA_SOFTROBOTS_API const char* getModuleDescription();
     SOFA_SOFTROBOTS_API const char* getModuleComponentList();
+    SOFA_SOFTROBOTS_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void init()
@@ -88,12 +139,40 @@ const char* getModuleDescription()
     return "The plugin allows to control soft robots";
 }
 
-const char* getModuleComponentList()
+void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(MODULE_NAME);
-    return classes.c_str();
+    constraint::registerCableConstraint(factory);
+    constraint::registerJointConstraint(factory);
+    constraint::registerPartialRigidificationConstraint(factory);
+    constraint::registerPositionConstraint(factory);
+    constraint::registerSurfacePressureConstraint(factory);
+    constraint::registerUnilateralPlaneConstraint(factory);
+    controller::registerAnimationEditor(factory);
+    controller::registerDataVariationLimiter(factory);
+    controller::registerSerialPortBridgeGeneric(factory);
+#ifdef SOFTROBOTS_USES_COMMUNICATIONCONTROLLER
+    controller::registerCommunicationController(factory);
+#endif
+#ifdef SOFTROBOTS_USES_ROBOTINOCONTROLLER
+    controller::registerDataControllerRobot(factory);
+#endif
+#ifdef SOFTROBOTS_USES_GAMETRAKCONTROLLER
+    controller::registerGameTrackController(factory);
+#endif
+#ifdef SOFTROBOTS_USES_INTERACTIVECONTROL
+    controller::registerInteractiveControl(factory);
+#endif
+#ifdef SOFTROBOTS_USES_WITH_CAMERA
+    controller::registerPointCloudProcessing(factory);
+#endif
+    engine::registerCenterOfMass(factory);
+    engine::registerVolumeFromTetrahedrons(factory);
+    engine::registerVolumeFromTriangles(factory);
+    forcefield::registerPREquivalentStiffnessForceField(factory);
+    forcefield::registerPartialRigidificationForceField(factory);
+    forcefield::registerPipeForceField(factory);
 }
+
 } // namespace SoftRobots
 
 SOFA_LINK_CLASS(AnimationEditor)

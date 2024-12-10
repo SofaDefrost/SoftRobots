@@ -34,10 +34,12 @@ namespace softrobots::forcefield
 
 using namespace sofa::defaulttype;
 
-int PipeForceFieldClass = sofa::core::RegisterObject("This component is used to pull up mapped string forces (from a child node)")
-        .add<PipeForceField<Vec3Types> >(true)
+void registerPipeForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This component is used to pull up mapped string forces (from a child node)")
+    .add<  PipeForceField<Vec3Types> >(true));
+}
 
-        ;
 template class SOFA_SOFTROBOTS_API PipeForceField<Vec3Types>;
 
 

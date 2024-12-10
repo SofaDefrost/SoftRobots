@@ -44,9 +44,11 @@ using sofa::core::RegisterObject ;
 
 SOFA_DECL_CLASS(GameTrakController)
 
-int GameTrakControllerClass = RegisterObject("Interface for GameTrak device.")
-.add< GameTrakController >()
-;
+void registerGameTrakController(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Interface for GameTrak device.")
+    .add<  GameTrakController>());
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using namespace gametrak ;
