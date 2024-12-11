@@ -114,6 +114,7 @@ struct VolumeFromTrianglesTest : public sofa::testing::BaseTest, VolumeFromTrian
     void simpleSceneTest()
     {
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("SoftRobots");
         
         string scene =
                 "<?xml version='1.0'?>"

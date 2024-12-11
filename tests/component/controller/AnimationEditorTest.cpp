@@ -123,6 +123,7 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, controller::Animati
     void simpleSceneTest()
     {
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("SoftRobots");
 
         string scene =
                 "<?xml version='1.0'?>"

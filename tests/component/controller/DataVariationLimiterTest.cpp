@@ -100,6 +100,7 @@ struct DataVariationLimiterTest : public sofa::testing::BaseTest, DataVariationL
 
     void simpleSceneTest(){
         sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("SoftRobots");
 
         string scene =
                 "<?xml version='1.0'?>"
