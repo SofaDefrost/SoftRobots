@@ -36,17 +36,18 @@ namespace softrobots::controller
 
 using namespace sofa::defaulttype;
 using namespace sofa::type;
-using sofa::core::RegisterObject;
 
-int DataVariationLimiterClass = RegisterObject("This component interpolates between two consecutive inputs when a jump is detected.")
-        .add< DataVariationLimiter<Vec3Types::Coord> >(true)
-        .add< DataVariationLimiter<Vec2Types::Coord> >()
-        .add< DataVariationLimiter<Vec1Types::Coord> >()
+void registerDataVariationLimiter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This component interpolates between two consecutive inputs when a jump is detected.")
+    .add< DataVariationLimiter<Vec3Types::Coord> >(true)
+    .add< DataVariationLimiter<Vec2Types::Coord> >()
+    .add< DataVariationLimiter<Vec1Types::Coord> >()
 
-        .add< DataVariationLimiter<sofa::type::Vec1i> >()
-        .add< DataVariationLimiter<sofa::type::Vec2i> >()
-        .add< DataVariationLimiter<sofa::type::Vec3i> >()
-        ;
+    .add< DataVariationLimiter<sofa::type::Vec1i> >()
+    .add< DataVariationLimiter<sofa::type::Vec2i> >()
+    .add< DataVariationLimiter<sofa::type::Vec3i> >());
+}
 
 template class SOFA_SOFTROBOTS_API DataVariationLimiter<Vec3Types::Coord>;
 template class SOFA_SOFTROBOTS_API DataVariationLimiter<Vec2Types::Coord>;

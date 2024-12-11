@@ -62,15 +62,18 @@ void UnilateralPlaneConstraintResolution::resolution(int line, SReal**w, SReal*d
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 using namespace sofa::helper;
-int UnilateralPlaneConstraintClass = sofa::core::RegisterObject("This component is a simple point plane collision model. \n"
+
+void registerUnilateralPlaneConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This component is a simple point plane collision model. \n"
                                                                 "By providing 4 points to the component, the first point will \n"
                                                                 "be constrained to stay in one side of the plane described \n"
                                                                 "by the three other points (in the direction of the plane normal). \n"
                                                                 "All the four points, the triangle and the normal can be \n"
                                                                 "seen by allowing the 'Collision Model' in the 'View' tab.")
-                .add< UnilateralPlaneConstraint<Vec3Types> >(true)
-        
-        ;
+    .add< UnilateralPlaneConstraint<Vec3Types> >(true));
+}
+
 template class SOFA_SOFTROBOTS_API UnilateralPlaneConstraint<sofa::defaulttype::Vec3Types>;
 
 

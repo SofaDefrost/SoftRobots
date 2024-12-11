@@ -45,10 +45,12 @@ using sofa::type::Vec;
 using sofa::helper::WriteAccessor;
 using sofa::core::objectmodel::ComponentState;
 
-int SerialPortBridgeGenericClass = sofa::core::RegisterObject("Send data (ex: force, displacement, pressure…) through the usb port. \n"
+void registerSerialPortBridgeGeneric(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Send data (ex: force, displacement, pressure…) through the usb port. \n"
                                                               "Usually used to send data to an Arduino card to control the real robot.")
-        .add< SerialPortBridgeGeneric >()
-        ;
+    .add< SerialPortBridgeGeneric >());
+}
 
 SerialPortBridgeGeneric::SerialPortBridgeGeneric()
     : d_port(initData(&d_port, "port", "Serial port name"))

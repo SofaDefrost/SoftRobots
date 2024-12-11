@@ -560,8 +560,10 @@ void PointCloudProcessing::handleEvent(sofa::core::objectmodel::Event *event)
 
 using namespace sofa::defaulttype;
 
-static int PointCloudProcessingClass = sofa::core::RegisterObject("Exposing a RealSense RGBD camera in the Sofa Scene")
-        .add<PointCloudProcessing>();
-
+void registerPointCloudProcessing(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Exposing a RealSense RGBD camera in the Sofa Scene")
+    .add<  PointCloudProcessing>());
+}
 
 } // namespace

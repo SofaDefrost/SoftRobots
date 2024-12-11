@@ -33,9 +33,13 @@
 namespace softrobots::forcefield
 {
 
-int PREquivalentStiffnessForceFieldClass = sofa::core::RegisterObject("Partial Rigidification equivalent stiffness forcefield")
-        .add<PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types> >(true)
-        ;
+void registerPREquivalentStiffnessForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Partial Rigidification equivalent stiffness forcefield")
+    .add<  PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types> >(true));
+}
+
+
 template class SOFA_SOFTROBOTS_API PREquivalentStiffnessForceField<sofa::defaulttype::Rigid3Types>;
 
 }

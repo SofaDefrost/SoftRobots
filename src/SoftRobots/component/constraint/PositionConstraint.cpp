@@ -108,12 +108,14 @@ void PositionForceConstraintResolution::resolution(int line, double** w, double*
 
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
-int PositionConstraintClass = RegisterObject("Simulate a Position.")
-.add< PositionConstraint<Vec3Types> >(true)
-.add< PositionConstraint<Vec2Types> >()
-.add< PositionConstraint<Rigid3Types> >()
+void registerPositionConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Simulate a Position.")
+    .add< PositionConstraint<Vec3Types> >(true)
+    .add< PositionConstraint<Vec2Types> >()
+    .add< PositionConstraint<Rigid3Types> >());
+}
 
-;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template class SOFA_SOFTROBOTS_API PositionConstraint<Vec3Types>;

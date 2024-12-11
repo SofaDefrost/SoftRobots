@@ -36,10 +36,12 @@ namespace softrobots::forcefield
 
 using namespace sofa::defaulttype;
 
-int PartialRigidificationForceFieldClass = sofa::core::RegisterObject("Partially rigidify a mechanical object using a rigid mapping.")
-        .add< PartialRigidificationForceField<Vec3Types, Rigid3Types> >(true)
+void registerPartialRigidificationForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Partially rigidify a mechanical object using a rigid mapping.")
+    .add<  PartialRigidificationForceField<Vec3Types, Rigid3Types> >(true));
+}
 
-        ;
 template class SOFA_SOFTROBOTS_API PartialRigidificationForceField<Vec3Types, Rigid3Types>;
 
 
