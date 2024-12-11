@@ -107,6 +107,9 @@ void init()
     }
     first = false;
 
+    // make sure that this plugin is registered into the PluginManager
+    sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
     // Automatically load the STLIB plugin if available.
     if( !PluginManager::getInstance().findPlugin("STLIB").empty() )
     {
