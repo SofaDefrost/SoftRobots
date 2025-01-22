@@ -39,7 +39,7 @@ def addArm(node):
     arm.addObject('MechanicalObject', template='Rigid3', name='dofs', showObject=True, showObjectScale=10)
     arm.addObject('UniformMass', indices=[4 * i + 1 for i in range(size)], totalMass=0.003 * size,
                   showAxisSizeFactor=0.03)  # set mass of each piece that connect the ribs
-    arm.addObject('RestShapeSpringsForceField', stiffness=1e12, angularStiffness=1e12, points=0)  # fix base of the arm
+    arm.addObject('RestShapeSpringsForceField', stiffness=1e12, angularStiffness=1e12, indices=0)  # fix base of the arm
 
     # sub topology to allow different ribs thickness for each section
     for i in range(params.Arm.nbSection):
@@ -84,7 +84,7 @@ def addFinger(node, fingerId, translation, rotation):
     finger.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.3,
                      youngModulus=1.8e6)
     finger.addObject('BoxROI', name='boxROI', box=[-100, -20, -50, 100, 20, 50], drawBoxes=True)
-    finger.addObject('RestShapeSpringsForceField', points=finger.boxROI.indices.getLinkPath(), stiffness=1e12)
+    finger.addObject('RestShapeSpringsForceField', indices=finger.boxROI.indices.getLinkPath(), stiffness=1e12)
 
     visu[fingerId] = finger.addChild('Visualization')
     visu[fingerId].addObject('MeshSTLLoader', name="loader", filename=params.Simulation.path + "/mesh/finger.stl",

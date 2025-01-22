@@ -63,11 +63,11 @@ def createScene(rootNode):
                    showIndices=False, showIndicesScale=4e-5,
                    position='@../robot/boxROI3.pointsInROI')
 
-    robot.addObject('RestShapeSpringsForceField', name='fixed1', points="@boxROI1.indices",
+    robot.addObject('RestShapeSpringsForceField', name='fixed1', indices="@boxROI1.indices",
                     external_rest_shape="@RestPositionLeg0/meca0", stiffness=1e3)
-    robot.addObject('RestShapeSpringsForceField', name='fixed2', points="@boxROI2.indices",
+    robot.addObject('RestShapeSpringsForceField', name='fixed2', indices="@boxROI2.indices",
                     external_rest_shape="@RestPositionLeg1/meca1", stiffness=1e3)
-    robot.addObject('RestShapeSpringsForceField', name='fixed3', points="@boxROI3.indices",
+    robot.addObject('RestShapeSpringsForceField', name='fixed3', indices="@boxROI3.indices",
                     external_rest_shape="@RestPositionLeg2/meca2", stiffness=1e3)
 
     ###############################

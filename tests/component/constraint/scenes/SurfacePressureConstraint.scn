@@ -25,7 +25,7 @@
                 <TetrahedronFEMForceField youngModulus="18000" poissonRatio='0.3' method='large'/>
 
                 <BoxROI name='ROI1' box='-5 -15 -5  5 -4.5 5' drawBoxes='true'/>
-                <RestShapeSpringsForceField points='@ROI1.indices' stiffness='1e12'/>
+                <RestShapeSpringsForceField indices='@ROI1.indices' stiffness='1e12'/>
 
                 <LinearSolverConstraintCorrection/>
 
