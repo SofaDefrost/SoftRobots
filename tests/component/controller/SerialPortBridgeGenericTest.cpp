@@ -82,7 +82,7 @@ struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortB
 
     Node::SPtr m_node;
 
-    void SetUp()
+    void doSetUp() override
     {
         m_node = sofa::simulation::getSimulation()->createNewGraph("root");
     }

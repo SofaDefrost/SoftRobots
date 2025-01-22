@@ -91,7 +91,7 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, controller::Animati
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
 
 
-    void SetUp()
+    void doSetUp() override
     {
         m_node = sofa::simulation::getSimulation()->createNewGraph("root");
         m_mecaobject = New<MechanicalObject<DataTypes> >() ;

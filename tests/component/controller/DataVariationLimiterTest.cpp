@@ -75,7 +75,7 @@ struct DataVariationLimiterTest : public sofa::testing::BaseTest, DataVariationL
 
     Node::SPtr m_node;
 
-    void SetUp()
+    void doSetUp() override
     {
         m_node = sofa::simulation::getSimulation()->createNewGraph("root");
     }

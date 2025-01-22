@@ -77,9 +77,9 @@ namespace softrobots {
 
         typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
 
-        void SetUp()
+        void doSetUp() override
         {
-            sofa::simpleapi::importPlugin("Sofa.Component");
+            sofa::simpleapi::importPlugin(Sofa.Component);
 
             /// Load the scene
             string sceneName = "SurfacePressureConstraint.scn";
@@ -100,8 +100,6 @@ namespace softrobots {
         void behaviorTests()
         {
             sofa::helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
-
-            SetUp();
 
             sofa::simulation::node::initRoot(m_root.get());
 
