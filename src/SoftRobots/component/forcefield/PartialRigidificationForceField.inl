@@ -106,7 +106,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     CompressedRowSparseMatrix< _3_3_Matrix_Type >* mappedFFMatrix = new CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
 
     sofa::core::behavior::BaseMechanicalState* mstate = d_mappedForceField.get()->getContext()->getMechanicalState();
-    mappedFFMatrix->resizeBloc( mstate->getSize() ,  mstate->getSize());
+    mappedFFMatrix->resizeBlock( mstate->getSize() ,  mstate->getSize());
 
     DefaultMultiMatrixAccessor* mappedFFMatrixAccessor;
     mappedFFMatrixAccessor = new DefaultMultiMatrixAccessor;
@@ -223,7 +223,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::testBuildJacobian(
     CompressedRowSparseMatrix< _3_3_Matrix_Type >* mappedFFMatrix = new CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
 
     sofa::core::behavior::BaseMechanicalState* mstate = d_mappedForceField.get()->getContext()->getMechanicalState();
-    mappedFFMatrix->resizeBloc( mstate->getSize() ,  mstate->getSize());
+    mappedFFMatrix->resizeBlock( mstate->getSize() ,  mstate->getSize());
 
     DefaultMultiMatrixAccessor* mappedFFMatrixAccessor;
     mappedFFMatrixAccessor = new DefaultMultiMatrixAccessor;
@@ -243,7 +243,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::testBuildJacobian(
     sofa::core::State<DataTypes1> * state = dynamic_cast<sofa::core::State<DataTypes1> *>(mstate);
     unsigned int stateSize = mstate->getSize();
 
-    sofa::core::MultiMatrixDerivId c = sofa::core::MatrixDerivId::mappingJacobian();
+    sofa::core::MultiMatrixDerivId c = sofa::core::vec_id::write_access::mappingJacobian;
 
     DataMatrixDeriv1* out = c[state].write();
 
@@ -279,7 +279,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::multMatrices(const
     size_t rBlockR = A.nBlockRow;
     size_t cBlockR = B.nBlockCol;
 
-    R.resizeBloc(rBlockR, cBlockR);
+    R.resizeBlock(rBlockR, cBlockR);
 
     typedef typename CompressedRowSparseMatrix<Mat<M, N, Real1> >::ColBlockConstIterator AColBlockIter;
     typedef typename CompressedRowSparseMatrix<Mat<M, N, Real1> >::BlockConstAccessor ABlockConstAccessor;
@@ -329,7 +329,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::multMatricesT(cons
     size_t rBlockR = At.nBlockCol;
     size_t cBlockR = B.nBlockCol;
 
-    R.resizeBloc(rBlockR, cBlockR);
+    R.resizeBlock(rBlockR, cBlockR);
 
     typedef typename CompressedRowSparseMatrix<Mat<M, N, Real1> >::ColBlockConstIterator AColBlockIter;
     typedef typename CompressedRowSparseMatrix<Mat<M, N, Real1> >::BlockConstAccessor ABlockConstAccessor;
