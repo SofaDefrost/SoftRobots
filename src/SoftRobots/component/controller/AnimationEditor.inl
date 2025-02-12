@@ -329,7 +329,7 @@ void AnimationEditor<DataTypes>::onBeginAnimationStep(const double dt)
     {
         m_isFrameDirty = false;
         if(d_cursor.getValue()<m_animation.size())
-            m_state->write(sofa::core::VecCoordId::position())->setValue(m_animation[d_cursor.getValue()]);
+            m_state->write(sofa::core::vec_id::write_access::position)->setValue(m_animation[d_cursor.getValue()]);
     }
 }
 

@@ -41,7 +41,6 @@ using std::string ;
 using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 

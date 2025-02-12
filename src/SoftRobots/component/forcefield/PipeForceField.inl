@@ -148,7 +148,7 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
 
     DefaultMultiMatrixAccessor* mappedFFMatrixAccessor = new DefaultMultiMatrixAccessor;
     mappedFFMatrixAccessor->addMechanicalState(springState);
-    mappedFFMatrix->resizeBloc(springState->getSize(),springState->getSize());
+    mappedFFMatrix->resizeBlock(springState->getSize(),springState->getSize());
     mappedFFMatrixAccessor->setGlobalMatrix(mappedFFMatrix);
     mappedFFMatrixAccessor->setupMatrices();
 
@@ -198,7 +198,7 @@ void PipeForceField<DataTypes>::multMatrices(const CompressedRowSparseMatrix<Mat
     size_t rBlockR = A.nBlockRow;
     size_t cBlockR = B.nBlockCol;
 
-    R.resizeBloc(rBlockR, cBlockR);
+    R.resizeBlock(rBlockR, cBlockR);
 
     typedef typename CompressedRowSparseMatrix<Mat<M, N, Real> >::ColBlockConstIterator AColBlockIter;
     typedef typename CompressedRowSparseMatrix<Mat<M, N, Real> >::BlockConstAccessor ABlockConstAccessor;
@@ -246,7 +246,7 @@ void PipeForceField<DataTypes>::multMatricesT(const CompressedRowSparseMatrix<Ma
     size_t rBlockR = At.nBlockCol;
     size_t cBlockR = B.nBlockCol;
 
-    R.resizeBloc(rBlockR, cBlockR);
+    R.resizeBlock(rBlockR, cBlockR);
 
     typedef typename CompressedRowSparseMatrix<Mat<M, N, Real> >::ColBlockConstIterator AColBlockIter;
     typedef typename CompressedRowSparseMatrix<Mat<M, N, Real> >::BlockConstAccessor ABlockConstAccessor;

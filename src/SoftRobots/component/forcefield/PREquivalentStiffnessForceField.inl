@@ -91,7 +91,7 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
 
     // Read rest positions
     WriteAccessor<VecCoord> restPosWriter(m_restPos);
-    ReadAccessor<DataVecCoord> restPosReader(*mstate->read(sofa::core::ConstVecCoordId::restPosition()));
+    ReadAccessor<DataVecCoord> restPosReader(*mstate->read(sofa::core::vec_id::read_access::restPosition));
 
     size_t nFrames = restPosReader.size();
     restPosWriter.resize(nFrames);
