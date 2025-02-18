@@ -58,7 +58,7 @@ void AnimationEditor<Rigid3Types>::updateAnimationWithInterpolation(const int st
         return;
     }
 
-    int nbPositions = m_state->read(sofa::core::ConstVecCoordId::position())->getValue().size();
+    int nbPositions = m_state->read(sofa::core::vec_id::read_access::position)->getValue().size();
     int nbStep = endKey - startKey;
 
     for (int i=0; i<nbStep+1; i++)
