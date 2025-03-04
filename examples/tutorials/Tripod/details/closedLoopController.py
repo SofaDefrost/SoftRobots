@@ -172,7 +172,7 @@ class InverseController(Sofa.Core.Controller):
         key = event['key']
         if key == Key.I:
             for i in range(3):
-                self.nodeTripod.actuatedarms[i].ServoMotor.Articulation.RestShapeSpringsForceField.stiffness.value = [
+                self.nodeTripod.actuatedarms[i].ServoMotor.Articulation.FixedWeakConstraint.stiffness.value = [
                     0.]
             self.activate = True
             for node in self.nodesInverseComponents:

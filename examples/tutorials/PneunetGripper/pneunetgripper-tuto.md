@@ -57,12 +57,12 @@ modelSubTopo.addObject('TetrahedronFEMForceField', template='Vec3d', name='FEM',
 
 ## Boundary Conditions
 
-To fix the finger in space, it is necessary to define boundary conditions on some parts of the object. This can be done in several ways in SOFA. In this case, we use the component RestShapeSpringsForceField, which creates springs between the current position of a part of the body and its initial position. The stiffness of these springs can be adjusted. In particular, setting a very large stiffness will be equivalent to fixing the points in space.
+To fix the finger in space, it is necessary to define boundary conditions on some parts of the object. This can be done in several ways in SOFA. In this case, we use the component FixedWeakConstraint, which creates springs between the current position of a part of the body and its initial position. The stiffness of these springs can be adjusted. In particular, setting a very large stiffness will be equivalent to fixing the points in space.
 To easily define the indices of the points which will be fixed, we use the boxROI component:
 
 ```python
 finger.addObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20])
-finger.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
+finger.addObject('FixedWeakConstraint', indices='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
 ```
 
 [Step4](details/step4-boundaryConditions.py)
@@ -286,9 +286,9 @@ def createScene(rootNode):
 		finger.addObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20])
 		finger.addObject('BoxROI', name='boxROISubTopo', box=[-100, 22.5, -8, -19, 28, 8], strict=False)
 		if i == 0:
-			finger.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
+			finger.addObject('FixedWeakConstraint', indices='@boxROI.indices', stiffness=1e12, angularStiffness=1e12)
 		else:
-			finger.addObject('RestShapeSpringsForceField', points='@../finger1/boxROI.indices', stiffness=1e12, angularStiffness=1e12)
+			finger.addObject('FixedWeakConstraint', indices='@../finger1/boxROI.indices', stiffness=1e12, angularStiffness=1e12)
 
 		finger.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
 
