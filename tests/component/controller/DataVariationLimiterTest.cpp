@@ -41,7 +41,6 @@ using std::string ;
 using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 
@@ -75,7 +74,7 @@ struct DataVariationLimiterTest : public sofa::testing::BaseTest, DataVariationL
 
     Node::SPtr m_node;
 
-    void SetUp()
+    void doSetUp() override
     {
         m_node = sofa::simulation::getSimulation()->createNewGraph("root");
     }

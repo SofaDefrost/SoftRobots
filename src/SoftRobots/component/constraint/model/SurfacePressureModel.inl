@@ -154,7 +154,7 @@ void SurfacePressureModel<DataTypes>::init()
     internalInit();
 
     // Compute initial cavity volume and store it (used in reset())
-    ReadAccessor<Data<VecCoord> > positions = *m_state->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord> > positions = *m_state->read(sofa::core::vec_id::read_access::position);
     Real volume = getCavityVolume(positions.ref());
     d_initialCavityVolume.setValue(volume);
     d_cavityVolume.setValue(volume);
@@ -170,7 +170,7 @@ void SurfacePressureModel<DataTypes>::bwdInit()
 
     // The initial volume is computed in bwdInit so the mapping (if there is any)
     // will be considered
-    ReadAccessor<Data<VecCoord> > positions = *m_state->read(VecCoordId::position());
+    ReadAccessor<Data<VecCoord> > positions = *m_state->read(sofa::core::vec_id::read_access::position);
     Real volume = getCavityVolume(positions.ref());
     d_initialCavityVolume.setValue(volume);
     d_cavityVolume.setValue(volume);

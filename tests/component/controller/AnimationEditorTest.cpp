@@ -45,7 +45,6 @@ using sofa::core::objectmodel::Data ;
 using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
-using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::component::statecontainer::MechanicalObject ;
@@ -91,7 +90,7 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, controller::Animati
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
 
 
-    void SetUp()
+    void doSetUp() override
     {
         m_node = sofa::simulation::getSimulation()->createNewGraph("root");
         m_mecaobject = New<MechanicalObject<DataTypes> >() ;
@@ -224,13 +223,13 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, controller::Animati
             d_maxKeyFrame.setValue(1);
 
         m_keyFramesID.push_back(0);
-        m_animation.resize(1,m_state->read(sofa::core::ConstVecCoordId::position())->getValue());
+        m_animation.resize(1,m_state->read(sofa::core::vec_id::read_access::position)->getValue());
 
         d_cursor.setValue(5);
         VecCoord newPosition;
         newPosition.resize(1);
         newPosition[0] = Coord(0.,12.5,0.);
-        m_state->write(sofa::core::VecCoordId::position())->setValue(newPosition);
+        m_state->write(sofa::core::vec_id::write_access::position)->setValue(newPosition);
         addKeyFrame();
         if(m_keyFramesID.size() != (unsigned int)2) return false;
         if(m_keyFramesID[1] != (unsigned int)5) return false;
