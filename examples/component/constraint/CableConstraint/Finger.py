@@ -73,7 +73,7 @@ def createScene(rootNode):
 
     # RestShapeSpringsForceField is one way in Sofa to implement fixed point constraint.
     # Here the constraints are applied to the DoFs selected by the previously defined BoxROI
-    finger.addObject('RestShapeSpringsForceField', indices=finger.roi.indices.getLinkPath(), stiffness=1e12)
+    finger.addObject('FixedWeakConstraint', indices=finger.roi.indices.getLinkPath(), stiffness=1e12)
 
     # It is also possible to simply set by hand the indices of the points you want to fix.
     # finger.addObject('RestShapeSpringsForceField', indices=[0, 1, 2, 11, 55], stiffness=1e12)

@@ -55,7 +55,7 @@ def createScene(rootNode):
                         youngModulus=500)
 
     accordion.addObject('BoxROI', name='ROI1', box=[-2, -2, 0, 2, 2, 0.5], drawBoxes=True)
-    accordion.addObject('RestShapeSpringsForceField', indices='@ROI1.indices', stiffness=1e12)
+    accordion.addObject('FixedWeakConstraint', indices='@ROI1.indices', stiffness=1e12)
     # accordion.addObject('FixedProjectiveConstraint', indices='@ROI1.indices')
 
     accordion.addObject('LinearSolverConstraintCorrection')

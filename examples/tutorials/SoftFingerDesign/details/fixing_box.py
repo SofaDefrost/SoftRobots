@@ -20,6 +20,6 @@ class FixingBox(SofaPrefab):
         c = self.node.addChild('Constraint')
         target.addChild(c)
 
-        c.addObject('RestShapeSpringsForceField',
+        c.addObject('FixedWeakConstraint',
                        indices=self.node.BoxROI.getData('indices').getLinkPath(),
                        stiffness=1e12)

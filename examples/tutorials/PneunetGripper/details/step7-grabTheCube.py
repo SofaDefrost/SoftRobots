@@ -114,7 +114,7 @@ def createScene(rootNode):
         if i == 0:
             boxROI = finger.addObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20], doUpdate=False)
             boxROISubTopo = finger.addObject('BoxROI', name='boxROISubTopo', box=[-100, 22.5, -8, -19, 28, 8], strict=False)
-        finger.addObject('RestShapeSpringsForceField',
+        finger.addObject('FixedWeakConstraint',
                          indices=boxROI.indices.linkpath,
                          stiffness=1e12, angularStiffness=1e12)
         finger.addObject('GenericConstraintCorrection')

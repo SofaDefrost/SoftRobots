@@ -38,7 +38,7 @@ def createScene(rootNode):
 
     object = simulation.addChild('Object')
     object.addObject('MechanicalObject',  template='Vec1', position=0.)
-    object.addObject("RestShapeSpringsForceField", indices=[0], stiffness=1e1)
+    object.addObject("FixedWeakConstraint", indices=[0], stiffness=1e1)
     # Try to change the data field "value" from the GUI
     object.addObject('JointConstraint', template='Vec1', index=0, value=0, valueType="displacement",
                      minDisplacement=-pi, maxDisplacement=pi)

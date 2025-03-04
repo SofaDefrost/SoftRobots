@@ -19,7 +19,7 @@ def FixingBox(parent, target, name='FixingBox',
         c = self.addChild('Constraint')
         target.addChild(c)
 
-        c.addObject('RestShapeSpringsForceField',
+        c.addObject('FixedWeakConstraint',
                        indices=self.BoxROI.getData('indices').getLinkPath(),
                        stiffness=1e12)
         return self
