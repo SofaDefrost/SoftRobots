@@ -168,8 +168,8 @@ protected:
     void internalInit();
     void checkIndicesRegardingState();
 
-    double m_initDisplacement;
-    double m_currentDisplacement;
+    double m_initDisplacement{0};
+    double m_currentDisplacement{0};
 
 private:
     void setUpDisplacementLimits(double& imposedValue, double& minForce, double& maxForce);
