@@ -39,53 +39,53 @@ namespace softrobots
 {
 namespace constraint
 {
-    void registerCableConstraint(sofa::core::ObjectFactory* factory);
-    void registerJointConstraint(sofa::core::ObjectFactory* factory);
-    void registerPartialRigidificationConstraint(sofa::core::ObjectFactory* factory);
-    void registerPositionConstraint(sofa::core::ObjectFactory* factory);
-    void registerSurfacePressureConstraint(sofa::core::ObjectFactory* factory);
-    void registerUnilateralPlaneConstraint(sofa::core::ObjectFactory* factory);
+    extern void registerCableConstraint(sofa::core::ObjectFactory* factory);
+    extern void registerJointConstraint(sofa::core::ObjectFactory* factory);
+    extern void registerPartialRigidificationConstraint(sofa::core::ObjectFactory* factory);
+    extern void registerPositionConstraint(sofa::core::ObjectFactory* factory);
+    extern void registerSurfacePressureConstraint(sofa::core::ObjectFactory* factory);
+    extern void registerUnilateralPlaneConstraint(sofa::core::ObjectFactory* factory);
 }
 
 namespace controller
 {
-    void registerAnimationEditor(sofa::core::ObjectFactory* factory);
-    void registerDataVariationLimiter(sofa::core::ObjectFactory* factory);
-    void registerSerialPortBridgeGeneric(sofa::core::ObjectFactory* factory);
+    extern void registerAnimationEditor(sofa::core::ObjectFactory* factory);
+    extern void registerDataVariationLimiter(sofa::core::ObjectFactory* factory);
+    extern void registerSerialPortBridgeGeneric(sofa::core::ObjectFactory* factory);
 
     #ifdef SOFTROBOTS_USES_COMMUNICATIONCONTROLLER
-    void registerCommunicationController(sofa::core::ObjectFactory* factory);
+    extern void registerCommunicationController(sofa::core::ObjectFactory* factory);
     #endif
 
     #ifdef SOFTROBOTS_USES_ROBOTINOCONTROLLER
-    void registerDataControllerRobot(sofa::core::ObjectFactory* factory);
+    extern void registerDataControllerRobot(sofa::core::ObjectFactory* factory);
     #endif
 
     #ifdef SOFTROBOTS_USES_GAMETRAKCONTROLLER
-    void registerGameTrackController(sofa::core::ObjectFactory* factory);
+    extern void registerGameTrackController(sofa::core::ObjectFactory* factory);
     #endif
 
     #ifdef SOFTROBOTS_USES_INTERACTIVECONTROL
-    void registerInteractiveControl(sofa::core::ObjectFactory* factory);
+    extern void registerInteractiveControl(sofa::core::ObjectFactory* factory);
     #endif
 
     #ifdef SOFTROBOTS_USES_WITH_CAMERA
-    void registerPointCloudProcessing(sofa::core::ObjectFactory* factory);
+    extern void registerPointCloudProcessing(sofa::core::ObjectFactory* factory);
     #endif
 }
 
 namespace engine
 {
-    void registerCenterOfMass(sofa::core::ObjectFactory* factory);
-    void registerVolumeFromTetrahedrons(sofa::core::ObjectFactory* factory);
-    void registerVolumeFromTriangles(sofa::core::ObjectFactory* factory);
+    extern void registerCenterOfMass(sofa::core::ObjectFactory* factory);
+    extern void registerVolumeFromTetrahedrons(sofa::core::ObjectFactory* factory);
+    extern void registerVolumeFromTriangles(sofa::core::ObjectFactory* factory);
 }
 
 namespace forcefield
 {
-    void registerPREquivalentStiffnessForceField(sofa::core::ObjectFactory* factory);
-    void registerPartialRigidificationForceField(sofa::core::ObjectFactory* factory);
-    void registerPipeForceField(sofa::core::ObjectFactory* factory);
+    extern void registerPREquivalentStiffnessForceField(sofa::core::ObjectFactory* factory);
+    extern void registerPartialRigidificationForceField(sofa::core::ObjectFactory* factory);
+    extern void registerPipeForceField(sofa::core::ObjectFactory* factory);
 }
 
 extern "C" {
