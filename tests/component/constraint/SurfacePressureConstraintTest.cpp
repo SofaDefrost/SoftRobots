@@ -79,8 +79,6 @@ namespace softrobots {
 
         void doSetUp() override
         {
-            sofa::simpleapi::importPlugin(Sofa.Component);
-
             /// Load the scene
             string sceneName = "SurfacePressureConstraint.scn";
 

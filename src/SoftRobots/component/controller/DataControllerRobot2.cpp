@@ -48,9 +48,11 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(DataControllerRobot)
 
 // Register in the Factory
-int DataControllerRobotClass = core::RegisterObject(" ")
-.add< DataControllerRobot >()
-;
+void registerDataControllerRobot(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData(" ")
+    .add<  DataControllerRobot>());
+}
 
 
 DataControllerRobot::DataControllerRobot():

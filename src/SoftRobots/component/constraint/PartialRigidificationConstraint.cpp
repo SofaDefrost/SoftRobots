@@ -40,10 +40,12 @@ PartialRigidificationConstraintResolution6Dof::PartialRigidificationConstraintRe
 {
 }
 
-int PartialRigidificationConstraintClass = sofa::core::RegisterObject("PartialRigidificationConstraint")
-        .add< PartialRigidificationConstraint<Rigid3Types> >(true)
+void registerPartialRigidificationConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("PartialRigidificationConstraint")
+    .add< PartialRigidificationConstraint<Rigid3Types> >(true));
+}
 
-        ;
 template class SOFA_SOFTROBOTS_API PartialRigidificationConstraint<Rigid3Types>;
 
 

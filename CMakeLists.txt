@@ -118,6 +118,7 @@ endif()
 
 # COMMUNICATION CONTROLLER
 if(SOFTROBOTS_COMMUNICATIONCONTROLLER)
+    set(SOFTROBOTS_USES_COMMUNICATIONCONTROLLER ON)
     list(APPEND HEADER_FILES
         ${SOFTROBOTS_SOURCE_DIR}/component/controller/CommunicationController.h
         ${SOFTROBOTS_SOURCE_DIR}/component/controller/CommunicationController.inl
@@ -129,6 +130,7 @@ endif()
 
 # GAMETRAK CONTROLLER
 if(SOFTROBOTS_GAMETRAKCONTROLLER)
+    set(SOFTROBOTS_USES_GAMETRAKCONTROLLER ON)
     list(APPEND HEADER_FILES
         ${SOFTROBOTS_SOURCE_DIR}/component/controller/GameTrakController.h
 
@@ -158,6 +160,7 @@ endif()
 
 # ROBOTINO CONTROLLER
 if(SOFTROBOTS_ROBOTINOCONTROLLER)
+    set(SOFTROBOTS_USES_ROBOTINOCONTROLLER ON)
     list(APPEND HEADER_FILES
         ${SOFTROBOTS_SOURCE_DIR}/component/controller/DataControllerRobot.h
         )
@@ -168,6 +171,7 @@ endif()
 
 # CAMERA
 if (SOFTROBOTS_WITH_CAMERA)
+  set(SOFTROBOTS_USES_WITH_CAMERA ON)
   list(APPEND HEADER_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudProcessing.h
     ${SOFTROBOTS_SOURCE_DIR}/component/camera/PointCloudStreaming.h  
@@ -180,6 +184,7 @@ endif(SOFTROBOTS_WITH_CAMERA)
 
 # INTERACTIVECONTROL
 if (SOFTROBOTS_INTERACTIVECONTROL)
+    set(SOFTROBOTS_USES_INTERACTIVECONTROL ON)
     find_package(Qt5 REQUIRED COMPONENTS Network)
     if(WIN32)
          sofa_copy_libraries(TARGETS Qt5::Network)

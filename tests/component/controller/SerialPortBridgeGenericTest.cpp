@@ -29,6 +29,7 @@
 ******************************************************************************/
 
 #include <string>
+#include <sofa/simpleapi/SimpleApi.h>
 using std::string ;
 
 #include <sofa/testing/BaseTest.h>
@@ -110,6 +111,7 @@ struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortB
 
 
     void simpleSceneTest(){
+        sofa::simpleapi::importPlugin("SoftRobots");
         string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "

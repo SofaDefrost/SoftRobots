@@ -109,11 +109,14 @@ void CableForceConstraintResolution::resolution(int line, SReal** w, SReal* d, S
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int CableConstraintClass = RegisterObject("Simulate a cable.")
-.add< CableConstraint<Vec3Types> >(true)
-.add< CableConstraint<Vec2Types> >()
+void registerCableConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(ObjectRegistrationData("Simulate a cable.")
+    .add< CableConstraint<Vec3Types> >(true)
+    .add< CableConstraint<Vec2Types> >());
+}
 
-;
+
 template class SOFA_SOFTROBOTS_API CableConstraint<Vec3Types>;
 template class SOFA_SOFTROBOTS_API CableConstraint<Vec2Types>;
 

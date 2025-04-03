@@ -37,9 +37,11 @@ namespace softrobots::controller
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-
-int InteractiveControlClass = sofa::core::RegisterObject("InteractiveControl (Controls external motors via network)")
-        .add< InteractiveControl >();
+void registerInteractiveControl(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("InteractiveControl (Controls external motors via network)")
+    .add<  InteractiveControl>());
+}
 
 InteractiveControl::InteractiveControl()
     : d_motorIndex(initData(&d_motorIndex, (unsigned int)0, "motorIndex", "index of controlled motor (0 to 255 max)"))

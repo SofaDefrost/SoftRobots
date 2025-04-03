@@ -107,9 +107,11 @@ void JointForceConstraintResolution::resolution(int line, double** w, double* d,
 
 
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
-int JointConstraintClass = RegisterObject("Lagrange multiplier approach to apply a force/displacement on a Joint (Vec1)")
-.add< JointConstraint<Vec1Types> >(true)
-;
+void registerJointConstraint(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(ObjectRegistrationData("Lagrange multiplier approach to apply a force/displacement on a Joint (Vec1)")
+    .add< JointConstraint<Vec1Types> >(true));
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template class SOFA_SOFTROBOTS_API JointConstraint<Vec1Types>;
