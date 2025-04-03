@@ -50,25 +50,9 @@ def createScene(rootNode):
 
     robot.addObject('LinearSolverConstraintCorrection')
 
-    leg0 = rootNode.addChild('RestPositionLeg0')
-    leg0.addObject('MechanicalObject', name='meca0', template='Vec3', showObject=True, showObjectScale=15,
-                   showIndices=False, showIndicesScale=4e-5,
-                   position='@../robot/boxROI1.pointsInROI')
-    leg1 = rootNode.addChild('RestPositionLeg1')
-    leg1.addObject('MechanicalObject', name='meca1', template='Vec3', showObject=True, showObjectScale=15,
-                   showIndices=False, showIndicesScale=4e-5,
-                   position='@../robot/boxROI2.pointsInROI')
-    leg2 = rootNode.addChild('RestPositionLeg2')
-    leg2.addObject('MechanicalObject', name='meca2', template='Vec3', showObject=True, showObjectScale=15,
-                   showIndices=False, showIndicesScale=4e-5,
-                   position='@../robot/boxROI3.pointsInROI')
-
-    robot.addObject('RestShapeSpringsForceField', name='fixed1', indices="@boxROI1.indices",
-                    external_rest_shape="@RestPositionLeg0/meca0", stiffness=1e3)
-    robot.addObject('RestShapeSpringsForceField', name='fixed2', indices="@boxROI2.indices",
-                    external_rest_shape="@RestPositionLeg1/meca1", stiffness=1e3)
-    robot.addObject('RestShapeSpringsForceField', name='fixed3', indices="@boxROI3.indices",
-                    external_rest_shape="@RestPositionLeg2/meca2", stiffness=1e3)
+    robot.addObject('FixedWeakConstraint', name='fixed1', indices="@boxROI1.indices", stiffness=1e3)
+    robot.addObject('FixedWeakConstraint', name='fixed2', indices="@boxROI2.indices", stiffness=1e3)
+    robot.addObject('FixedWeakConstraint', name='fixed3', indices="@boxROI3.indices", stiffness=1e3)
 
     ###############################
     # VISUAL MODEL
