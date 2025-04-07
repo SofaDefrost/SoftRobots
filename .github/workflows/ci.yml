@@ -1,13 +1,10 @@
 name: CI
 
 on:
+  # This is used to automatically publish nightlies at UTC nighttime
+  schedule:
+    - cron: '0 2 * * *' # run at 2 AM UTC
   workflow_dispatch:
-    inputs:
-      is_nightly:
-        description: 'Is this a nightly build?'
-        required: false
-        default: false
-        type: boolean
   pull_request:
   push:
 
