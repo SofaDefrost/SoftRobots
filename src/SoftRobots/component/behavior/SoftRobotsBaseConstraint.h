@@ -46,7 +46,7 @@ class SOFA_SOFTROBOTS_API SoftRobotsBaseConstraint : public sofa::core::behavior
 {
 public:
 
-    SOFA_CLASS(SoftRobotsBaseConstraint, BaseConstraint);
+    SOFA_CLASS(SoftRobotsBaseConstraint, sofa::core::behavior::BaseConstraint);
 
     // Used by the constraint solver to build the inverse problem
     enum ConstraintType
