@@ -13,7 +13,7 @@ def addAccordion(node, inverse=False):
     accordion.addObject('UniformMass', totalMass=0.030)
     accordion.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.3,  youngModulus=500)
     accordion.addObject('BoxROI', name='ROI1', box=[-2, -2, 0, 2, 2, 0.5], drawBoxes=True)
-    accordion.addObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness=1e12)
+    accordion.addObject('FixedWeakConstraint', indices='@ROI1.indices', stiffness=1e12)
     accordion.addObject('LinearSolverConstraintCorrection')
 
     # Pressure
