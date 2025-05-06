@@ -109,9 +109,4 @@ protected:
 
 } // namespace
 
-namespace sofa::component::controller
-{
-    using InteractiveControl SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::controller::InteractiveControl;
-}
 
