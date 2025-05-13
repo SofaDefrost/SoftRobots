@@ -42,11 +42,11 @@ using sofa::type::vector;
  *  This class defines the abstract API common to all inverse problem constraints.
  */
 
-class SOFA_SOFTROBOTS_API SoftRobotsBaseConstraint : public sofa::core::behavior::BaseConstraint
+class SOFA_SOFTROBOTS_API SoftRobotsBaseConstraint : public sofa::core::behavior::BaseLagrangianConstraint
 {
 public:
 
-    SOFA_CLASS(SoftRobotsBaseConstraint, sofa::core::behavior::BaseConstraint);
+    SOFA_CLASS(SoftRobotsBaseConstraint, sofa::core::behavior::BaseLagrangianConstraint);
 
     // Used by the constraint solver to build the inverse problem
     enum ConstraintType

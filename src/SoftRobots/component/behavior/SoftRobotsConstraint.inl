@@ -64,7 +64,7 @@ bool SoftRobotsConstraint<DataTypes>::isActive() const
 template<class DataTypes>
 void SoftRobotsConstraint<DataTypes>::init()
 {
-    BaseConstraint::init();
+    BaseLagrangianConstraint::init();
 
     /// This throw a LogicException (logic exception are not meant for users but for
     /// developpers).
