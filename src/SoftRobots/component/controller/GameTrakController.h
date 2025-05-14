@@ -119,9 +119,3 @@ protected:
 };   //class GameTrakController
 
 }   //namespace
-
-namespace sofa::component::controller
-{
-    using GameTrakController SOFA_ATTRIBUTE_DEPRECATED__RENAME_NAMESPACE_SOFTROBOTS()
-        = softrobots::controller::GameTrakController;
-}
