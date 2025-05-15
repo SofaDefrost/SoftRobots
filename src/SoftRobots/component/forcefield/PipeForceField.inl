@@ -109,8 +109,8 @@ double PipeForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mpa
 }
 
 template<typename DataTypes>
-void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
-                                               const MultiMatrixAccessor* matrix)
+void PipeForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix,
+                                             SReal kFact, unsigned int & offset)
 {
     if (l_barycentricMapping.get() == nullptr )
     {
@@ -167,7 +167,6 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
     if(mstate==nullptr)
         msg_error() << "Missing context mechanical state.";
 
-    MultiMatrixAccessor::MatrixRef matrixRef = matrix->getMatrix(mstate);
     _3_3_Matrix_Type KMatrixBuffer;
     for(size_t kRowIndex = 0 ; kRowIndex < (unsigned int)JtKJ.nBlockRow ; ++kRowIndex) {
         for(_3_3_ColBlockConstIterator kColIter = JtKJ.bRowBegin(kRowIndex); kColIter < JtKJ.bRowEnd(kRowIndex) ; kColIter++) {
@@ -180,7 +179,7 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
 
             for (int i = 0; i < 3 ; i++)
                 for (int j = 0; j < 3; j++)
-                    matrixRef.matrix->add(matrixRef.offset + 3 * kRowIndex + i,matrixRef.offset + 3 * kColIndex + j, kBlockData(i, j));
+                    matrix->add(offset + 3 * kRowIndex + i, offset + 3 * kColIndex + j, kBlockData(i, j));
         }
     }
 
