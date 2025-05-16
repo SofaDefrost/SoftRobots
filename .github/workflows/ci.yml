@@ -137,7 +137,7 @@ jobs:
           ./bin/SoftRobots_test${{ steps.sofa.outputs.exe }}
 
       - name: Notify dashboard
-        if: always() && startsWith(github.repository, 'sofa-framework') && startsWith(github.ref, 'refs/heads/master') # we are not on a fork and on master
+        if: always() && startsWith(github.repository, 'SofaDefrost') && startsWith(github.ref, 'refs/heads/master') # we are not on a fork and on master
         env:
           DASH_AUTH: ${{ secrets.PLUGIN_DASH }}
         shell: bash
