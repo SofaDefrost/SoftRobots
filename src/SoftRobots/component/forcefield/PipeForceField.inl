@@ -112,6 +112,8 @@ template<typename DataTypes>
 void PipeForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix,
                                              SReal kFact, unsigned int & offset)
 {
+    SOFA_UNUSED(kFact);
+    
     if (l_barycentricMapping.get() == nullptr )
     {
         msg_error() << "Link to barycentric mapping is missing or incorrect. AddKToMatrix not computed.";
@@ -154,7 +156,7 @@ void PipeForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * m
 
     MultiMatrixAccessor::MatrixRef mappedMatrixRef = mappedFFMatrixAccessor->getMatrix(springState);
 
-    l_mappedForceField.get()->addKToMatrix(mparams, mappedFFMatrixAccessor);
+    l_mappedForceField.get()->addKToMatrix(sofa::core::mechanicalparams::defaultInstance(), mappedFFMatrixAccessor);
     CompressedRowSparseMatrix<_3_3_Matrix_Type> JtK ;
     CompressedRowSparseMatrix<_3_3_Matrix_Type> JtKJ ;
 
