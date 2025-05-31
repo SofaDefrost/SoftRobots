@@ -76,7 +76,7 @@ void SoftRobotsConstraint<DataTypes>::init()
 
 
 template<class DataTypes>
-void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const sofa::core::ConstraintParams* cParams,
+void SoftRobotsConstraint<DataTypes>::doGetConstraintViolation(const sofa::core::ConstraintParams* cParams,
                                                              BaseVector *resV)
 {
     if (cParams)
@@ -107,7 +107,7 @@ void SoftRobotsConstraint<DataTypes>::getConstraintViolation(const sofa::core::C
 
 
 template<class DataTypes>
-void SoftRobotsConstraint<DataTypes>::buildConstraintMatrix(const sofa::core::ConstraintParams* cParams,
+void SoftRobotsConstraint<DataTypes>::doBuildConstraintMatrix(const sofa::core::ConstraintParams* cParams,
                                                             sofa::core::MultiMatrixDerivId cId,
                                                             unsigned int &cIndex)
 {
