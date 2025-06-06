@@ -205,6 +205,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      
+      - name: Sleep for 60 seconds
+        run: sleep 60
+        shell: bash
+
       - name: Create new release
         if: success() || failure()
         uses: softprops/action-gh-release@v1
