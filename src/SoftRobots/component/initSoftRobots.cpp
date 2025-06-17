@@ -29,6 +29,8 @@
 ******************************************************************************/
 #include <SoftRobots/component/initSoftRobots.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/ComponentChange.h>
+#include <sofa/Modules.h>
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
@@ -77,8 +79,6 @@ namespace controller
 namespace engine
 {
     extern void registerCenterOfMass(sofa::core::ObjectFactory* factory);
-    extern void registerVolumeFromTetrahedrons(sofa::core::ObjectFactory* factory);
-    extern void registerVolumeFromTriangles(sofa::core::ObjectFactory* factory);
 }
 
 namespace forcefield
@@ -106,6 +106,12 @@ void init()
         return;
     }
     first = false;
+
+    // moved components
+    sofa::helper::lifecycle::movedComponents.insert({
+        { "VolumeFromTriangles", sofa::helper::lifecycle::Moved("v25.12", "SoftRobots", Sofa.Component.Engine.Generate) },
+        { "VolumeFromTetrahedrons", sofa::helper::lifecycle::Moved("v25.12", "SoftRobots", Sofa.Component.Engine.Generate) }
+    });
 
     // make sure that this plugin is registered into the PluginManager
     sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
@@ -139,7 +145,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "The plugin allows to control soft robots";
+    return "The plugin allows to model soft robots";
 }
 
 void registerObjects(sofa::core::ObjectFactory* factory)
@@ -169,24 +175,9 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     controller::registerPointCloudProcessing(factory);
 #endif
     engine::registerCenterOfMass(factory);
-    engine::registerVolumeFromTetrahedrons(factory);
-    engine::registerVolumeFromTriangles(factory);
     forcefield::registerPREquivalentStiffnessForceField(factory);
     forcefield::registerPartialRigidificationForceField(factory);
     forcefield::registerPipeForceField(factory);
 }
 
 } // namespace SoftRobots
-
-SOFA_LINK_CLASS(AnimationEditor)
-SOFA_LINK_CLASS(DataVariationLimiter)
-SOFA_LINK_CLASS(PartialRigidificationConstraint)
-SOFA_LINK_CLASS(PartialRigidificationForceField)
-SOFA_LINK_CLASS(PREquivalentStiffnessForceField)
-SOFA_LINK_CLASS(SurfacePressureConstraint)
-SOFA_LINK_CLASS(SerialPortBridgeGeneric)
-SOFA_LINK_CLASS(InteractiveControl)
-SOFA_LINK_CLASS(UnilateralPlaneConstraint)
-SOFA_LINK_CLASS(VolumeFromTriangles)
-SOFA_LINK_CLASS(VolumeFromTetrahedrons)
-
