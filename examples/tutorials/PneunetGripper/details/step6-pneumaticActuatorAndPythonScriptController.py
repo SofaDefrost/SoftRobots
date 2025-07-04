@@ -38,7 +38,7 @@ def createScene(rootNode):
     finger.addObject('UniformMass', totalMass=0.04)
     boxROISubTopo = finger.addObject('BoxROI', name='boxROISubTopo', box=[-100, 22.5, -8, -19, 28, 8], strict=False)
     boxROI = finger.addObject('BoxROI', name='boxROI', box=[-10, 0, -20, 0, 30, 20], drawBoxes=True)
-    finger.addObject('RestShapeSpringsForceField', points=boxROI.indices.linkpath, stiffness=1e12, angularStiffness=1e12)
+    finger.addObject('FixedWeakConstraint', indices=boxROI.indices.linkpath, stiffness=1e12, angularStiffness=1e12)
     finger.addObject('GenericConstraintCorrection')
 
     modelSubTopo = finger.addChild('SubTopology')

@@ -16,7 +16,7 @@ def EffectorGoal(node, position):
     goal.addObject('EulerImplicitSolver', firstOrder=True)
     goal.addObject('CGLinearSolver', iterations=100, threshold=1e-12, tolerance=1e-10)
     goal.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position+[0., 0., 0., 1.], showObject=True, showObjectScale=10)
-    goal.addObject('RestShapeSpringsForceField', points=0, angularStiffness=1e5, stiffness=1e5)
+    goal.addObject('FixedWeakConstraint', indices=0, angularStiffness=1e5, stiffness=1e5)
     goal.addObject('UncoupledConstraintCorrection', compliance=[1e-10] * 7)
     return goal
 
