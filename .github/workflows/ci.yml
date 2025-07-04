@@ -205,6 +205,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      
+      - name: Sleep for 60 seconds # The action-gh-release creates a draft if the tag already exists. This step is to ensure that the old release tag has been deleted before creating the new release. (see issue:https://github.com/cli/cli/issues/8458).
+        run: sleep 60
+        shell: bash
+
       - name: Create new release
         if: success() || failure()
         uses: softprops/action-gh-release@v1
