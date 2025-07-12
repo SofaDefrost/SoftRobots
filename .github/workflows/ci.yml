@@ -142,6 +142,8 @@ jobs:
           DASH_AUTH: ${{ secrets.PLUGIN_DASH }}
         shell: bash
         run: |
+          os=$(echo "${{ matrix.os }}" | awk -F- '{ print $1 }')
+
           test_status=$([ '${{ steps.unit-tests.outcome }}' == 'success' ] && \
                         echo 'true' || echo 'false')
 
@@ -158,6 +160,7 @@ jobs:
           "{\"id\":\"$(echo "${{ github.repository }}" | awk -F/ '{ print $2 }')\",\
            \"github_ref\":\"${{ github.sha }}\",\
            \"url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\
+           \"os\":\"$os\",\
            \"build\":$build_status,\
            \"tests\":$test_status,\
            \"binary\":$binary_status}"\
