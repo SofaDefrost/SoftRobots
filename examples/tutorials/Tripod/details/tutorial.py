@@ -71,7 +71,7 @@ def Scene(parent, **kwargs):
     Modelling(scene)
     Simulation(scene)
     parent.addObject("FreeMotionAnimationLoop")
-    parent.addObject("GenericConstraintSolver", maxIterations=250, tolerance=1e-20)
+    parent.addObject("ProjectedGaussSeidelConstraintSolver", maxIterations=250, tolerance=1e-20)
 
     ctx = scene.Config
     ctx.addObject("MeshSTLLoader", name="loader", filename=getLoadingLocation("data/mesh/blueprint.stl", __file__))

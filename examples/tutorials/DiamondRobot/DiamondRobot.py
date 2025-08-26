@@ -35,7 +35,7 @@ def createScene(rootNode):
 
     # Constraint solver, here we use a Gauss Seidel algorithm
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('GenericConstraintSolver', maxIterations=500, tolerance=1e-8)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-8)
 
     # Robot
     robot = rootNode.addChild('Robot')

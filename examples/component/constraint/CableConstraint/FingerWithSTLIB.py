@@ -36,7 +36,7 @@ def createScene(rootNode):
 
     rootNode.addObject("FreeMotionAnimationLoop")
     rootNode.addObject('DefaultVisualManagerLoop')
-    rootNode.addObject("GenericConstraintSolver", maxIterations=1000, tolerance=0.001)
+    rootNode.addObject("ProjectedGaussSeidelConstraintSolver", maxIterations=1000, tolerance=0.001)
 
     finger = ElasticMaterialObject(name="finger",
                                    volumeMeshFileName="mesh/finger.vtk",

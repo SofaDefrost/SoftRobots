@@ -552,7 +552,7 @@ Just like for the <code>ElasticBody</code>, a function <code>Tripod()</code> is 
 <a class="sourceLine" id="cb11-69" title="69">    scene.addMainHeader()</a>
 <a class="sourceLine" id="cb11-70" title="70">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
 <a class="sourceLine" id="cb11-71" title="71">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb11-72" title="72">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb11-72" title="72">    scene.addObject(<span class="st">&#39;ProjectedGaussSeidelConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
 <a class="sourceLine" id="cb11-73" title="73">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
 <a class="sourceLine" id="cb11-74" title="74">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
 <a class="sourceLine" id="cb11-75" title="75">    rootNode.dt <span class="op">=</span> <span class="fl">0.01</span></a>
@@ -706,7 +706,7 @@ Figure 6: Deformable piece with the extremities rigidified.
 <a class="sourceLine" id="cb12-98" title="98">    scene.addMainHeader()</a>
 <a class="sourceLine" id="cb12-99" title="99">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
 <a class="sourceLine" id="cb12-100" title="100">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb12-101" title="101">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb12-101" title="101">    scene.addObject(<span class="st">&#39;ProjectedGaussSeidelConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
 <a class="sourceLine" id="cb12-102" title="102">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
 <a class="sourceLine" id="cb12-103" title="103">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
 <a class="sourceLine" id="cb12-104" title="104">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
@@ -874,7 +874,7 @@ Figure 7: Deformable piece with the extremities rigidified and attached to the s
 <a class="sourceLine" id="cb13-108" title="108">    scene.addMainHeader()</a>
 <a class="sourceLine" id="cb13-109" title="109">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
 <a class="sourceLine" id="cb13-110" title="110">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb13-111" title="111">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb13-111" title="111">    scene.addObject(<span class="st">&#39;ProjectedGaussSeidelConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
 <a class="sourceLine" id="cb13-112" title="112">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
 <a class="sourceLine" id="cb13-113" title="113">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
 <a class="sourceLine" id="cb13-114" title="114">    scene.Simulation.TimeIntegrationSchema.rayleighStiffness <span class="op">=</span> <span class="fl">0.05</span></a>
@@ -1024,7 +1024,7 @@ The controller is added as another node in the scene.</p>
 <a class="sourceLine" id="cb14-44" title="44">    scene.addMainHeader()</a>
 <a class="sourceLine" id="cb14-45" title="45">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
 <a class="sourceLine" id="cb14-46" title="46">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb14-47" title="47">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb14-47" title="47">    scene.addObject(<span class="st">&#39;ProjectedGaussSeidelConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
 <a class="sourceLine" id="cb14-48" title="48">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
 <a class="sourceLine" id="cb14-49" title="49">    scene.Simulation.TimeIntegrationSchema.rayleighStiffness <span class="op">=</span> <span class="fl">0.005</span></a>
 <a class="sourceLine" id="cb14-50" title="50">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
@@ -1457,7 +1457,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb16-113" title="113">    scene.addMainHeader()</a>
 <a class="sourceLine" id="cb16-114" title="114">    scene.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
 <a class="sourceLine" id="cb16-115" title="115">    scene.addObject(<span class="st">&#39;FreeMotionAnimationLoop&#39;</span>)</a>
-<a class="sourceLine" id="cb16-116" title="116">    scene.addObject(<span class="st">&#39;GenericConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
+<a class="sourceLine" id="cb16-116" title="116">    scene.addObject(<span class="st">&#39;ProjectedGaussSeidelConstraintSolver&#39;</span>, maxIterations<span class="op">=</span><span class="dv">50</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
 <a class="sourceLine" id="cb16-117" title="117">    scene.Simulation.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
 <a class="sourceLine" id="cb16-118" title="118">    scene.VisualStyle.displayFlags <span class="op">=</span> <span class="st">&quot;showBehavior&quot;</span></a>
 <a class="sourceLine" id="cb16-119" title="119">    scene.Settings.mouseButton.stiffness <span class="op">=</span> <span class="dv">10</span></a>
@@ -1934,7 +1934,7 @@ Figure 13: Tripod with maze on top.
 <a class="sourceLine" id="cb19-118" title="118"></a>
 <a class="sourceLine" id="cb19-119" title="119">    scene <span class="op">=</span> Scene(rootNode, gravity<span class="op">=</span>[<span class="fl">0.</span>, <span class="dv">-9810</span>, <span class="fl">0.</span>], dt<span class="op">=</span><span class="fl">0.01</span>, iterative<span class="op">=</span><span class="va">False</span>, plugins<span class="op">=</span>pluginList)</a>
 <a class="sourceLine" id="cb19-120" title="120">    ContactHeader(rootNode, alarmDistance<span class="op">=</span><span class="dv">15</span>, contactDistance<span class="op">=</span><span class="fl">0.5</span>, frictionCoef<span class="op">=</span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb19-121" title="121">    scene.removeObject(scene.GenericConstraintSolver)</a>
+<a class="sourceLine" id="cb19-121" title="121">    scene.removeObject(scene.ProjectedGaussSeidelConstraintSolver)</a>
 <a class="sourceLine" id="cb19-122" title="122"></a>
 <a class="sourceLine" id="cb19-123" title="123">    goalNode <span class="op">=</span> EffectorGoal(rootNode, [<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">0</span>])</a>
 <a class="sourceLine" id="cb19-124" title="124"></a>

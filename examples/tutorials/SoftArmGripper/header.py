@@ -36,7 +36,7 @@ def addHeader(node):
         node.addObject('RequiredPlugin', name='SoftRobots.Inverse')
         node.addObject('QPInverseProblemSolver')
     else:
-        node.addObject('GenericConstraintSolver', maxIterations=100, tolerance=0.001)
+        node.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=100, tolerance=0.001)
     node.addObject('CollisionPipeline')
     node.addObject('BruteForceBroadPhase')
     node.addObject('BVHNarrowPhase')

@@ -113,7 +113,7 @@ def createScene(rootNode):
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
-    scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=50, tolerance=1e-5)
     scene.Simulation.addObject('GenericConstraintCorrection')
     scene.VisualStyle.displayFlags = "showBehavior"
     scene.Settings.mouseButton.stiffness = 10

@@ -48,7 +48,7 @@ def createScene(rootNode):
                                     'showInteractionForceFields hideWireframe')
     rootNode.gravity.value = [-9810, 0, 0]
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('GenericConstraintSolver', tolerance=1e-7, maxIterations=1000)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance=1e-7, maxIterations=1000)
     rootNode.addObject('CollisionPipeline')
     rootNode.addObject('BruteForceBroadPhase')
     rootNode.addObject('BVHNarrowPhase')

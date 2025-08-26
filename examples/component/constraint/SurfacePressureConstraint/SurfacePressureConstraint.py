@@ -32,7 +32,7 @@ def createScene(rootNode):
 
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('DefaultVisualManagerLoop')
-    rootNode.addObject('GenericConstraintSolver', maxIterations=100, tolerance=0.0000001)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=100, tolerance=0.0000001)
 
     # bunny
     bunny = rootNode.addChild('bunny')

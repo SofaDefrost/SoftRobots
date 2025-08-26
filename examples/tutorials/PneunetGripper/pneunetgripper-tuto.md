@@ -101,10 +101,10 @@ In this case, the controller allows to interactively inflate the cavity by press
 
 ## Solving the constraints
 
- To solve the constraints, such as the one define by the pressure actuator, we have to add to the rootNode the component FreeMotionAnimationLoop that will build up the system including constraints. The component GenericConstraintSolver will also be added to solve the constraints problem. Finally, we add the component LinearConstraintCorrection to the finger Node to take into account the correction due to the cavity constraint to the velocity and position:
+ To solve the constraints, such as the one define by the pressure actuator, we have to add to the rootNode the component FreeMotionAnimationLoop that will build up the system including constraints. The component ProjectedGaussSeidelConstraintSolver will also be added to solve the constraints problem. Finally, we add the component LinearConstraintCorrection to the finger Node to take into account the correction due to the cavity constraint to the velocity and position:
 ```python
 rootNode.addObject('FreeMotionAnimationLoop')
-rootNode.addObject('GenericConstraintSolver', maxIterations=10000, tolerance=1e-3)
+rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=10000, tolerance=1e-3)
 ```
 
 ```python
@@ -226,7 +226,7 @@ def createScene(rootNode):
 	rootNode.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 	rootNode.findData('gravity').value=[-9810, 0, 0];
 	rootNode.addObject('FreeMotionAnimationLoop')
-	rootNode.addObject('GenericConstraintSolver', tolerance=1e-12, maxIterations=10000)
+	rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance=1e-12, maxIterations=10000)
 	rootNode.addObject('CollisionPipeline')
 	rootNode.addObject('BruteForceDetection')
         rootNode.addObject('CollisionResponse', response='FrictionContactConstraint', responseParams='mu=0.6')

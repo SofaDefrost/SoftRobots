@@ -97,7 +97,7 @@ def createScene(rootNode):
     # Inverse Solver
     scene.addObject('FreeMotionAnimationLoop')
     # TODO: Replace the constraint solver with the inverse solver
-    scene.Simulation.addObject('GenericConstraintSolver')
+    scene.Simulation.addObject('ProjectedGaussSeidelConstraintSolver')
 
     scene.Simulation.addObject('GenericConstraintCorrection')
     scene.Settings.mouseButton.stiffness = 10
