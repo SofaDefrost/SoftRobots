@@ -33,7 +33,7 @@ def createScene(rootNode):
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('DefaultVisualManagerLoop')
 
-    rootNode.addObject('GenericConstraintSolver', maxIterations=1000, tolerance=1e-3)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=1000, tolerance=1e-3)
 
     rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
     rootNode.findData('gravity').value = [0, 0, -981.0]

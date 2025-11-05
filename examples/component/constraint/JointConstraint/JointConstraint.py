@@ -28,7 +28,7 @@ def createScene(rootNode):
     rootNode.gravity = [0., -9810., 0.]
     rootNode.addObject('VisualStyle', displayFlags='showBehaviorModels')
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('GenericConstraintSolver', maxIterations=500, tolerance=1e-4)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-4)
 
     # Simulation node
     simulation = rootNode.addChild('Simulation')

@@ -35,7 +35,7 @@
         <BVHNarrowPhase />
         <CollisionResponse response='FrictionContactConstraint'/>
         <LocalMinDistance name="Proximity" alarmDistance='3' contactDistance='0.5'/>
-        <GenericConstraintSolver name="GenericConstraintSolver" maxIterations='250' printLog='0' tolerance = '0.0000001'/>
+        <ProjectedGaussSeidelConstraintSolver name="ProjectedGaussSeidelConstraintSolver" maxIterations='250' printLog='0' tolerance = '0.0000001'/>
 
 
         <Node name='bunny'>

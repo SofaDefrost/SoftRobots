@@ -12,7 +12,7 @@ def createScene(rootNode):
                        displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('GenericConstraintSolver', maxIterations=100, tolerance=0.0000001)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=100, tolerance=0.0000001)
 
     # bunny mechanical model
     bunny = rootNode.addChild('bunny')

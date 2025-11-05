@@ -130,7 +130,7 @@ def createScene(rootNode):
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
-    scene.addObject('GenericConstraintSolver', maxIterations=1e3, tolerance=1e-5)
+    scene.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=1e3, tolerance=1e-5)
     scene.Simulation.addObject('GenericConstraintCorrection')
 
     scene.dt = 0.01

@@ -43,7 +43,7 @@ def createScene(rootNode):
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
-    scene.addObject('GenericConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=50, tolerance=1e-5)
     scene.Simulation.addObject('GenericConstraintCorrection')
     scene.Simulation.TimeIntegrationSchema.rayleighStiffness = 0.005
     scene.Settings.mouseButton.stiffness = 10

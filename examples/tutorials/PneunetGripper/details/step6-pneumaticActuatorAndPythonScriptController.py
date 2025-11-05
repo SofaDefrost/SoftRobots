@@ -25,7 +25,7 @@ def createScene(rootNode):
     rootNode.gravity.value = [-9810, 0, 0]
     rootNode.addObject('AttachBodyButtonSetting', stiffness=10)
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('GenericConstraintSolver', tolerance=1e-7, maxIterations=1000)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance=1e-7, maxIterations=1000)
 
     finger = rootNode.addChild('Finger')
     finger.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)

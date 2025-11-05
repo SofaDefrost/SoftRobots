@@ -35,7 +35,7 @@ def createScene(rootNode):
     #  of the actuator's parameters.
     # rootNode.addObject('QPInverseProblemSolver', printLog=False)
     # Otherwise use a GenericConstraintSolver
-    rootNode.addObject('GenericConstraintSolver', tolerance=1e-5, maxIterations=100)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance=1e-5, maxIterations=100)
 
     rootNode.gravity = [0, -9810, 0]
     rootNode.dt = 0.01

@@ -120,7 +120,7 @@ def createScene(rootNode):
 
     scene = Scene(rootNode, gravity=[0., -9810, 0.], dt=0.01, iterative=False, plugins=pluginList)
     ContactHeader(rootNode, alarmDistance=15, contactDistance=0.5, frictionCoef=0)
-    scene.removeObject(scene.GenericConstraintSolver)
+    scene.removeObject(scene.ProjectedGaussSeidelConstraintSolver)
 
     goalNode = EffectorGoal(rootNode, [0, 30, 0])
 

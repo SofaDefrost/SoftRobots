@@ -35,7 +35,7 @@ def createScene(rootNode):
         rootNode.addObject('RequiredPlugin', name='SoftRobots.Inverse')
         rootNode.addObject('QPInverseProblemSolver', epsilon=1e-1, maxIterations=1000, tolerance=1e-14)
     else:
-        rootNode.addObject('GenericConstraintSolver', maxIterations=500, tolerance=1e-5)
+        rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-5)
 
     rootNode.gravity.value = [0, 0, -981.0]
     rootNode.dt.value = 0.01

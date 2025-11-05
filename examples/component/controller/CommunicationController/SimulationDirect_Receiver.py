@@ -26,7 +26,7 @@ def createScene(rootNode):
 
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('DefaultVisualManagerLoop')
-    rootNode.addObject('GenericConstraintSolver', maxIterations=1000, tolerance=1e-14)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=1000, tolerance=1e-14)
 
     rootNode.gravity.value = [0, 0, -981.0]
     rootNode.dt.value = 0.01

@@ -15,7 +15,7 @@ def createScene(rootNode):
 
     rootNode.addObject('FreeMotionAnimationLoop')
 
-    rootNode.addObject('GenericConstraintSolver', tolerance=1e-5, maxIterations=100)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance=1e-5, maxIterations=100)
 
     rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
     rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")

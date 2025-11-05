@@ -175,7 +175,7 @@ def createScene(rootNode):
         rootNode.addObject('QPInverseProblemSolver', epsilon=1e-1)
     else:
         # For direct resolution, i.e direct control of the cable displacement
-        rootNode.addObject('GenericConstraintSolver', maxIterations=100, tolerance=1e-5)
+        rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=100, tolerance=1e-5)
 
     simulation = rootNode.addChild('Simulation')
 

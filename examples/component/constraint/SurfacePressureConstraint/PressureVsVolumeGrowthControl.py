@@ -36,7 +36,7 @@ def createScene(rootNode):
 
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('DefaultVisualManagerLoop')
-    rootNode.addObject('GenericConstraintSolver', maxIterations=500, printLog=False, tolerance=0.0000001)
+    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, printLog=False, tolerance=0.0000001)
 
     Bunny(rootNode, name='BunnyPressure', controlType='pressure', initialValue=2)
     Bunny(rootNode, translation=[15, 0, 0], controlType='volumeGrowth', name='BunnyVolume', initialValue=40)

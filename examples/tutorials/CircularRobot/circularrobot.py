@@ -160,7 +160,7 @@ def createScene(rootNode):
         rootNode.addObject('QPInverseProblemSolver', epsilon=2e-0, maxIterations=2500, tolerance=1e-7,
                            responseFriction=0.8)
     else:
-        rootNode.addObject('GenericConstraintSolver', maxIterations=500, tolerance=1e-5)
+        rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-5)
 
     # Contact detection methods
     rootNode.addObject('CollisionPipeline')
