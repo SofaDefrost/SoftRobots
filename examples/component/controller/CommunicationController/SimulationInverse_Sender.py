@@ -12,7 +12,7 @@ def createScene(rootNode):
                                         "Sofa.Component.Collision.Geometry",  # Needed to use components SphereCollisionModel
                                         "Sofa.Component.Constraint.Lagrangian.Correction",
                                         # Needed to use components LinearSolverConstraintCorrection, UncoupledConstraintCorrection
-                                        "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components GenericConstraintSolver
+                                        "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
                                         "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
                                         "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
                                         "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver

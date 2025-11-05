@@ -20,7 +20,7 @@ def createScene(rootNode):
     pluginList = ['ArticulatedSystemPlugin',  # Needed to use components [ArticulatedHierarchyContainer]
                   'Sofa.Component.AnimationLoop',  # Needed to use components [FreeMotionAnimationLoop]
                   'Sofa.Component.Constraint.Lagrangian.Correction',  # Needed to use components [GenericConstraintCorrection]
-                  'Sofa.Component.Constraint.Lagrangian.Solver',  # Needed to use components [GenericConstraintSolver]
+                  'Sofa.Component.Constraint.Lagrangian.Solver',  # Needed to use components [ProjectedGaussSeidelConstraintSolver]
                   'Sofa.Component.Constraint.Projective',  # Needed to use components [FixedProjectiveConstraint]
                   'Sofa.Component.Engine.Select',  # Needed to use components [BoxROI,SphereROI]
                   'Sofa.Component.LinearSolver.Direct',  # Needed to use components [SparseLDLSolver]

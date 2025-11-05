@@ -122,7 +122,7 @@ def createScene(rootNode):
                                                      "Sofa.Component.Constraint.Lagrangian.Correction",
                                                      # Needed to use components GenericConstraintCorrection, UncoupledConstraintCorrection
                                                      "Sofa.Component.Constraint.Lagrangian.Solver",
-                                                     # Needed to use components GenericConstraintSolver
+                                                     # Needed to use components ProjectedGaussSeidelConstraintSolver
                                                      "Sofa.Component.IO.Mesh",
                                                      # Needed to use components MeshOBJLoader, MeshSTLLoader, MeshVTKLoader
                                                      "Sofa.Component.LinearSolver.Direct",
