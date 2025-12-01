@@ -12,7 +12,7 @@ def addHeader(node):
                             "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
                             "Sofa.Component.Collision.Response.Contact",  # Needed to use components CollisionResponse
                             "Sofa.Component.Constraint.Lagrangian.Correction",  # Needed to use components GenericConstraintCorrection
-                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components BlockGaussSeidelConstraintSolver
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                             "Sofa.Component.Mass",  # Needed to use components UniformMass
@@ -36,7 +36,7 @@ def addHeader(node):
         node.addObject('RequiredPlugin', name='SoftRobots.Inverse')
         node.addObject('QPInverseProblemSolver')
     else:
-        node.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=100, tolerance=0.001)
+        node.addObject('BlockGaussSeidelConstraintSolver', maxIterations=100, tolerance=0.001)
     node.addObject('CollisionPipeline')
     node.addObject('BruteForceBroadPhase')
     node.addObject('BVHNarrowPhase')

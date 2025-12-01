@@ -68,7 +68,7 @@ def createScene(rootNode):
                             # Needed to use components BVHNarrowPhase, BruteForceBroadPhase, CollisionPipeline
                             "Sofa.Component.Collision.Detection.Intersection",  # Needed to use components LocalMinDistance
                             "Sofa.Component.Collision.Response.Contact",  # Needed to use components RuleBasedContactManager
-                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components BlockGaussSeidelConstraintSolver
                             "Sofa.Component.Visual",  # Needed to use components VisualStyle
                         ])
 

@@ -11,7 +11,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName=[
                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                             "Sofa.Component.Constraint.Lagrangian.Correction",  # Needed to use components GenericConstraintCorrection
-                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components BlockGaussSeidelConstraintSolver
                             "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
@@ -34,8 +34,8 @@ def createScene(rootNode):
     # when manipulating the robots by specifying their effector's position instead of by direct control
     #  of the actuator's parameters.
     # rootNode.addObject('QPInverseProblemSolver', printLog=False)
-    # Otherwise use a ProjectedGaussSeidelConstraintSolver
-    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance=1e-5, maxIterations=100)
+    # Otherwise use a BlockGaussSeidelConstraintSolver
+    rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance=1e-5, maxIterations=100)
 
     rootNode.gravity = [0, -9810, 0]
     rootNode.dt = 0.01

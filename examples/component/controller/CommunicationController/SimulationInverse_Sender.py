@@ -12,7 +12,7 @@ def createScene(rootNode):
                                         "Sofa.Component.Collision.Geometry",  # Needed to use components SphereCollisionModel
                                         "Sofa.Component.Constraint.Lagrangian.Correction",
                                         # Needed to use components LinearSolverConstraintCorrection, UncoupledConstraintCorrection
-                                        "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
+                                        "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components BlockGaussSeidelConstraintSolver
                                         "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
                                         "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
                                         "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
@@ -35,7 +35,7 @@ def createScene(rootNode):
         rootNode.addObject('RequiredPlugin', name='SoftRobots.Inverse')
         rootNode.addObject('QPInverseProblemSolver', epsilon=1e-1, maxIterations=1000, tolerance=1e-14)
     else:
-        rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-5)
+        rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-5)
 
     rootNode.gravity.value = [0, 0, -981.0]
     rootNode.dt.value = 0.01

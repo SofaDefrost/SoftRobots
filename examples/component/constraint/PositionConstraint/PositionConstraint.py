@@ -3,7 +3,7 @@ def createScene(rootnode):
     rootnode.addObject('RequiredPlugin', name='SoftRobots')
 
     rootnode.addObject('FreeMotionAnimationLoop')
-    rootnode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=1e4, tolerance=1e-5, printLog=True)
+    rootnode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=1e4, tolerance=1e-5, printLog=True)
     rootnode.gravity = [0, -9.81, 0]
     rootnode.addObject('VisualStyle', displayFlags='showForceFields')
 

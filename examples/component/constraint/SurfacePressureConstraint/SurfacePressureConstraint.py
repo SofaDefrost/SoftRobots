@@ -8,7 +8,7 @@ def createScene(rootNode):
 
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.AnimationLoop') # Needed to use components [FreeMotionAnimationLoop]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Correction') # Needed to use components [LinearSolverConstraintCorrection]
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Solver') # Needed to use components [ProjectedGaussSeidelConstraintSolver]
+    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Solver') # Needed to use components [BlockGaussSeidelConstraintSolver]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select') # Needed to use components [BoxROI]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.IO.Mesh') # Needed to use components [MeshOBJLoader,MeshVTKLoader]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct') # Needed to use components [EigenSimplicialLDLT]
@@ -32,7 +32,7 @@ def createScene(rootNode):
 
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('DefaultVisualManagerLoop')
-    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=100, tolerance=0.0000001)
+    rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=100, tolerance=0.0000001)
 
     # bunny
     bunny = rootNode.addChild('bunny')

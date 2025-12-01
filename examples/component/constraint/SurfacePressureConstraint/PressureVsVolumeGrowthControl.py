@@ -13,7 +13,7 @@ def createScene(rootNode):
                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                             "Sofa.Component.Constraint.Lagrangian.Correction",
                             # Needed to use components LinearSolverConstraintCorrection
-                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components BlockGaussSeidelConstraintSolver
                             "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader, MeshVTKLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
@@ -36,7 +36,7 @@ def createScene(rootNode):
 
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('DefaultVisualManagerLoop')
-    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, printLog=False, tolerance=0.0000001)
+    rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=500, printLog=False, tolerance=0.0000001)
 
     Bunny(rootNode, name='BunnyPressure', controlType='pressure', initialValue=2)
     Bunny(rootNode, translation=[15, 0, 0], controlType='volumeGrowth', name='BunnyVolume', initialValue=40)

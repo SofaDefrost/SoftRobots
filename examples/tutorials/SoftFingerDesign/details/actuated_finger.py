@@ -129,7 +129,7 @@ class FingerController(Sofa.Core.Controller):
         self.numContact = 0
 
         # Computation of the contact force applied on the object to grasp
-        self.node.getRoot().ProjectedGaussSeidelConstraintSolver.computeConstraintForces.value = True
+        self.node.getRoot().BlockGaussSeidelConstraintSolver.computeConstraintForces.value = True
 
     def onKeypressedEvent(self, event):
         key = event['key']
@@ -150,7 +150,7 @@ class FingerController(Sofa.Core.Controller):
             self.actuator.ServoMotor.angleIn = angleInit + angularStep
 
         # Computation of the contact force applied on the object to grasp
-        contactForces = self.node.getRoot().ProjectedGaussSeidelConstraintSolver.constraintForces.value
+        contactForces = self.node.getRoot().BlockGaussSeidelConstraintSolver.constraintForces.value
 
         # print the number of nodes in contact and the norm of the largest contact force
         self.numContact = 0
@@ -183,7 +183,7 @@ def createScene(rootNode):
 
     # Set up the pipeline for the collision computation
     scene.addObject('FreeMotionAnimationLoop')
-    scene.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.addObject('BlockGaussSeidelConstraintSolver', maxIterations=50, tolerance=1e-5)
     scene.Simulation.addObject('GenericConstraintCorrection')
     scene.Settings.mouseButton.stiffness = 10
 

@@ -35,7 +35,7 @@ def createScene(rootNode):
     rootNode.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', printLog='0')
+    rootNode.addObject('BlockGaussSeidelConstraintSolver', printLog='0')
 
     ################################################################################################################
     ################################################### Bunny ######################################################

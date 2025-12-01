@@ -20,7 +20,7 @@ def createScene(rootNode):
                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                             "Sofa.Component.Constraint.Lagrangian.Correction",
                             # Needed to use components LinearSolverConstraintCorrection
-                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components BlockGaussSeidelConstraintSolver
                             "Sofa.Component.Constraint.Projective",  # Needed to use components FixedProjectiveConstraint
                             "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshVTKLoader
@@ -35,7 +35,7 @@ def createScene(rootNode):
 
     # Constraint solver, here we use a Gauss Seidel algorithm
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-8)
+    rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-8)
 
     # Robot
     robot = rootNode.addChild('Robot')

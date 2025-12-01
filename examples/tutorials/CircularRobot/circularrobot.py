@@ -122,7 +122,7 @@ def createScene(rootNode):
                                                      "Sofa.Component.Constraint.Lagrangian.Correction",
                                                      # Needed to use components GenericConstraintCorrection, UncoupledConstraintCorrection
                                                      "Sofa.Component.Constraint.Lagrangian.Solver",
-                                                     # Needed to use components ProjectedGaussSeidelConstraintSolver
+                                                     # Needed to use components BlockGaussSeidelConstraintSolver
                                                      "Sofa.Component.IO.Mesh",
                                                      # Needed to use components MeshOBJLoader, MeshSTLLoader, MeshVTKLoader
                                                      "Sofa.Component.LinearSolver.Direct",
@@ -160,7 +160,7 @@ def createScene(rootNode):
         rootNode.addObject('QPInverseProblemSolver', epsilon=2e-0, maxIterations=2500, tolerance=1e-7,
                            responseFriction=0.8)
     else:
-        rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-5)
+        rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-5)
 
     # Contact detection methods
     rootNode.addObject('CollisionPipeline')

@@ -14,7 +14,7 @@ def createScene(rootNode):
         "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
         "Sofa.Component.Constraint.Lagrangian.Correction",
         # Needed to use components LinearSolverConstraintCorrection
-        "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
+        "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components BlockGaussSeidelConstraintSolver
         "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
         "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
         "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
@@ -33,7 +33,7 @@ def createScene(rootNode):
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('DefaultVisualManagerLoop')
 
-    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=1000, tolerance=1e-3)
+    rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=1000, tolerance=1e-3)
 
     rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1])
     rootNode.findData('gravity').value = [0, 0, -981.0]

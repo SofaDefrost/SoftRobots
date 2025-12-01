@@ -8,7 +8,7 @@ def createScene(rootNode):
 
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.AnimationLoop')  # Needed to use components [FreeMotionAnimationLoop]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Correction')  # Needed to use components [LinearSolverConstraintCorrection]
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Solver')  # Needed to use components [ProjectedGaussSeidelConstraintSolver]
+    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Solver')  # Needed to use components [BlockGaussSeidelConstraintSolver]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select')  # Needed to use components [BoxROI]  
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.IO.Mesh')  # Needed to use components [MeshSTLLoader,MeshVTKLoader]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')  # Needed to use components [SparseLDLSolver]
@@ -25,7 +25,7 @@ def createScene(rootNode):
     rootNode.gravity.value = [-9810, 0, 0]
     rootNode.addObject('AttachBodyButtonSetting', stiffness=10)
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance=1e-7, maxIterations=1000)
+    rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance=1e-7, maxIterations=1000)
 
     finger = rootNode.addChild('Finger')
     finger.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)

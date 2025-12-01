@@ -10,7 +10,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='ArticulatedSystemPlugin')  # Needed to use components [ArticulatedHierarchyContainer,ArticulatedSystemMapping,Articulation,ArticulationCenter]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.AnimationLoop')  # Needed to use components [FreeMotionAnimationLoop]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Correction')  # Needed to use components [UncoupledConstraintCorrection]
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Solver')  # Needed to use components [ProjectedGaussSeidelConstraintSolver]
+    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Solver')  # Needed to use components [BlockGaussSeidelConstraintSolver]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Projective')  # Needed to use components [FixedProjectiveConstraint]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Engine.Generate')  # Needed to use components [GenerateRigidMass]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.IO.Mesh')  # Needed to use components [MeshSTLLoader]
@@ -28,7 +28,7 @@ def createScene(rootNode):
     rootNode.gravity = [0., -9810., 0.]
     rootNode.addObject('VisualStyle', displayFlags='showBehaviorModels')
     rootNode.addObject('FreeMotionAnimationLoop')
-    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-4)
+    rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=500, tolerance=1e-4)
 
     # Simulation node
     simulation = rootNode.addChild('Simulation')

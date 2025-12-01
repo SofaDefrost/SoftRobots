@@ -150,7 +150,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName=[
                             "Sofa.Component.AnimationLoop",  # Needed to use components FreeMotionAnimationLoop
                             "Sofa.Component.Constraint.Lagrangian.Correction",  # Needed to use components GenericConstraintCorrection
-                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components BlockGaussSeidelConstraintSolver
                             "Sofa.Component.Constraint.Projective",  # Needed to use components PartialFixedProjectiveConstraint
                             "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
@@ -175,7 +175,7 @@ def createScene(rootNode):
         rootNode.addObject('QPInverseProblemSolver', epsilon=1e-1)
     else:
         # For direct resolution, i.e direct control of the cable displacement
-        rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=100, tolerance=1e-5)
+        rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=100, tolerance=1e-5)
 
     simulation = rootNode.addChild('Simulation')
 

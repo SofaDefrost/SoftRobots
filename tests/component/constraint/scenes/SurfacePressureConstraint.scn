@@ -7,7 +7,7 @@
                 <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [LocalMinDistance] -->
                 <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
                 <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
-                <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [ProjectedGaussSeidelConstraintSolver] -->
+                <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [BlockGaussSeidelConstraintSolver] -->
                 <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
                 <RequiredPlugin name="Sofa.Component.Engine.Generate"/>
                 <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader,MeshVTKLoader] -->
@@ -35,7 +35,7 @@
         <BVHNarrowPhase />
         <CollisionResponse response='FrictionContactConstraint'/>
         <LocalMinDistance name="Proximity" alarmDistance='3' contactDistance='0.5'/>
-        <ProjectedGaussSeidelConstraintSolver name="ProjectedGaussSeidelConstraintSolver" maxIterations='250' printLog='0' tolerance = '0.0000001'/>
+        <BlockGaussSeidelConstraintSolver name="BlockGaussSeidelConstraintSolver" maxIterations='250' printLog='0' tolerance = '0.0000001'/>
 
 
         <Node name='bunny'>

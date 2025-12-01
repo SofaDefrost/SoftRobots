@@ -114,7 +114,7 @@ def createScene(rootNode):
         # ArticulatedSystemMapping,Articulation,ArticulationCenter]
         'Sofa.Component.AnimationLoop',  # Needed to use components [FreeMotionAnimationLoop]
         'Sofa.Component.Constraint.Lagrangian.Correction',  # Needed to use components [GenericConstraintCorrection]
-        'Sofa.Component.Constraint.Lagrangian.Solver',  # Needed to use components [ProjectedGaussSeidelConstraintSolver]
+        'Sofa.Component.Constraint.Lagrangian.Solver',  # Needed to use components [BlockGaussSeidelConstraintSolver]
         'Sofa.Component.Constraint.Projective',  # Needed to use components [FixedProjectiveConstraint]
         'Sofa.Component.IO.Mesh',  # Needed to use components [MeshSTLLoader]
         'Sofa.Component.LinearSolver.Direct',  # Needed to use components [SparseLDLSolver]
@@ -135,7 +135,7 @@ def createScene(rootNode):
     scene.addMainHeader()
     scene.addObject('DefaultVisualManagerLoop')
     scene.addObject('FreeMotionAnimationLoop')
-    scene.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=50, tolerance=1e-5)
+    scene.addObject('BlockGaussSeidelConstraintSolver', maxIterations=50, tolerance=1e-5)
     scene.Simulation.addObject('GenericConstraintCorrection')
     scene.Settings.mouseButton.stiffness = 10
     scene.Simulation.TimeIntegrationSchema.rayleighStiffness = 0.05

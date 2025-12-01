@@ -17,7 +17,7 @@ def createScene(rootNode):
                             "Sofa.Component.Collision.Response.Contact",  # Needed to use components RuleBasedContactManager
                             "Sofa.Component.Constraint.Lagrangian.Correction",
                             # Needed to use components LinearSolverConstraintCorrection
-                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components ProjectedGaussSeidelConstraintSolver
+                            "Sofa.Component.Constraint.Lagrangian.Solver",  # Needed to use components BlockGaussSeidelConstraintSolver
                             "Sofa.Component.Engine.Select",  # Needed to use components BoxROI
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
