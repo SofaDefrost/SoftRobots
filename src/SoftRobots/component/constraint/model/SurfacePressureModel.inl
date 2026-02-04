@@ -282,13 +282,13 @@ SReal SurfacePressureModel<DataTypes>::getCavityVolume(const VecCoord& positions
 
     for (unsigned int t=0; t<triangles.size(); t++)
     {
-        volume += getTetrahedronVolume(positions[triangles[t][0]], positions[triangles[t][1]], positions[triangles[t][2]]);
+        volume += getTriangleContributionToVolume(positions[triangles[t][0]], positions[triangles[t][1]], positions[triangles[t][2]]);
     }
 
     for (unsigned int q=0; q<quads.size(); q++)
     {
-        volume += getTetrahedronVolume(positions[quads[q][0]], positions[quads[q][1]], positions[quads[q][2]]);
-        volume += getTetrahedronVolume(positions[quads[q][0]], positions[quads[q][2]], positions[quads[q][3]]);
+        volume += getTriangleContributionToVolume(positions[quads[q][0]], positions[quads[q][1]], positions[quads[q][2]]);
+        volume += getTriangleContributionToVolume(positions[quads[q][0]], positions[quads[q][2]], positions[quads[q][3]]);
     }
 
     if(volume<0)
