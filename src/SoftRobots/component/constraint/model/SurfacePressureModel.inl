@@ -264,7 +264,7 @@ void SurfacePressureModel<DataTypes>::internalInit()
 
 
 template<class DataTypes>
-typename SurfacePressureModel<DataTypes>::Real SurfacePressureModel<DataTypes>::getTetrahedronVolume(const Coord& p0, const Coord& p1, const Coord& p2)
+typename SurfacePressureModel<DataTypes>::Real SurfacePressureModel<DataTypes>::getTriangleContributionToVolume(const Coord& p0, const Coord& p1, const Coord& p2)
 {
     return ((p1[1]-p0[1])*(p2[2]-p0[2])-(p2[1]-p0[1])*(p1[2]-p0[2]))*(p0[0]+p1[0]+p2[0])/6;
 }
