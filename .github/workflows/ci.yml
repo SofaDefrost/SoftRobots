@@ -96,45 +96,22 @@ jobs:
           name: ${{ steps.sanitize.outputs.artifact_name }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
 
-      - name: Set env vars for tests
+      - name: Pepare python environement for tests
         shell: bash
         run: |
-          # Set env vars for tests
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            echo "$(cd $WORKSPACE_ARTIFACT_PATH/lib && pwd -W)" >> $GITHUB_PATH
-            echo "$(cd $WORKSPACE_ARTIFACT_PATH/bin && pwd -W)" >> $GITHUB_PATH
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
-          fi
-          echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
-          echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
+          ${{ steps.sofa.outputs.python_exe }} -m pip install matplotlib
 
-          # Add execution right on the tests
-          chmod +x $WORKSPACE_BUILD_PATH/bin/*_test${{ steps.sofa.outputs.exe }}
-
-      - name: Check environment for tests
-        shell: bash
-        run: |
-          echo '------ ls -la "$WORKSPACE_SRC_PATH" ------'
-          ls -la "$WORKSPACE_SRC_PATH"
-          echo '------ ls -la "$WORKSPACE_BUILD_PATH" ------'
-          ls -la "$WORKSPACE_BUILD_PATH"
-          echo '------ ls -la "$WORKSPACE_INSTALL_PATH" ------'
-          ls -la "$WORKSPACE_INSTALL_PATH"
-          echo '------ ls -la "$WORKSPACE_ARTIFACT_PATH" ------'
-          ls -la "$WORKSPACE_ARTIFACT_PATH"
-          echo '----------------------'
-          echo "SOFA_ROOT = $SOFA_ROOT"=
-          echo '----------------------'
-          python -c "import sys; print('sys.version = ' + str(sys.version)); print('sys.path = ' + str(sys.path))"
-
-      - name: Run tests
-        id: unit-tests
-        if: always()
-        shell: bash
-        run: |
-          cd $WORKSPACE_BUILD_PATH
-          ./bin/SoftRobots_test${{ steps.sofa.outputs.exe }}
+      - name: Launch test
+        id: tests
+        uses: sofa-framework/sofa-test-action@v1.0
+        with:
+          sofa_root: ${{ github.workspace }}/sofa
+          sofa_version: ${{ steps.sofa.outputs.sofa_version }}
+          src_dir: ${{ env.WORKSPACE_SRC_PATH }}
+          build_dir: ${{ env.WORKSPACE_BUILD_PATH }}
+          python_exe: ${{ steps.sofa.outputs.python_exe }}
+          output_dir: ${{ github.workspace }}/tests-results_dir
+          nb_parallel_threads: '4'
 
       - name: Notify dashboard
         if: always() && startsWith(github.repository, 'SofaDefrost') && startsWith(github.ref, 'refs/heads/master') # we are not on a fork and on master
@@ -144,7 +121,7 @@ jobs:
         run: |
           os=$(echo "${{ matrix.os }}" | awk -F- '{ print $1 }')
 
-          test_status=$([ '${{ steps.unit-tests.outcome }}' == 'success' ] && \
+          test_status=$([ '${{ steps.tests.outcome }}' == 'success' ] && \
                         echo 'true' || echo 'false')
 
           build_status=$([ '${{ steps.build-and-install.outcome }}' == 'success' ] && \
