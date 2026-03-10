@@ -115,6 +115,19 @@ jobs:
           else
             echo "PYTHONPATH=${{ github.workspace }}/STLIB/python3/src:${{ env.WORKSPACE_BUILD_PATH }}/lib/python3/site-packages" | tee -a $GITHUB_ENV
           fi
+
+          ### Deactivate some tests because the use of prefabs doesn't allow the scene test script to identify missing plugins before hands
+
+          # Missing ArticulatedSystemPlugin
+          echo "ignore \"tutorials/SoftFingerDesign/.*\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
+          echo "ignore \"tutorials/Tripod/.*\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
+          echo "ignore \"examples/component/constraint/JointConstraint/JointConstraint.py\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
+
+          # Missing BeamAdapter
+          echo "ignore \"examples/thematicalDocs/T1-Elements_TetraHexaBeam/Beam/Beam.py\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
+          echo "ignore \"examples/tutorials/SoftArmGripper/scene.py\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
+
+
           
 
       - name: Launch test
