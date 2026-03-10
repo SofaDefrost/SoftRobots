@@ -109,7 +109,13 @@ jobs:
         shell: bash
         run: |
           ${{ steps.sofa.outputs.python_exe }} -m pip install matplotlib
-          echo "PYTHONPATH=${{ github.workspace }}/python3/src" | tee -a $GITHUB_ENV
+
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "PYTHONPATH=${{ github.workspace }}/STLIB/python3/src;${{ env.WORKSPACE_BUILD_PATH }}/lib/python3/site-packages" | tee -a $GITHUB_ENV
+          else
+            echo "PYTHONPATH=${{ github.workspace }}/STLIB/python3/src:${{ env.WORKSPACE_BUILD_PATH }}/lib/python3/site-packages" | tee -a $GITHUB_ENV
+          fi
+          
 
       - name: Launch test
         id: tests
