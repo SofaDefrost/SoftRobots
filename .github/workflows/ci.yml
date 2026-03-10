@@ -121,11 +121,11 @@ jobs:
           # Missing ArticulatedSystemPlugin
           echo "ignore \"tutorials/SoftFingerDesign/.*\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
           echo "ignore \"tutorials/Tripod/.*\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
-          echo "ignore \"examples/component/constraint/JointConstraint/JointConstraint.py\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
+          echo "ignore \"component/constraint/JointConstraint/JointConstraint.py\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
 
           # Missing BeamAdapter
-          echo "ignore \"examples/thematicalDocs/T1-Elements_TetraHexaBeam/Beam/Beam.py\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
-          echo "ignore \"examples/tutorials/SoftArmGripper/scene.py\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
+          echo "ignore \"thematicalDocs/T1-Elements_TetraHexaBeam/Beam/Beam.py\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
+          echo "ignore \"tutorials/SoftArmGripper/scene.py\"" >> ${{ env.WORKSPACE_SRC_PATH }}/examples/.scene-tests
 
 
           
