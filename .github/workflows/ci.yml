@@ -96,10 +96,20 @@ jobs:
           name: ${{ steps.sanitize.outputs.artifact_name }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
 
+
+      - name: Checkout STLIB
+        uses: actions/checkout@v4
+        with:
+          repository: SofaDefrost/STLIB
+          ref: ${{ steps.sofa.outputs.sofa_version }}
+          path: STLIB      # Replace with your desired target directory
+
+
       - name: Pepare python environement for tests
         shell: bash
         run: |
           ${{ steps.sofa.outputs.python_exe }} -m pip install matplotlib
+          echo "PYTHONPATH=${{ github.workspace }}/python3/src" | tee -a $GITHUB_ENV
 
       - name: Launch test
         id: tests
