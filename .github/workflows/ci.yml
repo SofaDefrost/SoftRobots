@@ -105,7 +105,7 @@ jobs:
           path: STLIB      # Replace with your desired target directory
 
 
-      - name: Pepare python environement for tests
+      - name: Prepare Python environment for tests
         shell: bash
         run: |
           ${{ steps.sofa.outputs.python_exe }} -m pip install matplotlib
