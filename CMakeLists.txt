@@ -64,10 +64,6 @@ set(HEADER_FILES
 
     ${SOFTROBOTS_SOURCE_DIR}/component/engine/CenterOfMass.h
     ${SOFTROBOTS_SOURCE_DIR}/component/engine/CenterOfMass.inl
-    ${SOFTROBOTS_SOURCE_DIR}/component/engine/VolumeFromTriangles.h
-    ${SOFTROBOTS_SOURCE_DIR}/component/engine/VolumeFromTriangles.inl
-    ${SOFTROBOTS_SOURCE_DIR}/component/engine/VolumeFromTetrahedrons.h
-    ${SOFTROBOTS_SOURCE_DIR}/component/engine/VolumeFromTetrahedrons.inl
 
     ${SOFTROBOTS_SOURCE_DIR}/component/forcefield/PREquivalentStiffnessForceField.h
     ${SOFTROBOTS_SOURCE_DIR}/component/forcefield/PREquivalentStiffnessForceField.inl
@@ -99,8 +95,6 @@ set(SOURCE_FILES
     ${SOFTROBOTS_SOURCE_DIR}/component/controller/SerialPortBridgeGeneric.cpp # Communication robot/sofa
 
     ${SOFTROBOTS_SOURCE_DIR}/component/engine/CenterOfMass.cpp
-    ${SOFTROBOTS_SOURCE_DIR}/component/engine/VolumeFromTriangles.cpp
-    ${SOFTROBOTS_SOURCE_DIR}/component/engine/VolumeFromTetrahedrons.cpp
 
     ${SOFTROBOTS_SOURCE_DIR}/component/forcefield/PREquivalentStiffnessForceField.cpp
     ${SOFTROBOTS_SOURCE_DIR}/component/forcefield/PartialRigidificationForceField.cpp

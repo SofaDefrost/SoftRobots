@@ -150,6 +150,7 @@ private:
 
     void drawValue(const sofa::core::visual::VisualParams* vparams);
     void computeEdges();
+    Real getTriangleContributionToVolume(const Coord& p0, const Coord& p1, const Coord& p2);
 };
 
 extern template class SurfacePressureModel<sofa::defaulttype::Vec3Types>;

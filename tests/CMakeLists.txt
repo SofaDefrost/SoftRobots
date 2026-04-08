@@ -10,9 +10,6 @@ set(SOURCE_FILES
     component/controller/AnimationEditorTest.cpp
     component/controller/DataVariationLimiterTest.cpp
     component/controller/SerialPortBridgeGenericTest.cpp
-    
-    component/engine/VolumeFromTrianglesTest.cpp
-    component/engine/VolumeFromTetrahedronsTest.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
