@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.12)
-project(SoftRobots.CUDA)
+cmake_minimum_required(VERSION 3.22)
+project(SoftRobots.CUDA LANGUAGES CUDA)
 
 set(HEADER_FILES
     src/SoftRobots/CUDA/init.h

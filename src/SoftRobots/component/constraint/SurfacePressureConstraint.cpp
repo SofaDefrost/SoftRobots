@@ -29,6 +29,7 @@
 #include <SoftRobots/component/constraint/SurfacePressureConstraint.inl>
 
 #include <sofa/core/ObjectFactory.h>
+#include <algorithm>
 
 namespace softrobots::constraint
 {
@@ -56,26 +57,21 @@ void SurfacePressureConstraintResolution::init(int line, SReal**w, SReal*force)
 void SurfacePressureConstraintResolution::resolution(int line, SReal** w, SReal* d, SReal* force, SReal* dfree)
 {
     SOFA_UNUSED(w);
-    SOFA_UNUSED(d);
     SOFA_UNUSED(dfree);
 
 
-    double volumeGrowth = m_wActuatorActuator*m_imposedPressure + d[line];
+    const double volumeGrowth = m_wActuatorActuator*m_imposedPressure + d[line];
 
     if(volumeGrowth<m_minVolumeGrowth)
     {
-        volumeGrowth = m_minVolumeGrowth;
-        force[line] -= (d[line]-volumeGrowth) / m_wActuatorActuator ;
+        force[line] -= (d[line] - m_minVolumeGrowth) / m_wActuatorActuator ;
     }
-    if(volumeGrowth>m_maxVolumeGrowth)
+    else if(volumeGrowth>m_maxVolumeGrowth)
     {
-        volumeGrowth = m_maxVolumeGrowth;
-        force[line] -= (d[line]-volumeGrowth) / m_wActuatorActuator ;
+        force[line] -= (d[line] - m_maxVolumeGrowth) / m_wActuatorActuator ;
     }
     else
         force[line] = m_imposedPressure ;
-
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,10 +102,8 @@ void VolumeGrowthConstraintResolution::resolution(int line, SReal** w, SReal* d,
     // da=Waa*(lambda_a) + Sum Wai * lambda_i  = m_imposedVolumeGrowth
     lambda[line] -= (d[line]-m_imposedVolumeGrowth) / m_wActuatorActuator ;
 
-    if(lambda[line]<m_minPressure)
-        lambda[line] = m_minPressure;
-    if(lambda[line]>m_maxPressure)
-        lambda[line] = m_maxPressure;
+    lambda[line] = std::max(m_minPressure, lambda[line]);
+    lambda[line] = std::min(m_maxPressure, lambda[line]);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
