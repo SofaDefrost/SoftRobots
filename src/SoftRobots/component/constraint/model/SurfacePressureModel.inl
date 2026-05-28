@@ -264,6 +264,12 @@ void SurfacePressureModel<DataTypes>::internalInit()
 
 
 template<class DataTypes>
+typename SurfacePressureModel<DataTypes>::Real SurfacePressureModel<DataTypes>::getTriangleContributionToVolume(const Coord& p0, const Coord& p1, const Coord& p2)
+{
+    return ((p1[1]-p0[1])*(p2[2]-p0[2])-(p2[1]-p0[1])*(p1[2]-p0[2]))*(p0[0]+p1[0]+p2[0])/6;
+}
+
+template<class DataTypes>
 SReal SurfacePressureModel<DataTypes>::getCavityVolume(const VecCoord& positions)
 {
     // NB : The computation  of the cavity volume is not relevant
@@ -272,31 +278,17 @@ SReal SurfacePressureModel<DataTypes>::getCavityVolume(const VecCoord& positions
     ReadAccessor<Data<vector<Triangle>>>  triangles = d_triangles;
     ReadAccessor<Data<vector<Quad>>>      quads     = d_quads;
 
-    Coord p0, p1, p2;
     Real volume = 0;
 
     for (unsigned int t=0; t<triangles.size(); t++)
     {
-        p0 = positions[triangles[t][0]];
-        p1 = positions[triangles[t][1]];
-        p2 = positions[triangles[t][2]];
-
-        volume += ((p1[1]-p0[1])*(p2[2]-p0[2])-(p2[1]-p0[1])*(p1[2]-p0[2]))*(p0[0]+p1[0]+p2[0])/6;
+        volume += getTriangleContributionToVolume(positions[triangles[t][0]], positions[triangles[t][1]], positions[triangles[t][2]]);
     }
 
     for (unsigned int q=0; q<quads.size(); q++)
     {
-        p0 = positions[quads[q][0]];
-        p1 = positions[quads[q][1]];
-        p2 = positions[quads[q][2]];
-
-        volume += ((p1[1]-p0[1])*(p2[2]-p0[2])-(p2[1]-p0[1])*(p1[2]-p0[2]))*(p0[0]+p1[0]+p2[0])/6;
-
-        p0 = positions[quads[q][0]];
-        p1 = positions[quads[q][2]];
-        p2 = positions[quads[q][3]];
-
-        volume += ((p1[1]-p0[1])*(p2[2]-p0[2])-(p2[1]-p0[1])*(p1[2]-p0[2]))*(p0[0]+p1[0]+p2[0])/6;
+        volume += getTriangleContributionToVolume(positions[quads[q][0]], positions[quads[q][1]], positions[quads[q][2]]);
+        volume += getTriangleContributionToVolume(positions[quads[q][0]], positions[quads[q][2]], positions[quads[q][3]]);
     }
 
     if(volume<0)
