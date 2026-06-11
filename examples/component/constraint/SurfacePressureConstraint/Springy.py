@@ -19,7 +19,7 @@ def createScene(rootNode):
         "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
         "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
         "Sofa.Component.Mass",  # Needed to use components UniformMass
-        "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitIntegrationScheme
+        "Sofa.Component.IntegrationSchemes.Backward",  # Needed to use components EulerImplicitIntegrationScheme
         "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
         "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
         "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField

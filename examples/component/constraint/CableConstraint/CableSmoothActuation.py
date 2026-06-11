@@ -11,7 +11,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName= ['SoftRobots', 
         'Sofa.Component.SolidMechanics.Spring', 
         'Sofa.Component.Engine.Select', 
-        'Sofa.Component.ODESolver.Backward',
+        'Sofa.Component.IntegrationSchemes.Backward',
         'Sofa.Component.IO.Mesh',
         'Sofa.GL.Component.Rendering2D',
         'Sofa.GL.Component.Rendering3D',

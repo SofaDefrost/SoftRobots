@@ -130,7 +130,7 @@ def createScene(rootNode):
                                                      "Sofa.Component.LinearSolver.Iterative",
                                                      # Needed to use components CGLinearSolver
                                                      "Sofa.Component.Mass",  # Needed to use components UniformMass
-                                                     "Sofa.Component.ODESolver.Backward",
+                                                     "Sofa.Component.IntegrationSchemes.Backward",
                                                      # Needed to use components EulerImplicitIntegrationScheme
                                                      "Sofa.Component.SolidMechanics.FEM.Elastic",
                                                      # Needed to use components TetrahedronFEMForceField
