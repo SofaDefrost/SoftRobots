@@ -15,7 +15,7 @@ Node : { name : "root"
 #goal
 ###########################
     Node : { name : "goal"
-        EulerImplicitSolver : {firstOrder : "1"}
+        EulerImplicitIntegrationScheme : {firstOrder : "1"}
         CGLinearSolver : {iterations : "200" tolerance : "1e-05" threshold : "1e-05"}
         MechanicalObject : {
             name : "goalMO"
@@ -31,7 +31,7 @@ Node : { name : "root"
 #robot
 ###########################
     Node : {name : "robot"
-        EulerImplicitSolver : {}
+        EulerImplicitIntegrationScheme : {}
         ShewchukPCGLinearSolver : {iterations : "25" tolerance : "1e-15" preconditioners : "preconditioner"}
         SparseLDLSolver : {name : "preconditioner"}
         MeshVTKLoader : {name : "loader" filename : "mesh/branch.vtu"}
