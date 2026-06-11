@@ -24,7 +24,7 @@ def createScene(rootNode):
     # FEM Model                              #
     ##########################################
     finger = rootNode.addChild('finger')
-    finger.addObject('EulerImplicitSolver', name='odesolver', firstOrder=True)
+    finger.addObject('EulerImplicitIntegrationScheme', name='odesolver', firstOrder=True)
     finger.addObject('SparseLDLSolver', name='preconditioner', template='CompressedRowSparseMatrixMat3x3d')
 
     # Add a component to load a VTK tetrahedral mesh and expose the resulting topology in the scene .

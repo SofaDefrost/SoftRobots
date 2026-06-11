@@ -16,7 +16,7 @@ def addHeader(node):
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                             "Sofa.Component.Mass",  # Needed to use components UniformMass
-                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                             "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
                             "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
                             "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology

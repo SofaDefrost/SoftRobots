@@ -21,7 +21,7 @@ def createScene(rootNode):
     ###############################
 
     robot = rootNode.addChild('robot')
-    robot.addObject('EulerImplicitSolver')
+    robot.addObject('EulerImplicitIntegrationScheme')
     robot.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d')
     # Here you set the Hexahedron topology
     robot.addObject('MeshSTLLoader', name='loader', filename=path + 'branch.stl')

@@ -17,7 +17,7 @@ def recv(data, datafield):
 def createScene(rootNode):
     rootNode.addObject('RequiredPlugin',
                        pluginName=["Sofa.Component.ODESolver.Backward", "Sofa.Component.SceneUtility"])
-    rootNode.addObject("EulerImplicitSolver")
+    rootNode.addObject("EulerImplicitIntegrationScheme")
     rootNode.addObject("CGLinearSolver", iterations=25, threshold=1e-5, tolerance=1e-5)
     rootNode.addObject('DefaultAnimationLoop')
     rootNode.addObject('DefaultVisualManagerLoop')

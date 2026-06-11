@@ -63,7 +63,7 @@ def Cylinder(name="Cylinder",
     object.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
 
     if not isAStaticObject:
-        object.addObject('EulerImplicitSolver')
+        object.addObject('EulerImplicitIntegrationScheme')
         object.addObject('CGLinearSolver')
 
     def addCollisionModel(inputMesh=surfaceMeshFileName):

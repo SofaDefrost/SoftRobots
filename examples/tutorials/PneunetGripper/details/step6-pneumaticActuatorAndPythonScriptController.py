@@ -14,7 +14,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')  # Needed to use components [SparseLDLSolver]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mapping.Linear')  # Needed to use components [BarycentricMapping]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mass')  # Needed to use components [UniformMass]  
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')  # Needed to use components [EulerImplicitSolver]
+    rootNode.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')  # Needed to use components [EulerImplicitIntegrationScheme]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')  # Needed to use components [TetrahedronFEMForceField]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.Spring')  # Needed to use components [RestShapeSpringsForceField]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')  # Needed to use components [MechanicalObject]
@@ -28,7 +28,7 @@ def createScene(rootNode):
     rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance=1e-7, maxIterations=1000)
 
     finger = rootNode.addChild('Finger')
-    finger.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
+    finger.addObject('EulerImplicitIntegrationScheme', rayleighStiffness=0.1, rayleighMass=0.1)
     finger.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixd')
     finger.addObject('MeshVTKLoader', name='loader', filename='data/mesh/pneunetCutCoarse.vtk')
     finger.addObject('MeshTopology', src='@loader', name='container')

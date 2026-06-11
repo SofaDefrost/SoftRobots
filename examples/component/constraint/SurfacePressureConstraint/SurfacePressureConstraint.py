@@ -14,7 +14,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct') # Needed to use components [EigenSimplicialLDLT]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mapping.Linear') # Needed to use components [BarycentricMapping,IdentityMapping]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mass') # Needed to use components [UniformMass]
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward') # Needed to use components [EulerImplicitSolver]
+    rootNode.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward') # Needed to use components [EulerImplicitIntegrationScheme]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic') # Needed to use components [FastTetrahedralCorotationalForceField]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.Spring') # Needed to use components [RestShapeSpringsForceField]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.StateContainer') # Needed to use components [MechanicalObject]
@@ -36,7 +36,7 @@ def createScene(rootNode):
 
     # bunny
     bunny = rootNode.addChild('bunny')
-    bunny.addObject('EulerImplicitSolver', name='odesolver')
+    bunny.addObject('EulerImplicitIntegrationScheme', name='odesolver')
     bunny.addObject('EigenSimplicialLDLT', template='CompressedRowSparseMatrixMat3x3')
     bunny.addObject('MeshVTKLoader', name='loader', filename=path + 'Hollow_Stanford_Bunny.vtu')
     bunny.addObject('TetrahedronSetTopologyContainer', src='@loader', name='container')

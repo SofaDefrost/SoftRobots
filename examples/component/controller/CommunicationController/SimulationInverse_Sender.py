@@ -18,7 +18,7 @@ def createScene(rootNode):
                                         "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                                         "Sofa.Component.LinearSolver.Iterative",  # Needed to use components CGLinearSolver
                                         "Sofa.Component.Mass",  # Needed to use components UniformMass
-                                        "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                                        "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                                         "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
                                         "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
                                         "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
@@ -45,7 +45,7 @@ def createScene(rootNode):
     if INVERSE:
         # Effector goal for interactive control
         goal = rootNode.addChild('goal')
-        goal.addObject('EulerImplicitSolver', firstOrder=True)
+        goal.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
         goal.addObject('CGLinearSolver', iterations=100, tolerance=1e-5, threshold=1e-5)
         goal.addObject('MechanicalObject', name='goalMO', position=[0, 0, 8])
         goal.addObject('SphereCollisionModel', radius=1)

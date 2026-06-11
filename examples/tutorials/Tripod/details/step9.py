@@ -11,7 +11,7 @@ from closedLoopController import EffectorController, InverseController, CloseLoo
 
 def EffectorGoal(position, name='Goal'):
     self = Sofa.Core.Node(name)
-    self.addObject('EulerImplicitSolver', firstOrder=True)
+    self.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
     self.addObject('CGLinearSolver', iterations=100, threshold=1e-5, tolerance=1e-5)
     self.addObject('MechanicalObject', name='goalMO', template='Rigid3', position=position + [0., 0., 0., 1.],
                    showObject=True, showObjectScale=10)

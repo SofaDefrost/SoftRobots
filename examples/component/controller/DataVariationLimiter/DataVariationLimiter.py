@@ -27,7 +27,7 @@ def createScene(rootNode):
                                                      # Needed to use components CGLinearSolver
                                                      "Sofa.Component.Mass",  # Needed to use components UniformMass
                                                      "Sofa.Component.ODESolver.Backward",
-                                                     # Needed to use components EulerImplicitSolver
+                                                     # Needed to use components EulerImplicitIntegrationScheme
                                                      "Sofa.Component.Setting",
                                                      # Needed to use components BackgroundSetting
                                                      "Sofa.Component.SolidMechanics.FEM.Elastic",
@@ -62,7 +62,7 @@ def createScene(rootNode):
     # Effector goal for interactive control  #
     ##########################################
     goal = rootNode.addChild('goal')
-    goal.addObject('EulerImplicitSolver', firstOrder=True)
+    goal.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
     goal.addObject('CGLinearSolver', iterations=100, tolerance=1e-5, threshold=1e-5)
     goal.addObject('MechanicalObject', name='goalMO',
                    position=[0, 0, 5],
@@ -81,7 +81,7 @@ def createScene(rootNode):
     # FEM Model                              #
     ##########################################
     accordion = rootNode.addChild('accordion')
-    accordion.addObject('EulerImplicitSolver', firstOrder=False, rayleighStiffness=0.1, rayleighMass=0.1)
+    accordion.addObject('EulerImplicitIntegrationScheme', firstOrder=False, rayleighStiffness=0.1, rayleighMass=0.1)
     accordion.addObject('SparseLDLSolver')
 
     accordion.addObject('MeshVTKLoader', name='loader', filename=pathMesh + 'Accordion.vtu', rotation=[90, 0, 0])

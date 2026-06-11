@@ -44,7 +44,7 @@ def createScene(rootNode):
 
     # Time integration and solver
 
-    cube.addObject('EulerImplicitSolver', name='odesolver')
+    cube.addObject('EulerImplicitIntegrationScheme', name='odesolver')
     cube.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-5, threshold=1e-5)
 
     # Visual Object of the Cube

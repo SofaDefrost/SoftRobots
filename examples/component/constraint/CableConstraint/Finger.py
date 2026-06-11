@@ -16,7 +16,7 @@ def createScene(rootNode):
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                             "Sofa.Component.Mass",  # Needed to use components UniformMass
-                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                             "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
                             "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
                             "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
@@ -44,7 +44,7 @@ def createScene(rootNode):
     # FEM Model                              #
     ##########################################
     finger = rootNode.addChild('finger')
-    finger.addObject('EulerImplicitSolver', name='odesolver', rayleighMass=0.1, rayleighStiffness=0.1)
+    finger.addObject('EulerImplicitIntegrationScheme', name='odesolver', rayleighMass=0.1, rayleighStiffness=0.1)
     finger.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d')
 
     # Add a component to load a VTK tetrahedral mesh and expose the resulting topology in the scene .

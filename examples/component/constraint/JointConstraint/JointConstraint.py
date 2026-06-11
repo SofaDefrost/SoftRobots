@@ -16,7 +16,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.IO.Mesh')  # Needed to use components [MeshSTLLoader]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mapping.NonLinear')  # Needed to use components [RigidMapping]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mass')  # Needed to use components [UniformMass]  
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')  # Needed to use components [EulerImplicitSolver]
+    rootNode.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')  # Needed to use components [EulerImplicitIntegrationScheme]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Setting')  # Needed to use components [BackgroundSetting]  
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')  # Needed to use components [BeamFEMForceField]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')  # Needed to use components [MechanicalObject]
@@ -32,7 +32,7 @@ def createScene(rootNode):
 
     # Simulation node
     simulation = rootNode.addChild('Simulation')
-    simulation.addObject('EulerImplicitSolver')
+    simulation.addObject('EulerImplicitIntegrationScheme')
     simulation.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixd")
     simulation.addObject('GenericConstraintCorrection')
 

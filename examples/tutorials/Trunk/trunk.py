@@ -10,7 +10,7 @@ dirPath = os.path.dirname(os.path.abspath(__file__))+'/'
 
 def effectorTarget(parentNode, position=[0., 0., 200]):
     target = parentNode.addChild('Target')
-    target.addObject('EulerImplicitSolver', firstOrder=True)
+    target.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
     target.addObject('CGLinearSolver')
     target.addObject('MechanicalObject', name='dofs', position=position, showObject=True, showObjectScale=8, drawMode=2, showColor=[1., 1., 1., 1.])
     target.addObject('UncoupledConstraintCorrection', defaultCompliance=1e-5)
@@ -157,7 +157,7 @@ def createScene(rootNode):
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                             "Sofa.Component.LinearSolver.Iterative",  # Needed to use components ShewchukPCGLinearSolver
                             "Sofa.Component.Mass",  # Needed to use components UniformMass
-                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                             "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
                             "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
                             "Sofa.Component.Visual",  # Needed to use components VisualStyle
@@ -179,7 +179,7 @@ def createScene(rootNode):
 
     simulation = rootNode.addChild('Simulation')
 
-    simulation.addObject('EulerImplicitSolver', name='odesolver', firstOrder=False, rayleighMass=0.1, rayleighStiffness=0.1)
+    simulation.addObject('EulerImplicitIntegrationScheme', name='odesolver', firstOrder=False, rayleighMass=0.1, rayleighStiffness=0.1)
     simulation.addObject('SparseLDLSolver', name='precond')
     simulation.addObject('GenericConstraintCorrection')
 

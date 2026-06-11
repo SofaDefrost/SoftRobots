@@ -8,7 +8,7 @@ def createScene(rootnode):
     rootnode.addObject('VisualStyle', displayFlags='showForceFields')
 
     body = rootnode.addChild('Body')
-    body.addObject('EulerImplicitSolver')
+    body.addObject('EulerImplicitIntegrationScheme')
     body.addObject('SparseLDLSolver')
     body.addObject('RegularGridTopology', min=[0, 0, 0], max=[0.5, 1, 0.1], n=[5, 10, 2])
     body.addObject('MechanicalObject')

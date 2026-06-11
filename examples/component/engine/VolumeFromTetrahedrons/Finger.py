@@ -12,7 +12,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName=[
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
                             "Sofa.Component.LinearSolver.Iterative",  # Needed to use components CGLinearSolver
-                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                             "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
                             "Sofa.Component.Topology.Container.Dynamic",
                             # Needed to use components TetrahedronSetTopologyContainer, TetrahedronSetTopologyModifier
@@ -26,7 +26,7 @@ def createScene(rootNode):
     # FEM Model                              #
     ##########################################
     finger = rootNode.addChild('finger')
-    finger.addObject('EulerImplicitSolver')
+    finger.addObject('EulerImplicitIntegrationScheme')
     finger.addObject('CGLinearSolver', iterations=25, tolerance=1e-5, threshold=1e-5)
 
     finger.addObject('MeshVTKLoader', name='loader', filename=path + 'finger.vtk')
