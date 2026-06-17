@@ -60,7 +60,7 @@ def createScene(rootNode):
                   "Sofa.Component.Constraint.Lagrangian.Solver",
                   "Sofa.Component.IO.Mesh", "Sofa.Component.LinearSolver.Direct",
                   "Sofa.Component.LinearSolver.Iterative", "Sofa.Component.Mass",
-                  "Sofa.Component.IntegrationSchemes.Backward",
+                  "Sofa.Component.IntegrationScheme.Backward",
                   "Sofa.Component.SolidMechanics.Spring",
                   "Sofa.Component.StateContainer",
                   "Sofa.Component.Topology.Container.Constant",

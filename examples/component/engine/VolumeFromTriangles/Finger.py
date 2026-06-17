@@ -11,7 +11,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName=[
                         "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader
                         "Sofa.Component.LinearSolver.Iterative",  # Needed to use components CGLinearSolver
-                        "Sofa.Component.IntegrationSchemes.Backward",  # Needed to use components EulerImplicitIntegrationScheme
+                        "Sofa.Component.IntegrationScheme.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                         "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
                         "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
                         "Sofa.Component.Visual",  # Needed to use components VisualStyle

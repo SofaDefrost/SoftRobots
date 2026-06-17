@@ -26,7 +26,7 @@ def createScene(rootNode):
                                                      "Sofa.Component.LinearSolver.Iterative",
                                                      # Needed to use components CGLinearSolver
                                                      "Sofa.Component.Mass",  # Needed to use components UniformMass
-                                                     "Sofa.Component.IntegrationSchemes.Backward",
+                                                     "Sofa.Component.IntegrationScheme.Backward",
                                                      # Needed to use components EulerImplicitIntegrationScheme
                                                      "Sofa.Component.Setting",
                                                      # Needed to use components BackgroundSetting
