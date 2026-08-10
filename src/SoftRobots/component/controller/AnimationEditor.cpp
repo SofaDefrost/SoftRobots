@@ -100,7 +100,7 @@ void AnimationEditor<Rigid3Types>::drawTrajectory(const VisualParams* vparams)
         for(unsigned int k=0; k<m_animation[i].size(); k++)
         {
             points.push_back(m_animation[IDSorted[i]][k].getCenter());
-            vparams->drawTool()->drawFrame(m_animation[m_keyFramesID[i]][k].getCenter(), m_animation[m_keyFramesID[i]][k].getOrientation(), sofa::type::Vec3(d_drawSize.getValue(),d_drawSize.getValue(),d_drawSize.getValue()));
+            vparams->drawTool()->drawFrame(m_animation[m_keyFramesID[i]][k].getCenter(), m_animation[m_keyFramesID[i]][k].getOrientation(), sofa::type::Vec3f(d_drawSize.getValue(),d_drawSize.getValue(),d_drawSize.getValue()));
         }
     }
 
