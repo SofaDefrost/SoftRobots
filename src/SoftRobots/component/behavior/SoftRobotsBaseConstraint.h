@@ -27,7 +27,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/BaseLagrangianConstraint.h>
 
 #include <SoftRobots/component/initSoftRobots.h>
 

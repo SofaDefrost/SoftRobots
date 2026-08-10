@@ -562,7 +562,7 @@ SReal CableModel<DataTypes>::getDistanceToTriangle(const Coord& position, const 
     const bool r = sofa::geometry::proximity::computeClosestPointOnTriangleToPoint(Vec3(p0), Vec3(p1), Vec3(p2), Vec3(position), projection);
     assert(r);
     SOFA_UNUSED(r);
-    projectionOnTriangle = projection;
+    projectionOnTriangle.set(Vec3(projection[0],projection[1],projection[2]));
     const Real distanceToTriangle = (projectionOnTriangle - position).norm();
     return distanceToTriangle;
 }
@@ -872,11 +872,11 @@ void CableModel<DataTypes>::drawPullPoint(const VisualParams* vparams)
     const SetIndexArray &indices = d_indices.getValue();
 
     vector<Vec3> points(1);
-    points[0] = d_pullPoint.getValue();
+    points[0].set(d_pullPoint.getValue());
     if(!d_hasPullPoint.getValue() && indices.size()>=1)
     {
         ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
-        points[0] = positions[indices[0]];
+        points[0].set(positions[indices[0]]);
     }
 
     vparams->drawTool()->drawPoints(points, 15, RGBAColor::yellow());
@@ -894,13 +894,13 @@ void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
     {
         if (!m_hasCenters)
         {
-            points[i] = positions[indices[i]];
+            points[i].set(positions[indices[i]]);
         }
         else
         { 
-            points[i] = positions[m_closestTriangle[i][0]] 
+            points[i].set(positions[m_closestTriangle[i][0]] 
             + m_alphaBarycentric[i] * (positions[m_closestTriangle[i][1]] - positions[m_closestTriangle[i][0]])
-            + m_betaBarycentric[i] * (positions[m_closestTriangle[i][2]] - positions[m_closestTriangle[i][0]]);
+            + m_betaBarycentric[i] * (positions[m_closestTriangle[i][2]] - positions[m_closestTriangle[i][0]]));
         }
     }
         
@@ -949,8 +949,8 @@ void CableModel<DataTypes>::drawLinesBetweenPoints(const VisualParams* vparams)
             + m_alphaBarycentric[i] * (positions[m_closestTriangle[i][1]] - positions[m_closestTriangle[i][0]])
             + m_betaBarycentric[i] * (positions[m_closestTriangle[i][2]] - positions[m_closestTriangle[i][0]]);
         }
-        points[i*2] = currentPosition;
-        points[i*2+1] = previousPosition;
+        points[i*2].set(currentPosition);
+        points[i*2+1].set(previousPosition);
         previousPosition = currentPosition;
     }    
 
@@ -967,7 +967,7 @@ void CableModel<DataTypes>::drawPulledAreas(const VisualParams* vparams)
         for(unsigned int j=0; j<m_areaIndices[i].size(); j++)
         {
             vector<Vec3> point(1);
-            point[0] = positions[m_areaIndices[i][j]];
+            point[0].set(positions[m_areaIndices[i][j]]);
             vparams->drawTool()->drawPoints(point, 40.f * m_ratios[i][j], RGBAColor::yellow());
         }
 }

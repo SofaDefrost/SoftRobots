@@ -197,8 +197,8 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
             Uloc[i+3] = UinX0.getAngularVelocity()[i];
         }
         Vec6 Floc = m_CInv[n] * Uloc;
-        Vec3 f_loc(Floc.ptr());
-        Vec3 tau_loc(Floc.ptr() + 3);
+        Vec3 f_loc(Floc[0], Floc[1], Floc[2]);
+        Vec3 tau_loc(Floc[3], Floc[4], Floc[5]);
 
         SpatialVector F1atX1inX0(f_loc, tau_loc);
 
@@ -223,8 +223,8 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         // compute x1 forces in x0's frame and rotate them back to global coordinates
         Vec6 f1l0 = m_CInv[n] * dX1;
 
-        Vec3 F1(f1l0.ptr());
-        Vec3 tau1(f1l0.ptr() + 3);
+        Vec3 F1(f1l0[0], f1l0[1], f1l0[2]);
+        Vec3 tau1(f1l0[3], f1l0[4], f1l0[5]);
         F1 = q0Current.rotate(F1);
         tau1 = q0Current.rotate(tau1);
 
@@ -249,8 +249,8 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
 
         // compute f0
         Vec6 f0l0 = H * f1l0;
-        Vec3 F0(f0l0.ptr());
-        Vec3 tau0(f0l0.ptr() + 3);
+        Vec3 F0(f0l0[0], f0l0[1], f0l0[2]);
+        Vec3 tau0(f0l0[3], f0l0[4], f0l0[5]);
 
         F0 = q0Current.rotate(F0);
         tau0 = q0Current.rotate(tau0);
@@ -313,8 +313,8 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
         Vec12 df = m_K[n + start] * dq * kFact;
 
         // separate force vector
-        Vec6 df0(df.ptr());
-        Vec6 df1(df.ptr() + 6);
+        Vec6 df0(df[0], df[1], df[2], df[3], df[4], df[5]);
+        Vec6 df1(df[6], df[7], df[8], df[9], df[10], df[11]);
 
         dfdq[n + 0 + start] += df0;
         dfdq[n + 1 + start] += df1;
@@ -436,8 +436,8 @@ void PREquivalentStiffnessForceField<DataTypes>::computeForce(const VecCoord& po
 
         // compute x1 forces in x0's frame and rotate them back to global coordinates
         Vec6 f1l0 = m_CInv[n] * dX1;
-        Vec3 F1(f1l0.ptr());
-        Vec3 r1(f1l0.ptr() + 3);
+        Vec3 F1(f1l0[0], f1l0[1], f1l0[2]);
+        Vec3 r1(f1l0[3], f1l0[4], f1l0[5]);
         F1 = q0Current.rotate(F1);
         r1 = q0Current.rotate(r1);
 
@@ -457,8 +457,8 @@ void PREquivalentStiffnessForceField<DataTypes>::computeForce(const VecCoord& po
 
         // compute f0
         Vec6 f0l0 = H * f1l0;
-        Vec3 F0(f0l0.ptr());
-        Vec3 r0(f0l0.ptr() + 3);
+        Vec3 F0(f0l0[0], f0l0[1], f0l0[2]);
+        Vec3 r0(f0l0[3], f0l0[4], f0l0[5]);
         F0 = q0Current.rotate(F0);
         r0 = q0Current.rotate(r0);
         Vec6 f0(F0, r0);
