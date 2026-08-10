@@ -58,7 +58,7 @@ void init()
     static bool first = true;
     if (first)
     {
-        sofa::gpu::cuda::init();
+        sofacuda::init();
         first = false;
     }
 }
