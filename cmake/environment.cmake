@@ -9,23 +9,34 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-## Force default install prefix if building out-of-tree
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND NOT "${PROJECT_NAME}" STREQUAL "Sofa")
+## Force default install prefix
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install/${PROJECT_NAME}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif()
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 ## Set the output directories globally
-set(ARCHIVE_OUTPUT_DIRECTORY lib)
-set(RUNTIME_OUTPUT_DIRECTORY bin)
-if(WIN32)
-    set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
-else()
-    set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
+
+## Set the output directories globally
+if(NOT DEFINED CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
+
+if(NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+endif()
+
+if(NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+    if(WIN32)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    else()
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    endif()
+endif()
+
+string(REGEX REPLACE "^${CMAKE_BINARY_DIR}/" "" ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
+string(REGEX REPLACE "^${CMAKE_BINARY_DIR}/" "" RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
+string(REGEX REPLACE "^${CMAKE_BINARY_DIR}/" "" LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} )
 
 ## RPATH
 if(UNIX)
@@ -39,18 +50,18 @@ if(UNIX)
 
     # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
     set(CMAKE_INSTALL_RPATH
-        "$ORIGIN/../lib"
-        "$$ORIGIN/../lib"
-        )
+            "$ORIGIN/../lib"
+            "$$ORIGIN/../lib"
+    )
 
     if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
         list(APPEND CMAKE_INSTALL_RPATH
-            "@loader_path"
-            "@loader_path/../lib"
-            "@executable_path"
-            "@executable_path/../lib"
-            )
+                "@loader_path"
+                "@loader_path/../lib"
+                "@executable_path"
+                "@executable_path/../lib"
+        )
         set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
 endif(UNIX)
