@@ -53,7 +53,7 @@ def createScene(rootNode):
     bunny.addObject('FastTetrahedralCorotationalForceField', template='Vec3', name='FEM', method='large', poissonRatio='0.3',  youngModulus='10000')
 
     bunny.addObject('BoxROI', name='boxROI', box=[-5, -5.0, -5,  5, -4.5, 5], drawBoxes=True)
-    bunny.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
+    bunny.addObject('FixedWeakConstraint', indices='@boxROI.indices', stiffness='1e12')
     
     bunny.addObject('GenericConstraintCorrection')
     

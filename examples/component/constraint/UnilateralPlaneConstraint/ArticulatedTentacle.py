@@ -63,7 +63,7 @@ def createScene(rootNode):
     tentacle.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.3,  youngModulus=200)
 
     tentacle.addObject('BoxROI', name='ROI1', box=[[50, -20, 30],[75, 20, 50]], drawBoxes=True)
-    tentacle.addObject('RestShapeSpringsForceField', points='@ROI1.indices', stiffness=1e12)
+    tentacle.addObject('FixedWeakConstraint', indices='@ROI1.indices', stiffness=1e12)
 
     tentacle.addObject('LinearSolverConstraintCorrection')
 
