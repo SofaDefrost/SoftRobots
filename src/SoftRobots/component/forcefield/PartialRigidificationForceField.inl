@@ -60,7 +60,7 @@ PartialRigidificationForceField<DataTypes1, DataTypes2>::PartialRigidificationFo
 
 
 template<class DataTypes1, class DataTypes2>
-void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const MechanicalParams* mparams,
+void PartialRigidificationForceField<DataTypes1, DataTypes2>::doAddKToMatrix(const MechanicalParams* mparams,
                                                                            const MultiMatrixAccessor* matrix)
 {
     MultiMatrixAccessor::MatrixRef mat11 = matrix->getMatrix(mstate1);
