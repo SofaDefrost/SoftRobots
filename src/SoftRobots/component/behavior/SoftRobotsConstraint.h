@@ -71,12 +71,7 @@ public:
     ///< if false, the constraint does nothing
     virtual bool isActive() const;
 
-    /// Construct the constraint violations vector of each constraint
-    ///
-    /// \param resV is the result vector that contains the whole constraint violations
-    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void getConstraintViolation(const sofa::core::ConstraintParams* cParams,
-                                BaseVector *resV) override;
+
 
     /// Construct the constraint violations vector of each constraint
     ///
@@ -90,16 +85,6 @@ public:
                                         BaseVector *resV,
                                         const BaseVector *Jdx) = 0;
 
-    /// Construct the Jacobian Matrix
-    ///
-    /// \param cId is the result constraint sparse matrix Id
-    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
-    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    ///
-    /// Warning: is constraint matrix is built with the current position. Free configuration available in cParams
-    void buildConstraintMatrix(const sofa::core::ConstraintParams* cParams,
-                               sofa::core::MultiMatrixDerivId cId,
-                               unsigned int &cIndex) override;
 
     /// Construct the Jacobian Matrix
     ///
@@ -126,6 +111,23 @@ protected:
 
     sofa::core::behavior::MechanicalState<DataTypes> *m_state { nullptr }; ///< Associated mechanical state
 
+    /// Construct the constraint violations vector of each constraint
+    ///
+    /// \param resV is the result vector that contains the whole constraint violations
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    void doGetConstraintViolation(const sofa::core::ConstraintParams* cParams,
+                                BaseVector *resV) override;
+
+    /// Construct the Jacobian Matrix
+    ///
+    /// \param cId is the result constraint sparse matrix Id
+    /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
+    /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
+    ///
+    /// Warning: is constraint matrix is built with the current position. Free configuration available in cParams
+    void doBuildConstraintMatrix(const sofa::core::ConstraintParams* cParams,
+                               sofa::core::MultiMatrixDerivId cId,
+                               unsigned int &cIndex) override;
 private:
     void storeLambda(const sofa::core::ConstraintParams* cParams, sofa::Data<VecDeriv>& resId, const sofa::Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda);
 };
