@@ -42,12 +42,6 @@ template<class DataTypes>
 PositionConstraint<DataTypes>::PositionConstraint(MechanicalState* object)
     : PositionModel<DataTypes>(object)
 
-    , d_force(initData(&d_force,double(0.0), "force",
-                                         "Output force. Warning: to get the actual force you should divide this value by dt."))
-
-    , d_displacement(initData(&d_displacement,double(0.0), "displacement",
-                          "Output displacement compared to the initial position."))
-
     , d_maxForce(initData(&d_maxForce, "maxForce",
                           "Maximum force allowed. \n"
                           "If unspecified no maximum value will be considered."))
@@ -76,10 +70,6 @@ PositionConstraint<DataTypes>::PositionConstraint(MechanicalState* object)
                                           "force = the constraint will impose the force provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
-    d_force.setGroup("Vector");
-    d_displacement.setGroup("Vector");
-    d_force.setReadOnly(true);
-    d_displacement.setReadOnly(true);
 }
 
 template<class DataTypes>
@@ -205,6 +195,9 @@ void PositionConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
+    auto l = sofa::helper::getWriteAccessor(this->d_lambda);
+
+    l[0] = lambda->element(d_constraintIndex.getValue());
     d_force.setValue(lambda->element(d_constraintIndex.getValue()));
 }
 

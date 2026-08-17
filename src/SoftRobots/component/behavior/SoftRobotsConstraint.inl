@@ -45,6 +45,10 @@ SoftRobotsConstraint<DataTypes>::SoftRobotsConstraint(sofa::core::behavior::Mech
                           "Use a negative value for infinite SoftRobotsConstraints") )
     , m_state(mm)
 {
+    d_lambda.setGroup("Output");
+    d_delta.setGroup("Output");
+    d_lambda.setReadOnly(true);
+    d_delta.setReadOnly(true);
 }
 
 template<class DataTypes>

@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <SoftRobots/component/behavior/SoftRobotsConstraint.h>
+#include <sofa/core/objectmodel/lifecycle/DeprecatedData.h>
 
 namespace softrobots::constraint
 {
@@ -63,8 +64,8 @@ public:
     typedef typename sofa::core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef Data<VecCoord>		DataVecCoord;
-    typedef Data<VecDeriv>		DataVecDeriv;
+    typedef Data<VecCoord>		 DataVecCoord;
+    typedef Data<VecDeriv>		 DataVecDeriv;
     typedef Data<MatrixDeriv>    DataMatrixDeriv;
     typedef sofa::type::vector<unsigned int> SetIndexArray;
 
@@ -105,14 +106,19 @@ protected:
     Data<Real>                  d_initFunctionValue;
 	Data<Real>                  d_functionValue;
 
-    Data<double>                d_force;
-    Data<double>                d_displacement;
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v27.06", "Use d_lambda instead.")
+    Data<double> d_force;
+
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v27.06", "Use d_delta instead.")
+    Data<double> d_displacement;
 
 protected:
 
     SReal getAffineFunctionValue(const VecCoord &positions);
 
     ////////////////////////// Inherited attributes ////////////////////////////
+    using SoftRobotsConstraint<DataTypes>::d_delta ;
+    using SoftRobotsConstraint<DataTypes>::d_lambda ;
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::d_constraintIndex ;
     using SoftRobotsConstraint<DataTypes>::m_state ;

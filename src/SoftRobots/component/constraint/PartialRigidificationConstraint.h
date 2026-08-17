@@ -29,7 +29,7 @@
 #pragma once
 
 #include <SoftRobots/component/initSoftRobots.h>
-#include <sofa/core/behavior/Constraint.h>
+#include <sofa/core/behavior/LagrangianConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/linearalgebra/BaseVector.h>
 
@@ -38,7 +38,7 @@ namespace softrobots::constraint
 
 using sofa::core::behavior::ConstraintResolution ;
 using sofa::core::ConstraintParams ;
-using sofa::core::behavior::Constraint ;
+using sofa::core::behavior::LagrangianConstraint ;
 using sofa::linearalgebra::BaseVector ;
 using sofa::type::Vec ;
 
@@ -49,11 +49,11 @@ public:
 };
 
 template< class DataTypes >
-class PartialRigidificationConstraint : public Constraint<DataTypes>
+class PartialRigidificationConstraint : public LagrangianConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PartialRigidificationConstraint,DataTypes),
-               SOFA_TEMPLATE(sofa::core::behavior::Constraint,DataTypes));
+               SOFA_TEMPLATE(LagrangianConstraint,DataTypes));
 
     typedef typename DataTypes::VecCoord        VecCoord;
     typedef typename DataTypes::VecDeriv        VecDeriv;
@@ -98,7 +98,7 @@ protected:
 private:
 
     ////////////////////////// Inherited attributes ////////////////////////////
-    using Constraint<DataTypes>::mstate ;
+    using LagrangianConstraint<DataTypes>::mstate ;
     ////////////////////////////////////////////////////////////////////////////
 };
 

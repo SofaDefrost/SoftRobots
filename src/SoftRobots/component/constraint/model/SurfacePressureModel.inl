@@ -70,10 +70,6 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
                                "If a positive pressure acts like a depressurization, try to set \n"
                                "flipNormal to true."))
 
-    , d_pressure(initData(&d_pressure, double(0.0), "pressure",
-                             "Output pressure. Warning: to get the actual pressure you should divide this value by dt."))
-
-
     , d_maxPressure(initData(&d_maxPressure, "maxPressure",
                              "Maximum pressure allowed for actuation. If no value is set by user, no \n"
                              "maximum pressure constraint will be considered."))
@@ -90,9 +86,6 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
     , d_maxPressureVariation(initData(&d_maxPressureVariation, "maxPressureVariation",
                             "Maximum pressure variation allowed for actuation. If no value is set by user, no \n"
                             "maximum will be considered."))
-
-    , d_volumeGrowth(initData(&d_volumeGrowth, double(0.0), "volumeGrowth",
-                             "Output volume growth."))
 
     , d_maxVolumeGrowth(initData(&d_maxVolumeGrowth, "maxVolumeGrowth",
                              "Maximum volume growth allowed for actuation. If no value is set by user, no \n"
@@ -123,6 +116,9 @@ SurfacePressureModel<DataTypes>::SurfacePressureModel(MechanicalState* object)
 
 {
     setUpData();
+
+    this->setLambdaNameAndHelp("pressure", "Pressure. Warning: to get the actual pressure you should divide this value by dt.");
+    this->setDeltaNameAndHelp("volumeGrowth", "Volume growth");
 }
 
 template<class DataTypes>
@@ -135,11 +131,6 @@ void SurfacePressureModel<DataTypes>::setUpData()
 {
     d_cavityVolume.setReadOnly(true);
     d_initialCavityVolume.setReadOnly(true);
-
-    d_pressure.setGroup("Vector");
-    d_volumeGrowth.setGroup("Vector");
-    d_pressure.setReadOnly(true);
-    d_volumeGrowth.setReadOnly(true);
 
     d_drawPressure.setGroup("Visualization");
     d_drawScale.setGroup("Visualization");
@@ -193,8 +184,6 @@ void SurfacePressureModel<DataTypes>::reset()
             return ;
 
     d_cavityVolume.setValue(d_initialCavityVolume.getValue());
-    d_pressure.setValue(0.0);
-    d_volumeGrowth.setValue(0.0);
 }
 
 template<class DataTypes>
@@ -208,7 +197,6 @@ void SurfacePressureModel<DataTypes>::internalInit()
                            "adding a MechanicalObject." ;
         return;
     }
-
 
     /// Check that the triangles and quads datafield contain something, otherwise get context
     /// topology
@@ -379,14 +367,19 @@ void SurfacePressureModel<DataTypes>::storeLambda(const ConstraintParams* cParam
 
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
-    
+
+    auto l = sofa::helper::getWriteAccessor(d_lambda);
+    auto d = sofa::helper::getWriteAccessor(d_delta);
+
+    l[0] = lambda->element(d_constraintIndex.getValue());
     d_pressure.setValue(lambda->element(d_constraintIndex.getValue()));
 
     // Compute actual cavity volume and volume growth from updated positions of mechanical
     // Eulalie.C: For now the position of the mechanical state is not up to date when storeLambda() is called
     //            so the value of delta is one step behind...
     //ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
-    //d_cavityVolume.setValue(getCavityVolume(positions.ref()));
+    //d[0] = getCavityVolume(positions.ref());
+    d[0] = d_cavityVolume.getValue()-d_initialCavityVolume.getValue();
     d_volumeGrowth.setValue(d_cavityVolume.getValue()-d_initialCavityVolume.getValue());
 }
 
@@ -401,7 +394,7 @@ void SurfacePressureModel<DataTypes>::draw(const VisualParams* vparams)
 
     float red, green, blue;
 
-    if (d_pressure.getValue() > 0)
+    if (this->d_lambda.getValue()[0] > 0)
     {
         red = 1.0;
         green = 0;
@@ -423,7 +416,7 @@ template<class DataTypes>
 void SurfacePressureModel<DataTypes>::drawValue(const sofa::core::visual::VisualParams* vparams)
 {
     float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * d_drawScale.getValue() );
-    string value = getValueString(d_pressure.getValue());
+    string value = getValueString(this->d_lambda.getValue()[0]);
     vparams->drawTool()->draw3DText(vparams->sceneBBox().maxBBox(),scale,RGBAColor(1.,1.,1.,1.),value.c_str());
 }
 

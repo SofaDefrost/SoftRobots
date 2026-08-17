@@ -285,7 +285,9 @@ if(SofaPython3Tools OR SofaPython3_FOUND)
         SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python3/softrobots
         TARGET_DIRECTORY softrobots
     )
+    add_subdirectory(${SOFTROBOTS_SOURCE_DIR}/bindings)
 endif()
+
 
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package_with_targets(

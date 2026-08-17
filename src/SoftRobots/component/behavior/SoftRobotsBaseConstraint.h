@@ -88,9 +88,11 @@ public:
 
     /// Accessor to maximum value of delta
     SReal getDeltaMax(const size_t i) const;
+    vector<double> getDeltaMax() const;
 
     /// Accessor to minimum value of delta
     SReal getDeltaMin(const size_t i) const;
+    vector<double> getDeltaMin() const;
 
     /// Accessor to equal constraint value of delta
     SReal getDeltaEqual(const size_t i) const;
@@ -98,9 +100,11 @@ public:
 
     /// Accessor to maximum value of lambda
     SReal getLambdaMax(const size_t i) const;
+    vector<double> getLambdaMax() const;
 
     /// Accessor to maximum value of lambda
     SReal getLambdaMin(const size_t i) const;
+    vector<double> getLambdaMin() const;
 
     /// Accessor to equal constraint value of lambda
     SReal getLambdaEqual(const size_t i) const;
@@ -113,18 +117,34 @@ public:
     SReal getEnergyWeight() const;
 
 
+    /// Accessor to lambda
+    const sofa::core::objectmodel::Data<vector<double>>& getLambda() const;
+
+    /// Accessor to delta
+    const sofa::core::objectmodel::Data<vector<double>>& getDelta() const;
+
 
     /// Accessor to nbLines value
     unsigned int getNbLines() const;
 
-    /// Allows the constraint to access to the results. Called from QPInverseProblemSolver.
-    virtual void storeResults(sofa::type::vector<double> &lambda, sofa::type::vector<double> &delta);
+    /// By default, the data d_lambda is described as a force. Depending on the constraint, this can change (e.g., to pressure)
+    void setLambdaNameAndHelp(const std::string& name, const std::string& help);
+    void setLambdaName(const std::string& name);
+    void setLambdaHelp(const std::string& help);
 
-    virtual void storeResults(sofa::type::vector<double> &delta);
+    /// By default, the data d_delta is described as a displacement. Depending on the constraint, this can change (e.g., to volume growth)
+    void setDeltaNameAndHelp(const std::string& name, const std::string& help);
+    void setDeltaName(const std::string& name);
+    void setDeltaHelp(const std::string& help);
 
-    virtual sofa::type::vector<std::string> getBaseConstraintIdentifiers() override final
+
+    /// Allows the constraint to access the results. Called from QPInverseProblemSolver.
+    virtual void storeResults(vector<double> &lambda, vector<double> &delta);
+    virtual void storeResults(vector<double> &delta);
+
+    virtual vector<std::string> getBaseConstraintIdentifiers() override final
     {
-        sofa::type::vector<std::string> ids = getSoftRobotsConstraintIdentifiers();
+        vector<std::string> ids = getSoftRobotsConstraintIdentifiers();
         ids.push_back("SoftRobots");
         return ids;
     }
@@ -135,7 +155,11 @@ protected:
 
     ~SoftRobotsBaseConstraint() override {}
 
-    virtual sofa::type::vector<std::string> getSoftRobotsConstraintIdentifiers(){ return {}; }
+    virtual vector<std::string> getSoftRobotsConstraintIdentifiers(){ return {}; }
+    void resizeConstraints(const sofa::Size& size);
+
+    sofa::core::objectmodel::Data<vector<double>> d_lambda;
+    sofa::core::objectmodel::Data<vector<double>> d_delta;
 
     unsigned int m_nbLines; ///< Constraint nbLines in the constraints matrix
 

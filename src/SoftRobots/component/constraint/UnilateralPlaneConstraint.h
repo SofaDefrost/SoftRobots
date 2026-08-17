@@ -123,7 +123,7 @@ protected:
     ////////////////////////////////////////////////////////////////////////////
 
     sofa::Data<Vec<4,unsigned int>>   d_indices;
-    sofa::Data<bool>         d_flipNormal;
+    sofa::Data<bool>                  d_flipNormal;
 
     void drawPoints(const VisualParams* vparams);
     void drawTriangles(const VisualParams* vparams);

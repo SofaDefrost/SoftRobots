@@ -88,13 +88,13 @@ protected:
     sofa::Data<sofa::type::vector<Real>>              d_weight;
     sofa::Data<VecDeriv>                              d_directions;
     sofa::Data<Vec<Deriv::total_size, bool>>          d_useDirections;
-    sofa::Data<sofa::type::vector<Real>>              d_delta;
 
     ////////////////////////// Inherited attributes ////////////////////////////
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::d_constraintIndex ;
     using SoftRobotsConstraint<DataTypes>::d_componentState ;
     using SoftRobotsConstraint<DataTypes>::m_state ;
+    using SoftRobotsConstraint<DataTypes>::d_delta ;
     ////////////////////////////////////////////////////////////////////////////
 
     void setDefaultDirections();
@@ -107,7 +107,6 @@ private:
     void checkIndicesRegardingState();
     void setIndicesDefaultValue();
     void resizeIndicesRegardingState();
-
 
 };
 

@@ -46,12 +46,6 @@ JointConstraint<DataTypes>::JointConstraint(MechanicalState* object)
                           "Index of the node subjected to the force. \n"
                           "If no index given, first node of mechanical context considered."))
 
-    , d_force(initData(&d_force,double(0.0), "force",
-                                         "Output force. Warning: to get the actual force you should divide this value by dt."))
-
-    , d_displacement(initData(&d_displacement,double(0.0), "displacement",
-                          "Output displacement compared to the initial position."))
-
     , d_maxForce(initData(&d_maxForce, "maxForce",
                           "Maximum force allowed. \n"
                           "If unspecified no maximum value will be considered."))
@@ -76,8 +70,6 @@ JointConstraint<DataTypes>::JointConstraint(MechanicalState* object)
                                           "force = the constraint will impose the force provided in data value[valueIndex] \n"
                                           "If unspecified, the default value is displacement"))
 {
-    d_force.setReadOnly(true);
-    d_displacement.setReadOnly(true);
 }
 
 template<class DataTypes>
@@ -123,9 +115,6 @@ void JointConstraint<DataTypes>::internalInit()
 {
     ReadAccessor<sofa::Data<VecCoord> > positions = m_state->readPositions();
     m_initDisplacement = positions[d_index.getValue()][0];
-    d_displacement.setValue(0);
-    d_force.setValue(0);
-
 }
 
 template<class DataTypes>
@@ -208,7 +197,6 @@ void JointConstraint<DataTypes>::getConstraintResolution(const ConstraintParams*
 
         JointForceConstraintResolution *cr=  new JointForceConstraintResolution(imposedValue, minDisplacement, maxDisplacement);
         resTab[offset++] = cr;
-        
     }
 }
 
@@ -223,12 +211,17 @@ void JointConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams,
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
+    auto l = sofa::helper::getWriteAccessor(d_lambda);
+    auto d = sofa::helper::getWriteAccessor(d_delta);
+
     // Update joint effort
+    l[0] = lambda->element(d_constraintIndex.getValue());
     d_force.setValue(lambda->element(d_constraintIndex.getValue()));
 
     // Update joint displacement
     ReadAccessor<sofa::Data<VecCoord>> positions = m_state->readPositions();
     m_currentDisplacement = positions[d_index.getValue()][0];
+    d[0] = - m_initDisplacement + m_currentDisplacement;
     d_displacement.setValue(- m_initDisplacement + m_currentDisplacement);
 }
 
