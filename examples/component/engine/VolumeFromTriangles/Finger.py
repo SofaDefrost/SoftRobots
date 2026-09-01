@@ -11,7 +11,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName=[
                         "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader
                         "Sofa.Component.LinearSolver.Iterative",  # Needed to use components CGLinearSolver
-                        "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                        "Sofa.Component.IntegrationScheme.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                         "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
                         "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
                         "Sofa.Component.Visual",  # Needed to use components VisualStyle
@@ -28,7 +28,7 @@ def createScene(rootNode):
     # FEM Model                              #
     ##########################################
     finger = rootNode.addChild('finger')
-    finger.addObject('EulerImplicitSolver')
+    finger.addObject('EulerImplicitIntegrationScheme')
     finger.addObject('CGLinearSolver', iterations=25, tolerance=1e-5, threshold=1e-5)
 
     finger.addObject('MeshSTLLoader', name='loader', filename=path + 'finger.stl')

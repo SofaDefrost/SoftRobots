@@ -27,7 +27,7 @@ def createScene(rootNode):
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                             "Sofa.Component.LinearSolver.Iterative",  # Needed to use components ShewchukPCGLinearSolver
                             "Sofa.Component.Mass",  # Needed to use components UniformMass
-                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.IntegrationScheme.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                             "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
                             "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
                             "Sofa.Component.Visual",  # Needed to use components VisualStyle
@@ -40,7 +40,7 @@ def createScene(rootNode):
     # Robot
     robot = rootNode.addChild('Robot')
     # The solvers
-    robot.addObject('EulerImplicitSolver')
+    robot.addObject('EulerImplicitIntegrationScheme')
     robot.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixMat3x3d")
     # Load the volume mesh
     robot.addObject('MeshVTKLoader', name="loader", filename=meshRobot)

@@ -29,7 +29,7 @@ def createScene(rootNode):
     # EFFECTOR GOAL
     ##########################################
     goal = rootNode.addChild('goal')
-    goal.addObject('EulerImplicitSolver', firstOrder=True)
+    goal.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
     goal.addObject('CGLinearSolver', iterations=200, threshold=1e-5, tolerance=1e-5)
     goal.addObject('MechanicalObject', name='goalMO',
                    showObject=1,
@@ -43,7 +43,7 @@ def createScene(rootNode):
     ###############################
 
     robot = rootNode.addChild('robot')
-    robot.addObject('EulerImplicitSolver', name='odesolver', firstOrder=False)
+    robot.addObject('EulerImplicitIntegrationScheme', name='odesolver', firstOrder=False)
     robot.addObject('SparseLDLSolver')
     robot.addObject('MeshVTKLoader', name='loader', filename=path + 'branch.vtu')
     robot.addObject('MeshTopology', src='@loader')

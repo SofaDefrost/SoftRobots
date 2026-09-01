@@ -246,7 +246,7 @@ def createScene(rootNode):
 	planeNode.addObject('OglModel',name='Visual', src='@loader', color=[1, 0, 0, 1])
 
 	cube = rootNode.addChild('cube')
-	cube.addObject('EulerImplicitSolver', name='odesolver')
+	cube.addObject('EulerImplicitIntegrationScheme', name='odesolver')
 	cube.addObject('SparseLDLSolver', name='linearSolver')
 	cube.addObject('MechanicalObject', template='Rigid3', position=[-100, 70, 0, 0, 0, 0, 1])
 	cube.addObject('UniformMass', totalMass=0.001)
@@ -273,7 +273,7 @@ def createScene(rootNode):
 		# Finger Model	 						 #
 		##########################################
 		finger = rootNode.addChild('finger'+str(i+1))
-		finger.addObject('EulerImplicitSolver', name='odesolver', rayleighStiffness=0.1, rayleighMass=0.1)
+		finger.addObject('EulerImplicitIntegrationScheme', name='odesolver', rayleighStiffness=0.1, rayleighMass=0.1)
 		finger.addObject('SparseLDLSolver', name='preconditioner')
 
 		finger.addObject('MeshVTKLoader', name='loader', filename='data/mesh/pneunetCutCoarse.vtk', rotation=[360 - angles[i]*180/math.pi, 0, 0], translation = translations[i])

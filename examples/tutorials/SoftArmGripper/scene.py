@@ -32,7 +32,7 @@ def addArm(node):
     size = params.Arm.nbRibs * params.Arm.nbSection
     arm = node.addChild("Arm")
     arm.addData(name='nbDofs', value=len(position), type='int')
-    arm.addObject('EulerImplicitSolver', firstOrder=True)
+    arm.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
     arm.addObject('SparseLDLSolver', name='ldl', template='CompressedRowSparseMatrixMat3x3d')
     arm.addObject('GenericConstraintCorrection')
     arm.addObject('MeshTopology', position=position, edges=edges)
@@ -73,7 +73,7 @@ def addFinger(node, fingerId, translation, rotation):
     cable = [[], [], []]
 
     finger = node.addChild('Finger' + str(fingerId + 1))
-    finger.addObject('EulerImplicitSolver', firstOrder=False)
+    finger.addObject('EulerImplicitIntegrationScheme', firstOrder=False)
     finger.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d')
     finger.addObject('GenericConstraintCorrection')
     finger.addObject('MeshVTKLoader', name='loader', filename=params.Simulation.path + '/mesh/finger.vtk',
@@ -172,7 +172,7 @@ def createScene(rootnode):
         # You can select the target with the mouse (left click) while pressing the shift key on the keyboard.
         # Once selected you can move the target around and see the robot follow.
         target = rootnode.addChild('Target')
-        target.addObject('EulerImplicitSolver', firstOrder=True)
+        target.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
         target.addObject('CGLinearSolver', iterations=10, threshold=1e-5, tolerance=1e-5)
         target.addObject('MechanicalObject', name='dofs', template='Rigid3', position=[0, 880, 0, 0, 0, 0, 1])
         target.addObject('SphereCollisionModel', radius=20)

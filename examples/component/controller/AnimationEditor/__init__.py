@@ -41,7 +41,7 @@ Example
 
     def createScene(rootNode):
         point = rootNode.addChild('point')
-        point.addObject('EulerImplicitSolver', firstOrder=True)
+        point.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
         point.addObject('CGLinearSolver', iterations=100, tolerance=1e-5, threshold=1e-5)
         point.addObject('MechanicalObject', template='Rigid3',
                         position=[0, 0, 0, 0, 0, 0, 1],
