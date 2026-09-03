@@ -45,7 +45,7 @@ using sofa::defaulttype::Vec3Types ;
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -88,7 +88,7 @@ struct UnilateralPlaneConstraintTest : public sofa::testing::BaseTest,
 
     void normalTests()
     {
-        const Node::SPtr node = sofa::simulation::getSimulation()->createNewGraph("root");
+        const Node::SPtr node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
         typename MechanicalObject<DataTypes>::SPtr mecaobject = New<MechanicalObject<DataTypes> >() ;
         typename ThisClass::SPtr thisobject = New<ThisClass >() ;
 
