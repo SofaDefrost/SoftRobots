@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-The **VolumeFromTetrahedrons** component computes the volume of a given volumetric mesh (tetrahedrons or/and hexahedrons).
+The **VolumeFromVolumetricElements** component computes the volume of a given volumetric mesh (tetrahedrons or/and hexahedrons).
 In this directory you will find one example showing how to use the component:
 
 - **Finger.pyscn**
@@ -22,7 +22,7 @@ Example
 	finger.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
 	finger.createObject('TetrahedronSetTopologyModifier')
 
-	finger.createObject('VolumeFromTetrahedrons')
+	finger.createObject('VolumeFromVolumetricElements')
 
 
 Data fields

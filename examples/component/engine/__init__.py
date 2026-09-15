@@ -6,9 +6,9 @@ Contents
 .. autosummary::
     :toctree: _autosummary
 
-    VolumeFromTetrahedrons
+    VolumeFromVolumetricElements
     VolumeFromTriangles
 
 """
 
-__all__=["VolumeFromTetrahedrons","VolumeFromTriangles"]
+__all__=["VolumeFromVolumetricElements","VolumeFromTriangles"]
