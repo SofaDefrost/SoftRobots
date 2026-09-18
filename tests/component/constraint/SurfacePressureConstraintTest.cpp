@@ -42,7 +42,7 @@ using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/simpleapi/SimpleApi.h>
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::New ;
