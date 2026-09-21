@@ -37,8 +37,9 @@ using std::string ;
 
 #include <sofa/linearalgebra/FullVector.h>
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
+
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::New ;
@@ -84,7 +85,7 @@ struct SerialPortBridgeGenericTest : public sofa::testing::BaseTest, SerialPortB
 
     void doSetUp() override
     {
-        m_node = sofa::simulation::getSimulation()->createNewGraph("root");
+        m_node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
     }
 
     void normalTests(){

@@ -83,7 +83,7 @@ public:
 
 
     /// Returns if the constraint has an epsilon value that can be used to prioritize the constraint (for actuator with inverse problem)
-    bool hasEpsilon() const;
+    bool hasEnergyWeight() const;
 
 
     /// Accessor to maximum value of delta
@@ -110,7 +110,7 @@ public:
 
 
     /// Accessor to epsilon value that can be used to prioritize the constraint (for actuator with inverse problem)
-    SReal getEpsilon() const;
+    SReal getEnergyWeight() const;
 
 
 
@@ -148,7 +148,7 @@ protected:
     bool m_hasLambdaEqual;
     bool m_hasLambdaInit;
 
-    bool m_hasEpsilon;
+    bool m_hasEnergyWeight;
 
     vector<double> m_deltaMax;
     vector<double> m_deltaMin;
@@ -159,7 +159,7 @@ protected:
     vector<double> m_lambdaEqual;
     vector<double> m_lambdaInit;
 
-    double m_epsilon;
+    double m_energyWeight;
 };
 
 } // namespace

@@ -41,8 +41,9 @@ using sofa::simulation::DefaultAnimationLoop;
 using sofa::core::topology::BaseMeshTopology ;
 using sofa::core::objectmodel::Data ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
+
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::New ;
@@ -92,7 +93,7 @@ struct AnimationEditorTest : public sofa::testing::BaseTest, controller::Animati
 
     void doSetUp() override
     {
-        m_node = sofa::simulation::getSimulation()->createNewGraph("root");
+        m_node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
         m_mecaobject = New<MechanicalObject<DataTypes> >() ;
         m_mecaobject->init() ;
         m_node->addObject(m_mecaobject) ;

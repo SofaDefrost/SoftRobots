@@ -35,7 +35,7 @@ def createScene(rootNode):
 
     # Add a mechanicaobject component to stores the DoFs of the model
     finger.addObject('MechanicalObject', name='tetras', template='Vec3')
-    finger.addObject('VolumeFromTetrahedrons')
+    finger.addObject('VolumeFromVolumetricElements')
     finger.addObject('TetrahedronFEMForceField', poissonRatio=0.3, youngModulus=500)
 
     ##########################################
