@@ -168,7 +168,7 @@ def createScene(rootNode):
                      name="pressure",
                      triangles='@topo.triangles',
                      minPressure=0,
-                     maxVolumeGrowth=2)
+                     maxVolumeGrowth=0.02)
 
     cavity.addObject('BarycentricMapping', name='mapping', mapForces=False, mapMasses=False)
 

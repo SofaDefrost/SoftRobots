@@ -76,7 +76,7 @@ def createScene(rootNode):
     cavity.addObject('SurfacePressureConstraint', template='Vec3', name="pressure",
                      triangles='@topo.triangles',
                      valueType=1,
-                     value=8)
+                     value=800)
 
     # This adds a BarycentricMapping. A BarycentricMapping is a key element as it will add a bi-directional link
     #  between the cavity wall (surfacic mesh) and the accordion (volumetric mesh) so that movements of the cavity's DoFs will be mapped

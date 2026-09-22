@@ -60,7 +60,7 @@ def createScene(rootNode):
         effector.addObject('BarycentricMapping', mapForces=False, mapMasses=False)
 
     accordion.cavity.pressure.minPressure = 0
-    accordion.cavity.pressure.maxVolumeGrowth = 8
+    accordion.cavity.pressure.maxVolumeGrowth = 0.08
     for i in range(3):
         accordion.cables.getObject('cable' + str(i + 1)).minForce = 0
         accordion.cables.getObject('cable' + str(i + 1)).maxPositiveDisp = 1.5

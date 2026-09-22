@@ -6,7 +6,7 @@ from stlib3.physics.constraints import FixedBox
 meshpath = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 
 
-def Bunny(node, translation=[0, 0, 0], controlType='pressure', name='Bunny', initialValue=0.0001,
+def Bunny(node, translation=[0, 0, 0], controlType='pressure', name='Bunny', initialValue=0.01,
           youngModulus=18000):
     # Bunny
     # boxROICoordinates=[-5, -6, -5,  5, -4.5, 5] + [translation,translation]
