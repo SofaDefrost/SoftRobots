@@ -23,7 +23,7 @@ def createScene(rootNode):
                                 "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
                                 "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                                 "Sofa.Component.Mass",  # Needed to use components UniformMass
-                                "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                                "Sofa.Component.IntegrationScheme.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                                 "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
                                 "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
                                 "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
@@ -51,7 +51,7 @@ def createScene(rootNode):
 
     # FEM Model
     tentacle = rootNode.addChild('tentacle')
-    tentacle.addObject('EulerImplicitSolver', name='odesolver', rayleighMass=0.1, rayleighStiffness=0.1)
+    tentacle.addObject('EulerImplicitIntegrationScheme', name='odesolver', rayleighMass=0.1, rayleighStiffness=0.1)
     tentacle.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d')
 
     tentacle.addObject('MeshVTKLoader', name='loader', filename=path+'Tentacle.vtk')

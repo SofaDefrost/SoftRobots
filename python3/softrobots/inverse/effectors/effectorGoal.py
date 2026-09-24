@@ -42,7 +42,7 @@ def EffectorGoal(attachedTo=None,
     # This add a MechanicalObject, a component holding the degree of freedom of our
     # mechanical modelling. In the case of a effector it is a set of positions specifying
     # ghe location of the effector
-    goal.addObject('EulerImplicitSolver', firstOrder=True)
+    goal.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
     goal.addObject('CGLinearSolver', threshold=1e-5, tolerance=1e-5)
     goal.addObject('MechanicalObject', template=template, position=position,
                         rotation=rotation, translation=translation, scale=uniformScale,

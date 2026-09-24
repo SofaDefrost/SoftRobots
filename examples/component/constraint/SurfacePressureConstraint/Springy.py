@@ -19,7 +19,7 @@ def createScene(rootNode):
         "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
         "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
         "Sofa.Component.Mass",  # Needed to use components UniformMass
-        "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+        "Sofa.Component.IntegrationScheme.Backward",  # Needed to use components EulerImplicitIntegrationScheme
         "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
         "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
         "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
@@ -43,7 +43,7 @@ def createScene(rootNode):
     # FEM Model                              #
     ##########################################
     accordion = rootNode.addChild('accordion')
-    accordion.addObject('EulerImplicitSolver', firstOrder=False, rayleighStiffness=0.2, rayleighMass=0.2)
+    accordion.addObject('EulerImplicitIntegrationScheme', firstOrder=False, rayleighStiffness=0.2, rayleighMass=0.2)
     accordion.addObject('SparseLDLSolver')
 
     accordion.addObject('MeshVTKLoader', name='loader', filename=path + 'Springy.vtk', rotation=[0, 0, 0])
@@ -76,7 +76,7 @@ def createScene(rootNode):
     cavity.addObject('SurfacePressureConstraint', template='Vec3', name="pressure",
                      triangles='@topo.triangles',
                      valueType=1,
-                     value=8)
+                     value=800)
 
     # This adds a BarycentricMapping. A BarycentricMapping is a key element as it will add a bi-directional link
     #  between the cavity wall (surfacic mesh) and the accordion (volumetric mesh) so that movements of the cavity's DoFs will be mapped

@@ -16,7 +16,7 @@ def createScene(rootNode):
 
     # bunny mechanical model
     bunny = rootNode.addChild('bunny')
-    bunny.addObject('EulerImplicitSolver', name='odesolver')
+    bunny.addObject('EulerImplicitIntegrationScheme', name='odesolver')
     bunny.addObject('SparseLDLSolver', name='LDLsolver')
     bunny.addObject('MeshVTKLoader', name='loader', filename=path + 'Hollow_Stanford_Bunny.vtu')
     bunny.addObject('TetrahedronSetTopologyContainer', src='@loader', name='container')

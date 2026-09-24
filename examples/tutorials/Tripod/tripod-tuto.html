@@ -148,7 +148,7 @@ The resulting simulation looks like this:
 <a class="sourceLine" id="cb1-12" title="12">    pluginList <span class="op">=</span> [<span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
 <a class="sourceLine" id="cb1-13" title="13">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb1-14" title="14">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb1-15" title="15">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb1-15" title="15">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb1-16" title="16">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
 <a class="sourceLine" id="cb1-17" title="17">                  <span class="st">&quot;Sofa.Component.Visual&quot;</span>,</a>
 <a class="sourceLine" id="cb1-18" title="18">                  <span class="st">&quot;Sofa.GL.Component.Rendering3D&quot;</span>,</a>
@@ -255,7 +255,7 @@ In order to implement the deformation behaviour, the <code>MechanicalObject</cod
 <a class="sourceLine" id="cb4-10" title="10">    pluginList <span class="op">=</span> [<span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
 <a class="sourceLine" id="cb4-11" title="11">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb4-12" title="12">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb4-13" title="13">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb4-13" title="13">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb4-14" title="14">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb4-15" title="15">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
 <a class="sourceLine" id="cb4-16" title="16">                  <span class="st">&quot;Sofa.Component.Topology.Container.Dynamic&quot;</span>,</a>
@@ -386,7 +386,7 @@ Such a function is defined at the beginning of the scene, and can be called as o
 <a class="sourceLine" id="cb6-20" title="20">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
 <a class="sourceLine" id="cb6-21" title="21">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb6-22" title="22">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb6-23" title="23">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb6-23" title="23">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb6-24" title="24">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb6-25" title="25">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb6-26" title="26">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
@@ -537,7 +537,7 @@ Just like for the <code>ElasticBody</code>, a function <code>Tripod()</code> is 
 <a class="sourceLine" id="cb11-54" title="54">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>,</a>
 <a class="sourceLine" id="cb11-55" title="55">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb11-56" title="56">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb11-57" title="57">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb11-57" title="57">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb11-58" title="58">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb11-59" title="59">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb11-60" title="60">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
@@ -691,7 +691,7 @@ Figure 6: Deformable piece with the extremities rigidified.
 <a class="sourceLine" id="cb12-83" title="83">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb12-84" title="84">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
 <a class="sourceLine" id="cb12-85" title="85">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb12-86" title="86">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb12-86" title="86">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb12-87" title="87">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb12-88" title="88">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb12-89" title="89">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
@@ -859,7 +859,7 @@ Figure 7: Deformable piece with the extremities rigidified and attached to the s
 <a class="sourceLine" id="cb13-93" title="93">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb13-94" title="94">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
 <a class="sourceLine" id="cb13-95" title="95">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb13-96" title="96">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb13-96" title="96">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb13-97" title="97">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb13-98" title="98">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb13-99" title="99">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
@@ -1010,7 +1010,7 @@ The controller is added as another node in the scene.</p>
 <a class="sourceLine" id="cb14-30" title="30">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb14-31" title="31">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
 <a class="sourceLine" id="cb14-32" title="32">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb14-33" title="33">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb14-33" title="33">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb14-34" title="34">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb14-35" title="35">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb14-36" title="36">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
@@ -1213,7 +1213,7 @@ Figure 11: Tripod simulation with collision between a sphere, the deformable par
 <a class="sourceLine" id="cb15-62" title="62">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb15-63" title="63">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
 <a class="sourceLine" id="cb15-64" title="64">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb15-65" title="65">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb15-65" title="65">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb15-66" title="66">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb15-67" title="67">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb15-68" title="68">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
@@ -1439,7 +1439,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb16-95" title="95">                  <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb16-96" title="96">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
 <a class="sourceLine" id="cb16-97" title="97">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb16-98" title="98">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb16-98" title="98">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb16-99" title="99">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb16-100" title="100">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb16-101" title="101">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
@@ -1528,7 +1528,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb17-10" title="10"></a>
 <a class="sourceLine" id="cb17-11" title="11"><span class="kw">def</span> EffectorGoal(position):</a>
 <a class="sourceLine" id="cb17-12" title="12">    <span class="va">self</span> <span class="op">=</span> Sofa.Core.Node(<span class="st">&#39;Goal&#39;</span>)</a>
-<a class="sourceLine" id="cb17-13" title="13">    <span class="va">self</span>.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb17-13" title="13">    <span class="va">self</span>.addObject(<span class="st">&#39;EulerImplicitIntegrationScheme&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
 <a class="sourceLine" id="cb17-14" title="14">    <span class="va">self</span>.addObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="dv">100</span>, threshold<span class="op">=</span><span class="fl">1e-5</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
 <a class="sourceLine" id="cb17-15" title="15">    <span class="va">self</span>.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;goalMO&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, position<span class="op">=</span>position<span class="op">+</span>[<span class="fl">0.</span>, <span class="fl">0.</span>, <span class="fl">0.</span>, <span class="fl">1.</span>], showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb17-16" title="16">    <span class="va">self</span>.addObject(<span class="st">&#39;UncoupledConstraintCorrection&#39;</span>)</a>
@@ -1616,7 +1616,7 @@ Because the data are now sent to the real robot, it is necessary to implement a 
 <a class="sourceLine" id="cb17-98" title="98">                  <span class="st">&quot;Sofa.Component.LinearSolver.Iterative&quot;</span>,</a>
 <a class="sourceLine" id="cb17-99" title="99">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
 <a class="sourceLine" id="cb17-100" title="100">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb17-101" title="101">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb17-101" title="101">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb17-102" title="102">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb17-103" title="103">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb17-104" title="104">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
@@ -1745,7 +1745,7 @@ Figure 12: Maze with a little ball.
 <a class="sourceLine" id="cb18-39" title="39"></a>
 <a class="sourceLine" id="cb18-40" title="40">    <span class="kw">def</span> init(<span class="va">self</span>):</a>
 <a class="sourceLine" id="cb18-41" title="41">        <span class="cf">if</span> <span class="va">self</span>.withSolver.value:</a>
-<a class="sourceLine" id="cb18-42" title="42">            <span class="va">self</span>.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>)</a>
+<a class="sourceLine" id="cb18-42" title="42">            <span class="va">self</span>.addObject(<span class="st">&#39;EulerImplicitIntegrationScheme&#39;</span>)</a>
 <a class="sourceLine" id="cb18-43" title="43">            <span class="va">self</span>.addObject(<span class="st">&#39;SparseLDLSolver&#39;</span>, template<span class="op">=</span><span class="st">&quot;CompressedRowSparseMatrixd&quot;</span>)</a>
 <a class="sourceLine" id="cb18-44" title="44">            <span class="va">self</span>.addObject(<span class="st">&#39;GenericConstraintCorrection&#39;</span>)</a>
 <a class="sourceLine" id="cb18-45" title="45">        <span class="va">self</span>.addObject(<span class="st">&quot;MechanicalObject&quot;</span>, position<span class="op">=</span><span class="va">self</span>.position.value)</a>
@@ -1766,7 +1766,7 @@ Figure 12: Maze with a little ball.
 <a class="sourceLine" id="cb18-60" title="60">                  <span class="st">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span>,</a>
 <a class="sourceLine" id="cb18-61" title="61">                  <span class="st">&quot;Sofa.Component.IO.Mesh&quot;</span>, <span class="st">&quot;Sofa.Component.LinearSolver.Direct&quot;</span>,</a>
 <a class="sourceLine" id="cb18-62" title="62">                  <span class="st">&quot;Sofa.Component.LinearSolver.Iterative&quot;</span>, <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb18-63" title="63">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb18-63" title="63">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb18-64" title="64">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb18-65" title="65">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>
 <a class="sourceLine" id="cb18-66" title="66">                  <span class="st">&quot;Sofa.Component.Topology.Container.Constant&quot;</span>,</a>
@@ -1779,7 +1779,7 @@ Figure 12: Maze with a little ball.
 <a class="sourceLine" id="cb18-73" title="73">    rootNode.addObject(<span class="st">&#39;DefaultVisualManagerLoop&#39;</span>)</a>
 <a class="sourceLine" id="cb18-74" title="74"></a>
 <a class="sourceLine" id="cb18-75" title="75">    effector <span class="op">=</span> rootNode.addChild(<span class="st">&#39;Effector&#39;</span>)</a>
-<a class="sourceLine" id="cb18-76" title="76">    effector.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb18-76" title="76">    effector.addObject(<span class="st">&#39;EulerImplicitIntegrationScheme&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
 <a class="sourceLine" id="cb18-77" title="77">    effector.addObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="dv">100</span>, threshold<span class="op">=</span><span class="fl">1e-5</span>, tolerance<span class="op">=</span><span class="fl">1e-5</span>)</a>
 <a class="sourceLine" id="cb18-78" title="78">    effector.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, name<span class="op">=</span><span class="st">&#39;goalMO&#39;</span>, position<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">40</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],</a>
 <a class="sourceLine" id="cb18-79" title="79">                       showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>)</a>
@@ -1828,7 +1828,7 @@ Figure 13: Tripod with maze on top.
 <a class="sourceLine" id="cb19-12" title="12"></a>
 <a class="sourceLine" id="cb19-13" title="13"><span class="kw">def</span> EffectorGoal(node, position):</a>
 <a class="sourceLine" id="cb19-14" title="14">    goal <span class="op">=</span> node.addChild(<span class="st">&#39;Goal&#39;</span>)</a>
-<a class="sourceLine" id="cb19-15" title="15">    goal.addObject(<span class="st">&#39;EulerImplicitSolver&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
+<a class="sourceLine" id="cb19-15" title="15">    goal.addObject(<span class="st">&#39;EulerImplicitIntegrationScheme&#39;</span>, firstOrder<span class="op">=</span><span class="va">True</span>)</a>
 <a class="sourceLine" id="cb19-16" title="16">    goal.addObject(<span class="st">&#39;CGLinearSolver&#39;</span>, iterations<span class="op">=</span><span class="dv">100</span>, threshold<span class="op">=</span><span class="fl">1e-12</span>, tolerance<span class="op">=</span><span class="fl">1e-10</span>)</a>
 <a class="sourceLine" id="cb19-17" title="17">    goal.addObject(<span class="st">&#39;MechanicalObject&#39;</span>, name<span class="op">=</span><span class="st">&#39;goalMO&#39;</span>, template<span class="op">=</span><span class="st">&#39;Rigid3&#39;</span>, position<span class="op">=</span>position<span class="op">+</span>[<span class="fl">0.</span>, <span class="fl">0.</span>, <span class="fl">0.</span>, <span class="fl">1.</span>], showObject<span class="op">=</span><span class="va">True</span>, showObjectScale<span class="op">=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb19-18" title="18">    goal.addObject(<span class="st">&#39;RestShapeSpringsForceField&#39;</span>, points<span class="op">=</span><span class="dv">0</span>, angularStiffness<span class="op">=</span><span class="fl">1e5</span>, stiffness<span class="op">=</span><span class="fl">1e5</span>)</a>
@@ -1920,7 +1920,7 @@ Figure 13: Tripod with maze on top.
 <a class="sourceLine" id="cb19-104" title="104">                  <span class="st">&quot;Sofa.Component.LinearSolver.Iterative&quot;</span>,</a>
 <a class="sourceLine" id="cb19-105" title="105">                  <span class="st">&quot;Sofa.Component.Mapping.MappedMatrix&quot;</span>,</a>
 <a class="sourceLine" id="cb19-106" title="106">                  <span class="st">&quot;Sofa.Component.Mass&quot;</span>,</a>
-<a class="sourceLine" id="cb19-107" title="107">                  <span class="st">&quot;Sofa.Component.ODESolver.Backward&quot;</span>,</a>
+<a class="sourceLine" id="cb19-107" title="107">                  <span class="st">&quot;Sofa.Component.IntegrationScheme.Backward&quot;</span>,</a>
 <a class="sourceLine" id="cb19-108" title="108">                  <span class="st">&quot;Sofa.Component.SolidMechanics.FEM.Elastic&quot;</span>,</a>
 <a class="sourceLine" id="cb19-109" title="109">                  <span class="st">&quot;Sofa.Component.SolidMechanics.Spring&quot;</span>,</a>
 <a class="sourceLine" id="cb19-110" title="110">                  <span class="st">&quot;Sofa.Component.StateContainer&quot;</span>,</a>

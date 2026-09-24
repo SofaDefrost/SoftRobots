@@ -7,7 +7,7 @@ path = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 
 def Target(parentNode):
     target = parentNode.addChild('Target')
-    target.addObject('EulerImplicitSolver', firstOrder=True)
+    target.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
     target.addObject('CGLinearSolver', iterations=100, tolerance=1e-4, threshold=1e-4)
     target.addObject('MechanicalObject', name='dofs', showObject=True, showObjectScale=5, drawMode=1,
                      position=[0, 0, 5])
@@ -55,7 +55,7 @@ class CircularRobot:
         self.node = parentNode.addChild('CircularRobot')
 
         if withSolver:
-            self.node.addObject('EulerImplicitSolver', rayleighMass=0.015, rayleighStiffness=0.015)
+            self.node.addObject('EulerImplicitIntegrationScheme', rayleighMass=0.015, rayleighStiffness=0.015)
             self.node.addObject('SparseLDLSolver')
             self.node.addObject("GenericConstraintCorrection")
 
@@ -130,8 +130,8 @@ def createScene(rootNode):
                                                      "Sofa.Component.LinearSolver.Iterative",
                                                      # Needed to use components CGLinearSolver
                                                      "Sofa.Component.Mass",  # Needed to use components UniformMass
-                                                     "Sofa.Component.ODESolver.Backward",
-                                                     # Needed to use components EulerImplicitSolver
+                                                     "Sofa.Component.IntegrationScheme.Backward",
+                                                     # Needed to use components EulerImplicitIntegrationScheme
                                                      "Sofa.Component.SolidMechanics.FEM.Elastic",
                                                      # Needed to use components TetrahedronFEMForceField
                                                      "Sofa.Component.Topology.Container.Constant",

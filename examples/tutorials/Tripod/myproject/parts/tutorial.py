@@ -51,7 +51,7 @@ def Modelling(parent):
 def Simulation(parent):
     """add an empty node for simulation"""
     simulation = parent.addChild("Simulation")
-    simulation.addObject("EulerImplicitSolver")
+    simulation.addObject("EulerImplicitIntegrationScheme")
     simulation.addObject("CGLinearSolver", iterations=250, tolerance=1e-20, threshold=1e-20)
     return simulation
 

@@ -28,7 +28,7 @@ def createScene(rootNode):
     ###############################
 
     robot = rootNode.addChild('robot')
-    robot.addObject('EulerImplicitSolver', name='odesolver', firstOrder=False)
+    robot.addObject('EulerImplicitIntegrationScheme', name='odesolver', firstOrder=False)
     robot.addObject('SparseLDLSolver')
     robot.addObject('MeshVTKLoader', name='loader', filename=path + 'branch.vtu')
     robot.addObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra='@loader.tetrahedra',

@@ -29,7 +29,7 @@ def createScene(rootNode):
 
     # Beam model
     beam = rootNode.addChild('beam')
-    beam.addObject('EulerImplicitSolver')
+    beam.addObject('EulerImplicitIntegrationScheme')
     beam.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixd')
     beam.addObject('MeshTopology', edges=edgesList)
     beam.addObject('MechanicalObject', template="Rigid3", position=positionsList, name='frame')

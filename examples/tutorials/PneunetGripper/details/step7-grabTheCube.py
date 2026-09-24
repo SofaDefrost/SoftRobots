@@ -32,7 +32,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mapping.Linear')  # Needed to use components [BarycentricMapping]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mapping.NonLinear')  # Needed to use components [RigidMapping]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mass')  # Needed to use components [UniformMass]  
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')  # Needed to use components [EulerImplicitSolver]
+    rootNode.addObject('RequiredPlugin', name='Sofa.Component.IntegrationScheme.Backward')  # Needed to use components [EulerImplicitIntegrationScheme]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.Setting')  # Needed to use components [BackgroundSetting]  
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')  # Needed to use components [TetrahedronFEMForceField]
     rootNode.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.Spring')  # Needed to use components [RestShapeSpringsForceField]
@@ -75,7 +75,7 @@ def createScene(rootNode):
     # Cube
     ##########################################
     cube = rootNode.addChild('Cube')
-    cube.addObject('EulerImplicitSolver')
+    cube.addObject('EulerImplicitIntegrationScheme')
     cube.addObject('CGLinearSolver', threshold=1e-5, tolerance=1e-5, iterations=50)
     cube.addObject('MechanicalObject', template='Rigid3', position=[-100, 70, 0, 0, 0, 0, 1])
     cube.addObject('UniformMass', totalMass=0.001)
@@ -102,7 +102,7 @@ def createScene(rootNode):
         # Finger Model
         ##########################################
         finger = rootNode.addChild('Finger' + str(i + 1))
-        finger.addObject('EulerImplicitSolver', name='odesolver', rayleighStiffness=0.1, rayleighMass=0.1)
+        finger.addObject('EulerImplicitIntegrationScheme', name='odesolver', rayleighStiffness=0.1, rayleighMass=0.1)
         finger.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixd")
         finger.addObject('MeshVTKLoader', name='loader', filename='data/mesh/pneunetCutCoarse.vtk',
                          rotation=[360 - angles[i] * 180 / math.pi, 0, 0], translation=translations[i])

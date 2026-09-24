@@ -11,7 +11,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName= ['SoftRobots', 
         'Sofa.Component.SolidMechanics.Spring', 
         'Sofa.Component.Engine.Select', 
-        'Sofa.Component.ODESolver.Backward',
+        'Sofa.Component.IntegrationScheme.Backward',
         'Sofa.Component.IO.Mesh',
         'Sofa.GL.Component.Rendering2D',
         'Sofa.GL.Component.Rendering3D',
@@ -41,7 +41,7 @@ def createScene(rootNode):
     ################################################### Bunny ######################################################
     ################################################################################################################
     bunny = rootNode.addChild('bunny')
-    bunny.addObject('EulerImplicitSolver', name='odesolver')
+    bunny.addObject('EulerImplicitIntegrationScheme', name='odesolver')
     bunny.addObject('EigenSimplicialLDLT', template="CompressedRowSparseMatrixMat3x3d")
 
     bunny.addObject('MeshVTKLoader', name='loader', filename=path+'Hollow_Stanford_Bunny.vtu')
