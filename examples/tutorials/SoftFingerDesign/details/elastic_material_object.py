@@ -26,7 +26,7 @@ class ElasticMaterialObject(Sofa.Prefab):
     def init(self):
 
         if self.solverName.value == '':
-            self.integration = self.addObject('EulerImplicitSolver', name='integration')
+            self.integration = self.addObject('EulerImplicitIntegrationScheme', name='integration')
             self.solver = self.addObject('SparseLDLSolver', name="solver")
 
         if self.volumeMeshFileName.value == '':

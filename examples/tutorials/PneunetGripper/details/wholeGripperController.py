@@ -45,14 +45,14 @@ class WholeGripperController(Sofa.Core.Controller):
 
         increment = 0.01
 
-        if e["key"] == Sofa.constants.Key.plus:
+        if e["key"] == Sofa.constants.Key.KP_1:
             for i in range(3):
                 pressureValue = self.constraints[i].value.value[0] + increment
                 if pressureValue > 1.5:
                     pressureValue = 1.5
                 self.constraints[i].value = [pressureValue]
 
-        if e["key"] == Sofa.constants.Key.minus:
+        if e["key"] == Sofa.constants.Key.KP_2:
             for i in range(3):
                 pressureValue = self.constraints[i].value.value[0] - increment
                 if pressureValue < 0:

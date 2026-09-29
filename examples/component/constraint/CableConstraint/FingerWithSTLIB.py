@@ -24,7 +24,7 @@ def createScene(rootNode):
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshSTLLoader, MeshVTKLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                             "Sofa.Component.Mass",  # Needed to use components UniformMass
-                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.IntegrationScheme.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                             "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
                             "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
                             "Sofa.Component.Topology.Container.Dynamic",  # Needed to use components TetrahedronSetTopologyContainer

@@ -14,7 +14,7 @@ def createScene(rootNode):
     rootNode.addObject('RequiredPlugin', pluginName=[
         "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader
         "Sofa.Component.LinearSolver.Iterative",  # Needed to use components CGLinearSolver
-        "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+        "Sofa.Component.IntegrationScheme.Backward",  # Needed to use components EulerImplicitIntegrationScheme
         "Sofa.Component.Setting",  # Needed to use components BackgroundSetting
         "Sofa.GL.Component.Rendering3D",  # Needed to use components OglModel, OglSceneFrame
     ])
@@ -23,7 +23,7 @@ def createScene(rootNode):
     rootNode.addObject('DefaultVisualManagerLoop')
 
     point = rootNode.addChild('point')
-    point.addObject('EulerImplicitSolver', firstOrder=True)
+    point.addObject('EulerImplicitIntegrationScheme', firstOrder=True)
     point.addObject('CGLinearSolver', iterations=100, tolerance=1e-5, threshold=1e-5)
     point.addObject('MechanicalObject', template='Rigid3',
                     position=[0, 0, 0, 0, 0, 0, 1],

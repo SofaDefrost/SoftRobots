@@ -5,7 +5,7 @@ path = os.path.dirname(os.path.abspath(__file__))+'/../mesh/'
 def addAccordion(node, inverse=False):
 
     accordion = node.addChild('accordion')
-    accordion.addObject('EulerImplicitSolver', firstOrder=False, rayleighStiffness=0.1, rayleighMass=0.1)
+    accordion.addObject('EulerImplicitIntegrationScheme', firstOrder=False, rayleighStiffness=0.1, rayleighMass=0.1)
     accordion.addObject('SparseLDLSolver')
     accordion.addObject('MeshVTKLoader', name='loader', filename=path+'Springy.vtk')
     accordion.addObject('MeshTopology', src='@loader')

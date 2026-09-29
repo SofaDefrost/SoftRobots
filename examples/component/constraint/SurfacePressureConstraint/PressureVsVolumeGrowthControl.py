@@ -18,7 +18,7 @@ def createScene(rootNode):
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader, MeshVTKLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                             "Sofa.Component.Mass",  # Needed to use components UniformMass
-                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.IntegrationScheme.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                             "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
                             "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
                             "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
@@ -38,7 +38,7 @@ def createScene(rootNode):
     rootNode.addObject('DefaultVisualManagerLoop')
     rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations=500, printLog=False, tolerance=0.0000001)
 
-    Bunny(rootNode, name='BunnyPressure', controlType='pressure', initialValue=2)
-    Bunny(rootNode, translation=[15, 0, 0], controlType='volumeGrowth', name='BunnyVolume', initialValue=40)
+    Bunny(rootNode, name='BunnyPressure', controlType='pressure', initialValue=2000)
+    Bunny(rootNode, translation=[15, 0, 0], controlType='volumeGrowth', name='BunnyVolume', initialValue=0.04)
 
     return rootNode

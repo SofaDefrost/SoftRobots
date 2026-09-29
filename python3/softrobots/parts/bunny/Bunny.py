@@ -6,7 +6,7 @@ from stlib3.physics.constraints import FixedBox
 meshpath = os.path.dirname(os.path.abspath(__file__)) + '/mesh/'
 
 
-def Bunny(node, translation=[0, 0, 0], controlType='pressure', name='Bunny', initialValue=0.0001,
+def Bunny(node, translation=[0, 0, 0], controlType='pressure', name='Bunny', initialValue=0.01,
           youngModulus=18000):
     # Bunny
     # boxROICoordinates=[-5, -6, -5,  5, -4.5, 5] + [translation,translation]
@@ -55,7 +55,7 @@ def createScene(rootNode):
                             "Sofa.Component.IO.Mesh",  # Needed to use components MeshOBJLoader, MeshVTKLoader
                             "Sofa.Component.LinearSolver.Direct",  # Needed to use components SparseLDLSolver
                             "Sofa.Component.Mass",  # Needed to use components UniformMass
-                            "Sofa.Component.ODESolver.Backward",  # Needed to use components EulerImplicitSolver
+                            "Sofa.Component.IntegrationScheme.Backward",  # Needed to use components EulerImplicitIntegrationScheme
                             "Sofa.Component.SolidMechanics.FEM.Elastic",  # Needed to use components TetrahedronFEMForceField
                             "Sofa.Component.SolidMechanics.Spring",  # Needed to use components RestShapeSpringsForceField
                             "Sofa.Component.Topology.Container.Constant",  # Needed to use components MeshTopology
