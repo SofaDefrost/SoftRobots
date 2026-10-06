@@ -110,7 +110,7 @@ void PositionForceConstraintResolution::resolution(int line, double** w, double*
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 void registerPositionConstraint(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Simulate a Position.")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Lagrange multiplier approach to apply force / displacement to points.")
     .add< PositionConstraint<Vec3Types> >(true)
     .add< PositionConstraint<Vec2Types> >()
     .add< PositionConstraint<Rigid3Types> >());

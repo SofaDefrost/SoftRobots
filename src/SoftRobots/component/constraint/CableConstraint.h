@@ -124,6 +124,7 @@ public:
     ////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited attributes ////////////////////////////
+    using CableModel<DataTypes>::d_delta ;
     using CableModel<DataTypes>::d_maxDispVariation ;
     using CableModel<DataTypes>::d_maxPositiveDisplacement ;
     using CableModel<DataTypes>::d_maxNegativeDisplacement ;
@@ -131,15 +132,14 @@ public:
     using CableModel<DataTypes>::d_eqForce ;
     using CableModel<DataTypes>::d_maxForce ;
     using CableModel<DataTypes>::d_minForce ;
-    using CableModel<DataTypes>::d_displacement ;
     using CableModel<DataTypes>::d_componentState ;
     ///////////////////////////////////////////////////////////////////////////
 
 protected:
     //Input data
     Data<sofa::type::vector< Real > >       d_value;
-    Data<unsigned int>                  d_valueIndex;
-    Data<sofa::helper::OptionsGroup>          d_valueType;
+    Data<unsigned int>                      d_valueIndex;
+    Data<sofa::helper::OptionsGroup>        d_valueType;
                                         // displacement = the constraint will impose the displacement provided in data d_inputValue[d_iputIndex]
                                         // force = the constraint will impose the force provided in data d_inputValue[d_iputIndex]
 

@@ -111,7 +111,7 @@ void CableForceConstraintResolution::resolution(int line, SReal** w, SReal* d, S
 
 void registerCableConstraint(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(ObjectRegistrationData("Simulate a cable.")
+    factory->registerObjects(ObjectRegistrationData("Lagrange multiplier approach to simulate a cable.")
     .add< CableConstraint<Vec3Types> >(true)
     .add< CableConstraint<Vec2Types> >());
 }

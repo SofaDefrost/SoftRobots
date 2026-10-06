@@ -127,11 +127,13 @@ protected:
     sofa::type::vector<SetIndexArray> m_areaIndices;
     sofa::type::vector<sofa::type::vector<Real>> m_ratios;
 
-    sofa::type::vector<Real> m_alphaBarycentric;
-    sofa::type::vector<Real> m_betaBarycentric;
+    sofa::type::vector<Real>     m_alphaBarycentric;
+    sofa::type::vector<Real>     m_betaBarycentric;
     sofa::type::vector<Triangle> m_closestTriangle;
 
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v27.06", "Use d_lambda instead.")
     Data<double>                d_force; ///< pulling force applied on the cable
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v27.06", "Use d_delta instead.")
     Data<double>                d_displacement; ///< displacement of the cable
 
     Data<Real>                  d_maxForce; ///< maximum pulling force applied on the cable
@@ -146,7 +148,7 @@ protected:
     Data<bool>                  d_drawPoints; ///< to draw center points of cable
     Data<bool>                  d_drawPulledAreas; ///< to draw points in cable area effect
 
-    Data<sofa::type::RGBAColor>       d_color;
+    Data<sofa::type::RGBAColor> d_color;
 
     bool                        m_hasSlidingPoint;
 
@@ -158,6 +160,8 @@ protected:
     /// Bring m_state in the current lookup context.
     /// otherwise any access to the base::attribute would require
     /// using the "this->" approach.
+    using SoftRobotsConstraint<DataTypes>::d_delta ;
+    using SoftRobotsConstraint<DataTypes>::d_lambda ;
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::d_constraintIndex ;
     using SoftRobotsConstraint<DataTypes>::m_state ;

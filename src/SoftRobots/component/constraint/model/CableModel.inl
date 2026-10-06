@@ -89,12 +89,6 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
     , l_surfaceTopology(initLink("surfaceTopology", "Link to the topology container of the surface on which the cable is attached. \n"
                                                     "Used only with sphere and geodesic methods."))
 
-    , d_force(initData(&d_force,double(0.0), "force",
-                                         "Output force. Warning: to get the actual force you should divide this value by dt."))
-
-    , d_displacement(initData(&d_displacement,double(0.0), "displacement",
-                          "Output displacement compared to the initial cable length."))
-
     , d_maxForce(initData(&d_maxForce, "maxForce",
                           "Maximum force of the actuator. \n"
                           "If unspecified no maximum value will be considered."))
@@ -136,7 +130,6 @@ CableModel<DataTypes>::CableModel(MechanicalState* object)
 
     , d_color(initData(&d_color,RGBAColor(0.4f,0.4f,0.4f,1.f), "color",
                           "Color of the string."))
-
 {
     setUpData();
 }
@@ -150,11 +143,6 @@ template<class DataTypes>
 void CableModel<DataTypes>::setUpData()
 {
     d_cableLength.setReadOnly(true);
-
-    d_force.setGroup("Vector");
-    d_displacement.setGroup("Vector");
-    d_force.setReadOnly(true);
-    d_displacement.setReadOnly(true);
 
     d_drawPullPoint.setGroup("Visualization");
     d_drawPoints.setGroup("Visualization");
@@ -204,11 +192,8 @@ template<class DataTypes>
 void CableModel<DataTypes>::bwdInit()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
-    {
         return;
-    }
             
-
     // The initial length of the cable is set or computed in bwdInit so the mapping (if there is any)
     // will be considered
 
@@ -223,7 +208,6 @@ void CableModel<DataTypes>::bwdInit()
         d_cableInitialLength.setValue(initialCableLength);
     }
     d_cableLength.setValue(cableLength);
-        
 }
 
 
@@ -231,9 +215,8 @@ template<class DataTypes>
 void CableModel<DataTypes>::reinit()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
-    {
-            return ;
-    }
+        return;
+
     internalInit();
 }
 
@@ -242,12 +225,10 @@ template<class DataTypes>
 void CableModel<DataTypes>::reset()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
-    {
-        return ;
-    }
+        return;
+
     d_cableLength.setValue(d_cableInitialLength.getValue());
 }
-
 
 
 template<class DataTypes>
@@ -442,8 +423,6 @@ void CableModel<DataTypes>::computePointsActionArea()
             // Compute barycentric coordinates for visualization purposes
             computeBarycentric(closestTriangle, closestProjectionOnTriangle, m_alphaBarycentric[i], m_betaBarycentric[i]);
             m_closestTriangle[i] = closestTriangle;
-
-
         }
         else
         {
@@ -578,7 +557,7 @@ void CableModel<DataTypes>::computeBarycentric(const Triangle& triangle, const C
     getPositionFromTopology(v1, triangle[1]);
     getPositionFromTopology(v2, triangle[2]); 
 
-   // Solving with Cramer's rule
+    // Solving with Cramer's rule
     Coord e0 = v1 - v0; 
     Coord e1 = v2 - v0;
     Coord e2 = p - v0;
@@ -629,9 +608,7 @@ template<class DataTypes>
 void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv &cMatrix, unsigned int &cIndex, const DataVecCoord &x)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
-    {
-            return ;
-    }
+        return;
 
     SOFA_UNUSED(cParams);
 
@@ -648,7 +625,6 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
     if(!m_hasSlidingPoint)
     {
-
         if ( d_hasPullPoint.getValue())
         {
             Deriv direction = DataTypes::coordDifference(d_pullPoint.getValue(),positions[d_indices.getValue()[0]]);
@@ -758,9 +734,7 @@ void CableModel<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
                 {
                     for(unsigned int j=0; j<m_areaIndices[i].size(); j++)
                         rowIterator.setCol(m_areaIndices[i][j], slidingDirection*m_ratios[i][j]);
-                }
-
-                
+                }   
             }
             else // end point of the cable
             {
@@ -795,9 +769,7 @@ void CableModel<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
                                                    const BaseVector *Jdx)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
-    {
-            return ;
-    }
+        return;
 
     SOFA_UNUSED(cParams);
 
@@ -815,18 +787,22 @@ void CableModel<DataTypes>::storeLambda(const ConstraintParams* cParams,
     SOFA_UNUSED(res);
     SOFA_UNUSED(cParams);
 
-    if(d_componentState.getValue() != ComponentState::Valid)
-    {
-            return ;
-    }
 
+    if(d_componentState.getValue() != ComponentState::Valid)
+        return;
+
+    auto l = sofa::helper::getWriteAccessor(d_lambda);
+    auto d = sofa::helper::getWriteAccessor(d_delta);
+
+    l[0] = lambda->element(d_constraintIndex.getValue());
     d_force.setValue(lambda->element(d_constraintIndex.getValue()));
 
     // Compute actual cable length and displacement from updated positions of mechanical
     // Eulalie.C: For now the position of the mechanical state is not up to date when storeLambda() is called
     //            so the value of delta is one step behind...
     //ReadAccessor<Data<VecCoord>> positions = m_state->readPositions();
-    //d_cableLength.setValue(getCableLength(positions.ref()));
+    //d[0] = getCableLength(positions.ref());
+    d[0] = d_cableInitialLength.getValue()-d_cableLength.getValue();
     d_displacement.setValue(d_cableInitialLength.getValue()-d_cableLength.getValue());
 }
 
@@ -834,9 +810,7 @@ template<class DataTypes>
 void CableModel<DataTypes>::draw(const VisualParams* vparams)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
-    {
-            return ;
-    }
+        return;
 
     if (!vparams->displayFlags().getShowInteractionForceFields()) 
     {
@@ -904,7 +878,6 @@ void CableModel<DataTypes>::drawPoints(const VisualParams* vparams)
         }
     }
         
-
     vparams->drawTool()->drawPoints(points, 15, RGBAColor::red());
 }
 
@@ -964,12 +937,14 @@ void CableModel<DataTypes>::drawPulledAreas(const VisualParams* vparams)
     ReadAccessor<Data<vector<Coord>>> positions = m_state->readPositions();
 
     for(unsigned int i=0; i<m_areaIndices.size(); i++)
+    {
         for(unsigned int j=0; j<m_areaIndices[i].size(); j++)
         {
             vector<Vec3> point(1);
             point[0] = positions[m_areaIndices[i][j]];
             vparams->drawTool()->drawPoints(point, 40.f * m_ratios[i][j], RGBAColor::yellow());
         }
+    }
 }
 
 

@@ -140,7 +140,9 @@ public:
 
 protected:
     //Input data
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v27.06", "Use d_lambda instead.")
     sofa::Data<double>                d_force; ///< force applied on the points
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v27.06", "Use d_delta instead.")
     sofa::Data<double>                d_displacement; ///< displacement of the points
 
     sofa::Data<Real>                  d_maxForce; ///< maximum force applied on the points

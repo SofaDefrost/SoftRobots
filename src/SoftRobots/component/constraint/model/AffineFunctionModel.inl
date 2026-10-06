@@ -51,12 +51,6 @@ AffineFunctionModel<DataTypes>::AffineFunctionModel(MechanicalState* object)
 	, d_initFunctionValue(initData(&d_initFunctionValue, Real(0.0),"initialFunctionValue", "Set to be the function value in the rest positions."))
 
     , d_functionValue(initData(&d_functionValue, Real(0.0), "functionValue","Function value."))
-
-    , d_force(initData(&d_force,double(0.0), "force", "Output force. Warning: to get the actual force you should divide this value by dt."))
-
-    , d_displacement(initData(&d_displacement,double(0.0), "displacement",
-                          "Output function value compared to the initial function value."))
-
 {
     setUpData();
 }
@@ -70,9 +64,6 @@ template<class DataTypes>
 void AffineFunctionModel<DataTypes>::setUpData()
 {
     d_initFunctionValue.setReadOnly(true);
-
-    d_force.setGroup("Output");
-    d_displacement.setGroup("Output");
 }
 
 template<class DataTypes>
@@ -240,9 +231,14 @@ void AffineFunctionModel<DataTypes>::storeLambda(const ConstraintParams* cParams
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
     
+    auto l = sofa::helper::getWriteAccessor(d_lambda);
+    auto d = sofa::helper::getWriteAccessor(d_delta);
+
+    l[0] = lambda->element(d_constraintIndex.getValue());
     d_force.setValue(lambda->element(d_constraintIndex.getValue()));
 
     //Note: this is one step behind
+    d[0] = d_functionValue.getValue();
     d_displacement.setValue(d_functionValue.getValue());
 }
 

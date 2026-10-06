@@ -33,7 +33,11 @@ namespace softrobots::behavior
 using sofa::type::vector;
 
 SoftRobotsBaseConstraint::SoftRobotsBaseConstraint()
-    : m_hasDeltaMax(false)
+    :
+      d_lambda(initData(&d_lambda, vector<double>(1, 0.0), "force", "Force. Warning: to get the actual force you should divide this value by dt."))
+    , d_delta(initData(&d_delta, vector<double>(1, 0.0), "displacement", "Displacement compared to the initial value."))
+    , m_nbLines(1)
+    , m_hasDeltaMax(false)
     , m_hasDeltaMin(false)
     , m_hasDeltaEqual(false)
     , m_hasLambdaMax(false)
@@ -43,6 +47,8 @@ SoftRobotsBaseConstraint::SoftRobotsBaseConstraint()
     , m_hasEnergyWeight(false)
 {
     d_constraintIndex.setReadOnly(true);
+
+    resizeConstraints(m_nbLines);
 }
 
 bool SoftRobotsBaseConstraint::hasDeltaMax() const
@@ -94,9 +100,19 @@ SReal SoftRobotsBaseConstraint::getDeltaMax(const size_t i) const
     return m_deltaMax[i];
 }
 
+vector<double> SoftRobotsBaseConstraint::getDeltaMax() const
+{
+    return m_deltaMax;
+}
+
 SReal SoftRobotsBaseConstraint::getDeltaMin(const size_t i) const
 {
     return m_deltaMin[i];
+}
+
+vector<double> SoftRobotsBaseConstraint::getDeltaMin() const
+{
+    return m_deltaMin;
 }
 
 SReal SoftRobotsBaseConstraint::getDeltaEqual(const size_t i) const
@@ -111,9 +127,19 @@ SReal SoftRobotsBaseConstraint::getLambdaMax(const size_t i) const
     return m_lambdaMax[i];
 }
 
+vector<double> SoftRobotsBaseConstraint::getLambdaMax() const
+{
+    return m_lambdaMax;
+}
+
 SReal SoftRobotsBaseConstraint::getLambdaMin(const size_t i) const
 {
     return m_lambdaMin[i];
+}
+
+vector<double> SoftRobotsBaseConstraint::getLambdaMin() const
+{
+    return m_lambdaMin;
 }
 
 SReal SoftRobotsBaseConstraint::getLambdaEqual(const size_t i) const
@@ -132,6 +158,15 @@ SReal SoftRobotsBaseConstraint::getEnergyWeight() const
     return m_energyWeight;
 }
 
+const sofa::core::objectmodel::Data<vector<double>>& SoftRobotsBaseConstraint::getLambda() const
+{
+    return d_lambda;
+}
+
+const sofa::core::objectmodel::Data<vector<double>>& SoftRobotsBaseConstraint::getDelta() const
+{
+    return d_delta;
+}
 
 unsigned int SoftRobotsBaseConstraint::getNbLines() const
 {
@@ -147,6 +182,60 @@ void SoftRobotsBaseConstraint::storeResults(vector<double>& lambda, vector<doubl
 void SoftRobotsBaseConstraint::storeResults(vector<double> &delta)
 {
     SOFA_UNUSED(delta);
+}
+
+
+void SoftRobotsBaseConstraint::setLambdaNameAndHelp(const std::string& name, const std::string& help)
+{
+    setLambdaName(name);
+    setLambdaHelp(help);
+}
+
+void SoftRobotsBaseConstraint::setLambdaName(const std::string& name)
+{
+    addAlias(&d_lambda, name.c_str());
+    d_lambda.setName(name);
+}
+
+void SoftRobotsBaseConstraint::setLambdaHelp(const std::string& help)
+{
+    d_lambda.setHelp(help);
+}
+
+void SoftRobotsBaseConstraint::setDeltaNameAndHelp(const std::string& name, const std::string& help)
+{
+    setDeltaName(name);
+    setDeltaHelp(help);
+}
+
+void SoftRobotsBaseConstraint::setDeltaName(const std::string& name)
+{
+    addAlias(&d_delta, name.c_str());
+    d_delta.setName(name);
+}
+
+void SoftRobotsBaseConstraint::setDeltaHelp(const std::string& help)
+{
+    d_delta.setHelp(help);
+}
+
+void SoftRobotsBaseConstraint::resizeConstraints(const sofa::Size& size)
+{
+    m_nbLines = size;
+
+    m_lambdaInit.resize(size);
+    m_lambdaMax.resize(size);
+    m_lambdaMin.resize(size);
+    m_lambdaEqual.resize(size);
+
+    m_deltaMax.resize(size);
+    m_deltaMin.resize(size);
+    m_deltaEqual.resize(size);
+
+    auto delta = sofa::helper::getWriteAccessor(d_delta);
+    delta.resize(size, 0);
+    auto lambda = sofa::helper::getWriteAccessor(d_lambda);
+    lambda.resize(size, 0);
 }
 
 } // namespaces

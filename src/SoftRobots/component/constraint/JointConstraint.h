@@ -147,19 +147,23 @@ protected:
     using SoftRobotsConstraint<DataTypes>::d_constraintIndex ;
     using SoftRobotsConstraint<DataTypes>::m_nbLines ;
     using SoftRobotsConstraint<DataTypes>::d_componentState ;
+    using SoftRobotsConstraint<DataTypes>::d_delta ;
+    using SoftRobotsConstraint<DataTypes>::d_lambda ;
     ////////////////////////////////////////////////////////////////////////////
 
     //Input data
     sofa::Data<unsigned int>       d_index; ///< indice of considered node
 
-    sofa::Data<double>                d_force; ///< force applied on the points
-    sofa::Data<double>                d_displacement; ///< displacement of the points
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v27.06", "Use d_lambda instead.")
+    sofa::Data<double>             d_force; ///< force applied on the points
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v27.06", "Use d_delta instead.")
+    sofa::Data<double>             d_displacement; ///< displacement of the points
 
-    sofa::Data<double>                  d_maxForce; ///< maximum force applied on the points
-    sofa::Data<double>                  d_minForce; ///< minimum force applied on the points
+    sofa::Data<double>             d_maxForce; ///< maximum force applied on the points
+    sofa::Data<double>             d_minForce; ///< minimum force applied on the points
     
-    sofa::Data<double>                  d_maxDisplacement; ///< maximum displacement of the points
-    sofa::Data<double>                  d_minDisplacement; ///< minimum displacement of the points
+    sofa::Data<double>             d_maxDisplacement; ///< maximum displacement of the points
+    sofa::Data<double>             d_minDisplacement; ///< minimum displacement of the points
 
     sofa::Data<double> d_value;
     sofa::Data<sofa::helper::OptionsGroup>  d_valueType;
