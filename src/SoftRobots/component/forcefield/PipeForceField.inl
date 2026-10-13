@@ -109,9 +109,11 @@ double PipeForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mpa
 }
 
 template<typename DataTypes>
-void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
-                                               const MultiMatrixAccessor* matrix)
+void PipeForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix,
+                                             SReal kFact, unsigned int & offset)
 {
+    SOFA_UNUSED(kFact);
+    
     if (l_barycentricMapping.get() == nullptr )
     {
         msg_error() << "Link to barycentric mapping is missing or incorrect. AddKToMatrix not computed.";
@@ -154,7 +156,7 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
 
     MultiMatrixAccessor::MatrixRef mappedMatrixRef = mappedFFMatrixAccessor->getMatrix(springState);
 
-    l_mappedForceField.get()->addKToMatrix(mparams, mappedFFMatrixAccessor);
+    l_mappedForceField.get()->addKToMatrix(sofa::core::mechanicalparams::defaultInstance(), mappedFFMatrixAccessor);
     CompressedRowSparseMatrix<_3_3_Matrix_Type> JtK ;
     CompressedRowSparseMatrix<_3_3_Matrix_Type> JtKJ ;
 
@@ -167,7 +169,6 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
     if(mstate==nullptr)
         msg_error() << "Missing context mechanical state.";
 
-    MultiMatrixAccessor::MatrixRef matrixRef = matrix->getMatrix(mstate);
     _3_3_Matrix_Type KMatrixBuffer;
     for(size_t kRowIndex = 0 ; kRowIndex < (unsigned int)JtKJ.nBlockRow ; ++kRowIndex) {
         for(_3_3_ColBlockConstIterator kColIter = JtKJ.bRowBegin(kRowIndex); kColIter < JtKJ.bRowEnd(kRowIndex) ; kColIter++) {
@@ -180,7 +181,7 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
 
             for (int i = 0; i < 3 ; i++)
                 for (int j = 0; j < 3; j++)
-                    matrixRef.matrix->add(matrixRef.offset + 3 * kRowIndex + i,matrixRef.offset + 3 * kColIndex + j, kBlockData(i, j));
+                    matrix->add(offset + 3 * kRowIndex + i, offset + 3 * kColIndex + j, kBlockData(i, j));
         }
     }
 
