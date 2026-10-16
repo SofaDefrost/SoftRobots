@@ -36,7 +36,7 @@ def createScene(rootNode):
     beam.addObject('BeamInterpolation', name='interpol', crossSectionShape='rectangular', lengthY=5, lengthZ=5,
                    defaultYoungModulus=1.8e6)
     beam.addObject('AdaptiveBeamForceFieldAndMass', name="BeamForceField", computeMass=1, massDensity=0.001)
-    beam.addObject('RestShapeSpringsForceField', points=0, stiffness=100e10, angularStiffness=100e10)
+    beam.addObject('FixedWeakConstraint', indices=0, stiffness=100e10, angularStiffness=100e10)
 
     # Visualization
     visuNode = beam.addChild('visualization')
