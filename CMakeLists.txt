@@ -3,7 +3,7 @@ project(SoftRobots VERSION 1.0)
 
 include(cmake/environment.cmake)
 
-find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Config REQUIRED)
 sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Component.Controller REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
