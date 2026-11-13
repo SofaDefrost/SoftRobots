@@ -22,7 +22,7 @@ This is a licence-free software, it can be used by anyone who try to build a bet
     #include "SysTimeWin.h"
 #endif
 
-#if defined (__linux__) || defined (__APPLE__)
+#if defined (__linux__) || defined (__APPLE__) || defined (__EMSCRIPTEN__)
 	#include <sys/time.h>
     #include <stdlib.h>
     #include <sys/types.h>
