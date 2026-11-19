@@ -119,8 +119,7 @@ public :
                    dx ) override;
 
 
-    void addKToMatrix(const MechanicalParams* mparams,
-                      const MultiMatrixAccessor* matrix) override;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal kFact, unsigned int & offset) override;
 
     double getPotentialEnergy(const MechanicalParams* mparams,
                               const DataVecCoord& x) const override;

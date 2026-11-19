@@ -168,7 +168,7 @@ public:
 
 
     ///////////////////////// Inherited from BaseInteractionForceField ///////////////////
-    void addKToMatrix(const MechanicalParams* mparams,
+    void doAddKToMatrix(const MechanicalParams* mparams,
                       const MultiMatrixAccessor* matrix ) override;
     ////////////////////////////////////////////////////////////////////////////////////
 protected:
