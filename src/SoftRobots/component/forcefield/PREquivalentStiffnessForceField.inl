@@ -286,16 +286,17 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
     f.endEdit();
 }
 
-template<typename DataTypes>
-void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParams* mparams,
-                                                           DataVecDeriv&  d_f ,
-                                                           const DataVecDeriv&  d_x)
-{    
+
+template <typename DataTypes>
+void PREquivalentStiffnessForceField<DataTypes>::doAddDForce(
+    const MechanicalParams *mparams,
+    const typename Inherit1::AddDForceVectors &vectors)
+{
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
 
-    const VecDeriv& dx = d_x.getValue();
-    VecDeriv& dfdq = *d_f.beginEdit();
+    const VecDeriv& dx = vectors.dx.getValue();
+    VecDeriv& dfdq = *vectors.df.beginEdit();
     const size_t nFrames = dx.size();
 
     const Real kFact = mparams->kFactor();
@@ -395,7 +396,7 @@ void PREquivalentStiffnessForceField<DataTypes>::displaceFrames(const VecCoord& 
     }
 }
 
-template<typename DataTypes>
+template <typename DataTypes>
 void PREquivalentStiffnessForceField<DataTypes>::computeForce(const VecCoord& pos,
                                                               const VecCoord& restPos,
                                                               VecDeriv& f)

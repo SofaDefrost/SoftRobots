@@ -113,12 +113,6 @@ public :
                   const DataVecCoord& x ,
                   const DataVecDeriv& v) override;
 
-    void addDForce(const MechanicalParams* mparams,
-                   DataVecDeriv&   df ,
-                   const DataVecDeriv&
-                   dx ) override;
-
-
     void addKToMatrix(const MechanicalParams* mparams,
                       const MultiMatrixAccessor* matrix) override;
 
@@ -133,6 +127,7 @@ protected:
     sofa::SingleLink < PipeForceField<DataTypes>, BarycentricMapping<DataTypes, DataTypes>, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_barycentricMapping;
     sofa::SingleLink < PipeForceField<DataTypes>, MeshSpringForceField<DataTypes>, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_mappedForceField;
 
+    void doAddDForce(const MechanicalParams* mparams, const Inherit1::AddDForceVectors& vectors) override;
 
     /**
      * \brief Compressed sparse row matrices product
