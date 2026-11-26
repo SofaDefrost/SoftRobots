@@ -105,11 +105,11 @@ public :
                    DataVecDeriv&   df ,
                    const DataVecDeriv&   dx ) override;
 
-    double getPotentialEnergy(const MechanicalParams* mparams,
+    SReal getPotentialEnergy(const MechanicalParams* mparams,
                               const DataVecCoord& x) const override;
 
     void addKToMatrix(sofa::linearalgebra::BaseMatrix* matrix,
-                      double kFact,
+                      SReal kFact,
                       unsigned int& offset) override;
     ////////////////////////////////////////////////////////////////////////////
 

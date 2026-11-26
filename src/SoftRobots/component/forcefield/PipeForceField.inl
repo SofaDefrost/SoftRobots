@@ -99,7 +99,7 @@ void PipeForceField<DataTypes>::addDForce(const MechanicalParams* mparams,
 }
 
 template<typename DataTypes>
-double PipeForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams,
+SReal PipeForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams,
                                                      const DataVecCoord& x) const
 {
     SOFA_UNUSED(mparams);

@@ -162,7 +162,7 @@ public:
                    const DataVecDeriv1& dx1,
                    const DataVecDeriv2& dx2) override;
 
-    double getPotentialEnergy(const MechanicalParams* mparams,
+    SReal getPotentialEnergy(const MechanicalParams* mparams,
                               const DataVecCoord1& x1, const DataVecCoord2& x2) const override;
     ////////////////////////////////////////////////////////////////////////////////////
 
