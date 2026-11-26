@@ -322,7 +322,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
 }
 
 template<typename DataTypes>
-double PREquivalentStiffnessForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams,
+SReal PREquivalentStiffnessForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams,
                                                                       const DataVecCoord& x) const
 {
     SOFA_UNUSED(mparams);
@@ -333,7 +333,7 @@ double PREquivalentStiffnessForceField<DataTypes>::getPotentialEnergy(const Mech
 
 template<typename DataTypes>
 void PREquivalentStiffnessForceField<DataTypes>::addKToMatrix(BaseMatrix* matrix,
-                                                              double kFact,
+                                                              SReal kFact,
                                                               unsigned int& offset)
 {    
     if(d_componentState.getValue() != ComponentState::Valid)

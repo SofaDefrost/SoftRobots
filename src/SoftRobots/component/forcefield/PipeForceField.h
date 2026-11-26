@@ -122,7 +122,7 @@ public :
     void addKToMatrix(const MechanicalParams* mparams,
                       const MultiMatrixAccessor* matrix) override;
 
-    double getPotentialEnergy(const MechanicalParams* mparams,
+    SReal getPotentialEnergy(const MechanicalParams* mparams,
                               const DataVecCoord& x) const override;
     ////////////////////////////////////////////////////////////////////////////
 
