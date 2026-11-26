@@ -88,14 +88,13 @@ void PipeForceField<DataTypes>::addForce(const MechanicalParams* mparams,
     SOFA_UNUSED(v);
 }
 
-template<typename DataTypes>
-void PipeForceField<DataTypes>::addDForce(const MechanicalParams* mparams,
-                                          DataVecDeriv&  d_f ,
-                                          const DataVecDeriv&  d_x)
+template <typename DataTypes>
+void PipeForceField<DataTypes>::doAddDForce(
+    const MechanicalParams *mparams,
+    const typename Inherit1::AddDForceVectors &vectors)
 {
     SOFA_UNUSED(mparams);
-    SOFA_UNUSED(d_f);
-    SOFA_UNUSED(d_x);
+    SOFA_UNUSED(vectors);
 }
 
 template<typename DataTypes>
@@ -188,8 +187,7 @@ void PipeForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams,
     delete mappedFFMatrixAccessor;
 }
 
-
-template<class DataTypes>
+template <class DataTypes>
 template<unsigned int M, unsigned int N, unsigned int K>
 void PipeForceField<DataTypes>::multMatrices(const CompressedRowSparseMatrix<Mat<M, N, Real> >& A,
                                              const CompressedRowSparseMatrix<Mat<N, K, Real> >& B,

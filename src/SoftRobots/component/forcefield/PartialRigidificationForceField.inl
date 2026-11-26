@@ -217,7 +217,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     delete mappedFFMatrixAccessor;
 }
 
-template<class DataTypes1, class DataTypes2>
+template <class DataTypes1, class DataTypes2>
 void PartialRigidificationForceField<DataTypes1, DataTypes2>::testBuildJacobian(const MechanicalParams* mparams)
 {
     CompressedRowSparseMatrix< _3_3_Matrix_Type >* mappedFFMatrix = new CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
@@ -391,8 +391,6 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addForce(const Mec
     SOFA_UNUSED(v2);
 }
 
-// Even though it does nothing, this method has to be implemented
-// since it's a pure virtual in parent class
 template<class DataTypes1, class DataTypes2>
 void PartialRigidificationForceField<DataTypes1, DataTypes2>::addDForce(const MechanicalParams* mparams,
                                                                         DataVecDeriv1& df1,
@@ -405,6 +403,19 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addDForce(const Me
     SOFA_UNUSED(df2);
     SOFA_UNUSED(dx1);
     SOFA_UNUSED(dx2);
+}
+
+// Even though it does nothing, this method has to be implemented
+// since it's a pure virtual in parent class
+template <typename TDataTypes1, typename TDataTypes2>
+void PartialRigidificationForceField<TDataTypes1, TDataTypes2>::doAddDForce(
+    const MechanicalParams *mparams,
+    const AddDForceVectors<DataTypes1> &vectors1,
+    const AddDForceVectors<DataTypes2> &vectors2)
+{
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(vectors1);
+    SOFA_UNUSED(vectors2);
 }
 
 // Even though it does nothing, this method has to be implemented

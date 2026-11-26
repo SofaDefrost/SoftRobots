@@ -173,6 +173,13 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////
 protected:
 
+    template<class DataTypes>
+    using AddDForceVectors = typename Inherit1::template AddDForceVectors<DataTypes>;
+
+    void doAddDForce(const MechanicalParams* mparams,
+        const AddDForceVectors<DataTypes1>& vectors1,
+        const AddDForceVectors<DataTypes2>& vectors2) override;
+
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html

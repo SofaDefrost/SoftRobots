@@ -101,10 +101,6 @@ public :
                   const DataVecCoord& x ,
                   const DataVecDeriv& v) override;
 
-    void addDForce(const MechanicalParams* mparams,
-                   DataVecDeriv&   df ,
-                   const DataVecDeriv&   dx ) override;
-
     double getPotentialEnergy(const MechanicalParams* mparams,
                               const DataVecCoord& x) const override;
 
@@ -125,6 +121,8 @@ protected :
     VecMat12            m_K;
     VecCoord            m_pos;
     VecCoord            m_restPos;
+
+    void doAddDForce(const MechanicalParams* mparams, const Inherit1::AddDForceVectors& vectors) override;
 
 private :
     void computeForce(const VecCoord& pos, const VecCoord& restPos, VecDeriv& f);
